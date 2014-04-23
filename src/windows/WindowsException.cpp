@@ -1,4 +1,4 @@
-/*
+﻿/*
 WindowsException.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -54,6 +54,11 @@ ustring WindowsException::getDescription() const {
     std::unique_ptr< WCHAR, HLOCAL (__stdcall*)( HLOCAL ) >( pszMessage, &LocalFree );
 
     return utf16to8( pszMessage, uiMessageSize + 1 );
+}
+
+//Do-nothing private assignment operater
+WindowsException& WindowsException::operator =( const WindowsException& ) {
+    return *this;
 }
 
 /*

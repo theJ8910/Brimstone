@@ -1,4 +1,4 @@
-
+﻿
 /*
 Rectangle.hpp
 -----------------------
@@ -123,7 +123,7 @@ void Rectangle<I>::get( I& iLeftOut, I& iTopOut, I& iRightOut, I& iBottomOut ) c
 
 template< typename I >
 void Rectangle<I>::set( const I* const paiLTRB ) {
-    if( paiLTRB == NULL )
+    if( paiLTRB == nullptr )
         throw NullPointerException();
 
     left    = paiLTRB[ 0 ];
@@ -134,10 +134,10 @@ void Rectangle<I>::set( const I* const paiLTRB ) {
 
 template< typename I >
 void Rectangle<I>::get( I* const paiLTRBOut ) const {
-	if( paiLTRB == NULL )
+    if( paiLTRB == nullptr )
         throw NullPointerException();
 
-	paiLTRBOut[ 0 ] = left;
+    paiLTRBOut[ 0 ] = left;
     paiLTRBOut[ 1 ] = top;
     paiLTRBOut[ 2 ] = right;
     paiLTRBOut[ 3 ] = bottom;

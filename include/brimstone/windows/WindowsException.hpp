@@ -1,4 +1,4 @@
-/*
+﻿/*
 WindowsException.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -38,8 +38,11 @@ private:
     static const std::string strErrorMessage;
 public:
     WindowsException( DWORD uiErrorCode );
+
     DWORD getErrorCode() const;
     virtual ustring getDescription() const;
+private:
+    WindowsException& operator =( const WindowsException& );
 private:
     const DWORD m_uiErrorCode;
 };

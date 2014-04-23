@@ -1,4 +1,4 @@
-/*
+﻿/*
 Systems.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -74,10 +74,6 @@ void Systems::stopAll() {
 
         pcSystem->stop();
     }
-}
-
-void Systems::start( SystemType eType ) {
-    
 }
 
 FactoryManager< SystemType, ISystem* >& Systems::getFactoryManager() {

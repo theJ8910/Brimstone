@@ -1,4 +1,4 @@
-/*
+﻿/*
 Window.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -68,6 +68,7 @@ void Window::setVisible( const bool bVisible ) {
 }
 
 bool Window::getVisible() const {
+    //Visible is defined as "the window exists"
     return m_pcImpl != nullptr;
 }
 

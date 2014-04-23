@@ -1,4 +1,4 @@
-/*
+﻿/*
 RefType.hpp
 -----------------------
 
@@ -44,7 +44,7 @@ namespace Brimstone {
 template< typename T >
 class RefType {
 public:
-    typedef T	     ref;
+    typedef T        ref;
     typedef const T& const_ref;
 };
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Signal.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -69,7 +69,7 @@ public:
     void disconnect( const Slot_t& cSlot );
     void disconnectAll();
 
-	void emit( Args... args ) const;
+    void emit( Args... args ) const;
     void operator()( Args... args ) const;
 
 private:

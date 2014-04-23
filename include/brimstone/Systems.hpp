@@ -1,4 +1,4 @@
-/*
+﻿/*
 Systems.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -85,7 +85,6 @@ public:
     static void startAll();
     static void stopAll();
 private:
-    static void start( SystemType eType );
     static void add( SystemType eType, SystemTypeSet_t& aeDependencyChain );
 
     static SystemsMap_t     m_acSystemsByType;

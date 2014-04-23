@@ -1,4 +1,4 @@
-/*
+﻿/*
 WindowsUtil.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -26,7 +26,7 @@ namespace Private {
 wstring utf8to16( const ustring& strUTF8Bytes ) {
     //Determine how many characters (wchar_t) we'll need to encode this string as UTF-16
     int32 iChars;
-    if( ( iChars = MultiByteToWideChar( CP_UTF8, 0, strUTF8Bytes.c_str(), -1, NULL, 0 ) ) == 0 )
+    if( ( iChars = MultiByteToWideChar( CP_UTF8, 0, strUTF8Bytes.c_str(), -1, nullptr, 0 ) ) == 0 )
         throwWindowsException();
 
     wstring strUTF16Chars( iChars - 1, L'\0' );
@@ -42,7 +42,7 @@ wstring utf8to16( const ustring& strUTF8Bytes ) {
 wstring utf8to16( const uchar* const pszUTF8Bytes, const int32 iUTF8ByteCount ) {
     //Determine how many characters (wchar_t) we'll need to encode this string as UTF-16
     int32 iChars;
-    if( ( iChars = MultiByteToWideChar( CP_UTF8, 0, pszUTF8Bytes, iUTF8ByteCount, NULL, 0 ) ) == 0 )
+    if( ( iChars = MultiByteToWideChar( CP_UTF8, 0, pszUTF8Bytes, iUTF8ByteCount, nullptr, 0 ) ) == 0 )
         throwWindowsException();
 
     wstring strUTF16Chars( iChars - 1, L'\0' );
@@ -65,10 +65,10 @@ int32 utf8to16( const uchar* const pszUTF8Bytes, const int32 iUTF8ByteCount, wch
 
 int32 utf8to16( const uchar* const pszUTF8Bytes, const int32 iUTF8ByteCount, wchar*& pszUTF16CharsOut ) {
     int32 iChars;
-    if( ( iChars = MultiByteToWideChar( CP_UTF8, 0, pszUTF8Bytes, iUTF8ByteCount, NULL, 0 ) ) == 0 )
+    if( ( iChars = MultiByteToWideChar( CP_UTF8, 0, pszUTF8Bytes, iUTF8ByteCount, nullptr, 0 ) ) == 0 )
         throwWindowsException();
 
-    std::unique_ptr< wchar > pszUTF16CharBuffer( new wchar[ iChars ] );
+    std::unique_ptr< wchar[] > pszUTF16CharBuffer( new wchar[ iChars ] );
 
     if( ( iChars = MultiByteToWideChar( CP_UTF8, 0, pszUTF8Bytes, iUTF8ByteCount, pszUTF16CharBuffer.get(), iChars ) ) == 0 )
         throwWindowsException();
@@ -81,7 +81,7 @@ int32 utf8to16( const uchar* const pszUTF8Bytes, const int32 iUTF8ByteCount, wch
 utf16to8
 -----------------------
 Description:
-	Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
+    Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
     to char-based UTF-8 encoding ("MultiByte").
 
     This version of the function takes a UTF-16 encoded string and returns a UTF-8 encoded string.
@@ -92,19 +92,19 @@ Arguments:
     pszUTF16Chars:      Wide character string (std::wstring) holding the UTF-16 encoded string to convert.
     
 Returns:
-	ustring:            UTF-8 encoded string converted from the given string.
+    ustring:            UTF-8 encoded string converted from the given string.
 */
 ustring utf16to8( const wstring& strUTF16Chars ) {
     //Determine how many bytes we'll need to encode this string as UTF-8
     int32 iBytes;
-    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, strUTF16Chars.c_str(), -1, NULL, 0, NULL, NULL ) ) == 0 )
+    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, strUTF16Chars.c_str(), -1, nullptr, 0, nullptr, nullptr ) ) == 0 )
         throwWindowsException();
 
     ustring strUTF8Bytes( iBytes - 1, '\0' );
 
     //HACK: You're really not supposed to muck about with the internal buffer of the string...
     //we can probably get away with this, though. If this causes problems, change.
-    if( WideCharToMultiByte( CP_UTF8, 0, strUTF16Chars.c_str(), -1, &strUTF8Bytes[0], iBytes, NULL, NULL ) == 0 )
+    if( WideCharToMultiByte( CP_UTF8, 0, strUTF16Chars.c_str(), -1, &strUTF8Bytes[0], iBytes, nullptr, nullptr ) == 0 )
         throwWindowsException();
 
     return strUTF8Bytes;
@@ -114,7 +114,7 @@ ustring utf16to8( const wstring& strUTF16Chars ) {
 utf16to8
 -----------------------
 Description:
-	Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
+    Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
     to char-based UTF-8 encoding ("MultiByte").
 
     This version of the function returns a UTF-8 encoded string.
@@ -129,19 +129,19 @@ Arguments:
     pszUTF8BytesOut:    Pointer to a buffer of bytes (char) that will hold the UTF-8 encoded characters.
     
 Returns:
-	ustring:            UTF-8 encoded string converted from the given string.
+    ustring:            UTF-8 encoded string converted from the given string.
 */
 ustring utf16to8( const wchar* const pszUTF16Chars, const int32 iUTF16CharCount ) {
     //Determine how many bytes we'll need to encode these characters as UTF-8
     int32 iBytes;
-    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, NULL, 0, NULL, NULL ) ) == 0 )
+    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, nullptr, 0, nullptr, nullptr ) ) == 0 )
         throwWindowsException();
 
     ustring strUTF8Buffer( iBytes - 1, '\0' );
 
     //HACK: You're really not supposed to muck about with the internal buffer of the string...
     //we can probably get away with this, though. If this causes problems, change.
-    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, &strUTF8Buffer[0], iBytes, NULL, NULL ) ) == 0 )
+    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, &strUTF8Buffer[0], iBytes, nullptr, nullptr ) ) == 0 )
         throwWindowsException();
 
     return strUTF8Buffer;
@@ -151,7 +151,7 @@ ustring utf16to8( const wchar* const pszUTF16Chars, const int32 iUTF16CharCount 
 utf16to8
 -----------------------
 Description:
-	Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
+    Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
     to char-based UTF-8 encoding ("MultiByte").
 
     This version of the function outputs the UTF-8 encoded characters to a fixed size buffer.
@@ -170,11 +170,11 @@ Arguments:
     pszUTF8BytesOut:    Pointer to a buffer of bytes (char) that will hold the UTF-8 encoded characters.
     iUTF8ByteCount:     The size of pszUTF8BytesOut in BYTES.
 Returns:
-	int:                The number of bytes written to the pszUTF8BytesOut.
+    int:                The number of bytes written to the pszUTF8BytesOut.
 */
 int32 utf16to8( const wchar* const pszUTF16Chars, const int32 iUTF16CharCount, uchar* const& pszUTF8BytesOut, const int32 iUTF8ByteCount ) {
     int32 iBytes;
-    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, pszUTF8BytesOut, iUTF8ByteCount, NULL, NULL ) ) == 0 )
+    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, pszUTF8BytesOut, iUTF8ByteCount, nullptr, nullptr ) ) == 0 )
         throwWindowsException();
 
     return iBytes;
@@ -184,7 +184,7 @@ int32 utf16to8( const wchar* const pszUTF16Chars, const int32 iUTF16CharCount, u
 utf16to8
 -----------------------
 Description:
-	Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
+    Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
     to char-based UTF-8 encoding ("MultiByte").
 
     This version of the function allocates a new buffer of the appropriate size and
@@ -202,16 +202,16 @@ Arguments:
     pszUTF8BytesOut:    Pointer to a buffer of bytes (char) that will hold the UTF-8 encoded characters.
     
 Returns:
-	int:                The number of bytes written to the pszUTF8BytesOut.
+    int:                The number of bytes written to the pszUTF8BytesOut.
 */
 int32 utf16to8( const wchar* const pszUTF16Chars, const int32 iUTF16CharCount, uchar*& pszUTF8BytesOut ) {
     int32 iBytes;
-    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, NULL, 0, NULL, NULL ) ) == 0 )
+    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, nullptr, 0, nullptr, nullptr ) ) == 0 )
         throwWindowsException();
 
     std::unique_ptr< uchar > pszUTF8ByteBuffer( new char[ iBytes ] );
 
-    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, pszUTF8ByteBuffer.get(), iBytes, NULL, NULL ) ) == 0 )
+    if( ( iBytes = WideCharToMultiByte( CP_UTF8, 0, pszUTF16Chars, iUTF16CharCount, pszUTF8ByteBuffer.get(), iBytes, nullptr, nullptr ) ) == 0 )
         throwWindowsException();
 
     pszUTF8BytesOut = pszUTF8ByteBuffer.release();

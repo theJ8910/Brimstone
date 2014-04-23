@@ -1,4 +1,4 @@
-/*
+﻿/*
 ThrowFactory.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -19,7 +19,7 @@ Description:
 
 
 //Includes
-#include "IFactory.hpp"     //IFactory
+#include <brimstone/factory/IFactory.hpp>   //IFactory
 
 
 

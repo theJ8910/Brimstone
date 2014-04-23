@@ -1,4 +1,4 @@
-/*
+﻿/*
 Window.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -16,18 +16,18 @@ Description:
 
 
 //Includes
-#include <brimstone/Rectangle.hpp>          //LongRectangle
-#include <brimstone/signals/Signal.hpp>     //Signal
-#include <brimstone/types.hpp>              //ustring
-#include <brimstone/WindowEvents.hpp>
+#include <brimstone/Rectangle.hpp>              //LongRectangle
+#include <brimstone/signals/Signal.hpp>         //Signal
+#include <brimstone/types.hpp>                  //ustring
+#include <brimstone/WindowEvents.hpp>           //MousePressEvent, MouseReleaseEvent, etc
 
 #if defined( BS_BUILD_WINDOWS )
 
-#include "windows/WindowsWindow.hpp"        //WindowImpl (WindowsWindow)
+#include <brimstone/windows/WindowsWindow.hpp>  //WindowImpl (WindowsWindow)
 
 #elif defined( BS_BUILD_LINUX )
 
-#include "linux/LinuxWindow.hpp"            //WindowImpl (LinuxWindow)
+#include <brimstone/linux/LinuxWindow.hpp>      //WindowImpl (LinuxWindow)
 
 #endif
 

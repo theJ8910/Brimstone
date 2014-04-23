@@ -1,4 +1,4 @@
-/*
+﻿/*
 Exception.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -73,7 +73,7 @@ public:
 /*
 NullPointerException
 
-Thrown when a pointer is unexpectedly NULL
+Thrown when a pointer is unexpectedly nullptr
 */
 class NullPointerException : public IException {
 public:

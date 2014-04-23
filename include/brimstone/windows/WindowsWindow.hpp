@@ -1,4 +1,4 @@
-/*
+﻿/*
 WindowsWindow.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -44,22 +44,24 @@ public:
     WindowsWindow( Window& cParent );
     ~WindowsWindow();
 
-    static bool processEvents();
+    static bool     processEvents();
 
-    void        setTitle( const ustring& strTitle );
-    void        getTitle( ustring& strTitleOut ) const;
+    void            setTitle( const ustring& strTitle );
+    void            getTitle( ustring& strTitleOut ) const;
 
-    void        setPopup( const bool bPopup );
+    void            setPopup( const bool bPopup );
 
-    void        setBounds( const LongRectangle& cBounds );
-    void        getBounds( LongRectangle& cBoundsOut ) const;
+    void            setBounds( const LongRectangle& cBounds );
+    void            getBounds( LongRectangle& cBoundsOut ) const;
 
-    HWND        getHandle();
+    HWND            getHandle();
 private:
-    void        adjustWindowBounds( long iWidth, long iHeight );
+    void            adjustWindowBounds( long iWidth, long iHeight );
+    WindowsWindow( const WindowsWindow& );
+    WindowsWindow&  operator =( const WindowsWindow& );
 private:
-    HWND        m_hWnd;
-    Window&     m_cParent;
+    HWND            m_hWnd;
+    Window*         m_pcParent;
 };
 
 typedef WindowsWindow WindowImpl;
