@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\brimstone\factory\BasicFactory.hpp">
+      <Filter>include\brimstone\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\factory\FactoryManager.hpp">
+      <Filter>include\brimstone\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\factory\IFactory.hpp">
+      <Filter>include\brimstone\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\factory\ThrowFactory.hpp">
+      <Filter>include\brimstone\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Exception.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\RefType.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\types.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Systems.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\signals\Signal.hpp">
+      <Filter>include\brimstone\signals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Cast.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\signals\Delegate.hpp">
+      <Filter>include\brimstone\signals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\signals\ScopedConnection.hpp">
+      <Filter>include\brimstone\signals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\WindowEvents.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\MinMax.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Range.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Window.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Rectangle.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\windows\WindowsException.hpp">
+      <Filter>include\brimstone\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\windows\WindowsHeader.hpp">
+      <Filter>include\brimstone\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\windows\WindowsUtil.hpp">
+      <Filter>include\brimstone\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\windows\WindowsWindow.hpp">
+      <Filter>include\brimstone\windows</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Exception.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Window.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\windows\WindowsUtil.cpp">
+      <Filter>src\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\windows\WindowsWindow.cpp">
+      <Filter>src\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WindowEvents.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\windows\WindowsException.cpp">
+      <Filter>src\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Systems.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{28703bbd-6daa-4afb-837d-719c79a899e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{ec39e10c-935c-4d19-bb26-42e302340427}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone">
+      <UniqueIdentifier>{38bde3bb-2b02-49aa-acb2-6ff1c4272564}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\factory">
+      <UniqueIdentifier>{2fae6f86-7afb-4a01-bd88-dd0db1926e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\util">
+      <UniqueIdentifier>{e39f32a1-24ed-4907-a4e6-ea9c5a94cac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\signals">
+      <UniqueIdentifier>{dfb0cd41-3c79-44b5-8396-e71e2fcce5a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\windows">
+      <UniqueIdentifier>{87b8cad6-3f95-4411-b116-190b43065fcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\windows">
+      <UniqueIdentifier>{fdc9015a-70ae-41a1-a935-f0779b2fba1d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
