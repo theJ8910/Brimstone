@@ -53,6 +53,7 @@ public:
 private:
     void            adjustWindowBounds( long iWidth, long iHeight );
     LRESULT         windowProc( UINT uiMessage, WPARAM wParam, LPARAM lParam );
+    void            getMouseCoordinates( LPARAM lParam, int32& iXOut, int32& iYOut );
 
     WindowsWindow( const WindowsWindow& );
     WindowsWindow&  operator =( const WindowsWindow& );
@@ -63,9 +64,9 @@ private:
     wchar           m_cLeadSurrogate;
 
 private:
-    static ATOM WindowsWindow::registerWindowClass( HINSTANCE hInstance );
+    static ATOM             registerWindowClass( HINSTANCE hInstance );
     static LRESULT CALLBACK mainProc( HWND hWnd, UINT uiMessage, WPARAM wParam, LPARAM lParam );
-
+    static Key              vkToKey( WPARAM wParam, LPARAM lParam );
 private:
     static bool                                       m_bClassRegistered;
     static std::unordered_map< HWND, WindowsWindow& > m_acWindowMap;

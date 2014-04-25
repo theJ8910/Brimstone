@@ -32,60 +32,129 @@ namespace Brimstone {
 enum class MouseButton {
     LEFT,
     RIGHT,
-    MIDDLE
+    MIDDLE,
+    X1,
+    X2,
+
+    COUNT
 };
+
+const uchar* mouseButtonToString( MouseButton eButton );
 
 enum class Key {
+    //Invalid key codes are mapped to this key
+    INVALID,
+
+    //Keys on the "function line" on the main part of the keyboard
+    ESCAPE,
+    F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+
+    //Keys on the "number line" on the main part of the keyboard
+    //Note: ~ is tilda, ` is backtick; they share the same key
+    TILDA,
+    // )        !        @        #        $        %        ^        &        *        (
+    DIGIT_0, DIGIT_1, DIGIT_2, DIGIT_3, DIGIT_4, DIGIT_5, DIGIT_6, DIGIT_7, DIGIT_8, DIGIT_9,
+    // _     +
+    DASH, EQUALS,
+
+    //Letters
     A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-    Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9
+
+    //Miscellaneous keys on the main part of the keyboard
+    SPACE, ENTER, TAB, BACKSPACE, CAPS_LOCK, COMMA, PERIOD, QUOTE,
+    SEMICOLON, SLASH, BACKSLASH,
+    // [ {      } ]
+    LBRACKET, RBRACKET,
+
+    LSHIFT,   RSHIFT,
+    LCTRL,    RCTRL,
+    LALT,     RALT,
+    //Windows key for instance
+    LSYSTEM,  RSYSTEM, 
+    
+    //Keys above the arrow keys
+    PRINT_SCREEN, SCROLL_LOCK, PAUSE_BREAK,
+    INSERT, DEL, HOME, END, PAGEUP, PAGEDOWN,
+
+    //Arrow keys
+    UP, DOWN, LEFT, RIGHT,
+
+    //Numpad keys
+    NUMPAD_0, NUMPAD_1, NUMPAD_2, NUMPAD_3, NUMPAD_4, NUMPAD_5, NUMPAD_6, NUMPAD_7, NUMPAD_8, NUMPAD_9,
+    ADD, SUBTRACT, MULTIPLY, DIVIDE, DECIMAL, NUMPAD_ENTER, NUMLOCK,
+
+    //Dummy value to retrieve total number of key codes
+    COUNT
 };
 
-class MouseDownEvent {
-public:
-    MouseDownEvent( const MouseButton eButton );
-    MouseButton getButton() const;
-private:
-    MouseButton m_eButton;
-};
+const uchar* keyToString( Key eKey );
 
-class MouseUpEvent {
+class MouseEvent {
 public:
-    MouseUpEvent( const MouseButton eButton );
-    MouseButton getButton() const;
-private:
-    MouseButton m_eButton;
-};
-
-class MouseMoveEvent {
-public:
-    MouseMoveEvent( const int32 iX, const int32 iY );
+    MouseEvent( const int32 iX, const int32 iY );
     int32 getX() const;
     int32 getY() const;
 private:
     int32 m_iX, m_iY;
 };
 
-class MouseScrollEvent {
+class MouseButtonEvent : public MouseEvent {
 public:
-    MouseScrollEvent( const int32 iScrollAmount );
+    MouseButtonEvent( const MouseButton eButton, const int32 iX, const int32 iY );
+    MouseButton getButton() const;
 private:
-    int32 iScrollAmount;
+    MouseButton m_eButton;
 };
 
-class KeyDownEvent {
+class MouseDownEvent : public MouseButtonEvent {
+public:
+    MouseDownEvent( const MouseButton eButton, const int32 iX, const int32 iY );
+};
+
+class MouseUpEvent : public MouseButtonEvent {
+public:
+    MouseUpEvent( const MouseButton eButton, const int32 iX, const int32 iY );
+};
+
+class MouseMoveEvent : public MouseEvent {
+public:
+    MouseMoveEvent( const int32 iX, const int32 iY );
+};
+
+class MouseScrollEvent : public MouseEvent {
+public:
+    MouseScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY );
+    float getScrollAmount() const;
+private:
+    float m_fScrollAmount;
+};
+
+class MouseVScrollEvent : public MouseScrollEvent {
+public:
+    MouseVScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY );
+};
+
+class MouseHScrollEvent : public MouseScrollEvent {
+public:
+    MouseHScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY );
+};
+
+class KeyEvent {
+public:
+    KeyEvent( const Key eKey );
+    Key getKey() const;
+private:
+    Key m_eKey;
+};
+
+class KeyDownEvent : public KeyEvent {
 public:
     KeyDownEvent( const Key eKey );
-    Key getKey() const;
-private:
-    Key m_eKey;
 };
 
-class KeyUpEvent {
+class KeyUpEvent : public KeyEvent {
 public:
     KeyUpEvent( const Key eKey );
-    Key getKey() const;
-private:
-    Key m_eKey;
 };
 
 class CharacterTypedEvent {

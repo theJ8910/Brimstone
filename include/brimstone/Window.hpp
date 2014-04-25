@@ -67,6 +67,8 @@ public:
     BS_WINDOW_EVENT( MouseDown );
     BS_WINDOW_EVENT( MouseUp );
     BS_WINDOW_EVENT( MouseMove );
+    BS_WINDOW_EVENT( MouseVScroll );
+    BS_WINDOW_EVENT( MouseHScroll );
     BS_WINDOW_EVENT( KeyDown );
     BS_WINDOW_EVENT( KeyUp );
     BS_WINDOW_EVENT( CharacterTyped );
