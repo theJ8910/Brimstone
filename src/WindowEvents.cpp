@@ -8,25 +8,39 @@ Description:
 */
 
 //Includes
-#include <brimstone/WindowEvents.hpp>
+#include <brimstone/WindowEvents.hpp>   //Class header
 
 namespace Brimstone {
 
-MousePressEvent::MousePressEvent( const MouseButton eButton ) : m_eButton( eButton ) {
+MouseDownEvent::MouseDownEvent( const MouseButton eButton ) : m_eButton( eButton ) {
 }
 
-MouseButton MousePressEvent::getButton() const {
+MouseButton MouseDownEvent::getButton() const {
     return m_eButton;
 }
 
-MouseReleaseEvent::MouseReleaseEvent( const MouseButton eButton ) : m_eButton( eButton ) {
+MouseUpEvent::MouseUpEvent( const MouseButton eButton ) : m_eButton( eButton ) {
 }
 
-MouseButton MouseReleaseEvent::getButton() const {
+MouseButton MouseUpEvent::getButton() const {
     return m_eButton;
 }
 
 MouseMoveEvent::MouseMoveEvent( const int32 iX, const int32 iY ) : m_iX( iX ), m_iY( iY ) {
+}
+
+KeyDownEvent::KeyDownEvent( const Key eKey ) : m_eKey( eKey ) {
+}
+
+Key KeyDownEvent::getKey() const {
+    return m_eKey;
+}
+
+KeyUpEvent::KeyUpEvent( const Key eKey ) : m_eKey( eKey ) {
+}
+
+Key KeyUpEvent::getKey() const {
+    return m_eKey;
 }
 
 int32 MouseMoveEvent::getX() const {
@@ -37,12 +51,7 @@ int32 MouseMoveEvent::getY() const {
     return m_iY;
 }
 
-KeyPressEvent::KeyPressEvent( const uchar pszKey[5] ) {
-    for( int i = 0; i < 5; ++i )
-        m_pszKey[i] = pszKey[i];
-}
-
-const uchar* KeyPressEvent::getKey() const {
+const uchar* CharacterTypedEvent::getCharacter() const {
     return m_pszKey;
 }
 

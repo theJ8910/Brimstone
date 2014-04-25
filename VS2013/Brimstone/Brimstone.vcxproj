@@ -165,6 +165,7 @@
     <ClInclude Include="..\..\include\brimstone\util\MinMax.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Range.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\RefType.hpp" />
+    <ClInclude Include="..\..\include\brimstone\util\Unicode.hpp" />
     <ClInclude Include="..\..\include\brimstone\Window.hpp" />
     <ClInclude Include="..\..\include\brimstone\WindowEvents.hpp" />
     <ClInclude Include="..\..\include\brimstone\windows\WindowsException.hpp" />
@@ -175,6 +176,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\Exception.cpp" />
     <ClCompile Include="..\..\src\Systems.cpp" />
+    <ClCompile Include="..\..\src\util\Unicode.cpp" />
     <ClCompile Include="..\..\src\Window.cpp" />
     <ClCompile Include="..\..\src\WindowEvents.cpp" />
     <ClCompile Include="..\..\src\windows\WindowsException.cpp" />

@@ -34,6 +34,12 @@ Description:
 
 
 
+//Macros
+#define BS_WINDOW_EVENT( name ) Signal< void( name##Event& ) > m_cSignal##name
+
+
+
+
 namespace Brimstone {
 
 class Window {
@@ -41,32 +47,40 @@ public:
     Window();
     ~Window();
 
-    static bool    processEvents();
+    static bool processEvents();
 
-    void    setTitle( const ustring& strTitle );
-    void    getTitle( ustring& strTitleOut ) const;
+    void        setTitle( const ustring& strTitle );
+    void        getTitle( ustring& strTitleOut ) const;
 
-    void    setPopup( const bool bPopup );
-    bool    getPopup() const;
+    void        setPopup( const bool bPopup );
+    bool        getPopup() const;
 
-    void    setVisible( const bool bVisible );
-    bool    getVisible() const;
+    void        setVisible( const bool bVisible );
+    bool        getVisible() const;
 
-    void    setBounds( const LongRectangle& cBounds );
-    void    getBounds( LongRectangle& cBoundsOut ) const;
+    void        setBounds( const LongRectangle& cBounds );
+    void        getBounds( LongRectangle& cBoundsOut ) const;
 
-    Signal< void( MousePressEvent& ) >      m_cSignalMousePress;
-    Signal< void( MouseReleaseEvent& ) >    m_cSignalMouseRelease;
-    Signal< void( MouseMoveEvent& ) >       m_cSignalMouseMove;
-    Signal< void( KeyPressEvent& ) >        m_cSignalKeyPress;
+    void        setKeyRepeat( const bool bKeyRepeat );
+    bool        getKeyRepeat() const;
+
+    BS_WINDOW_EVENT( MouseDown );
+    BS_WINDOW_EVENT( MouseUp );
+    BS_WINDOW_EVENT( MouseMove );
+    BS_WINDOW_EVENT( KeyDown );
+    BS_WINDOW_EVENT( KeyUp );
+    BS_WINDOW_EVENT( CharacterTyped );
 
 private:
     ustring                 m_strTitle;
     bool                    m_bPopup;
+    bool                    m_bKeyRepeat;
     LongRectangle           m_cBounds;
 
     Private::WindowImpl*    m_pcImpl;
 };
+
+#undef BS_WINDOW_EVENT
 
 }
 

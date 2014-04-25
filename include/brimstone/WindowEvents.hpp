@@ -35,17 +35,22 @@ enum class MouseButton {
     MIDDLE
 };
 
-class MousePressEvent {
+enum class Key {
+    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+    Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9
+};
+
+class MouseDownEvent {
 public:
-    MousePressEvent( const MouseButton m_eButton );
+    MouseDownEvent( const MouseButton eButton );
     MouseButton getButton() const;
 private:
     MouseButton m_eButton;
 };
 
-class MouseReleaseEvent {
+class MouseUpEvent {
 public:
-    MouseReleaseEvent( const MouseButton m_eButton );
+    MouseUpEvent( const MouseButton eButton );
     MouseButton getButton() const;
 private:
     MouseButton m_eButton;
@@ -60,16 +65,35 @@ private:
     int32 m_iX, m_iY;
 };
 
-class KeyPressEvent {
+class MouseScrollEvent {
 public:
-    KeyPressEvent( const uchar pszKey[5] );
-    const uchar* getKey() const;
+    MouseScrollEvent( const int32 iScrollAmount );
+private:
+    int32 iScrollAmount;
+};
+
+class KeyDownEvent {
+public:
+    KeyDownEvent( const Key eKey );
+    Key getKey() const;
+private:
+    Key m_eKey;
+};
+
+class KeyUpEvent {
+public:
+    KeyUpEvent( const Key eKey );
+    Key getKey() const;
+private:
+    Key m_eKey;
+};
+
+class CharacterTypedEvent {
+public:
+    const uchar* getCharacter() const;
 private:
     uchar m_pszKey[5];
 };
-
-
-
 
 }
 

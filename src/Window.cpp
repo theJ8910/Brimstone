@@ -21,6 +21,7 @@ namespace Brimstone {
 Window::Window() :
     m_strTitle( "Default Window Title" ),
     m_bPopup( false ),
+    m_bKeyRepeat( false ),
     m_cBounds( 0, 0, 1024, 768 ),
     m_pcImpl( nullptr ) {
 }
@@ -56,15 +57,25 @@ bool Window::getPopup() const {
     return m_bPopup;
 }
 
+void Window::setKeyRepeat( const bool bKeyRepeat ) {
+    m_bKeyRepeat = bKeyRepeat;
+}
+
+bool Window::getKeyRepeat() const {
+    return m_bKeyRepeat;
+}
+
 void Window::setVisible( const bool bVisible ) {
     if( bVisible == getVisible() )
         return;
 
-    if( bVisible )
+    if( bVisible ) {
         if( m_pcImpl == nullptr )
             m_pcImpl = new Private::WindowImpl( *this );
-    else if( m_pcImpl != nullptr )
+    } else if( m_pcImpl != nullptr ) {
         delete m_pcImpl;
+        m_pcImpl = nullptr;
+    }
 }
 
 bool Window::getVisible() const {

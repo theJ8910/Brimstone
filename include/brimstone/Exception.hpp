@@ -113,7 +113,8 @@ public:
 /*
 UnexpectedResultException
 
-Thrown when something that was expected to happen didn't.
+Thrown when something that was expected to happen didn't,
+or vice versa.
 */
 class UnexpectedResultException : public IException {
 public:
@@ -156,6 +157,17 @@ NotImplementedException
 Thrown when attempting to call a function that is not yet implemented.
 */
 class NotImplementedException : public IException {
+public:
+    virtual ustring getDescription() const;
+};
+
+/*
+MalformedStringException
+
+Thrown when a function that handles a UTF-8 encoded string determines that
+the string is malformed.
+*/
+class MalformedStringException : public IException {
 public:
     virtual ustring getDescription() const;
 };

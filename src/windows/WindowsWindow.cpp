@@ -9,6 +9,8 @@
 
 #include <brimstone/Window.hpp>                         //Really stupid circular dependency hack
 
+#include <iostream>                                     //TEMPORARY
+
 namespace {
     static const wchar_t* pszWindowClass = L"BrimstoneWindow";
     static const int eStandard = ( WS_CAPTION | WS_MINIMIZEBOX );   //Characteristics only standard windows have
@@ -27,6 +29,8 @@ WindowsWindow::HWNDToWindowMap WindowsWindow::m_acWindowMap;
 bool                           WindowsWindow::m_bClassRegistered = false;
 
 WindowsWindow::WindowsWindow( Window& cParent ) : m_pcParent( &cParent ) {
+    m_cLeadSurrogate = 0;
+
     HINSTANCE hInstance = GetModuleHandle( nullptr );
 
     if( m_bClassRegistered == false )
@@ -130,6 +134,118 @@ void WindowsWindow::adjustWindowBounds( long iWidth, long iHeight ) {
         throwWindowsException();
 }
 
+LRESULT WindowsWindow::windowProc( UINT uiMessage, WPARAM wParam, LPARAM lParam ) {
+    switch( uiMessage ) {
+    case WM_MOUSEMOVE: {
+        LongRectangle cRect;
+        m_pcParent->getBounds( cRect );
+
+        //The coordinates provided in lParam are relative to the upper-left corner of the window's client area.
+        //However, we need to clamp values here because the window will return coordinates outside of the client
+        //area as well (borders, etc)! Raw coordinates could even be negative.
+        MouseMoveEvent cEvent(
+            Brimstone::ClampedValue( (long)GET_X_LPARAM( lParam ), 0L, cRect.getWidth()  - 1L ),
+            Brimstone::ClampedValue( (long)GET_Y_LPARAM( lParam ), 0L, cRect.getHeight() - 1L )
+        );
+        m_pcParent->m_cSignalMouseMove( cEvent );  
+    } break;
+    case WM_LBUTTONDOWN: {
+        MouseDownEvent cEvent( MouseButton::LEFT );
+        m_pcParent->m_cSignalMouseDown( cEvent );
+    } break;
+    case WM_LBUTTONUP: {
+        MouseUpEvent cEvent( MouseButton::LEFT );
+        m_pcParent->m_cSignalMouseUp( cEvent );
+    } break;
+    case WM_RBUTTONDOWN: {
+        MouseDownEvent cEvent( MouseButton::RIGHT );
+        m_pcParent->m_cSignalMouseDown( cEvent );
+    } break;
+    case WM_RBUTTONUP: {
+        MouseUpEvent cEvent( MouseButton::RIGHT );
+        m_pcParent->m_cSignalMouseUp( cEvent );
+    } break;
+    case WM_MBUTTONDOWN: {
+        MouseDownEvent cEvent( MouseButton::MIDDLE );
+        m_pcParent->m_cSignalMouseDown( cEvent );
+    } break;
+    case WM_MBUTTONUP: {
+        MouseUpEvent cEvent( MouseButton::MIDDLE );
+        m_pcParent->m_cSignalMouseUp( cEvent );
+    } break;
+    case WM_KEYDOWN: {
+        //TEMP
+        KeyDownEvent cEvent( Key::Digit0 );
+        m_pcParent->m_cSignalKeyDown( cEvent );
+    } break;
+    case WM_KEYUP: {
+        //TEMP
+        KeyUpEvent cEvent( Key::Digit0 );
+        m_pcParent->m_cSignalKeyUp( cEvent );
+    } break;
+    case WM_CHAR: {
+        //If the user holds a key down, Windows repeatedly sends the character
+        //to the window. By default, repeating characters are ignored.
+        //This can be changed in the Window with setKeyRepeat().
+        bool bIsRepeating = ( ( lParam & ( 1 << 30 ) ) != 0 );
+        if( bIsRepeating && !m_pcParent->getKeyRepeat() )
+            break;
+
+        //A leading surrogate of a surrogate pair was provided
+        //A CharacterTypedEvent will not be dispatched until the trail surrogate arrives.
+        if( wParam >= 0xDB00 && wParam <= 0xDBFF ) {
+            m_cLeadSurrogate = (wchar)wParam;
+
+        //Some other type of character was provided.
+        } else {
+            CharacterTypedEvent cEvent;
+            uchar* pszUTF8 = const_cast< uchar* >( cEvent.getCharacter() );
+            int32 iUTF8Count;
+
+            //A trail surrogate was provided
+            if( wParam >= 0xDC00 && wParam <= 0xDFFF ) {
+                //UTF-16 encoded surrogate pair
+                wchar acUTF16[2] = { m_cLeadSurrogate, (wchar)wParam };
+
+                //Translate the pair to its equivalent UTF-8
+                iUTF8Count = utf16to8( acUTF16, 2, pszUTF8, 5 );
+
+            //A non-surrogate was provided
+            } else {
+                //Translate the UTF-16 character to its equivalent UTF-8
+                iUTF8Count = utf16to8( reinterpret_cast<wchar*>( &wParam ), 1, pszUTF8, 5 );
+            }
+
+            //A UTF-8 encoding of a single code point should never exceed 4 bytes in length
+            if( iUTF8Count > 4 )
+                throw UnexpectedResultException();
+
+            //Null terminate the string
+            pszUTF8[iUTF8Count] = 0;
+                
+            m_pcParent->m_cSignalCharacterTyped( cEvent );
+        }
+    } break;
+    case WM_UNICHAR: {
+        if( wParam == UNICODE_NOCHAR )
+            return TRUE;
+    } break;
+    case WM_ACTIVATEAPP: {
+    } break;
+    case WM_MOVING: {
+    } break;
+    case WM_SIZING: {
+    } break;
+    case WM_DESTROY: {
+        PostQuitMessage( 0 );
+    } break;
+    default:
+        return DefWindowProc( getHandle(), uiMessage, wParam, lParam );
+    }
+
+    return 0;
+}
+
 /*
 WindowsWindow::registerWindowClass
 -----------------------
@@ -189,64 +305,7 @@ LRESULT CALLBACK WindowsWindow::mainProc( HWND hWnd, UINT uiMessage, WPARAM wPar
     if( it == m_acWindowMap.end() )
         return DefWindowProc( hWnd, uiMessage, wParam, lParam );
 
-    WindowsWindow* pcWindow = &it->second;
-
-
-    switch( uiMessage ) {
-    case WM_MOUSEMOVE: {
-        LongRectangle cRect;
-        pcWindow->m_pcParent->getBounds( cRect );
-
-        MouseMoveEvent cEvent(
-            Brimstone::ClampedValue( (long)GET_X_LPARAM( lParam ), 0L, cRect.getWidth()  - 1L ),
-            Brimstone::ClampedValue( (long)GET_Y_LPARAM( lParam ), 0L, cRect.getHeight() - 1L )
-        );
-        pcWindow->m_pcParent->m_cSignalMouseMove( cEvent );  
-    } break;
-    case WM_LBUTTONDOWN: {
-        MousePressEvent cEvent( MouseButton::LEFT );
-        pcWindow->m_pcParent->m_cSignalMousePress( cEvent );
-    } break;
-    case WM_LBUTTONUP: {
-        MouseReleaseEvent cEvent( MouseButton::LEFT );
-        pcWindow->m_pcParent->m_cSignalMouseRelease( cEvent );
-    } break;
-    case WM_RBUTTONDOWN: {
-        MousePressEvent cEvent( MouseButton::RIGHT );
-        pcWindow->m_pcParent->m_cSignalMousePress( cEvent );
-    } break;
-    case WM_RBUTTONUP: {
-        MouseReleaseEvent cEvent( MouseButton::RIGHT );
-        pcWindow->m_pcParent->m_cSignalMouseRelease( cEvent );
-    } break;
-    case WM_MBUTTONDOWN: {
-        MousePressEvent cEvent( MouseButton::MIDDLE );
-        pcWindow->m_pcParent->m_cSignalMousePress( cEvent );
-    } break;
-    case WM_MBUTTONUP: {
-        MouseReleaseEvent cEvent( MouseButton::MIDDLE );
-        pcWindow->m_pcParent->m_cSignalMouseRelease( cEvent );
-    } break;
-    case WM_ACTIVATEAPP: {
-    } break;
-    case WM_MOVING: {
-    } break;
-    case WM_SIZING: {
-    } break;
-    case WM_CHAR: {
-    } break;
-    case WM_UNICHAR: {
-        if( wParam == UNICODE_NOCHAR )
-            return TRUE;
-    } break;
-    case WM_DESTROY: {
-        PostQuitMessage( 0 );
-    } break;
-    default:
-        return DefWindowProc( hWnd, uiMessage, wParam, lParam );
-    }
-
-    return 0;
+    return it->second.windowProc( uiMessage, wParam, lParam );
 }
 
 void WindowsWindow::setTitle( const ustring& strTitle ) {

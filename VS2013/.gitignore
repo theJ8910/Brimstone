@@ -1,0 +1,7 @@
+*.opensdf
+*.sdf
+*.v12.suo
+*.vcxproj.user
+Brimstone/Debug/
+Brimstone/Release/
+Brimstone/x64/

@@ -67,6 +67,9 @@
     <ClInclude Include="..\..\include\brimstone\windows\WindowsWindow.hpp">
       <Filter>include\brimstone\windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Unicode.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Exception.cpp">
@@ -89,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\Systems.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\Unicode.cpp">
+      <Filter>src\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +121,9 @@
     </Filter>
     <Filter Include="include\brimstone\windows">
       <UniqueIdentifier>{fdc9015a-70ae-41a1-a935-f0779b2fba1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{a52c98cb-9b60-4856-a7c9-90c931719855}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

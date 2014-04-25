@@ -78,4 +78,9 @@ ustring NotImplementedException::getDescription() const {
     //return Language::get( "NotImplementedException_Description" );
 }
 
+ustring MalformedStringException::getDescription() const {
+    return "MalformedStringException";
+    //return Language::get( "MalformedStringException_Description" );
+}
+
 }
