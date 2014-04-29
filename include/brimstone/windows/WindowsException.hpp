@@ -1,5 +1,5 @@
 ﻿/*
-WindowsException.hpp
+windows/WindowsException.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -12,8 +12,8 @@ Description:
     throwWindowsException() throws a WindowsException with the given code.
     If a code is not given, GetLastError() is called to supply the code of the last error that occured.
 */
-#ifndef BS_WINDOWS_EXCEPTION_HPP
-#define BS_WINDOWS_EXCEPTION_HPP
+#ifndef BS_WINDOWS_WINDOWSEXCEPTION_HPP
+#define BS_WINDOWS_WINDOWSEXCEPTION_HPP
 
 
 
@@ -53,4 +53,4 @@ private:
 }
 }
 
-#endif //BS_WINDOWS_EXCEPTION_HPP
+#endif //BS_WINDOWS_WINDOWSEXCEPTION_HPP

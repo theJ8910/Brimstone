@@ -1,5 +1,5 @@
 ﻿/*
-Delegate.hpp
+signals/Delegate.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 Based off of Don Clugston's FastDelegate implementation.
@@ -14,14 +14,13 @@ Description:
     * Uses C++11 variadic templates to support any number of arguments, reducing the amount of necessary code in this file.
 */
 
-#ifndef BS_DELEGATE_HPP
-#define BS_DELEGATE_HPP
+#ifndef BS_SIGNALS_DELEGATE_HPP
+#define BS_SIGNALS_DELEGATE_HPP
 
 
 
 
 //Includes
-#include <type_traits>
 #include <brimstone/util/Cast.hpp>      //universal_cast
 
 
@@ -308,4 +307,4 @@ inline Delegate< Return_t ( Args... ) > bind( const T* pcThis, Return_t (BaseCla
 
 }
 
-#endif //BS_DELEGATE_HPP
+#endif //BS_SIGNALS_DELEGATE_HPP

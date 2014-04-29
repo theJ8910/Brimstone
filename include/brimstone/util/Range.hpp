@@ -1,5 +1,5 @@
 ﻿/*
-Range.hpp
+util/Range.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -8,8 +8,8 @@ Description:
     or restricting the given scalar to a range.
 */
 
-#ifndef BS_RANGE_HPP
-#define BS_RANGE_HPP
+#ifndef BS_UTIL_RANGE_HPP
+#define BS_UTIL_RANGE_HPP
 
 
 
@@ -266,4 +266,4 @@ inline T HighClampedValue( const T& xVal, const T& xUpperBound )
 
 
 
-#endif //BS_RANGE_HPP
+#endif //BS_UTIL_RANGE_HPP

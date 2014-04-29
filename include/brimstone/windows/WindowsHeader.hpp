@@ -1,5 +1,5 @@
 ﻿/*
-WindowsHeader.hpp
+windows/WindowsHeader.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -9,8 +9,8 @@ Description:
     This file includes <Windows.h> after defining several switches that disable unnecessary code and
     instrusive macros such as min() and max().
 */
-#ifndef BS_WINDOWS_HEADER
-#define BS_WINDOWS_HEADER
+#ifndef BS_WINDOWS_WINDOWSHEADER_HPP
+#define BS_WINDOWS_WINDOWSHEADER_HPP
 
 
 
@@ -25,4 +25,4 @@ Description:
 
 
 
-#endif //BS_WINDOWS_HEADER
+#endif //BS_WINDOWS_WINDOWSHEADER_HPP

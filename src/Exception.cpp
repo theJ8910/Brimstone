@@ -83,4 +83,17 @@ ustring MalformedStringException::getDescription() const {
     //return Language::get( "MalformedStringException_Description" );
 }
 
+LuaException::LuaException() {
+}
+
+LuaException::LuaException( const uchar* pszDescription ) : m_strDescription( pszDescription ) {
+}
+
+LuaException::LuaException( const ustring& strDescription ) : m_strDescription( strDescription ) {
+}
+
+ustring LuaException::getDescription() const {
+    return m_strDescription;
+}
+
 }

@@ -1,5 +1,5 @@
 ﻿/*
-Signal.hpp
+signals/Signal.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -23,8 +23,8 @@ Description:
     the ScopedConnection is destroyed. The reverse is also true; if the Signal is destroyed, the ScopedConnection object stops tracking
     any registered Signals.
 */
-#ifndef BS_SIGNAL_HPP
-#define BS_SIGNAL_HPP
+#ifndef BS_SIGNALS_SIGNAL_HPP
+#define BS_SIGNALS_SIGNAL_HPP
 
 
 
@@ -195,4 +195,4 @@ void Signal< Return_t ( Args... ) >::disconnectAllFromSC() {
 
 
 
-#endif //BS_SIGNAL_HPP
+#endif //BS_SIGNALS_SIGNAL_HPP

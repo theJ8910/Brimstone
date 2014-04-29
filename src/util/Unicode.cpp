@@ -1,5 +1,5 @@
 /*
-Unicode.cpp
+util/Unicode.cpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -7,9 +7,15 @@ Description:
     See Unicode.hpp for more information.
 */
 
+
+
+
 //Includes
 #include <brimstone/util/Unicode.hpp>   //Header file
 #include <brimstone/Exception.hpp>      //SizeException
+
+
+
 
 namespace Brimstone {
 

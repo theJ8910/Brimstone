@@ -1,5 +1,5 @@
 ﻿/*
-FactoryManager.hpp
+factory/FactoryManager.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -11,8 +11,8 @@ Description:
     FactoryManager provides a simple interface to add and remove factories and
     create objects from registered factories by supplying a key.
 */
-#ifndef BS_FACTORYMANAGER_HPP
-#define BS_FACTORYMANAGER_HPP
+#ifndef BS_FACTORY_FACTORYMANAGER_HPP
+#define BS_FACTORY_FACTORYMANAGER_HPP
 
 
 
@@ -77,4 +77,4 @@ Abstract_t FactoryManager< Key_t, Abstract_t >::create( KeyConstRef_t xKey ) con
 
 
 
-#endif //BS_FACTORYMANAGER_HPP
+#endif //BS_FACTORY_FACTORYMANAGER_HPP

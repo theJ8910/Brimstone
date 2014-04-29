@@ -51,7 +51,7 @@ Arguments:
 namespace Brimstone {
 
 enum class SystemType {
-    GAME, EVENTS
+    GAME, EVENTS, LUA
 };
 
 class ISystem {
@@ -65,7 +65,9 @@ public:
 };
 
 class AbstractSystem : public ISystem {
+public:
     virtual const DependencySet_t& getDependencies();
+protected:
     void addDependency( SystemType eType );
 private:
     DependencySet_t m_aeDependencies;
@@ -95,8 +97,8 @@ public:
 
 template< typename T >
 T* Systems::get( SystemType eType ) {
-    auto it = m_acSystems.find( eType );
-    return it != m_acSystems.end() ? static_cast< T* >( &it->second ) : nullptr;
+    auto it = m_acSystemsByType.find( eType );
+    return it != m_acSystemsByType.end() ? static_cast< T* >( it->second ) : nullptr;
 }
 
 }

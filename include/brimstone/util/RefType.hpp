@@ -1,5 +1,5 @@
 ﻿/*
-RefType.hpp
+util/RefType.hpp
 -----------------------
 
 Description:
@@ -27,8 +27,8 @@ Description:
         };
     };
 */
-#ifndef BS_REFTYPE_HPP
-#define BS_REFTYPE_HPP
+#ifndef BS_UTIL_REFTYPE_HPP
+#define BS_UTIL_REFTYPE_HPP
 
 
 
@@ -76,4 +76,4 @@ MAKE_PRIMITIVE_REFTYPE_SPEC( double   );
 
 
 
-#endif //BS_REFTYPE_HPP
+#endif //BS_UTIL_REFTYPE_HPP

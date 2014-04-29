@@ -17,6 +17,8 @@ Description:
         * IOException
         * CircularDependencyException
         * NotImplementedException
+        * MalformedStringException
+        * LuaException
 */
 
 #ifndef BS_EXCEPTION_HPP
@@ -170,6 +172,22 @@ the string is malformed.
 class MalformedStringException : public IException {
 public:
     virtual ustring getDescription() const;
+};
+
+/*
+LuaException
+
+Thrown when an error related to Lua occurs (e.g. loading a script or calling a function fails).
+*/
+class LuaException : public IException {
+public:
+    LuaException();
+    LuaException( const uchar* pszDescription );
+    LuaException( const ustring& strDescription );
+
+    virtual ustring getDescription() const;
+private:
+    ustring m_strDescription;
 };
 
 }

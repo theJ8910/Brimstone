@@ -1,5 +1,5 @@
 ﻿/*
-ThrowFactory.hpp
+factory/ThrowFactory.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -12,8 +12,8 @@ Description:
     Provides a macro, BS_MAKE_THROW_FACTORY, to automate the creation of a throw factory and
     its registration with a factory manager.
 */
-#ifndef BS_THROWFACTORY_HPP
-#define BS_THROWFACTORY_HPP
+#ifndef BS_FACTORY_THROWFACTORY_HPP
+#define BS_FACTORY_THROWFACTORY_HPP
 
 
 
@@ -53,4 +53,4 @@ virtual void ThrowFactory< Concrete_t >::create() const {
 
 
 
-#endif //BS_THROWFACTORY_HPP
+#endif //BS_FACTORY_THROWFACTORY_HPP

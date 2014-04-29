@@ -1,5 +1,5 @@
 ﻿/*
-WindowsWindow.hpp
+windows/WindowsWindow.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -10,8 +10,8 @@ Description:
     Defines Brimstone::Private::WindowImpl as Brimstone::Private::WindowsWindow.
 */
 
-#ifndef BS_WINDOWS_WINDOW_HPP
-#define BS_WINDOWS_WINDOW_HPP
+#ifndef BS_WINDOWS_WINDOWSWINDOW_HPP
+#define BS_WINDOWS_WINDOWSWINDOW_HPP
 
 
 
@@ -80,4 +80,4 @@ typedef WindowsWindow WindowImpl;
 
 
 
-#endif //BS_WINDOWS_WINDOW_HPP
+#endif //BS_WINDOWS_WINDOWSWINDOW_HPP

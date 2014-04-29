@@ -6,14 +6,17 @@ Copyright (c) 2014, theJ89
 Description:
     Contains functions for working with Unicode.
 */
-#ifndef BS_UNICODE_HPP
-#define BS_UNICODE_HPP
+#ifndef BS_UTIL_UNICODE_HPP
+#define BS_UTIL_UNICODE_HPP
 
 
 
 
 //Includes
-#include <brimstone/types.hpp>
+#include <brimstone/types.hpp>  //uchar, ustring&
+
+
+
 
 namespace Brimstone {
 
@@ -23,4 +26,6 @@ uint32 utf8ToCodePoint( const ustring& strUTF8 );
 }
 
 
-#endif //BS_UNICODE_HPP
+
+
+#endif //BS_UTIL_UNICODE_HPP

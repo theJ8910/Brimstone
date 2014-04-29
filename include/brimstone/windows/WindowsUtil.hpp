@@ -1,5 +1,5 @@
 ﻿/*
-WindowsUtil.hpp
+windows/WindowsUtil.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -10,8 +10,8 @@ Description:
     the engine uses to/from the UTF-16 encoded strings Windows uses.
 */
 
-#ifndef BS_WINDOWS_UTIL_HPP
-#define BS_WINDOWS_UTIL_HPP
+#ifndef BS_WINDOWS_WINDOWSUTIL_HPP
+#define BS_WINDOWS_WINDOWSUTIL_HPP
 
 
 
@@ -41,4 +41,4 @@ int32   utf16to8( const wchar* const pszUTF16Chars, const int32 iUTF16CharCount,
 
 
 
-#endif //BS_WINDOWS_UTIL_HPP
+#endif //BS_WINDOWS_WINDOWSUTIL_HPP

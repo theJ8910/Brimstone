@@ -1,4 +1,16 @@
-﻿//Includes
+﻿/*
+windows/WindowsWindow.cpp
+-----------------------
+Copyright (c) 2014, theJ89
+
+Description:
+    See WindowsWindow.cpp for more information.
+*/
+
+
+
+
+//Includes
 #include <memory>                                       //std::unique_ptr<>
 #include <windowsx.h>                                   //GET_X_LPARAM, GET_Y_LPARAM
 
@@ -11,6 +23,9 @@
 
 #include <iostream>                                     //TEMPORARY
 #include <iomanip>                                      //TEMPORARY
+
+
+
 
 namespace {
     static const wchar_t* pszWindowClass = L"BrimstoneWindow";

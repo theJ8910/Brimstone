@@ -1,5 +1,5 @@
 ﻿/*
-ScopedConnection.hpp
+util/Cast.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -11,8 +11,8 @@ Description:
     Contains notes on standard C++ casts.
 */
 
-#ifndef BS_CAST_HPP
-#define BS_CAST_HPP
+#ifndef BS_UTIL_CAST_HPP
+#define BS_UTIL_CAST_HPP
 
 
 
@@ -204,4 +204,4 @@ C-style cast:
 
 
 
-#endif //BS_CAST_HPP
+#endif //BS_UTIL_CAST_HPP

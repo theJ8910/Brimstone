@@ -1,5 +1,5 @@
 ﻿/*
-BasicFactory.hpp
+factory/BasicFactory.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -12,8 +12,8 @@ Description:
     Provides a macro, BS_MAKE_FACTORY, to automate the creation of a basic factory and
     its registration with a factory manager.
 */
-#ifndef BS_BASICFACTORY_HPP
-#define BS_BASICFACTORY_HPP
+#ifndef BS_FACTORY_BASICFACTORY_HPP
+#define BS_FACTORY_BASICFACTORY_HPP
 
 
 
@@ -63,4 +63,4 @@ Abstract_t* BasicFactory< Abstract_t*, Concrete_t* >::create() const {
 
 
 
-#endif //BS_BASICFACTORY_HPP
+#endif //BS_FACTORY_BASICFACTORY_HPP

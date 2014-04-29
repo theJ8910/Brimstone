@@ -70,6 +70,21 @@
     <ClInclude Include="..\..\include\brimstone\util\Unicode.hpp">
       <Filter>include\brimstone\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Lua.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\LuaInstance.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Sequence.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Misc.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Logger.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Exception.cpp">
@@ -95,6 +110,15 @@
     </ClCompile>
     <ClCompile Include="..\..\src\util\Unicode.cpp">
       <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Lua.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\LuaInstance.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Logger.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

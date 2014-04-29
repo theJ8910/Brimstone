@@ -1,5 +1,5 @@
 ﻿/*
-MinMax.hpp
+util/MinMax.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -8,8 +8,8 @@ Description:
     or both minimum and maximum of two or more numbers.
 */
 
-#ifndef BS_MINMAX_HPP
-#define BS_MINMAX_HPP
+#ifndef BS_UTIL_MINMAX_HPP
+#define BS_UTIL_MINMAX_HPP
 
 
 
@@ -500,4 +500,4 @@ inline void minMax( const T* paxValues, uint32 uiNumItems, T& xMinOut, T& xMaxOu
 
 
 
-#endif //BS_MINMAX_HPP
+#endif //BS_UTIL_MINMAX_HPP

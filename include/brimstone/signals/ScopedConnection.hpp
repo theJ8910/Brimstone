@@ -1,13 +1,13 @@
 ﻿/*
-ScopedConnection.hpp
+signals/ScopedConnection.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
 Description:
     See Signal.hpp for more information.
 */
-#ifndef BS_SCOPEDCONNECTION_HPP
-#define BS_SCOPEDCONNECTION_HPP
+#ifndef BS_SIGNALS_SCOPEDCONNECTION_HPP
+#define BS_SIGNALS_SCOPEDCONNECTION_HPP
 
 
 
@@ -87,4 +87,4 @@ void ScopedConnection< Return ( Args... ) >::disconnected( Signal_t& cSignal ) {
 
 
 
-#endif //BS_SCOPEDCONNECTION_HPP
+#endif //BS_SIGNALS_SCOPEDCONNECTION_HPP
