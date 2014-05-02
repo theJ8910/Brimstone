@@ -134,7 +134,7 @@ void Rectangle<I>::set( const I* const paiLTRB ) {
 
 template< typename I >
 void Rectangle<I>::get( I* const paiLTRBOut ) const {
-    if( paiLTRB == nullptr )
+    if( paiLTRBOut == nullptr )
         throw NullPointerException();
 
     paiLTRBOut[ 0 ] = left;

@@ -14,10 +14,18 @@ Description:
 
 //Includes
 #include <tuple>            //std::tuple
-#include <type_traits>      //std::integral_constant
+#include <type_traits>      //std::integral_constant, std::underlying_type
 
 
 
+
+//Macros
+#define BS_MAKE_ENUM_HASHER( type ) \
+namespace std \
+{ \
+    template<> \
+    struct hash< type > : public Brimstone::EnumHasher< type > {}; \
+}
 
 namespace Brimstone {
 
@@ -38,6 +46,22 @@ struct TupleSize< void > {
 template< typename... Types >
 struct TupleSize< std::tuple< Types... > > {
     typedef std::integral_constant< int32, sizeof...( Types ) > size;
+};
+
+//Gets the underlying type of the given enum class, T,
+//and delegates the task of hashing a value of T to the std::hash
+//defined for its underlying type.
+//Original code written by Daniel Frey
+//http://stackoverflow.com/questions/18837857/cant-use-enum-class-as-unordered-map-key
+template< typename T >
+struct EnumHasher {
+    typedef T                                               Enum_t;
+    typedef typename std::underlying_type< Enum_t >::type   Underlying_t;
+    typedef typename std::hash< Underlying_t >::result_type Result_t;
+
+    Result_t operator()( const Enum_t& eEnum ) const {
+        return std::hash< Underlying_t >()( static_cast< Underlying_t >( eEnum ) );
+    }
 };
 
 }

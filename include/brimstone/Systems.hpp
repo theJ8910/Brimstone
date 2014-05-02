@@ -20,6 +20,7 @@ Description:
 #include <vector>                               //std::vector
 #include <brimstone/factory/FactoryManager.hpp> //FactoryManager
 #include <brimstone/factory/BasicFactory.hpp>   //BasicFactory
+#include <brimstone/util/Misc.hpp>              //BS_MAKE_ENUM_HASHER
 
 
 
@@ -43,7 +44,7 @@ Arguments:
     type:       The type of system being registered. Must be an enum in SystemType.
 */
 #define BS_REGISTER_SYSTEM( className, type ) \
-    BS_MAKE_FACTORY( Brimstone::ISystem, className, Brimstone::Systems::getFactoryManager(), Brimstone::SystemType::##type );
+    BS_MAKE_FACTORY( ::Brimstone::ISystem, className, ::Brimstone::Systems::getFactoryManager(), ::Brimstone::SystemType::type );
 
 
 
@@ -53,6 +54,12 @@ namespace Brimstone {
 enum class SystemType {
     GAME, EVENTS, LUA
 };
+
+}
+
+BS_MAKE_ENUM_HASHER( Brimstone::SystemType );
+
+namespace Brimstone {
 
 class ISystem {
 protected:

@@ -53,11 +53,7 @@ inline To_t universal_cast( From_t from ) {
     //Furthermore, the union of the two types must have the same size as well.
     //If they don't, this indicates the compiler uses an odd representation for unions,
     //which could interfere with the cast.
-    typedef int Error_NoUniversalCast[
-        sizeof( From_t ) == sizeof( u ) && sizeof( From_t ) == sizeof( To_t )
-        ?  1 
-        : -1
-    ];
+    static_assert( sizeof( From_t ) == sizeof( u ) && sizeof( From_t ) == sizeof( To_t ), "Cannot universal cast these two types" );
 
     u.from = from;
     return u.to;

@@ -54,7 +54,7 @@ Abstract_t* BasicFactory< Abstract_t*, Concrete_t* >::create() const {
 #define BS_MAKE_FACTORY( abstractClassName, concreteClassName, manager, key ) \
     class concreteClassName##_Factory : public Brimstone::BasicFactory< abstractClassName*, concreteClassName* > { \
     public:\
-        concreteClassName##_Factory() { manager##.add( key, *this ); }\
+        concreteClassName##_Factory() { manager.add( key, *this ); }\
     \
     } concreteClassName##_FactoryInst{};
 }

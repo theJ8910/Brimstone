@@ -36,7 +36,11 @@ Description:
 namespace Brimstone {
 
 namespace Private {
+#if defined( BS_BUILD_WINDOWS )
     class __single_inheritance GenericClass;
+#elif defined( BS_BUILD_LINUX )
+    class GenericClass;
+#endif
     typedef GenericClass* GenericClassPtr;
     typedef void (GenericClass::*GenericMethodPtr)();
 
@@ -50,7 +54,7 @@ namespace Private {
     struct SimplifyMethod {
         template< class X, class XFn_t >
         inline static GenericClassPtr convert( X* pThis, XFn_t pfn, GenericMethodPtr& pfnOut ) {
-            typedef char ERROR_UnsupportedMethodPointerSize[ N-100 ];
+            static_assert( N != DELEGATE_POINTER_SIZE, "Unsupported method pointer size" );
             return nullptr;
         }
     };
@@ -85,10 +89,10 @@ namespace Private {
         Method_t            getMethod() const;
         StaticMethod_t      getStaticMethod() const;
 
-        template< typename Method_t, typename StaticMethod_t >
+        template< typename, typename >
         friend bool operator ==( const Closure< Method_t, StaticMethod_t >& cLeft, const Closure< Method_t, StaticMethod_t >& cRight );
 
-        template< typename Method_t, typename StaticMethod_t >
+        template< typename, typename >
         friend bool operator !=( const Closure< Method_t, StaticMethod_t >& cLeft, const Closure< Method_t, StaticMethod_t >& cRight );
 
     private:
@@ -121,7 +125,7 @@ namespace Private {
     template< typename Delegate_t, typename Invoker_t, typename Fn_t >
     inline void Closure< Method_t, StaticMethod_t >::bindStaticMethod( Delegate_t* pcDelegate, Invoker_t pfnInvoker, Fn_t pfn ) {
 #ifdef BS_DELEGATE_POINTER_HACK
-        typedef int ERROR_CantPointerHack[ sizeof( StaticMethod_t ) == sizeof( this ) ? 1 : -1 ];
+        static_assert( sizeof( StaticMethod_t ) == sizeof( this ), "Can't pointer hack" );
         SimplifyMethod< sizeof( pfnInvoker ) >::convert( pcDelegate, pfnInvoker, m_pfnMethod );
         m_pcThis = universal_cast< GenericClassPtr >( pfn );
 #else //BS_DELEGATE_POINTER_HACK
@@ -152,7 +156,7 @@ namespace Private {
         //    staticInvoker() calls ( closure.getStaticMethod() )().
         //    Since "closure" is the only object in Delegate, &closure == this == the static method.
         //    So we just reinterpret "this" as being a function pointer instead of a data pointer and return it.
-        typedef int ERROR_CantPointerHack[ sizeof( StaticMethod_t ) == sizeof( this ) ? 1 : -1 ];
+        static_assert( sizeof( StaticMethod_t ) == sizeof( this ), "Can't pointer hack" );
         return universal_cast< StaticMethod_t >( this );
 #else  //BS_DELEGATE_POINTER_HACK
         return reinterpret_cast< StaticMethod_t >( m_pfnStaticMethod );
