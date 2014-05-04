@@ -50,8 +50,8 @@ enum class Key {
     F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
 
     //Keys on the "number line" on the main part of the keyboard
-    //Note: ~ is tilda, ` is backtick; they share the same key
-    TILDA,
+    //Note: ~ is tilde, ` is backtick; they share the same key
+    TILDE,
     // )        !        @        #        $        %        ^        &        *        (
     DIGIT_0, DIGIT_1, DIGIT_2, DIGIT_3, DIGIT_4, DIGIT_5, DIGIT_6, DIGIT_7, DIGIT_8, DIGIT_9,
     // _     +
@@ -70,7 +70,8 @@ enum class Key {
     LCTRL,    RCTRL,
     LALT,     RALT,
     //Windows key for instance
-    LSYSTEM,  RSYSTEM, 
+    LSYSTEM,  RSYSTEM,
+    MENU,
     
     //Keys above the arrow keys
     PRINT_SCREEN, SCROLL_LOCK, PAUSE_BREAK,
@@ -161,7 +162,7 @@ class CharacterTypedEvent {
 public:
     const uchar* getCharacter() const;
 private:
-    uchar m_pszKey[5];
+    uchar m_pszKey[33];
 };
 
 }

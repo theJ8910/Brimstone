@@ -22,7 +22,6 @@ Description:
 #include <brimstone/windows/WindowsHeader.hpp>  //HWND, HINSTANCE, ATOM, LRESULT, CALLBACK, WPARAM, LPARAM, etc
 #include <brimstone/Rectangle.hpp>              //LongRectangle
 #include <brimstone/types.hpp>
-#include <brimstone/WindowEvents.hpp>           //MouseClickEvent, MouseMoveEvent, KeyPressEvent
 
 
 namespace Brimstone {

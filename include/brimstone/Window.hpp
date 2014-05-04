@@ -19,7 +19,7 @@ Description:
 #include <brimstone/Rectangle.hpp>              //LongRectangle
 #include <brimstone/signals/Signal.hpp>         //Signal
 #include <brimstone/types.hpp>                  //ustring
-#include <brimstone/WindowEvents.hpp>           //MousePressEvent, MouseReleaseEvent, etc
+#include <brimstone/WindowEvents.hpp>           //MouseDownEvent, MouseUpEvent, etc
 
 #if defined( BS_BUILD_WINDOWS )
 

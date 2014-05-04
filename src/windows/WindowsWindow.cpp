@@ -17,7 +17,8 @@ Description:
 #include <brimstone/windows/WindowsWindow.hpp>          //Class header
 #include <brimstone/windows/WindowsUtil.hpp>            //utf8to16
 #include <brimstone/windows/WindowsException.hpp>       //throwWindowsException
-#include <brimstone/util/Range.hpp>
+#include <brimstone/WindowEvents.hpp>                   //MouseClickEvent, MouseMoveEvent, KeyPressEvent
+#include <brimstone/util/Range.hpp>                     //ClampedValue
 
 #include <brimstone/Window.hpp>                         //Really stupid circular dependency hack
 
@@ -245,7 +246,7 @@ Key aeVKtoKey[] = {
     Key::Z,             //0x5A: Z key
     Key::LSYSTEM,       //0x5B: VK_LWIN
     Key::RSYSTEM,       //0x5C: VK_RWIN
-    Key::INVALID,       //0x5D: VK_APPS
+    Key::MENU,          //0x5D: VK_APPS
     Key::INVALID,       //0x5E: Reserved
     Key::INVALID,       //0x5F: VK_SLEEP
     Key::NUMPAD_0,      //0x60: VK_NUMPAD0
@@ -344,7 +345,7 @@ Key aeVKtoKey[] = {
     Key::DASH,          //0xBD: VK_OEM_MINUS  (for any country/region, [-_] key)
     Key::PERIOD,        //0xBE: VK_OEM_PERIOD (for any country/region, [.>] key)
     Key::SLASH,         //0xBF: VK_OEM_2      (varies; on US keyboard: [/?] key)
-    Key::TILDA,         //0xC0: VK_OEM_3      (varies; on US keyboard: [`~] key)
+    Key::TILDE,         //0xC0: VK_OEM_3      (varies; on US keyboard: [`~] key)
     Key::INVALID,       //0xC1: (reserved)
     Key::INVALID,       //0xC2: (reserved)
     Key::INVALID,       //0xC3: (reserved)
@@ -585,8 +586,8 @@ void WindowsWindow::getMouseCoordinates( LPARAM lParam, int32& iXOut, int32& iYO
     LongRectangle cRect;
     m_pcParent->getBounds( cRect );
 
-    iXOut = Brimstone::ClampedValue( (long)GET_X_LPARAM( lParam ), 0L, cRect.getWidth()  - 1L );
-    iYOut = Brimstone::ClampedValue( (long)GET_Y_LPARAM( lParam ), 0L, cRect.getHeight() - 1L );
+    iXOut = ClampedValue( (long)GET_X_LPARAM( lParam ), 0L, cRect.getWidth()  - 1L );
+    iYOut = ClampedValue( (long)GET_Y_LPARAM( lParam ), 0L, cRect.getHeight() - 1L );
 }
 
 /*
