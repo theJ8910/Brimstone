@@ -163,9 +163,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\include\brimstone\Exception.hpp" />
     <ClInclude Include="..\..\include\brimstone\factory\BasicFactory.hpp" />
     <ClInclude Include="..\..\include\brimstone\factory\FactoryManager.hpp" />
