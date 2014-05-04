@@ -701,27 +701,27 @@ Key WindowsWindow::vkToKey( WPARAM wParam, LPARAM lParam ) {
     //of the keyboard and the numpad. We need to check the "extended key"
     //bit to differentiate them.
     case VK_INSERT:
-         return bIsExtended ? Key::NUMPAD_INSERT    : Key::INSERT;
+         return bIsExtended ? Key::INSERT       : Key::NUMPAD_INSERT;
     case VK_DELETE:
-         return bIsExtended ? Key::NUMPAD_DELETE    : Key::DELETE;
+         return bIsExtended ? Key::DEL          : Key::NUMPAD_DEL;
     case VK_HOME:
-         return bIsExtended ? Key::NUMPAD_HOME      : Key::HOME;
+         return bIsExtended ? Key::HOME         : Key::NUMPAD_HOME;
     case VK_END:
-         return bIsExtended ? Key::NUMPAD_END       : Key::END;
+         return bIsExtended ? Key::END          : Key::NUMPAD_END;
     case VK_PRIOR:      //Page up
-        return bIsExtended ? Key::NUMPAD_PAGE_UP    : Key::PAGE_UP;
+        return bIsExtended ? Key::PAGE_UP       : Key::NUMPAD_PAGE_UP;
     case VK_NEXT:       //Page down
-        return bIsExtended ? Key::NUMPAD_PAGE_DOWN  : Key::PAGE_DOWN ;
-    case VK_ENTER:
-        return bIsExtended ? Key::NUMPAD_ENTER      : Key::ENTER;
+        return bIsExtended ? Key::PAGE_DOWN     : Key::NUMPAD_PAGE_DOWN;
+    case VK_RETURN:
+        return bIsExtended ? Key::NUMPAD_ENTER  : Key::ENTER;
     case VK_UP:
-        return bIsExtended ? Key::NUMPAD_UP         : Key::UP;
+        return bIsExtended ? Key::UP            : Key::NUMPAD_UP;
     case VK_DOWN:
-        return bIsExtended ? Key::NUMPAD_DOWN       : Key::DOWN;
+        return bIsExtended ? Key::DOWN          : Key::NUMPAD_DOWN;
     case VK_LEFT:
-        return bIsExtended ? Key::NUMPAD_LEFT       : Key::LEFT;
+        return bIsExtended ? Key::LEFT          : Key::NUMPAD_LEFT;
     case VK_RIGHT:
-        return bIsExtended ? Key::NUMPAD_RIGHT      : Key::RIGHT;
+        return bIsExtended ? Key::RIGHT         : Key::NUMPAD_RIGHT;
     }
 
     if( aeVKtoKey[ wParam ] == Key::INVALID )
