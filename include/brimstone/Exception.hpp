@@ -49,7 +49,7 @@ public:
 Exception
 
 Generic exception implementation.
-Takes a message. This message is displayed when getDescription() is called.
+Takes a message. This message is returned when getDescription() is called.
 */
 class Exception : public IException {
 public:
@@ -62,55 +62,91 @@ private:
      ustring m_strDescription;
 };
 
+/* 
+BS_DECLARE_BASIC_EXCEPTION
+
+Macro to automatically declare a basic exception type, without a message
+*/
+#define BS_DECLARE_BASIC_EXCEPTION( exceptionName ) \
+    class exceptionName : public IException { \
+    public: \
+        virtual ustring getDescription() const; \
+    }
+
+/* 
+BS_DEFINE_BASIC_EXCEPTION
+
+Macro to automatically define a basic exception type, without a message
+*/
+#define BS_DEFINE_BASIC_EXCEPTION( exceptionName ) \
+    ustring exceptionName::getDescription() const { \
+        return #exceptionName; \
+    }
+
+/* 
+BS_DECLARE_MESSAGE_EXCEPTION
+
+Macro to automatically declare an exception type deriving from Exception.
+Any exceptions using this macro take a message, which is returned when
+getDescription() is called.
+*/
+#define BS_DECLARE_MESSAGE_EXCEPTION( exceptionName ) \
+    class exceptionName : public Exception { \
+    public: \
+        exceptionName(); \
+        exceptionName( const uchar* pszDescription ); \
+        exceptionName( const ustring& strDescription ); \
+    }
+
+/* 
+BS_DEFINE_MESSAGE_EXCEPTION
+
+Macro to automatically define an exception type deriving from Exception.
+Any exceptions using this macro take a message, which is returned when
+getDescription() is called.
+*/
+#define BS_DEFINE_MESSAGE_EXCEPTION( exceptionName ) \
+    exceptionName::exceptionName() { \
+    } \
+    exceptionName::exceptionName( const uchar* pszDescription ) : Exception( pszDescription ) { \
+    } \
+    exceptionName::exceptionName( const ustring& strDescription ) : Exception( strDescription ) { \
+    }
+
 /*
 DivideByZeroException
 
 Thrown when a divide by zero would have resulted.
 */
-class DivideByZeroException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( DivideByZeroException );
 
 /*
 NullPointerException
 
 Thrown when a pointer is unexpectedly nullptr
 */
-class NullPointerException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( NullPointerException );
 
 /*
 SizeException
 
 Thrown when something is smaller than expected
 */
-class SizeException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( SizeException );
 
 /*
 OutOfBoundsException
 
 Thrown when trying to get/set something outside of the bounds of a container.
 */
-class OutOfBoundsException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( OutOfBoundsException );
 
 /*
 NoSuchElementException
 
 Thrown when trying to retrieve something that doesn't exist.
 */
-class NoSuchElementException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( NoSuchElementException );
 
 /*
 UnexpectedResultException
@@ -118,50 +154,35 @@ UnexpectedResultException
 Thrown when something that was expected to happen didn't,
 or vice versa.
 */
-class UnexpectedResultException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( UnexpectedResultException );
 
 /*
-UnexpectedResultException
+FormatException
 
 Thrown when parsing data that doesn't adhere to the expected format
 */
-class FormatException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( FormatException );
 
 /*
 IOException
 
 Thrown when I/O fails; e.g. when opening, closing, reading from, or writing to a file.
 */
-class IOException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( IOException );
 
 /*
 CircularDependencyException
 
 Thrown when adding a system and a circular dependency (A->B->C->...->A) is detected.
 */
-class CircularDependencyException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( CircularDependencyException );
 
 /*
 NotImplementedException
 
 Thrown when attempting to call a function that is not yet implemented.
 */
-class NotImplementedException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( NotImplementedException );
 
 /*
 MalformedStringException
@@ -169,26 +190,14 @@ MalformedStringException
 Thrown when a function that handles a UTF-8 encoded string determines that
 the string is malformed.
 */
-class MalformedStringException : public IException {
-public:
-    virtual ustring getDescription() const;
-};
+BS_DECLARE_BASIC_EXCEPTION( MalformedStringException );
 
 /*
 LuaException
 
 Thrown when an error related to Lua occurs (e.g. loading a script or calling a function fails).
 */
-class LuaException : public IException {
-public:
-    LuaException();
-    LuaException( const uchar* pszDescription );
-    LuaException( const ustring& strDescription );
-
-    virtual ustring getDescription() const;
-private:
-    ustring m_strDescription;
-};
+BS_DECLARE_MESSAGE_EXCEPTION( LuaException );
 
 }
 
