@@ -75,14 +75,17 @@ enum class Key {
     
     //Keys above the arrow keys
     PRINT_SCREEN, SCROLL_LOCK, PAUSE_BREAK,
-    INSERT, DEL, HOME, END, PAGEUP, PAGEDOWN,
+    INSERT, DEL, HOME, END, PAGE_UP, PAGE_DOWN,
 
     //Arrow keys
     UP, DOWN, LEFT, RIGHT,
 
     //Numpad keys
     NUMPAD_0, NUMPAD_1, NUMPAD_2, NUMPAD_3, NUMPAD_4, NUMPAD_5, NUMPAD_6, NUMPAD_7, NUMPAD_8, NUMPAD_9,
-    ADD, SUBTRACT, MULTIPLY, DIVIDE, DECIMAL, NUMPAD_ENTER, NUMLOCK,
+    ADD, SUBTRACT, MULTIPLY, DIVIDE, DECIMAL, NUMLOCK,
+    NUMPAD_INSERT, NUMPAD_DEL, NUMPAD_HOME, NUMPAD_END, NUMPAD_PAGE_UP, NUMPAD_PAGE_DOWN,
+    NUMPAD_UP, NUMPAD_DOWN, NUMPAD_LEFT, NUMPAD_RIGHT,
+    NUMPAD_ENTER, CLEAR,
 
     //Dummy value to retrieve total number of key codes
     COUNT
@@ -162,7 +165,7 @@ class CharacterTypedEvent {
 public:
     const uchar* getCharacter() const;
 private:
-    uchar m_pszKey[33];
+    uchar m_pszKey[5];
 };
 
 }

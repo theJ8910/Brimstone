@@ -165,7 +165,7 @@ Key aeVKtoKey[] = {
     Key::TAB,           //0x09: VK_TAB
     Key::INVALID,       //0x0A: (reserved)
     Key::INVALID,       //0x0B: (reserved)
-    Key::INVALID,       //0x0C: VK_CLEAR
+    Key::CLEAR,         //0x0C: VK_CLEAR (on my keyboard, this is Numpad 5 with numlock off)
     Key::ENTER,         //0x0D: VK_RETURN
     Key::INVALID,       //0x0E: (undefined)
     Key::INVALID,       //0x0F: (undefined)
@@ -186,8 +186,8 @@ Key aeVKtoKey[] = {
     Key::INVALID,       //0x1E: VK_ACCEPT
     Key::INVALID,       //0x1F: VK_MODECHANGE
     Key::SPACE,         //0x20: VK_SPACE
-    Key::PAGEUP,        //0x21: VK_PRIOR
-    Key::PAGEDOWN,      //0x22: VK_NEXT
+    Key::PAGE_UP,       //0x21: VK_PRIOR
+    Key::PAGE_DOWN,     //0x22: VK_NEXT
     Key::END,           //0x23: VK_END
     Key::HOME,          //0x24: VK_HOME
     Key::LEFT,          //0x25: VK_LEFT
@@ -683,17 +683,45 @@ Key WindowsWindow::vkToKey( WPARAM wParam, LPARAM lParam ) {
     if( wParam > 254 )
         return Key::INVALID;
 
+    bool bIsExtended = ( ( lParam & 0x01000000 ) != 0 );
+
     //Translate shift, control, and menu VK codes into left/right VK codes
     switch( wParam ) {
     case VK_SHIFT:
         wParam = MapVirtualKey( ( lParam & 0x00ff0000 ) >> 16, MAPVK_VSC_TO_VK_EX );
         break;
     case VK_CONTROL:
-        wParam = ( lParam & 0x01000000 ) != 0 ? VK_RCONTROL : VK_LCONTROL;
+        wParam = bIsExtended ? VK_RCONTROL : VK_LCONTROL;
         break;
     case VK_MENU:
-        wParam = ( lParam & 0x01000000 ) != 0 ? VK_RMENU    : VK_LMENU;
+        wParam = bIsExtended ? VK_RMENU    : VK_LMENU;
         break;
+
+    //The following keys are present on both the main part
+    //of the keyboard and the numpad. We need to check the "extended key"
+    //bit to differentiate them.
+    case VK_INSERT:
+         return bIsExtended ? Key::NUMPAD_INSERT    : Key::INSERT;
+    case VK_DELETE:
+         return bIsExtended ? Key::NUMPAD_DELETE    : Key::DELETE;
+    case VK_HOME:
+         return bIsExtended ? Key::NUMPAD_HOME      : Key::HOME;
+    case VK_END:
+         return bIsExtended ? Key::NUMPAD_END       : Key::END;
+    case VK_PRIOR:      //Page up
+        return bIsExtended ? Key::NUMPAD_PAGE_UP    : Key::PAGE_UP;
+    case VK_NEXT:       //Page down
+        return bIsExtended ? Key::NUMPAD_PAGE_DOWN  : Key::PAGE_DOWN ;
+    case VK_ENTER:
+        return bIsExtended ? Key::NUMPAD_ENTER      : Key::ENTER;
+    case VK_UP:
+        return bIsExtended ? Key::NUMPAD_UP         : Key::UP;
+    case VK_DOWN:
+        return bIsExtended ? Key::NUMPAD_DOWN       : Key::DOWN;
+    case VK_LEFT:
+        return bIsExtended ? Key::NUMPAD_LEFT       : Key::LEFT;
+    case VK_RIGHT:
+        return bIsExtended ? Key::NUMPAD_RIGHT      : Key::RIGHT;
     }
 
     if( aeVKtoKey[ wParam ] == Key::INVALID )

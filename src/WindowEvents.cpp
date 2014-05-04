@@ -55,7 +55,11 @@ const uchar* keyToString( Key eKey ) {
 
         //Numpad keys
         "Numpad0", "Numpad1", "Numpad2", "Numpad3", "Numpad4", "Numpad5", "Numpad6", "Numpad7", "Numpad8", "Numpad9",
-        "Add", "Subtract", "Multiply", "Divide", "Decimal", "NumpadEnter", "Numlock"
+        "Add", "Subtract", "Multiply", "Divide", "Decimal",
+        "Numlock",
+        "NumpadInsert", "NumpadDelete", "NumpadHome", "NumpadEnd", "NumpadPageUp", "NumpadPageDown",
+        "NumpadUp", "NumpadDown", "NumpadLeft", "NumpadRight",
+        "NumpadEnter", "Clear"
     };
 
     return apszMap[ (uint)eKey ];
