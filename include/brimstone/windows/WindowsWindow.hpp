@@ -26,6 +26,7 @@ Description:
 
 namespace Brimstone {
 class Window;
+enum class Key;
 
 namespace Private {
 
