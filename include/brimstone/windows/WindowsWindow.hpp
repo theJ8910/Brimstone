@@ -38,8 +38,6 @@ public:
     WindowsWindow( Window& cParent );
     ~WindowsWindow();
 
-    static bool     processEvents();
-
     void            setTitle( const ustring& strTitle );
     void            getTitle( ustring& strTitleOut ) const;
 
@@ -62,6 +60,9 @@ private:
     HWND            m_hWnd;
     Window*         m_pcParent;
     wchar           m_cLeadSurrogate;
+
+public:
+    static void             processEvents();
 
 private:
     static ATOM             registerWindowClass( HINSTANCE hInstance );

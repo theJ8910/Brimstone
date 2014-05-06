@@ -30,14 +30,15 @@ public:
     LinuxWindow( Window& cParent );
     ~LinuxWindow();
 
-    static bool     processEvents();
     void            setTitle( const ustring& strTitle );
     void            setPopup( const bool bPopup );
     void            setBounds( const LongRectangle& cBounds );
+
 private:
     LinuxWindow( const LinuxWindow& );
     LinuxWindow&  operator =( const LinuxWindow& );
     void windowProc( XEvent& cXEvent );
+
 private:
     //This is sort of annoying. Both Brimstone and X11 define "Window",
     //albeit in different namespaces. Within the Brimstone namespace
@@ -45,14 +46,17 @@ private:
     //to indicate we want the Window in the global namespace.
     Window*             m_pcParent;
     ::Window            m_cWindow;
-    GC                  m_cGraphicsContext;
     XIM                 m_pcInputMethod;
     XIC                 m_pcInputContext;
+    Atom                m_uiCloseAtom;
+public:
+    static void     processEvents();
 
 private:
     static void        mainProc( XEvent& cXEvent );
     static MouseButton xButtonToMouseButton( const int iButton );
     static Key         xKeySymToKey( const KeySym& pcKeySym );
+
 private:
     static Display*         m_pcDisplay;
     static int              m_iScreen;

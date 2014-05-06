@@ -29,17 +29,27 @@ Description:
 
 namespace Brimstone {
 
+//Forward declarations
+class Window;
+
 enum class MouseButton {
+    //Invalid buttons are mapped to this button
+    INVALID,
+
+    //Standard left, right, and middle mouse (mousewheel click) buttons
     LEFT,
     RIGHT,
     MIDDLE,
+
+    //Some mice have a couple of extra buttons (usually on the side)
     X1,
     X2,
 
+    //Dummy value to retrieve total number of buttons
     COUNT
 };
 
-const uchar* mouseButtonToString( MouseButton eButton );
+const uchar* mouseButtonToString( const MouseButton eButton );
 
 enum class Key {
     //Invalid key codes are mapped to this key
@@ -91,7 +101,7 @@ enum class Key {
     COUNT
 };
 
-const uchar* keyToString( Key eKey );
+const uchar* keyToString( const Key eKey );
 
 class MouseEvent {
 public:
@@ -166,6 +176,14 @@ public:
     const uchar* getCharacter() const;
 private:
     uchar m_pszKey[5];
+};
+
+class WindowCloseEvent {
+public:
+    WindowCloseEvent( Window& cWindow );
+    Window* getWindow() const;
+private:
+    Window* m_pcWindow;
 };
 
 }

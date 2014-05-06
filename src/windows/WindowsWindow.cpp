@@ -92,20 +92,19 @@ WindowsWindow::WindowsWindow( Window& cParent ) : m_pcParent( &cParent ) {
 WindowsWindow::~WindowsWindow() {
     DestroyWindow( m_hWnd );
     m_acWindowMap.erase( m_hWnd );
+    
+    if( m_acWindowMap.empty() )
+        PostQuitMessage( 0 );
 }
 
-bool WindowsWindow::processEvents() {
-    MSG m_msg;
+void WindowsWindow::processEvents() {
+    MSG msg;
 
-    while( PeekMessage( &m_msg, nullptr, 0, 0, PM_REMOVE ) == TRUE )
+    while( GetMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
     {
-        if( m_msg.message == WM_QUIT )
-            return false;
-
-        TranslateMessage( &m_msg );
-        DispatchMessage( &m_msg );
+        TranslateMessage( &msg );
+        DispatchMessage( &msg );
     }
-    return true;
 }
 
 /*
@@ -569,8 +568,9 @@ LRESULT WindowsWindow::windowProc( UINT uiMessage, WPARAM wParam, LPARAM lParam 
     } break;
     case WM_SIZING: {
     } break;
-    case WM_DESTROY: {
-        PostQuitMessage( 0 );
+    case WM_CLOSE: {
+        WindowCloseEvent cEvent( *m_pcParent );
+        m_pcParent->m_cSignalWindowClose( cEvent );
     } break;
     default:
         return DefWindowProc( getHandle(), uiMessage, wParam, lParam );

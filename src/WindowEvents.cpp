@@ -12,11 +12,14 @@ Description:
 
 namespace Brimstone {
 
-const uchar* mouseButtonToString( MouseButton eButton ) {
+const uchar* mouseButtonToString( const MouseButton eButton ) {
     static const uchar* apszMap[ (uint)MouseButton::COUNT ] = {
+        "Invalid",  //<= INVALID
+
         "Left",     //<= LEFT
         "Right",    //<= RIGHT
         "Middle",   //<= MIDDLE
+
         "X1",       //<= X1
         "X2"        //<= X2
     };
@@ -24,7 +27,7 @@ const uchar* mouseButtonToString( MouseButton eButton ) {
     return apszMap[ (uint)eButton ];
 }
 
-const uchar* keyToString( Key eKey ) {
+const uchar* keyToString( const Key eKey ) {
     static const uchar* apszMap[ (uint)Key::COUNT ] = {
         "Invalid",
         "Escape",
@@ -144,6 +147,13 @@ KeyUpEvent::KeyUpEvent( const Key eKey ) :
 
 const uchar* CharacterTypedEvent::getCharacter() const {
     return m_pszKey;
+}
+
+WindowCloseEvent::WindowCloseEvent( Window& cWindow ) : m_pcWindow( &cWindow ) {
+}
+
+Window* WindowCloseEvent::getWindow() const {
+    return m_pcWindow;
 }
 
 }

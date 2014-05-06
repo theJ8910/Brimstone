@@ -31,8 +31,8 @@ Window::~Window() {
         delete m_pcImpl;
 }
 
-bool Window::processEvents() {
-    return Private::WindowImpl::processEvents();
+void Window::processEvents() {
+    Private::WindowImpl::processEvents();
 }
 
 void Window::setTitle( const ustring& strTitle ) {

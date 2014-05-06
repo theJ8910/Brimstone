@@ -47,8 +47,6 @@ public:
     Window();
     ~Window();
 
-    static bool processEvents();
-
     void        setTitle( const ustring& strTitle );
     void        getTitle( ustring& strTitleOut ) const;
 
@@ -64,14 +62,15 @@ public:
     void        setKeyRepeat( const bool bKeyRepeat );
     bool        getKeyRepeat() const;
 
-    BS_WINDOW_EVENT( MouseDown );
-    BS_WINDOW_EVENT( MouseUp );
-    BS_WINDOW_EVENT( MouseMove );
-    BS_WINDOW_EVENT( MouseVScroll );
-    BS_WINDOW_EVENT( MouseHScroll );
-    BS_WINDOW_EVENT( KeyDown );
-    BS_WINDOW_EVENT( KeyUp );
+    BS_WINDOW_EVENT( MouseDown      );
+    BS_WINDOW_EVENT( MouseUp        );
+    BS_WINDOW_EVENT( MouseMove      );
+    BS_WINDOW_EVENT( MouseVScroll   );
+    BS_WINDOW_EVENT( MouseHScroll   );
+    BS_WINDOW_EVENT( KeyDown        );
+    BS_WINDOW_EVENT( KeyUp          );
     BS_WINDOW_EVENT( CharacterTyped );
+    BS_WINDOW_EVENT( WindowClose    );
 
 private:
     ustring                 m_strTitle;
@@ -80,6 +79,9 @@ private:
     LongRectangle           m_cBounds;
 
     Private::WindowImpl*    m_pcImpl;
+
+public:
+    static void processEvents();
 };
 
 #undef BS_WINDOW_EVENT
