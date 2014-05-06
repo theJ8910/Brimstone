@@ -100,7 +100,7 @@ WindowsWindow::~WindowsWindow() {
 void WindowsWindow::processEvents() {
     MSG msg;
 
-    while( GetMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
+    while( GetMessage( &msg, nullptr, 0, 0 ) )
     {
         TranslateMessage( &msg );
         DispatchMessage( &msg );
