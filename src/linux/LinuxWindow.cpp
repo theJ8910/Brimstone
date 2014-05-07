@@ -155,7 +155,6 @@ void LinuxWindow::windowProc( XEvent& cXEvent ) {
             //Atoms are 32-bit unsigned ints, so we're expecting the message to contain 32-bit values.
             //This is good to check because another message could have a different size, but the same data in l[0].
             if( cXEvent.xclient.format == 32 && (Atom)( cXEvent.xclient.data.l[0] ) == m_uiCloseAtom ) {
-                Loggers::write( "Close request received." );
                 WindowCloseEvent cEvent( *m_pcParent );
                 m_pcParent->m_cSignalWindowClose( cEvent );
             }
@@ -187,7 +186,7 @@ void LinuxWindow::windowProc( XEvent& cXEvent ) {
 
             //Why do I need to do this...?
             if( XFilterEvent( &cXEvent, None ) ) {
-                Loggers::write( "Filtered a keypress event" );
+                logInfo( "Filtered a keypress event" );
                 break;
             }
 
@@ -277,7 +276,7 @@ void LinuxWindow::windowProc( XEvent& cXEvent ) {
         } break;
         //Unhandled event
         default: {
-            Loggers::write( ( boost::format( "Unhandled event: %1%" ) % cXEvent.type ).str().c_str(), LogMessageType::ERR );
+            logError( ( boost::format( "Unhandled event: %1%" ) % cXEvent.type ).str().c_str() );
         } break;
     }
 }
@@ -299,7 +298,7 @@ MouseButton LinuxWindow::xButtonToMouseButton( const int iButton ) {
     
     //The invalid button is returned if an unrecognized button is provided.
     default:
-        Loggers::write( ( boost::format( "Unrecognized button: 0x%|04x|" ) % iButton ).str().c_str(), LogMessageType::ERR );
+        logError( ( boost::format( "Unrecognized button: 0x%|04x|" ) % iButton ).str().c_str() );
         return MouseButton::INVALID;
     }
 }
@@ -448,7 +447,7 @@ Key LinuxWindow::xKeySymToKey( const KeySym& pcKeySym ) {
 
     //The invalid key is returned if an unrecognized keycode is provided.
     default:
-        Loggers::write( ( boost::format( "Unrecognized keycode: 0x%|04x|" ) % pcLower ).str().c_str(), LogMessageType::ERR );
+        logError( ( boost::format( "Unrecognized keycode: 0x%|04x|" ) % pcLower ).str().c_str() );
         return Key::INVALID;
     }
 }

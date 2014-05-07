@@ -28,7 +28,24 @@ const uchar* logMessageTypeToString( LogMessageType eType ) {
     return apszLMTtoString[ (int32)eType ];
 }
 
+//0xFFFFFFFF = 1 for all bits
+AbstractLogger::AbstractLogger() : m_eFilter( 0xFFFFFFFF ) {
+}
+
+void AbstractLogger::setFilter( std::initializer_list< LogMessageType > il ) {
+    m_eFilter = 0;
+    for( auto eType : il )
+        m_eFilter |= ( 1 << (int32)eType );
+}
+
+bool AbstractLogger::passesFilter( const LogMessageType eType ) const {
+    return ( (int32)eType & m_eFilter ) == (int32)eType;
+}
+
 void ConsoleLogger::write( const uchar* pszString, LogMessageType eType ) {
+    if( !passesFilter( eType ) )
+        return;
+
     //Error messages go to std::cerr, all other messages go to std::cout
     if( eType == LogMessageType::ERR )
         std::cerr << "[" << logMessageTypeToString( eType ) << "] " << pszString << std::endl;
@@ -44,6 +61,9 @@ FileLogger::FileLogger( const uchar* pszFilepath ) :
 }
 
 void FileLogger::write( const uchar* pszString, LogMessageType eType ) {
+    if( !passesFilter( eType ) )
+        return;
+
     m_fout << "[" << logMessageTypeToString( eType ) << "] " << pszString << std::endl;
 }
 

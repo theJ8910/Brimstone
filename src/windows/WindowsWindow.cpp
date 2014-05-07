@@ -19,11 +19,10 @@ Description:
 #include <brimstone/windows/WindowsException.hpp>       //throwWindowsException
 #include <brimstone/WindowEvents.hpp>                   //MouseClickEvent, MouseMoveEvent, KeyPressEvent
 #include <brimstone/util/Range.hpp>                     //ClampedValue
+#include <brimstone/Logger.hpp>                         //logError
+#include <boost/format.hpp>                             //boost::format
 
 #include <brimstone/Window.hpp>                         //Really stupid circular dependency hack
-
-#include <iostream>                                     //TEMPORARY
-#include <iomanip>                                      //TEMPORARY
 
 
 
@@ -725,7 +724,7 @@ Key WindowsWindow::vkToKey( WPARAM wParam, LPARAM lParam ) {
     }
 
     if( aeVKtoKey[ wParam ] == Key::INVALID )
-        std::cout << "Invalid key: 0x" << std::hex << std::setw( 2 ) << std::setfill( '0' ) << wParam << std::dec << std::endl;
+        logError( ( boost::format( "Invalid key: 0x%|04x|") % wParam ).str().c_str() );
 
     return aeVKtoKey[ wParam ];
 }
