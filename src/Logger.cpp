@@ -39,7 +39,8 @@ void AbstractLogger::setFilter( std::initializer_list< LogMessageType > il ) {
 }
 
 bool AbstractLogger::passesFilter( const LogMessageType eType ) const {
-    return ( (int32)eType & m_eFilter ) == (int32)eType;
+    int32 iMask = ( 1 << (int32)eType );
+    return ( iMask & m_eFilter ) == iMask;
 }
 
 void ConsoleLogger::write( const uchar* pszString, LogMessageType eType ) {
