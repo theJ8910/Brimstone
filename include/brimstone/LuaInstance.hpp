@@ -40,45 +40,45 @@ public:
     void stop();
 
     template< typename... Args >
-    void callVoid( Args&&... xArgs );
+    void callVoid( Args&&... args );
 
     template< typename Return, typename... Args >
-    void call( Return& cReturnOut, Args&&... xArgs );
+    void call( Return& returnOut, Args&&... args );
 
-    void load( const uchar* pszFilepath );
+    void load( const uchar* filepath );
 
-    void pushFunction( const uchar* pszFunctionName );
+    void pushFunction( const uchar* functionName );
 
     //Push two or more values to the stack
     template< typename First, typename Second, typename... Remaining >
-    void pushStack( First&& xFirst, Second&& xSecond, Remaining&&... xRemaining );
+    void pushStack( First&& first, Second&& second, Remaining&&... remaining );
 
     template< typename... Types >
-    void pushStack( std::tuple< Types... >& cTuple );
+    void pushStack( std::tuple< Types... >& argTuple );
 
     //Push one value to the stack
     void pushStack( const bool b );
     void pushStack( const int32 i );
     void pushStack( const float f );
-    void pushStack( const double f );
-    void pushStack( const uchar* pszString );
+    void pushStack( const double d );
+    void pushStack( const uchar* str );
 
     //Push zero values to the stack
     void pushStack();
 
     //Pop two or more values from the stack
     template< typename First, typename Second, typename... Remaining >
-    void popStack( First& xFirstOut, Second& xSecondOut, Remaining&... xRemainingOut );
+    void popStack( First& firstOut, Second& secondOut, Remaining&... remainingOut );
 
     template< typename... Types >
-    void popStack( std::tuple< Types... >& cTuple );
+    void popStack( std::tuple< Types... >& tupleOut );
 
     //Pop one value from the stack
     void popStack( bool& bOut );
-    void popStack( int32& iOut );
+    void popStack( intN& iOut );
     void popStack( float& fOut );
-    void popStack( double& fOut );
-    void popStack( const uchar*& pszStringOut );
+    void popStack( double& dOut );
+    void popStack( const uchar*& strOut );
 
     //Pop zero values from the stack
     void popStack();
@@ -86,78 +86,78 @@ private:
     void openLibraries();
 
     template< typename T, int... Integers >
-    void pushStackTuple( T& cTuple, Sequence< Integers... > seq );
+    void pushStackTuple( T& tuple, Sequence< Integers... > seq );
 
     template< typename T, int... Integers >
-    void popStackTuple( T& cTuple, Sequence< Integers... > seq );
+    void popStackTuple( T& tuple, Sequence< Integers... > seq );
 
-    void callFunction( const int32 iArgs, const int32 iReturnValues );
+    void callFunction( const int32 args, const int32 iReturnValues );
 
 private:
-    lua_State* m_pcState;
+    lua_State* m_state;
 };
 
 template< typename... Args >
-void LuaInstance::callVoid( Args&&... xArgs ) {
+void LuaInstance::callVoid( Args&&... args ) {
     //Push arguments to the stack
-    pushStack( std::forward< Args >( xArgs )... );
+    pushStack( std::forward< Args >( args )... );
 
     //Call the function with the appropriate # of arguments and no return values
     callFunction( sizeof...( Args ), 0 );
 }
 
 template< typename Return, typename... Args >
-void LuaInstance::call( Return& cReturnOut, Args&&... xArgs ) {
+void LuaInstance::call( Return& returnOut, Args&&... args ) {
     //Push arguments to the stack
-    pushStack( std::forward< Args >( xArgs )... );
+    pushStack( std::forward< Args >( args )... );
 
     //Call the function with the appropriate # of arguments and return values
     callFunction( sizeof...( Args ), typename TupleSize< Return >::size() );
 
     //Pop the return values
-    popStack( cReturnOut );
+    popStack( returnOut );
 }
 
 template< typename First, typename Second, typename... Remaining >
-void LuaInstance::pushStack( First&& xFirst, Second&& xSecond, Remaining&&... xRemaining ) {
+void LuaInstance::pushStack( First&& first, Second&& second, Remaining&&... remaining ) {
     //Push the first argument (calls the appropriate overload based on the type of First)
-    pushStack( xFirst );
+    pushStack( first );
 
     //Push the second argument + any other arguments
     //If there are remaining arguments, this is a recursive call
     //Otherwise, this calls an overload like the above call
-    pushStack( xSecond, xRemaining... );
+    pushStack( second, remaining... );
 }
 
 template< typename... Types >
-void LuaInstance::pushStack( std::tuple< Types... >& cTuple ) {
-    pushStackTuple( cTuple, typename MakeSequence< sizeof...( Types ) >::type() );
+void LuaInstance::pushStack( std::tuple< Types... >& argTuple ) {
+    pushStackTuple( argTuple, typename MakeSequence< sizeof...( Types ) >::type() );
 }
 
 template< typename First, typename Second, typename... Remaining >
-void LuaInstance::popStack( First& xFirstOut, Second& xSecondOut, Remaining&... xRemainingOut ) {
-    popStack( xFirstOut );
-    popStack( xSecondOut, xRemainingOut... );
+void LuaInstance::popStack( First& firstOut, Second& secondOut, Remaining&... remainingOut ) {
+    popStack( firstOut );
+    popStack( secondOut, remainingOut... );
 }
 
 template< typename... Types >
-void LuaInstance::popStack( std::tuple< Types... >& cTuple ) {
+void LuaInstance::popStack( std::tuple< Types... >& tupleOut ) {
     //Pop values from the stack into the tuple.
     //This needs to be done in reverse order, since the return values are pushed
     //to the stack in a LIFO order.
-    popStackTuple( cTuple, typename MakeReverseSequence< sizeof...( Types ) >::type() );
+    popStackTuple( tupleOut, typename MakeReverseSequence< sizeof...( Types ) >::type() );
 }
 
 template< typename T, int... Integers >
-void LuaInstance::pushStackTuple( T& cTuple, Sequence< Integers... > cSequence ) {
+void LuaInstance::pushStackTuple( T& tuple, Sequence< Integers... > sequence ) {
     //Call the multiple parameter pushStack, providing each of the tuples' elements as parameters
-    pushStack( std::get< Integers >( cTuple )... );
+    pushStack( std::get< Integers >( tuple )... );
 }
 
 template< typename T, int... Integers >
-void LuaInstance::popStackTuple( T& cTuple, Sequence< Integers... > cSequence ) {
+void LuaInstance::popStackTuple( T& tuple, Sequence< Integers... > sequence ) {
     //Call the multiple parameter popStack, providing each of the tuples' elements as output parameters
-    popStack( std::get< Integers >( cTuple )... );
+    popStack( std::get< Integers >( tuple )... );
 }
 
 }

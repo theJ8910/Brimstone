@@ -15,16 +15,16 @@ namespace Brimstone {
 Exception::Exception() {
 }
 
-Exception::Exception( const uchar* pszDescription )
-    : m_strDescription( pszDescription ) {
+Exception::Exception( const uchar* description )
+    : m_description( description ) {
 }
 
-Exception::Exception( const ustring& strDescription )
-    : m_strDescription( strDescription ) {
+Exception::Exception( const ustring& description )
+    : m_description( description ) {
 }
 
 ustring Exception::getDescription() const {
-    return m_strDescription;
+    return m_description;
 };
 
 BS_DEFINE_BASIC_EXCEPTION( DivideByZeroException );

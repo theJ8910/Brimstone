@@ -21,22 +21,22 @@ Lua::~Lua() {
 }
 
 void Lua::start() {
-    for( auto cInstance : m_acInstances )
-        cInstance->start();
+    for( auto instance : m_instances )
+        instance->start();
 }
 
 void Lua::stop() {
-    for( auto cInstance : m_acInstances )
-        cInstance->stop();
+    for( auto instance : m_instances )
+        instance->stop();
 }
 
 std::weak_ptr< LuaInstance > Lua::newInstance() {
-    std::shared_ptr< LuaInstance > pcInst( new LuaInstance() );
-    pcInst->openLibraries();
+    std::shared_ptr< LuaInstance > inst( new LuaInstance() );
+    inst->openLibraries();
 
-    m_acInstances.push_back( pcInst );
+    m_instances.push_back( inst );
 
-    return pcInst;
+    return inst;
 }
 
 }

@@ -20,57 +20,57 @@ Description:
 namespace Brimstone {
 
 //Static initializers
-Systems::SystemsMap_t   Systems::m_acSystemsByType;
-Systems::SystemsStack_t Systems::m_acSystemsByLoadOrder;
+Systems::SystemsMap_t   Systems::m_systemsByType;
+Systems::SystemsStack_t Systems::m_systemsByLoadOrder;
 
 const AbstractSystem::DependencySet_t& AbstractSystem::getDependencies() {
-    return m_aeDependencies;
+    return m_dependencies;
 }
 
-void AbstractSystem::addDependency( SystemType eType ) {
-    m_aeDependencies.insert( eType );
+void AbstractSystem::addDependency( SystemType type ) {
+    m_dependencies.insert( type );
 }
 
-void Systems::add( SystemType eType ) {
-    SystemTypeSet_t aeDependencyChain;
-    add( eType, aeDependencyChain );
+void Systems::add( SystemType type ) {
+    SystemTypeSet_t dependencyChain;
+    add( type, dependencyChain );
 }
 
-void Systems::add( SystemType eType, SystemTypeSet_t& aeDependencyChain ) {
+void Systems::add( SystemType type, SystemTypeSet_t& dependencyChain ) {
     //System already added
-    if( m_acSystemsByType.count( eType ) > 0 )
+    if( m_systemsByType.count( type ) > 0 )
         return;
 
     //Create an instance of the system, make sure returned pointer isn't null
-    ISystem* pcSystem = getFactoryManager().create( eType );
-    if( pcSystem == nullptr )
+    ISystem* system = getFactoryManager().create( type );
+    if( system == nullptr )
         throw NullPointerException();
 
     //Load any dependencies that haven't loaded yet
-    for( auto eDependencyType : pcSystem->getDependencies() ) {
-        if( aeDependencyChain.count( eDependencyType ) > 0 )
+    for( auto dependencyType : system->getDependencies() ) {
+        if( dependencyChain.count( dependencyType ) > 0 )
             throw CircularDependencyException();
 
-        aeDependencyChain.emplace( eType );
-        add( eDependencyType, aeDependencyChain );
-        aeDependencyChain.erase( eType );
+        dependencyChain.emplace( type );
+        add( dependencyType, dependencyChain );
+        dependencyChain.erase( type );
     }
 
     //Map the created system to it's type, record the load order
-    m_acSystemsByType.emplace( eType, pcSystem );
-    m_acSystemsByLoadOrder.push_back( pcSystem );
+    m_systemsByType.emplace( type, system );
+    m_systemsByLoadOrder.push_back( system );
 }
 
 void Systems::startAll() {
-    for( auto it : m_acSystemsByType ) {
+    for( auto it : m_systemsByType ) {
         it.second->start();
     }
 }
 
 void Systems::stopAll() {
-    while( !m_acSystemsByLoadOrder.empty() ) {
-        auto pcSystem = m_acSystemsByLoadOrder.back();
-        m_acSystemsByLoadOrder.pop_back();
+    while( !m_systemsByLoadOrder.empty() ) {
+        auto pcSystem = m_systemsByLoadOrder.back();
+        m_systemsByLoadOrder.pop_back();
 
         pcSystem->stop();
     }

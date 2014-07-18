@@ -12,8 +12,8 @@ Description:
 
 namespace Brimstone {
 
-const uchar* mouseButtonToString( const MouseButton eButton ) {
-    static const uchar* apszMap[ (uint)MouseButton::COUNT ] = {
+const uchar* mouseButtonToString( const MouseButton button ) {
+    static const uchar* mbToStringMap[ (uint)MouseButton::COUNT ] = {
         "Invalid",  //<= INVALID
 
         "Left",     //<= LEFT
@@ -24,11 +24,11 @@ const uchar* mouseButtonToString( const MouseButton eButton ) {
         "X2"        //<= X2
     };
 
-    return apszMap[ (uint)eButton ];
+    return mbToStringMap[ (uint)button ];
 }
 
-const uchar* keyToString( const Key eKey ) {
-    static const uchar* apszMap[ (uint)Key::COUNT ] = {
+const uchar* keyToString( const Key key ) {
+    static const uchar* keyToStringMap[ (uint)Key::COUNT ] = {
         "Invalid",
         "Escape",
         "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
@@ -65,45 +65,45 @@ const uchar* keyToString( const Key eKey ) {
         "NumpadEnter", "Clear"
     };
 
-    return apszMap[ (uint)eKey ];
+    return keyToStringMap[ (uint)key ];
 }
 
-MouseEvent::MouseEvent( const int32 iX, const int32 iY ) :
-    m_iX( iX ), m_iY( iY ) {
+MouseEvent::MouseEvent( const int32 x, const int32 y ) :
+    m_x( x ), m_y( y ) {
 }
 
 int32 MouseEvent::getX() const {
-    return m_iX;
+    return m_x;
 }
 
 int32 MouseEvent::getY() const {
-    return m_iY;
+    return m_y;
 }
 
-MouseButtonEvent::MouseButtonEvent( const MouseButton eButton, const int32 iX, const int32 iY ) :
-    MouseEvent( iX, iY ),
-    m_eButton( eButton ) {
+MouseButtonEvent::MouseButtonEvent( const MouseButton button, const int32 x, const int32 y ) :
+    MouseEvent( x, y ),
+    m_button( button ) {
 }
 
 MouseButton MouseButtonEvent::getButton() const {
-    return m_eButton;
+    return m_button;
 }
 
-MouseDownEvent::MouseDownEvent( const MouseButton eButton, const int32 iX, const int32 iY ) :
-    MouseButtonEvent( eButton, iX, iY ) {
+MouseDownEvent::MouseDownEvent( const MouseButton button, const int32 x, const int32 y ) :
+    MouseButtonEvent( button, x, y ) {
 }
 
-MouseUpEvent::MouseUpEvent( const MouseButton eButton, const int32 iX, const int32 iY ) :
-    MouseButtonEvent( eButton, iX, iY ) {
+MouseUpEvent::MouseUpEvent( const MouseButton button, const int32 x, const int32 y ) :
+    MouseButtonEvent( button, x, y ) {
 }
 
-MouseMoveEvent::MouseMoveEvent( const int32 iX, const int32 iY ) :
-    MouseEvent( iX, iY ) {
+MouseMoveEvent::MouseMoveEvent( const int32 x, const int32 y ) :
+    MouseEvent( x, y ) {
 }
 
-MouseScrollEvent::MouseScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY ) :
-    MouseEvent( iX, iY ),
-    m_fScrollAmount( fScrollAmount ) {
+MouseScrollEvent::MouseScrollEvent( const float scrollAmount, const int32 x, const int32 y ) :
+    MouseEvent( x, y ),
+    m_scrollAmount( scrollAmount ) {
 }
 
 float MouseScrollEvent::getScrollAmount() const {
@@ -118,42 +118,42 @@ float MouseScrollEvent::getScrollAmount() const {
     //    If scrolling horizontally:
     //        +: to the right
     //        -: to the left 
-    return m_fScrollAmount;
+    return m_scrollAmount;
 }
 
-MouseVScrollEvent::MouseVScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY ) :
-    MouseScrollEvent( fScrollAmount, iX, iY ) {
+MouseVScrollEvent::MouseVScrollEvent( const float scrollAmount, const int32 x, const int32 y ) :
+    MouseScrollEvent( scrollAmount, x, y ) {
 }
 
-MouseHScrollEvent::MouseHScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY ) :
-    MouseScrollEvent( fScrollAmount, iX, iY ) {
+MouseHScrollEvent::MouseHScrollEvent( const float scrollAmount, const int32 x, const int32 y ) :
+    MouseScrollEvent( scrollAmount, x, y ) {
 }
 
-KeyEvent::KeyEvent( const Key eKey ) :
-    m_eKey( eKey ) {
+KeyEvent::KeyEvent( const Key key ) :
+    m_key( key ) {
 }
 
 Key KeyEvent::getKey() const {
-    return m_eKey;
+    return m_key;
 }
 
-KeyDownEvent::KeyDownEvent( const Key eKey ) :
-    KeyEvent( eKey ) {
+KeyDownEvent::KeyDownEvent( const Key key ) :
+    KeyEvent( key ) {
 }
 
-KeyUpEvent::KeyUpEvent( const Key eKey ) :
-    KeyEvent( eKey ) {
+KeyUpEvent::KeyUpEvent( const Key key ) :
+    KeyEvent( key ) {
 }
 
 const uchar* CharacterTypedEvent::getCharacter() const {
-    return m_pszKey;
+    return m_key;
 }
 
-WindowCloseEvent::WindowCloseEvent( Window& cWindow ) : m_pcWindow( &cWindow ) {
+WindowCloseEvent::WindowCloseEvent( Window& window ) : m_window( &window ) {
 }
 
 Window* WindowCloseEvent::getWindow() const {
-    return m_pcWindow;
+    return m_window;
 }
 
 }

@@ -22,7 +22,7 @@ Description:
 #include "WindowsHeader.hpp"                //FormatMessage
 #include <memory>                           //std::unique_ptr
 
-#include "../Exception.hpp"                 //IException
+#include <brimstone/Exception.hpp>          //IException
 
 
 
@@ -31,20 +31,20 @@ namespace Brimstone {
 namespace Private {
 
 void throwWindowsException();
-void throwWindowsException( const DWORD uiErrorCode );
+void throwWindowsException( const DWORD errorCode );
 
 class WindowsException : public IException {
 private:
-    static const std::string strErrorMessage;
+    static const std::string m_errorMessage;
 public:
-    WindowsException( DWORD uiErrorCode );
+    WindowsException( DWORD errorCode );
 
-    DWORD getErrorCode() const;
-    virtual ustring getDescription() const;
+            DWORD       getErrorCode() const;
+    virtual ustring     getDescription() const;
 private:
-    WindowsException& operator =( const WindowsException& );
+    WindowsException&   operator =( const WindowsException& );
 private:
-    const DWORD m_uiErrorCode;
+    const DWORD m_errorCode;
 };
 
 

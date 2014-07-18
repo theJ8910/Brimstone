@@ -54,12 +54,12 @@ Takes a message. This message is returned when getDescription() is called.
 class Exception : public IException {
 public:
     Exception();
-    Exception( const uchar* pszDescription );
-    Exception( const ustring& strDescription );
+    Exception( const uchar* description );
+    Exception( const ustring& description );
 
     virtual ustring getDescription() const;
 private:
-     ustring m_strDescription;
+     ustring m_description;
 };
 
 /* 
@@ -94,8 +94,8 @@ getDescription() is called.
     class exceptionName : public Exception { \
     public: \
         exceptionName(); \
-        exceptionName( const uchar* pszDescription ); \
-        exceptionName( const ustring& strDescription ); \
+        exceptionName( const uchar* description ); \
+        exceptionName( const ustring& description ); \
     }
 
 /* 
@@ -108,9 +108,9 @@ getDescription() is called.
 #define BS_DEFINE_MESSAGE_EXCEPTION( exceptionName ) \
     exceptionName::exceptionName() { \
     } \
-    exceptionName::exceptionName( const uchar* pszDescription ) : Exception( pszDescription ) { \
+    exceptionName::exceptionName( const uchar* description ) : Exception( description ) { \
     } \
-    exceptionName::exceptionName( const ustring& strDescription ) : Exception( strDescription ) { \
+    exceptionName::exceptionName( const ustring& description ) : Exception( description ) { \
     }
 
 /*

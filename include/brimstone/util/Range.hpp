@@ -17,18 +17,18 @@ Description:
 namespace Brimstone {
 
 //Faster ------------------------------------------------------------------------------------------------------------------------------------------ Slower
-template <typename T>   inline bool         IsBetween( const T& xVal, const T& xLowerBound, const T& xUpperBound );
-template <typename T>   inline bool         IsOutside( const T& xVal, const T& xLowerBound, const T& xUpperBound );
-template <typename T>   inline bool         ApproxEquals( const T& xActualVal, const T& xIdealVal, const T& xTolerance );
-template <typename T>   inline void         Clamp( T& xValInOut, const T& xLowerBound, const T& xUpperBound );                                      template <typename T>   inline T        ClampedValue( const T& xVal, const T& xLowerBound, const T& xUpperBound );
-template <typename T>   inline void         LowClamp( T& xValInOut, const T& xLowerBound );                                                         template <typename T>   inline T        LowClampedValue( const T& xVal, const T& xLowerBound );
-template <typename T>   inline void         HighClamp( T& xValInOut, const T& xUpperBound );                                                        template <typename T>   inline T        HighClampedValue( const T& xVal, const T& xUpperBound );
+template< typename T >  inline bool         isBetween( const T& val, const T& lowerBound, const T& upperBound );
+template< typename T >  inline bool         isOutside( const T& val, const T& lowerBound, const T& upperBound );
+template< typename T >  inline bool         approxEquals( const T& actualVal, const T& idealVal, const T& tolerance );
+template< typename T >  inline void         clamp( T& valInOut, const T& lowerBound, const T& upperBound );                                         template< typename T >  inline T        ClampedValue( const T& val, const T& lowerBound, const T& upperBound );
+template< typename T >  inline void         lowClamp( T& valInOut, const T& lowerBound );                                                           template< typename T >  inline T        LowClampedValue( const T& val, const T& lowerBound );
+template< typename T >  inline void         highClamp( T& valInOut, const T& upperBound );                                                          template< typename T >  inline T        HighClampedValue( const T& val, const T& upperBound );
 
 
 
 
 /*
-IsBetween
+isBetween
 -----------------------
 
 Description:
@@ -36,24 +36,24 @@ Description:
     Returns true if the value is between the two bounds (inclusive; i.e. the bounds count as "inside" the range).
     Returns false otherwise.
 
-    WARNING: In order for the function to work properly, _LowerBound must be less than or equal to _UpperBound.
+    WARNING: In order for the function to work properly, lowerBound must be less than or equal to upperBound.
 
 Arguments:
-    xVal:               A value.
-    xLowerBound:        The smallest value in the range.
-    xUpperBound:        The largest value in the range.
+    val:                A value.
+    lowerBound:         The smallest value in the range.
+    upperBound:         The largest value in the range.
 
 Returns:
     bool:               true if the value is between the two bounds, false otherwise.
 */
 template< typename T >
-inline bool IsBetween( const T& xVal, const T& xLowerBound, const T& xUpperBound )
+inline bool isBetween( const T& val, const T& lowerBound, const T& upperBound )
 {
-    return ( xVal >= xLowerBound && xVal <= xUpperBound );
+    return ( val >= lowerBound && val <= upperBound );
 }
 
 /*
-IsOutside
+isOutside
 -----------------------
 
 Description:
@@ -61,24 +61,24 @@ Description:
     Returns true if the value is outside of that range (the range is inclusive; i.e. the bounds count as "inside" the range).
     Returns false otherwise.
 
-    WARNING: In order for the function to work properly, _LowerBound must be less than or equal to _UpperBound.
+    WARNING: In order for the function to work properly, lowerBound must be less than or equal to upperBound.
 
 Arguments:
-    xVal:               A value.
-    xLowerBound:        The smallest value in the range.
-    xUpperBound:        The largest value in the range.
+    val:                A value.
+    lowerBound:         The smallest value in the range.
+    upperBound:         The largest value in the range.
 
 Returns:
     bool:               true if the value is outside the two bounds, false otherwise.
 */
 template< typename T >
-inline bool IsOutside( const T& xVal, const T& xLowerBound, const T& xUpperBound )
+inline bool isOutside( const T& val, const T& lowerBound, const T& upperBound )
 {
-    return ( xVal < xLowerBound || xVal > xUpperBound );
+    return ( val < lowerBound || val > upperBound );
 }
 
 /*
-ApproxEquals
+approxEquals
 -----------------------
 
 Description:
@@ -93,49 +93,50 @@ Description:
           In fact, the actual and ideal values can be swapped with one another without affecting the result of this function.
 
 Arguments:
-    xActualVal:         One of the two values to compare.
-    xIdealVal:          One of the two values to compare.
-    xLowerBound:        The most these two values can differ without being non-approximately equal.
+    actualVal:          One of the two values to compare.
+    idealVal:           One of the two values to compare.
+    tolerance:          The most these two values can differ without being non-approximately equal.
+                        Must be a non-negative number.
 
 Returns:
     bool:               true if the two values are approximately equal, false otherwise.
 */
 
 template< typename T >
-inline bool ApproxEquals( const T& xActualVal, const T& xIdealVal, const T& xTolerance )
+inline bool approxEquals( const T& actualVal, const T& idealVal, const T& tolerance )
 {
-    return abs( xActualVal - xIdealVal ) <= xTolerance;
+    return abs( actualVal - idealVal ) <= tolerance;
 }
 
 /*
-Clamp
+clamp
 -----------------------
 
 Description:
     Takes a value and two bounds.
     If the value exceeds either of the bounds, replaces it with the bound it exceeded.
 
-    WARNING: In order for the function to work properly, _LowerBound must be less than or equal to _UpperBound.
+    WARNING: In order for the function to work properly, lowerBound must be less than or equal to upperBound.
 
 Arguments:
-    xValInOut:          The value to potentially clamp.
-    xLowerBound:        The smallest that _Val can be.
-    xUpperBound:        The largest that _Val can be.
+    valInOut:           The value to potentially clamp.
+    lowerBound:         The smallest that val can be.
+    upperBound:         The largest that val can be.
 
 Returns:
     void:               N/A
 */
 template< typename T >
-inline void Clamp( T& xValInOut, const T& xLowerBound, const T& xUpperBound )
+inline void clamp( T& valInOut, const T& lowerBound, const T& upperBound )
 {
-    if( xValInOut > xUpperBound )
-        xValInOut = xUpperBound;
-    else if( xValInOut < xLowerBound )
-        xValInOut = xLowerBound;
+    if( valInOut > upperBound )
+        valInOut = upperBound;
+    else if( valInOut < lowerBound )
+        valInOut = lowerBound;
 }
 
 /*
-ClampedValue
+clampedValue
 -----------------------
 
 Description:
@@ -146,29 +147,29 @@ Description:
     If the value is above the upper bound, the upper bound is returned.
     Otherwise, the value itself is returned.
 
-    WARNING: In order for the function to work properly, _LowerBound must be less than or equal to _UpperBound.
+    WARNING: In order for the function to work properly, lowerBound must be less than or equal to upperBound.
 
 Arguments:
-    xVal:               The value to potentially clamp.
-    xLowerBound:        The smallest that _Val can be.
-    xUpperBound:        The largest that _Val can be.
+    val:                The value to potentially clamp.
+    lowerBound:         The smallest that val can be.
+    upperBound:         The largest that val can be.
 
 Returns:
-    T:                  A value between _LowerBound and _UpperBound (inclusive).
+    T:                  A value between lowerBound and upperBound (inclusive).
 */
 template< typename T >
-inline T ClampedValue( const T& xVal, const T& xLowerBound, const T& xUpperBound )
+inline T clampedValue( const T& val, const T& lowerBound, const T& upperBound )
 {
-    if( xVal > xUpperBound )
-        return xUpperBound;
-    else if( xVal < xLowerBound )
-        return xLowerBound;
+    if( val > upperBound )
+        return upperBound;
+    else if( val < lowerBound )
+        return lowerBound;
     
-    return xVal;
+    return val;
 }
 
 /*
-LowClamp
+lowClamp
 -----------------------
 
 Description:
@@ -176,21 +177,21 @@ Description:
     If the value is below the lower bound, it is replaced with the lower bound.
 
 Arguments:
-    xValInOut:          The value to potentially clamp.
-    xLowerBound:        The smallest that _ValInOut can be.
+    valInOut:           The value to potentially clamp.
+    lowerBound:         The smallest that valInOut can be.
 
 Returns:
     void:               N/A
 */
 template< typename T >
-inline void LowClamp( T& xValInOut, const T& xLowerBound )
+inline void lowClamp( T& valInOut, const T& lowerBound )
 {
-    if( xValInOut < xLowerBound )
-        xValInOut = xLowerBound;
+    if( valInOut < lowerBound )
+        valInOut = lowerBound;
 }
 
 /*
-LowClampedValue
+lowClampedValue
 -----------------------
 
 Description:
@@ -199,23 +200,23 @@ Description:
     Otherwise, the value itself is returned.
 
 Arguments:
-    _Val:               The value to potentially clamp.
-    _LowerBound:        The smallest that _Val can be.
+    val:                The value to potentially clamp.
+    lowerBound:         The smallest that val can be.
 
 Returns:
-    T:                  A value no larger than _LowerBound.
+    T:                  A value no larger than lowerBound.
 */
-template <typename T>
-inline T LowClampedValue( const T& xVal, const T& xLowerBound )
+template< typename T >
+inline T lowClampedValue( const T& val, const T& lowerBound )
 {
-    if( xVal < xLowerBound )
-        return xLowerBound;
+    if( val < lowerBound )
+        return lowerBound;
 
-    return xVal;
+    return val;
 }
 
 /*
-HighClamp
+highClamp
 -----------------------
 
 Description:
@@ -223,42 +224,42 @@ Description:
     If the value is above the upper bound, it is replaced with the upper bound.
 
 Arguments:
-    _ValInOut:          The value to potentially clamp.
-    _UpperBound:        The largest that _ValInOut can be.
+    valInOut:           The value to potentially clamp.
+    upperBound:         The largest that valInOut can be.
 
 Returns:
     void:               N/A
 */
-template <typename T>
-inline void HighClamp( T& xValInOut, const T& xUpperBound )
+template< typename T >
+inline void highClamp( T& valInOut, const T& upperBound )
 {
-    if( xValInOut > xUpperBound )
-        xValInOut = xUpperBound;
+    if( valInOut > upperBound )
+        valInOut = upperBound;
 }
 
 /*
-HighClampedValue
+highClampedValue
 -----------------------
 
 Description:
-    Takes a value and a higher bound.
+    Takes a value and an upper bound.
     If the value is above the upper bound, the upper bound is returned.
     Otherwise, the value itself is returned.
 
 Arguments:
-    _Val:               The value to potentially clamp.
-    _UpperBound:        The largest that _Val can be.
+    val:                The value to potentially clamp.
+    upperBound:         The largest that val can be.
 
 Returns:
-    T:                  A value no larger than _UpperBound.
+    T:                  A value no larger than upperBound.
 */
-template <typename T>
-inline T HighClampedValue( const T& xVal, const T& xUpperBound )
+template< typename T >
+inline T highClampedValue( const T& val, const T& upperBound )
 {
-    if( xVal > xUpperBound )
-        return xUpperBound;
+    if( val > upperBound )
+        return upperBound;
 
-    return xVal;
+    return val;
 }
 
 }

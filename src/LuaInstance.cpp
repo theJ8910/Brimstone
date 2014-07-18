@@ -22,11 +22,11 @@ Description:
 namespace Brimstone {
 
 LuaInstance::LuaInstance() {
-    m_pcState = lua_open();
+    m_state = lua_open();
 }
 
 LuaInstance::~LuaInstance() {
-    lua_close( m_pcState );
+    lua_close( m_state );
 }
 
 void LuaInstance::start() {
@@ -48,10 +48,10 @@ void LuaInstance::stop() {
 /*
 Load and run a script
 */
-void LuaInstance::load( const uchar* pszFilepath ) {
-    if( luaL_dofile( m_pcState, pszFilepath ) ) {
-        LuaException e( lua_tostring( m_pcState, -1 ) );
-        lua_pop( m_pcState, -1 );
+void LuaInstance::load( const uchar* filepath ) {
+    if( luaL_dofile( m_state, filepath ) ) {
+        LuaException e( lua_tostring( m_state, -1 ) );
+        lua_pop( m_state, -1 );
         throw e;
     }
 }
@@ -60,33 +60,33 @@ void LuaInstance::load( const uchar* pszFilepath ) {
 Push a global function with the given name to the stack.
 Must be done before doing call().
 */
-void LuaInstance::pushFunction( const uchar* pszFunctionName ) {
-    lua_getglobal( m_pcState, pszFunctionName );
-    if( !lua_isfunction( m_pcState, -1 ) ) {
-        LuaException e( ( boost::format( "\"%1%\" is not a global function" ) % pszFunctionName ).str() );
-        lua_pop( m_pcState, -1 );
+void LuaInstance::pushFunction( const uchar* functionName ) {
+    lua_getglobal( m_state, functionName );
+    if( !lua_isfunction( m_state, -1 ) ) {
+        LuaException e( ( boost::format( "\"%1%\" is not a global function" ) % functionName ).str() );
+        lua_pop( m_state, -1 );
         throw e;
     }
 }
 
 void LuaInstance::pushStack( const bool b ) {
-    lua_pushboolean( m_pcState, b );
+    lua_pushboolean( m_state, b );
 }
 
 void LuaInstance::pushStack( const int32 i ) {
-    lua_pushinteger( m_pcState, i );
+    lua_pushinteger( m_state, i );
 }
 
 void LuaInstance::pushStack( const float f ) {
-    lua_pushnumber( m_pcState, f );
+    lua_pushnumber( m_state, f );
 }
 
-void LuaInstance::pushStack( const double f ) {
-    lua_pushnumber( m_pcState, f );
+void LuaInstance::pushStack( const double d ) {
+    lua_pushnumber( m_state, d );
 }
 
-void LuaInstance::pushStack( const uchar* pszString ) {
-    lua_pushstring( m_pcState, pszString );
+void LuaInstance::pushStack( const uchar* str ) {
+    lua_pushstring( m_state, str );
 }
 
 void LuaInstance::pushStack() {
@@ -95,29 +95,29 @@ void LuaInstance::pushStack() {
 
 void LuaInstance::popStack( bool& bOut ) {
     //lua_isboolean( m_pcState, -1 );
-    bOut = ( lua_toboolean( m_pcState, -1 ) > 0 );
-    lua_pop( m_pcState, -1 );
+    bOut = ( lua_toboolean( m_state, -1 ) > 0 );
+    lua_pop( m_state, -1 );
 }
 
-void LuaInstance::popStack( int32& iOut ) {
+void LuaInstance::popStack( intN& iOut ) {
     //lua_isinteger( m_pcState, -1 )
-    iOut = lua_tointeger( m_pcState, -1 );
-    lua_pop( m_pcState, -1 );
+    iOut = lua_tointeger( m_state, -1 );
+    lua_pop( m_state, -1 );
 }
 
 void LuaInstance::popStack( float& fOut ) {
-    fOut = (float)lua_tonumber( m_pcState, -1 );
-    lua_pop( m_pcState, -1 );
+    fOut = (float)lua_tonumber( m_state, -1 );
+    lua_pop( m_state, -1 );
 }
 
 void LuaInstance::popStack( double& fOut ) {
-    fOut = lua_tonumber( m_pcState, -1 );
-    lua_pop( m_pcState, -1 );
+    fOut = lua_tonumber( m_state, -1 );
+    lua_pop( m_state, -1 );
 }
 
 void LuaInstance::popStack( const uchar*& pszStringOut ) {
-    pszStringOut = lua_tostring( m_pcState, -1 );
-    lua_pop( m_pcState, -1 );
+    pszStringOut = lua_tostring( m_state, -1 );
+    lua_pop( m_state, -1 );
 }
 
 void LuaInstance::popStack() {
@@ -143,15 +143,15 @@ void LuaInstance::openLibraries() {
 
     //Load libraries
     for( const luaL_Reg* p = acLibraries; p->name != nullptr ; ++p ) {
-        lua_pushcfunction( m_pcState, p->func );
+        lua_pushcfunction( m_state, p->func );
         callVoid( p->name );
     }
 }
 
 void LuaInstance::callFunction( const int32 iArgs, const int32 iReturnValues ) {
-    if( lua_pcall( m_pcState, iArgs, iReturnValues, 0 ) != 0 ) {
-        LuaException e( lua_tostring( m_pcState, -1 ) );
-        lua_pop( m_pcState, -1 );
+    if( lua_pcall( m_state, iArgs, iReturnValues, 0 ) != 0 ) {
+        LuaException e( lua_tostring( m_state, -1 ) );
+        lua_pop( m_state, -1 );
         throw e;
     }
 }

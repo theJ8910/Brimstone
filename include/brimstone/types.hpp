@@ -55,6 +55,18 @@ typedef unsigned long long  uint64;
 
 #endif
 
+#ifdef BS_BUILD_64BIT
+
+typedef int64  intN;
+typedef uint64 uintN;
+
+#else
+
+typedef int32  intN;
+typedef uint32 uintN;
+
+#endif
+
 //Bytes are represented with characters
 typedef char                byte;
 typedef unsigned char       ubyte;

@@ -15,9 +15,9 @@ Description:
         const_ref is: const T
 
     Sample usage:
-    #include "util/RefType.hpp"
+    #include <brimstone/util/RefType.hpp>
 
-    template< typename T>
+    template< typename T >
     class SomeClass {
     private:
         typedef typename RefType<T>::ref       TRef_t;

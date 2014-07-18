@@ -19,79 +19,79 @@ Description:
 namespace Brimstone {
 
 Window::Window() :
-    m_strTitle( "Default Window Title" ),
-    m_bPopup( false ),
-    m_bKeyRepeat( false ),
-    m_cBounds( 0, 0, 1024, 768 ),
-    m_pcImpl( nullptr ) {
+    m_title( "Default Window Title" ),
+    m_popup( false ),
+    m_keyRepeat( false ),
+    m_bounds( 0, 0, 1024, 768 ),
+    m_impl( nullptr ) {
 }
 
 Window::~Window() {
-    if( m_pcImpl != nullptr )
-        delete m_pcImpl;
+    if( m_impl != nullptr )
+        delete m_impl;
 }
 
 void Window::processEvents() {
     Private::WindowImpl::processEvents();
 }
 
-void Window::setTitle( const ustring& strTitle ) {
-    m_strTitle = strTitle;
+void Window::setTitle( const ustring& title ) {
+    m_title = title;
 
-    if( m_pcImpl != nullptr )
-        m_pcImpl->setTitle( strTitle );
+    if( m_impl != nullptr )
+        m_impl->setTitle( title );
 }
 
-void Window::getTitle( ustring& strTitleOut ) const {
-    strTitleOut = m_strTitle;
+void Window::getTitle( ustring& titleOut ) const {
+    titleOut = m_title;
 }
 
-void Window::setPopup( const bool bPopup ) {
-    m_bPopup = bPopup;
+void Window::setPopup( const bool popup ) {
+    m_popup = popup;
 
-    if( m_pcImpl != nullptr )
-        m_pcImpl->setPopup( bPopup );
+    if( m_impl != nullptr )
+        m_impl->setPopup( popup );
 }
 
 bool Window::getPopup() const {
-    return m_bPopup;
+    return m_popup;
 }
 
-void Window::setKeyRepeat( const bool bKeyRepeat ) {
-    m_bKeyRepeat = bKeyRepeat;
+void Window::setKeyRepeat( const bool keyRepeat ) {
+    m_keyRepeat = keyRepeat;
 }
 
 bool Window::getKeyRepeat() const {
-    return m_bKeyRepeat;
+    return m_keyRepeat;
 }
 
-void Window::setVisible( const bool bVisible ) {
-    if( bVisible == getVisible() )
+void Window::setVisible( const bool visible ) {
+    if( visible == getVisible() )
         return;
 
-    if( bVisible ) {
-        if( m_pcImpl == nullptr )
-            m_pcImpl = new Private::WindowImpl( *this );
-    } else if( m_pcImpl != nullptr ) {
-        delete m_pcImpl;
-        m_pcImpl = nullptr;
+    if( visible ) {
+        if( m_impl == nullptr )
+            m_impl = new Private::WindowImpl( *this );
+    } else if( m_impl != nullptr ) {
+        delete m_impl;
+        m_impl = nullptr;
     }
 }
 
 bool Window::getVisible() const {
     //Visible is defined as "the window exists"
-    return m_pcImpl != nullptr;
+    return m_impl != nullptr;
 }
 
-void Window::setBounds( const LongRectangle& cBounds ) {
-    m_cBounds = cBounds;
+void Window::setBounds( const LongRectangle& bounds ) {
+    m_bounds = bounds;
 
-    if( m_pcImpl != nullptr )
-        m_pcImpl->setBounds( cBounds );
+    if( m_impl != nullptr )
+        m_impl->setBounds( bounds );
 }
 
-void Window::getBounds( LongRectangle& cBoundsOut ) const {
-    cBoundsOut = m_cBounds;
+void Window::getBounds( LongRectangle& boundsOut ) const {
+    boundsOut = m_bounds;
 }
 
 }

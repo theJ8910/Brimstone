@@ -27,6 +27,9 @@ namespace std \
     struct hash< type > : public Brimstone::EnumHasher< type > {}; \
 }
 
+
+
+
 namespace Brimstone {
 
 //Counts how many elements a given object has.
@@ -59,8 +62,8 @@ struct EnumHasher {
     typedef typename std::underlying_type< Enum_t >::type   Underlying_t;
     typedef typename std::hash< Underlying_t >::result_type Result_t;
 
-    Result_t operator()( const Enum_t& eEnum ) const {
-        return std::hash< Underlying_t >()( static_cast< Underlying_t >( eEnum ) );
+    Result_t operator()( const Enum_t& enumr ) const {
+        return std::hash< Underlying_t >()( static_cast< Underlying_t >( enumr ) );
     }
 };
 

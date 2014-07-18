@@ -28,12 +28,12 @@ Description:
 
 
 namespace {
-    static const wchar_t* pszWindowClass = L"BrimstoneWindow";
-    static const int eStandard = ( WS_CAPTION | WS_MINIMIZEBOX );   //Characteristics only standard windows have
-    static const int eCommon   = ( WS_SYSMENU | WS_VISIBLE );       //Characteristics both standard and popup windows share
+    static const wchar_t* windowClass = L"BrimstoneWindow";
+    static const int standard = ( WS_CAPTION | WS_MINIMIZEBOX );   //Characteristics only standard windows have
+    static const int common   = ( WS_SYSMENU | WS_VISIBLE );       //Characteristics both standard and popup windows share
 
-    static const int eNormalWindow = eStandard | eCommon;
-    static const int ePopupWindow  = WS_POPUP  | eCommon;
+    static const int normalWindow = standard | common;
+    static const int popupWindow  = WS_POPUP | common;
 }
 
 
@@ -41,58 +41,58 @@ namespace {
 namespace Brimstone {
 namespace Private {
 
-WindowsWindow::HWNDToWindowMap WindowsWindow::m_acWindowMap;
-bool                           WindowsWindow::m_bClassRegistered = false;
+WindowsWindow::HWNDToWindowMap WindowsWindow::m_windowMap;
+bool                           WindowsWindow::m_classRegistered = false;
 
-WindowsWindow::WindowsWindow( Window& cParent ) : m_pcParent( &cParent ) {
-    m_cLeadSurrogate = 0;
+WindowsWindow::WindowsWindow( Window& parent ) : m_parent( &parent ) {
+    m_leadSurrogate = 0;
 
-    HINSTANCE hInstance = GetModuleHandle( nullptr );
+    HINSTANCE instance = GetModuleHandle( nullptr );
 
-    if( m_bClassRegistered == false )
-        registerWindowClass( hInstance );
+    if( m_classRegistered == false )
+        registerWindowClass( instance );
 
     //Get title
-    ustring strTitle;
-    cParent.getTitle( strTitle );
+    ustring title;
+    parent.getTitle( title );
 
     //Get bounds
-    LongRectangle cBounds;
-    cParent.getBounds( cBounds );
-    long iWidth  = cBounds.getWidth();
-    long iHeight = cBounds.getHeight();
+    LongRectangle bounds;
+    parent.getBounds( bounds );
+    long width  = bounds.getWidth();
+    long height = bounds.getHeight();
 
     //Get popup
-    bool bPopup = cParent.getPopup();
+    bool popup = parent.getPopup();
 
     //Create the window
-    m_hWnd = CreateWindow(
-        pszWindowClass,                                 //Name of Window Class
-        utf8to16( strTitle ).c_str(),                   //Title of Window
-        ( bPopup ? ePopupWindow : eNormalWindow ),      //Style of window (flags)
-        cBounds.left,                                   //x
-        cBounds.top,                                    //y
-        iWidth,                                         //w
-        iHeight,                                        //h
+    m_wnd = CreateWindow(
+        windowClass,                                    //Name of Window Class
+        utf8to16( title ).c_str(),                      //Title of Window
+        ( popup ? popupWindow : normalWindow ),         //Style of window (flags)
+        bounds.left,                                    //x
+        bounds.top,                                     //y
+        width,                                          //w
+        height,                                         //h
         nullptr,                                        //parent window
         nullptr,                                        //parent menu (which is... for submenues?)
-        hInstance,                                      //this window belongs to this instance of our program
+        instance,                                       //this window belongs to this instance of our program
         nullptr                                         //Window creation data (which is?)
     );
     
-    if( !m_hWnd )
+    if( !m_wnd )
         throwWindowsException();
 
-    m_acWindowMap.emplace( m_hWnd, *this );
+    m_windowMap.emplace( m_wnd, *this );
 
-    adjustWindowBounds( iWidth, iHeight );
+    adjustWindowBounds( width, height );
 }
 
 WindowsWindow::~WindowsWindow() {
-    DestroyWindow( m_hWnd );
-    m_acWindowMap.erase( m_hWnd );
+    DestroyWindow( m_wnd );
+    m_windowMap.erase( m_wnd );
     
-    if( m_acWindowMap.empty() )
+    if( m_windowMap.empty() )
         PostQuitMessage( 0 );
 }
 
@@ -117,25 +117,26 @@ Description:
     If this isn't done, the presented image would be stretched.
 
 Arguments:
-    N/A
+    width:  The desired width of the client area.
+    height: The desired height of the client area.
 
 Returns:
     void:   N/A
 */
-void WindowsWindow::adjustWindowBounds( long iWidth, long iHeight ) {
-    if( m_pcParent->getPopup() )
+void WindowsWindow::adjustWindowBounds( long width, long height ) {
+    if( m_parent->getPopup() )
         return;
 
     //The window rectangle is the rectangle that surrounds the window,
     //whereas the client rectangle is the rectangle surrounding the content area inside of the window.
-    RECT cWndRect, cClientRect;
+    RECT wndRect, clientRect;
 
-    if( GetWindowRect( m_hWnd, &cWndRect ) == FALSE )
+    if( GetWindowRect( m_wnd, &wndRect ) == FALSE )
         throwWindowsException();
 
     //NOTE: GetClientRect() outputs a rectangle whose .left and .top are 0,
     //which means the right and bottom are the width and height (respectively) of the client area.
-    if( GetClientRect( m_hWnd, &cClientRect ) == FALSE )
+    if( GetClientRect( m_wnd, &clientRect ) == FALSE )
         throwWindowsException();
 
     //MoveWindow is sort of a misnomer. You're actually framing the window in a new rectangle, meaning you can position and/or resize.
@@ -144,13 +145,13 @@ void WindowsWindow::adjustWindowBounds( long iWidth, long iHeight ) {
     //newSize =     oldSize + ( oldSize - oldClientSize ) 
     //        = 2 * oldSize - oldClientSize
     //NOTE: (x << 1) == (x * 2)
-    iWidth  = ( iWidth  << 1 ) - cClientRect.right;
-    iHeight = ( iHeight << 1 ) - cClientRect.bottom;
-    if( MoveWindow( m_hWnd, cWndRect.left, cWndRect.top, iWidth, iHeight, TRUE ) == FALSE )
+    width  = ( width  << 1 ) - clientRect.right;
+    height = ( height << 1 ) - clientRect.bottom;
+    if( MoveWindow( m_wnd, wndRect.left, wndRect.top, width, height, TRUE ) == FALSE )
         throwWindowsException();
 }
 
-Key aeVKtoKey[] = {
+Key vkToKeyMap[] = {
     Key::INVALID,       //0x00: (undefined)
     Key::INVALID,       //0x01: VK_LBUTTON
     Key::INVALID,       //0x02: VK_RBUTTON
@@ -408,153 +409,153 @@ Key aeVKtoKey[] = {
     Key::INVALID,       //0xFE: VK_OEM_CLEAR
 };
 
-LRESULT WindowsWindow::windowProc( UINT uiMessage, WPARAM wParam, LPARAM lParam ) {
-    switch( uiMessage ) {
+LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) {
+    switch( message ) {
     case WM_MOUSEMOVE: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseMoveEvent cEvent( iX, iY );
-        m_pcParent->m_cSignalMouseMove( cEvent );  
+        MouseMoveEvent eventObj( x, y );
+        m_parent->m_signalMouseMove( eventObj );
     } break;
     case WM_LBUTTONDOWN: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseDownEvent cEvent( MouseButton::LEFT, iX, iY );
-        m_pcParent->m_cSignalMouseDown( cEvent );
+        MouseDownEvent eventObj( MouseButton::LEFT, x, y );
+        m_parent->m_signalMouseDown( eventObj );
     } break;
     case WM_LBUTTONUP: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseUpEvent cEvent( MouseButton::LEFT, iX, iY );
-        m_pcParent->m_cSignalMouseUp( cEvent );
+        MouseUpEvent eventObj( MouseButton::LEFT, x, y );
+        m_parent->m_signalMouseUp( eventObj );
     } break;
     case WM_RBUTTONDOWN: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseDownEvent cEvent( MouseButton::RIGHT, iX, iY );
-        m_pcParent->m_cSignalMouseDown( cEvent );
+        MouseDownEvent eventObj( MouseButton::RIGHT, x, y );
+        m_parent->m_signalMouseDown( eventObj );
     } break;
     case WM_RBUTTONUP: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseUpEvent cEvent( MouseButton::RIGHT, iX, iY );
-        m_pcParent->m_cSignalMouseUp( cEvent );
+        MouseUpEvent eventObj( MouseButton::RIGHT, x, y );
+        m_parent->m_signalMouseUp( eventObj );
     } break;
     case WM_MBUTTONDOWN: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseDownEvent cEvent( MouseButton::MIDDLE, iX, iY );
-        m_pcParent->m_cSignalMouseDown( cEvent );
+        MouseDownEvent eventObj( MouseButton::MIDDLE, x, y );
+        m_parent->m_signalMouseDown( eventObj );
     } break;
     case WM_MBUTTONUP: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseUpEvent cEvent( MouseButton::MIDDLE, iX, iY );
-        m_pcParent->m_cSignalMouseUp( cEvent );
+        MouseUpEvent eventObj( MouseButton::MIDDLE, x, y );
+        m_parent->m_signalMouseUp( eventObj );
     } break;
     case WM_XBUTTONDOWN: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseDownEvent cEvent(
+        MouseDownEvent eventObj(
             GET_XBUTTON_WPARAM( wParam ) == XBUTTON1 ?
                 MouseButton::X1 :
                 MouseButton::X2,
-            iX, iY
+            x, y
         );
 
-        m_pcParent->m_cSignalMouseDown( cEvent );
+        m_parent->m_signalMouseDown( eventObj );
     } break;
     case WM_XBUTTONUP: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseUpEvent cEvent(
+        MouseUpEvent eventObj(
             GET_XBUTTON_WPARAM( wParam ) == XBUTTON1 ?
                 MouseButton::X1 :
                 MouseButton::X2,
-            iX, iY
+            x, y
         );
 
-        m_pcParent->m_cSignalMouseUp( cEvent );
+        m_parent->m_signalMouseUp( eventObj );
     } break;
     case WM_MOUSEWHEEL: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseVScrollEvent cEvent( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, iX, iY );
-        m_pcParent->m_cSignalMouseVScroll( cEvent );
+        MouseVScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, x, y );
+        m_parent->m_signalMouseVScroll( eventObj );
     } break;
     case WM_MOUSEHWHEEL: {
-        int32 iX, iY;
-        getMouseCoordinates( lParam, iX, iY );
+        int32 x, y;
+        getMouseCoordinates( lParam, x, y );
 
-        MouseHScrollEvent cEvent( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, iX, iY );
-        m_pcParent->m_cSignalMouseHScroll( cEvent ); 
+        MouseHScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, x, y );
+        m_parent->m_signalMouseHScroll( eventObj ); 
     } break;
     case WM_SYSKEYDOWN:
     case WM_KEYDOWN: {
-        bool bIsRepeating = ( ( lParam & ( 1 << 30 ) ) != 0 );
-        if( bIsRepeating && !m_pcParent->getKeyRepeat() )
+        bool isRepeating = ( ( lParam & ( 1 << 30 ) ) != 0 );
+        if( isRepeating && !m_parent->getKeyRepeat() )
             break;
 
-        KeyDownEvent cEvent( vkToKey( wParam, lParam ) );
-        m_pcParent->m_cSignalKeyDown( cEvent );
+        KeyDownEvent eventObj( vkToKey( wParam, lParam ) );
+        m_parent->m_signalKeyDown( eventObj );
     } break;
     case WM_SYSKEYUP:
     case WM_KEYUP: {
-        KeyUpEvent cEvent( vkToKey( wParam, lParam ) );
-        m_pcParent->m_cSignalKeyUp( cEvent );
+        KeyUpEvent eventObj( vkToKey( wParam, lParam ) );
+        m_parent->m_signalKeyUp( eventObj );
     } break;
     case WM_SYSCHAR:
     case WM_CHAR: {
         //If the user holds a key down, Windows repeatedly sends the character
         //to the window. By default, repeating characters are ignored.
         //This can be changed in the Window with setKeyRepeat().
-        bool bIsRepeating = ( ( lParam & ( 1 << 30 ) ) != 0 );
-        if( bIsRepeating && !m_pcParent->getKeyRepeat() )
+        bool isRepeating = ( ( lParam & ( 1 << 30 ) ) != 0 );
+        if( isRepeating && !m_parent->getKeyRepeat() )
             break;
 
         //A leading surrogate of a surrogate pair was provided
         //A CharacterTypedEvent will not be dispatched until the trail surrogate arrives.
         if( wParam >= 0xDB00 && wParam <= 0xDBFF ) {
-            m_cLeadSurrogate = (wchar)wParam;
+            m_leadSurrogate = (wchar)wParam;
 
         //Some other type of character was provided.
         } else {
-            CharacterTypedEvent cEvent;
-            uchar* pszUTF8 = const_cast< uchar* >( cEvent.getCharacter() );
-            int32 iUTF8Count;
+            CharacterTypedEvent eventObj;
+            uchar* utf8 = const_cast< uchar* >( eventObj.getCharacter() );
+            int32 utf8Count;
 
             //A trail surrogate was provided
             if( wParam >= 0xDC00 && wParam <= 0xDFFF ) {
                 //UTF-16 encoded surrogate pair
-                wchar acUTF16[2] = { m_cLeadSurrogate, (wchar)wParam };
+                wchar utf16[2] = { m_leadSurrogate, (wchar)wParam };
 
                 //Translate the pair to its equivalent UTF-8
-                iUTF8Count = utf16to8( acUTF16, 2, pszUTF8, 5 );
+                utf8Count = utf16to8( utf16, 2, utf8, 5 );
 
             //A non-surrogate was provided
             } else {
                 //Translate the UTF-16 character to its equivalent UTF-8
-                iUTF8Count = utf16to8( reinterpret_cast<wchar*>( &wParam ), 1, pszUTF8, 5 );
+                utf8Count = utf16to8( reinterpret_cast<wchar*>( &wParam ), 1, utf8, 5 );
             }
 
             //A UTF-8 encoding of a single code point should never exceed 4 bytes in length
-            if( iUTF8Count > 4 )
+            if( utf8Count > 4 )
                 throw UnexpectedResultException();
 
             //Null terminate the string
-            pszUTF8[iUTF8Count] = 0;
+            utf8[utf8Count] = 0;
                 
-            m_pcParent->m_cSignalCharacterTyped( cEvent );
+            m_parent->m_signalCharacterTyped( eventObj );
         }
     } break;
     case WM_UNICHAR: {
@@ -568,25 +569,25 @@ LRESULT WindowsWindow::windowProc( UINT uiMessage, WPARAM wParam, LPARAM lParam 
     case WM_SIZING: {
     } break;
     case WM_CLOSE: {
-        WindowCloseEvent cEvent( *m_pcParent );
-        m_pcParent->m_cSignalWindowClose( cEvent );
+        WindowCloseEvent eventObj( *m_parent );
+        m_parent->m_signalWindowClose( eventObj );
     } break;
     default:
-        return DefWindowProc( getHandle(), uiMessage, wParam, lParam );
+        return DefWindowProc( getHandle(), message, wParam, lParam );
     }
 
     return 0;
 }
 
-void WindowsWindow::getMouseCoordinates( LPARAM lParam, int32& iXOut, int32& iYOut ) {
+void WindowsWindow::getMouseCoordinates( LPARAM lParam, int32& xOut, int32& yOut ) {
     //The coordinates provided in lParam are relative to the upper-left corner of the window's client area.
     //However, we need to clamp values here because the window will return coordinates outside of the client
     //area as well (borders, etc)! Raw coordinates could even be negative.
-    LongRectangle cRect;
-    m_pcParent->getBounds( cRect );
+    LongRectangle bounds;
+    m_parent->getBounds( bounds );
 
-    iXOut = ClampedValue( (long)GET_X_LPARAM( lParam ), 0L, cRect.getWidth()  - 1L );
-    iYOut = ClampedValue( (long)GET_Y_LPARAM( lParam ), 0L, cRect.getHeight() - 1L );
+    xOut = clampedValue( (long)GET_X_LPARAM( lParam ), 0L, bounds.getWidth()  - 1L );
+    yOut = clampedValue( (long)GET_Y_LPARAM( lParam ), 0L, bounds.getHeight() - 1L );
 }
 
 /*
@@ -602,8 +603,8 @@ Arguments:
 Returns:
     ATOM:   The value returned from RegisterClassEx - assuming this can be used to determine if registration successful?
 */
-ATOM WindowsWindow::registerWindowClass( HINSTANCE hInstance ) {
-    m_bClassRegistered = true;
+ATOM WindowsWindow::registerWindowClass( HINSTANCE instance ) {
+    m_classRegistered = true;
 
     WNDCLASSEXW wcex;
     wcex.cbSize         =   sizeof( wcex );
@@ -611,10 +612,10 @@ ATOM WindowsWindow::registerWindowClass( HINSTANCE hInstance ) {
     wcex.lpfnWndProc    =   (WNDPROC)mainProc;
     wcex.cbClsExtra     =   0;
     wcex.cbWndExtra     =   0;
-    wcex.hInstance      =   hInstance;
+    wcex.hInstance      =   instance;
     wcex.hbrBackground  =   (HBRUSH)GetStockObject( WHITE_BRUSH );
     wcex.lpszMenuName   =   nullptr;
-    wcex.lpszClassName  =   pszWindowClass;
+    wcex.lpszClassName  =   windowClass;
     wcex.hIcon          =   LoadIcon(   nullptr, IDI_APPLICATION );
     wcex.hIconSm        =   LoadIcon(   nullptr, IDI_APPLICATION );
     wcex.hCursor        =   LoadCursor( nullptr, IDC_ARROW       );
@@ -642,39 +643,39 @@ Returns:
                 The only time something other than 0 is returned (I assume) is when DefWindowProc() returns something. 
                 DefWindowProc() runs when a message we don't specifically handle here is processed.
 */
-LRESULT CALLBACK WindowsWindow::mainProc( HWND hWnd, UINT uiMessage, WPARAM wParam, LPARAM lParam ) {
+LRESULT CALLBACK WindowsWindow::mainProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {
     //Locate what Window this belongs to
-    auto it = m_acWindowMap.find( hWnd );
-    if( it == m_acWindowMap.end() )
-        return DefWindowProc( hWnd, uiMessage, wParam, lParam );
+    auto it = m_windowMap.find( hWnd );
+    if( it == m_windowMap.end() )
+        return DefWindowProc( hWnd, message, wParam, lParam );
 
-    return it->second.windowProc( uiMessage, wParam, lParam );
+    return it->second.windowProc( message, wParam, lParam );
 }
 
-void WindowsWindow::setTitle( const ustring& strTitle ) {
-    if( SetWindowTextW( m_hWnd, utf8to16( strTitle ).c_str() ) == false )
+void WindowsWindow::setTitle( const ustring& title ) {
+    if( SetWindowTextW( m_wnd, utf8to16( title ).c_str() ) == false )
         throwWindowsException();
 }
 
-void WindowsWindow::getTitle( ustring& strTitleOut ) const {
-    int iLen;
+void WindowsWindow::getTitle( ustring& titleOut ) const {
+    int len;
 
     //Retrieve the length of the title, measured in wchar_t, not including the terminating null character.
     //This function can potentially overestimate the amount of wchar_t necessary to store the title.
-    if( ( iLen = GetWindowTextLengthW( m_hWnd ) ) == 0 )
+    if( ( len = GetWindowTextLengthW( m_wnd ) ) == 0 )
         throwWindowsException();
 
     //Allocate a temporary buffer to hold the string, plus a terminating null character.
-    ++iLen;
-    std::unique_ptr< wchar[] > pszTitle( new wchar[ iLen ] );
+    ++len;
+    std::unique_ptr< wchar[] > pszTitle( new wchar[ len ] );
 
     //Copy the string into the buffer. Measure how many characters were output, not including the null character.
     //Unlike GetWindowTextLength, the returned value is the actual number of wchar_t that were written to the buffer.
-    if( ( iLen = GetWindowTextW( m_hWnd, pszTitle.get(), iLen ) ) == 0 )
+    if( ( len = GetWindowTextW( m_wnd, pszTitle.get(), len ) ) == 0 )
         throwWindowsException();
 
     //Convert to UTF-8 and return
-    strTitleOut = utf16to8( pszTitle.get(), iLen + 1 );
+    titleOut = utf16to8( pszTitle.get(), len + 1 );
 }
 
 Key WindowsWindow::vkToKey( WPARAM wParam, LPARAM lParam ) {
@@ -682,7 +683,7 @@ Key WindowsWindow::vkToKey( WPARAM wParam, LPARAM lParam ) {
     if( wParam > 254 )
         return Key::INVALID;
 
-    bool bIsExtended = ( ( lParam & 0x01000000 ) != 0 );
+    bool isExtended = ( ( lParam & 0x01000000 ) != 0 );
 
     //Translate shift, control, and menu VK codes into left/right VK codes
     switch( wParam ) {
@@ -690,61 +691,61 @@ Key WindowsWindow::vkToKey( WPARAM wParam, LPARAM lParam ) {
         wParam = MapVirtualKey( ( lParam & 0x00ff0000 ) >> 16, MAPVK_VSC_TO_VK_EX );
         break;
     case VK_CONTROL:
-        wParam = bIsExtended ? VK_RCONTROL : VK_LCONTROL;
+        wParam = isExtended ? VK_RCONTROL   : VK_LCONTROL;
         break;
     case VK_MENU:
-        wParam = bIsExtended ? VK_RMENU    : VK_LMENU;
+        wParam = isExtended ? VK_RMENU      : VK_LMENU;
         break;
 
     //The following keys are present on both the main part
     //of the keyboard and the numpad. We need to check the "extended key"
     //bit to differentiate them.
     case VK_INSERT:
-         return bIsExtended ? Key::INSERT       : Key::NUMPAD_INSERT;
+         return isExtended ? Key::INSERT        : Key::NUMPAD_INSERT;
     case VK_DELETE:
-         return bIsExtended ? Key::DEL          : Key::NUMPAD_DEL;
+         return isExtended ? Key::DEL           : Key::NUMPAD_DEL;
     case VK_HOME:
-         return bIsExtended ? Key::HOME         : Key::NUMPAD_HOME;
+         return isExtended ? Key::HOME          : Key::NUMPAD_HOME;
     case VK_END:
-         return bIsExtended ? Key::END          : Key::NUMPAD_END;
+         return isExtended ? Key::END           : Key::NUMPAD_END;
     case VK_PRIOR:      //Page up
-        return bIsExtended ? Key::PAGE_UP       : Key::NUMPAD_PAGE_UP;
+        return isExtended ? Key::PAGE_UP        : Key::NUMPAD_PAGE_UP;
     case VK_NEXT:       //Page down
-        return bIsExtended ? Key::PAGE_DOWN     : Key::NUMPAD_PAGE_DOWN;
+        return isExtended ? Key::PAGE_DOWN      : Key::NUMPAD_PAGE_DOWN;
     case VK_RETURN:
-        return bIsExtended ? Key::NUMPAD_ENTER  : Key::ENTER;
+        return isExtended ? Key::NUMPAD_ENTER   : Key::ENTER;
     case VK_UP:
-        return bIsExtended ? Key::UP            : Key::NUMPAD_UP;
+        return isExtended ? Key::UP             : Key::NUMPAD_UP;
     case VK_DOWN:
-        return bIsExtended ? Key::DOWN          : Key::NUMPAD_DOWN;
+        return isExtended ? Key::DOWN           : Key::NUMPAD_DOWN;
     case VK_LEFT:
-        return bIsExtended ? Key::LEFT          : Key::NUMPAD_LEFT;
+        return isExtended ? Key::LEFT           : Key::NUMPAD_LEFT;
     case VK_RIGHT:
-        return bIsExtended ? Key::RIGHT         : Key::NUMPAD_RIGHT;
+        return isExtended ? Key::RIGHT          : Key::NUMPAD_RIGHT;
     }
 
-    if( aeVKtoKey[ wParam ] == Key::INVALID )
+    if( vkToKeyMap[ wParam ] == Key::INVALID )
         logError( ( boost::format( "Invalid key: 0x%|04x|") % wParam ).str().c_str() );
 
-    return aeVKtoKey[ wParam ];
+    return vkToKeyMap[ wParam ];
 }
 
-void WindowsWindow::setPopup( const bool bPopup ) {
-    SetWindowLongPtr( m_hWnd, GWL_STYLE, ( bPopup ? ePopupWindow : eNormalWindow ) );
+void WindowsWindow::setPopup( const bool popup ) {
+    SetWindowLongPtr( m_wnd, GWL_STYLE, ( popup ? popupWindow : normalWindow ) );
 }
 
-void WindowsWindow::setBounds( const LongRectangle& cBounds ) {
-    if( MoveWindow( m_hWnd, cBounds.left, cBounds.right, cBounds.getWidth(), cBounds.getHeight(), TRUE ) == FALSE )
+void WindowsWindow::setBounds( const LongRectangle& bounds ) {
+    if( MoveWindow( m_wnd, bounds.left, bounds.right, bounds.getWidth(), bounds.getHeight(), TRUE ) == FALSE )
         throwWindowsException();
 }
 
-void WindowsWindow::getBounds( LongRectangle& cBoundsOut ) const {
-    if( GetWindowRect( m_hWnd, (LPRECT)(&cBoundsOut) ) == FALSE )
+void WindowsWindow::getBounds( LongRectangle& boundsOut ) const {
+    if( GetWindowRect( m_wnd, (LPRECT)(&boundsOut) ) == FALSE )
         throwWindowsException();
 }
 
 HWND WindowsWindow::getHandle() {
-    return m_hWnd;
+    return m_wnd;
 }
 
 //No copying allowed

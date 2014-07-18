@@ -42,28 +42,28 @@ private:
     typedef typename Map_t::value_type                                  MapPair_t;
 
 private:
-    Map_t m_cMap;
+    Map_t m_map;
 public:
-    void add( KeyConstRef_t xKey, const IFactory< Abstract_t >& cFactory );
-    void remove( KeyConstRef_t xKey );
+    void add( KeyConstRef_t key, const IFactory< Abstract_t >& factory );
+    void remove( KeyConstRef_t key );
 
-    Abstract_t create( KeyConstRef_t xKey ) const;
+    Abstract_t create( KeyConstRef_t key ) const;
 };
 
 template< typename Key_t, typename Abstract_t >
-void FactoryManager< Key_t, Abstract_t >::add( KeyConstRef_t xKey, const IFactory< Abstract_t >& cFactory ) {
-    m_cMap.insert( MapPair_t( xKey, cFactory ) );
+void FactoryManager< Key_t, Abstract_t >::add( KeyConstRef_t key, const IFactory< Abstract_t >& factory ) {
+    m_map.emplace( key, factory );
 }
 
 template< typename Key_t, typename Abstract_t >
-void FactoryManager< Key_t, Abstract_t >::remove( KeyConstRef_t xKey ) {
-    m_cMap.erase( xKey );
+void FactoryManager< Key_t, Abstract_t >::remove( KeyConstRef_t key ) {
+    m_map.erase( key );
 }
 
 template< typename Key_t, typename Abstract_t >
-Abstract_t FactoryManager< Key_t, Abstract_t >::create( KeyConstRef_t xKey ) const {
-    auto it = m_cMap.find( xKey );
-    if( it == m_cMap.end() )
+Abstract_t FactoryManager< Key_t, Abstract_t >::create( KeyConstRef_t key ) const {
+    auto it = m_map.find( key );
+    if( it == m_map.end() )
         throw NoSuchElementException();
 
     return it->second.create();

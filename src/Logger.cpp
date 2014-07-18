@@ -19,43 +19,43 @@ Description:
 
 namespace Brimstone {
 
-std::vector< ILogger* > Loggers::m_acLoggers;
+std::vector< ILogger* > Loggers::m_loggers;
 
-const uchar* logMessageTypeToString( LogMessageType eType ) {
-    static const uchar* apszLMTtoString[] = {
+const uchar* logMessageTypeToString( LogMessageType type ) {
+    static const uchar* lmtToString[] = {
         "DETAIL", "INFO", "WARNING", "ERROR"
     };
-    return apszLMTtoString[ (int32)eType ];
+    return lmtToString[ (int32)type ];
 }
 
 //0xFFFFFFFF = 1 for all bits
-AbstractLogger::AbstractLogger() : m_eFilter( 0xFFFFFFFF ) {
+AbstractLogger::AbstractLogger() : m_filter( 0xFFFFFFFF ) {
 }
 
 void AbstractLogger::setFilter( std::initializer_list< LogMessageType > il ) {
-    m_eFilter = 0;
+    m_filter = 0;
     for( auto eType : il )
-        m_eFilter |= ( 1 << (int32)eType );
+        m_filter |= ( 1 << (int32)eType );
 }
 
-bool AbstractLogger::passesFilter( const LogMessageType eType ) const {
-    int32 iMask = ( 1 << (int32)eType );
-    return ( iMask & m_eFilter ) == iMask;
+bool AbstractLogger::passesFilter( const LogMessageType type ) const {
+    int32 mask = ( 1 << (int32)type );
+    return ( mask & m_filter ) == mask;
 }
 
-void ConsoleLogger::write( const uchar* pszString, LogMessageType eType ) {
-    if( !passesFilter( eType ) )
+void ConsoleLogger::write( const uchar* str, LogMessageType type ) {
+    if( !passesFilter( type ) )
         return;
 
     //Error messages go to std::cerr, all other messages go to std::cout
-    if( eType == LogMessageType::ERR )
-        std::cerr << "[" << logMessageTypeToString( eType ) << "] " << pszString << std::endl;
+    if( type == LogMessageType::ERR )
+        std::cerr << "[" << logMessageTypeToString( type ) << "] " << str << std::endl;
     else
-        std::cout << "[" << logMessageTypeToString( eType ) << "] " << pszString << std::endl;
+        std::cout << "[" << logMessageTypeToString( type ) << "] " << str << std::endl;
 }
 
-FileLogger::FileLogger( const uchar* pszFilepath ) :
-    m_fout( pszFilepath, std::ios::out | std::ios::app | std::ios::ate ) {
+FileLogger::FileLogger( const uchar* filepath ) :
+    m_fout( filepath, std::ios::out | std::ios::app | std::ios::ate ) {
 
     if( m_fout.bad() )
         throw IOException();
@@ -68,22 +68,22 @@ void FileLogger::write( const uchar* pszString, LogMessageType eType ) {
     m_fout << "[" << logMessageTypeToString( eType ) << "] " << pszString << std::endl;
 }
 
-void Loggers::write( const uchar* pszString, LogMessageType eType ) {
-    for( ILogger* p : m_acLoggers )
-        p->write( pszString, eType );
+void Loggers::write( const uchar* str, LogMessageType type ) {
+    for( ILogger* p : m_loggers )
+        p->write( str, type );
 }
 
-void Loggers::add( ILogger& cLogger ) {
-    m_acLoggers.push_back( &cLogger );
+void Loggers::add( ILogger& logger ) {
+    m_loggers.push_back( &logger );
 }
 
-void Loggers::remove( ILogger& cLogger ) {
-    auto it = std::find( m_acLoggers.begin(), m_acLoggers.end(), &cLogger );
+void Loggers::remove( ILogger& logger ) {
+    auto it = std::find( m_loggers.begin(), m_loggers.end(), &logger );
 
-    if( it == m_acLoggers.end() )
+    if( it == m_loggers.end() )
         throw NoSuchElementException();
 
-    m_acLoggers.erase( it );
+    m_loggers.erase( it );
 }
 
 }

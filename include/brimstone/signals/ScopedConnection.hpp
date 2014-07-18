@@ -48,38 +48,38 @@ public:
     ~ScopedConnection();
     void release();
 private:
-    void connected( Signal_t& cSignal );
-    void disconnected( Signal_t& cSignal );
+    void connected( Signal_t& signal );
+    void disconnected( Signal_t& signal );
 private:
-    SignalCollection_t  m_apcSignals;
+    SignalCollection_t  m_signals;
 };
 
 template< typename Return, typename... Args >
 ScopedConnection< Return ( Args... ) >::~ScopedConnection() {
     //Break connections with signals
-    for( auto it = m_apcSignals.begin(); it != m_apcSignals.end(); ++it )
+    for( auto it = m_signals.begin(); it != m_signals.end(); ++it )
         (**it).disconnect( *this );
 }
 
 template< typename Return, typename... Args >
 void ScopedConnection< Return ( Args... ) >::release() {
-    for( auto it = m_apcSignals.begin(); it != m_apcSignals.end(); ++it )
+    for( auto it = m_signals.begin(); it != m_signals.end(); ++it )
         (**it).release( *this );
 
-    m_apcSignals.clear();
+    m_signals.clear();
 }
 
 template< typename Return, typename... Args >
-void ScopedConnection< Return ( Args... ) >::connected( Signal_t& cSignal ) {
-    m_apcSignals.push_back( &cSignal );
+void ScopedConnection< Return ( Args... ) >::connected( Signal_t& signal ) {
+    m_signals.push_back( &signal );
 }
 
 template< typename Return, typename... Args >
-void ScopedConnection< Return ( Args... ) >::disconnected( Signal_t& cSignal ) {
-    auto it = std::find( m_apcSignals.begin(), m_apcSignals.end(), &cSignal );
-    if( it == m_apcSignals.end() )
+void ScopedConnection< Return ( Args... ) >::disconnected( Signal_t& signal ) {
+    auto it = std::find( m_signals.begin(), m_signals.end(), &signal );
+    if( it == m_signals.end() )
         return;
-    m_apcSignals.erase( it );
+    m_signals.erase( it );
 }
 
 }

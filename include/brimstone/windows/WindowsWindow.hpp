@@ -35,42 +35,42 @@ private:
     typedef std::unordered_map< HWND, WindowsWindow& > HWNDToWindowMap;
 
 public:
-    WindowsWindow( Window& cParent );
+    WindowsWindow( Window& parent );
     ~WindowsWindow();
 
-    void            setTitle( const ustring& strTitle );
-    void            getTitle( ustring& strTitleOut ) const;
+    void            setTitle( const ustring& title );
+    void            getTitle( ustring& titleOut ) const;
 
-    void            setPopup( const bool bPopup );
+    void            setPopup( const bool popup );
 
-    void            setBounds( const LongRectangle& cBounds );
-    void            getBounds( LongRectangle& cBoundsOut ) const;
+    void            setBounds( const LongRectangle& bounds );
+    void            getBounds( LongRectangle& boundsOut ) const;
 
     HWND            getHandle();
 
 private:
-    void            adjustWindowBounds( long iWidth, long iHeight );
-    LRESULT         windowProc( UINT uiMessage, WPARAM wParam, LPARAM lParam );
-    void            getMouseCoordinates( LPARAM lParam, int32& iXOut, int32& iYOut );
+    void            adjustWindowBounds( long width, long height );
+    LRESULT         windowProc( UINT message, WPARAM wParam, LPARAM lParam );
+    void            getMouseCoordinates( LPARAM lParam, int32& xOut, int32& yOut );
 
     WindowsWindow( const WindowsWindow& );
     WindowsWindow&  operator =( const WindowsWindow& );
 
 private:
-    HWND            m_hWnd;
-    Window*         m_pcParent;
-    wchar           m_cLeadSurrogate;
+    HWND            m_wnd;
+    Window*         m_parent;
+    wchar           m_leadSurrogate;
 
 public:
     static void             processEvents();
 
 private:
-    static ATOM             registerWindowClass( HINSTANCE hInstance );
-    static LRESULT CALLBACK mainProc( HWND hWnd, UINT uiMessage, WPARAM wParam, LPARAM lParam );
+    static ATOM             registerWindowClass( HINSTANCE instance );
+    static LRESULT CALLBACK mainProc( HWND wnd, UINT message, WPARAM wParam, LPARAM lParam );
     static Key              vkToKey( WPARAM wParam, LPARAM lParam );
 private:
-    static bool                                       m_bClassRegistered;
-    static std::unordered_map< HWND, WindowsWindow& > m_acWindowMap;
+    static bool                                       m_classRegistered;
+    static std::unordered_map< HWND, WindowsWindow& > m_windowMap;
 };
 
 typedef WindowsWindow WindowImpl;

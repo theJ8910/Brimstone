@@ -20,8 +20,8 @@ Description:
 
 namespace Brimstone {
 
-uint32 utf8ToCodePoint( const uchar* pszUTF8Buffer, const size_t uiByteCount );
-uint32 utf8ToCodePoint( const ustring& strUTF8 );
+uint32 utf8ToCodePoint( const uchar* utf8Buffer, const size_t byteCount );
+uint32 utf8ToCodePoint( const ustring& utf8 );
 
 }
 

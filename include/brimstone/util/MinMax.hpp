@@ -15,9 +15,12 @@ Description:
 
 
 //Includes
-#include <utility>          //std::swap
-#include "../Exception.hpp" //NullPointerException, SizeException
-#include "../types.hpp"     //uint32
+#include <utility>                  //std::swap
+#include <brimstone/Exception.hpp>  //NullPointerException, SizeException
+#include <brimstone/types.hpp>      //uint32
+
+
+
 
 //Defines
 //#define BS_MINMAX_CHECKNULLPTR    //If this is declared, the minmax functions make sure that pointers given as parameters to functions that are required to be non-NULL actually are non-NULL.
@@ -31,18 +34,17 @@ namespace Brimstone {
 //Math
 //Faster ------------------------------------------------------------------------------------------------------------------------------------------ Slower
 
-//Statistics
-template <typename T>   inline void         electMin( T& xCurrentInWinnerOut, const T& xCandidate );
-template <typename T>   inline void         min( const T& xA, const T& xB, T& xMinOut );                                                            template <typename T>   inline T        min( const T& xA, const T& xB );
-template <typename T>   inline void         min( const T* paxValues, uint32 uiNumItems, T& xMinOut );
+template< typename T >  inline void         electMin( T& currentInWinnerOut, const T& candidate );
+template< typename T >  inline void         min( const T& a, const T& b, T& minOut );                                                               template< typename T >  inline T        min( const T& a, const T& b );
+template< typename T >  inline void         min( const T* values, uint32 numItems, T& minOut );
 
-template <typename T>   inline void         electMax( T& xCurrentInWinnerOut, const T& _Candidate );
-template <typename T>   inline void         max( const T& xA, const T& xB, T& xMaxOut );                                                            template <typename T>   inline T        max( const T& xA, const T& xB );
-template <typename T>   inline void         max( const T* paxValues, uint32 uiNumItems, T& xMaxOut );
+template< typename T >  inline void         electMax( T& currentInWinnerOut, const T& candidate );
+template< typename T >  inline void         max( const T& a, const T& b, T& maxOut );                                                               template< typename T >  inline T        max( const T& a, const T& b );
+template< typename T >  inline void         max( const T* values, uint32 numItems, T& maxOut );
 
-template <typename T>   inline void         electMinMax( T& xMinInOut, T& xMaxInOut, const T& xCandidate );
-template <typename T>   inline void         minMax( const T& xA, const T& xB, T& xMinOut, T& xMaxOut );                                             template <typename T>   inline void     minMax( T& xAInMinOut, T& xBInMaxOut );
-template <typename T>   inline void         minMax( const T* paxValues, uint32 uiNumItems, T& xMinOut, T& xMaxOut );
+template< typename T >  inline void         electMinMax( T& minInOut, T& maxInOut, const T& candidate );
+template< typename T >  inline void         minMax( const T& a, const T& b, T& minOut, T& maxOut );                                                 template< typename T >  inline void     minMax( T& aInMinOut, T& bInMaxOut );
+template< typename T >  inline void         minMax( const T* values, uint32 numItems, T& minOut, T& maxOut );
 
 
 /*
@@ -63,81 +65,81 @@ Description:
     Whichever candidate is selected (the smallest variable) will occupy the office after the election (after the function runs).
 
     Usage:
-        int iMin = 10;
-        int iA  = 20;
-        int iB  = 5;
-        electMin( iMin, iA );
-        electMin( iMin, iB );
+        int smallest = 10;
+        int a        = 20;
+        int b        = 5;
+        electMin( smallest, a ); //smallest is still 10
+        electMin( smallest, b ); //smallest is now 5
 
 Arguments:
-    xCurrentInWinnerOut:    The current value. Can potentially be replaced by xCandidate.
-    xCandidate:             A potentially smaller value.
+    currentInWinnerOut:     The current value. Can potentially be replaced by xCandidate.
+    candidate:              A potentially smaller value.
 
 Returns:
     void:                   N/A
 */
-template<typename T>
-inline void electMin( T& xCurrentInWinnerOut, const T& xCandidate )
+template< typename T >
+inline void electMin( T& currentInWinnerOut, const T& candidate )
 {
-    if( xCandidate < xCurrentInWinnerOut )
-        xCurrentInWinnerOut = xCandidate;
+    if( candidate < currentInWinnerOut )
+        currentInWinnerOut = candidate;
 }
 
 /*
-min
+min{1}
 -----------------------
 
 Description:
-    Takes two values, compares them, and sets _MinOut to the smaller value.
+    Takes two values, compares them, and sets minOut to the smaller value.
 
     Usage:
         int a = 1;
         int b = 2;
         int smallest;
-        Min( a, b, smallest );
+        min( a, b, smallest );
 
 Arguments:
-    xA:         A value.
-    xB:         Another value.
-    xMaxOut:    A given variable set to the smaller of the two values.
+    a:          A value.
+    b:          Another value.
+    minOut:     A given variable set to the smaller of the two values.
 
 Returns:
     void:       N/A
 */
-template<typename T>
-inline void min( const T& xA, const T& xB, T& xMinOut )
+template< typename T >
+inline void min( const T& a, const T& b, T& minOut )
 {
-    xMinOut = ( ( xA < xB ) ? xA : xB );
+    minOut = ( ( a < b ) ? a : b );
 }
 
 /*
-min
+min{2}
 -----------------------
 
 Description:
     Takes two values, compares them, and returns the smaller value.
-    NOTE: This is less efficient to use than the above function.
+    NOTE: In some cases this may be less efficient to use than the above function.
 
     Usage:
         int a = 1;
         int b = 2;
-        int smallest = Min( a, b );
+        int smallest = min( a, b );
 
 Arguments:
-    xA:     A value.
-    xB:     Another value.
+    a:      A value.
+    b:      Another value.
 
 Returns:
     T:      The smaller value.
 */
-template<typename T>
-inline T min( const T& xA, const T& xB )
+template< typename T >
+inline T min( const T& a, const T& b )
 {
-    return ( ( xA < xB ) ? xA : xB );
+    return ( ( a < b ) ? a : b );
 }
 
 /*
-min
+min{3}
 -----------------------
 
 Description:
@@ -149,22 +151,26 @@ Description:
         min( arr, 7, smallest );
 
 Arguments:
-    paxValues:      Pointer to an array of values to find the smallest element of.
-                    Cannot be nullptr.
-    uiNumItems:     The number of items in the array.
-                    Must be at least 1.
-    xMinOut:        Will contain the smallest value in the array after the function runs.
+    values:                 Pointer to an array of values to find the smallest element of.
+                                Cannot be nullptr.
+    numItems:               The number of items in the array.
+                                Must be at least 1.
+    minOut:                 Will contain the smallest value in the array after the function runs.
 
 Returns:
-    void:           N/A
+    void:                   N/A
+
+Throws:
+    NullPointerException:   If values is nullptr.
+    SizeException:          If numItems is 0.
 */
-template<typename T>
-inline void min( const T* paxValues, uint32 uiNumItems, T& xMinOut )
+template< typename T >
+inline void min( const T* values, uint32 numItems, T& minOut )
 {
 
 #ifdef BS_MINMAX_CHECKNULLPTR
 
-    if( _paValues == nullptr ) {
+    if( values == nullptr ) {
         throw NullPointerException();
     }
 
@@ -172,16 +178,16 @@ inline void min( const T* paxValues, uint32 uiNumItems, T& xMinOut )
 
 #ifdef BS_MINMAX_CHECKSIZE
 
-    if( uiNumItems == 0 ) {
+    if( numItems == 0 ) {
         throw SizeException();
     }
 
 #endif //BS_MINMAX_CHECKSIZE
 
-    xMinOut = *paxValues;
-    while( ( --uiNumItems ) > 0u ) {
-        if( *(++paxValues) < xMinOut )
-            xMinOut = *paxValues;
+    minOut = *values;
+    while( ( --numItems ) > 0u ) {
+        if( *(++values) < minOut )
+            minOut = *values;
     }
 }
 
@@ -197,32 +203,32 @@ Description:
     this function focuses on the largest value instead.
 
     Usage:
-        int iMax = 10;
-        int iA   = 20;
-        int iB   = 5;
-        electMax( iMax, iA );   //iMax is now 20
-        electMax( iMax, iB );   //iMax is still 20
+        int largest = 10;
+        int a       = 20;
+        int b       = 5;
+        electMax( largest, a ); //largest is now 20
+        electMax( largest, b ); //largest is still 20
 
 Arguments:
-    xCurrentInWinnerOut:    The current value. Can potentially be replaced by _Candidate.
-    xCandidate:             A potentially larger value.
+    currentInWinnerOut:     The current value. Can potentially be replaced by candidate.
+    candidate:              A potentially larger value.
 
 Returns:
     void:                   N/A
 */
-template<typename T>
-inline void electMax( T& xCurrentInWinnerOut, const T& xCandidate )
+template< typename T >
+inline void electMax( T& currentInWinnerOut, const T& candidate )
 {
-    if( xCandidate > xCurrentInWinnerOut )
-        xCurrentInWinnerOut = xCandidate;
+    if( candidate > currentInWinnerOut )
+        currentInWinnerOut = candidate;
 }
 
 /*
-max
+max{1}
 -----------------------
 
 Description:
-    Takes two values, compares them, and sets _MaxOut to the larger value.
+    Takes two values, compares them, and sets maxOut to the larger value.
     
     Usage:
         int a = 1;
@@ -231,21 +237,21 @@ Description:
         max( a, b, largest );
 
 Arguments:
-    xA:         A value.
-    xB:         Another value.
-    xMaxOut:    A given variable set to the larger of the two values.
+    a:          A value.
+    b:          Another value.
+    maxOut:     A given variable set to the larger of the two values.
 
 Returns:
     void:       N/A
 */
-template<typename T>
-inline void max( const T& xA, const T& xB, T& xMaxOut )
+template< typename T >
+inline void max( const T& a, const T& b, T& maxOut )
 {
-    xMaxOut = ( ( xA > xB ) ? xA : xB );
+    maxOut = ( ( a > b ) ? a : b );
 }
 
 /*
-max
+max{2}
 -----------------------
 
 Description:
@@ -257,20 +263,20 @@ Description:
         int largest = max( a, b );
 
 Arguments:
-    xA:     A value.
-    xB:     Another value.
+    a:      A value.
+    b:      Another value.
 
 Returns:
     T:      The larger value.
 */
-template<typename T>
-inline T max( const T& xA, const T& xB )
+template< typename T >
+inline T max( const T& a, const T& b )
 {
-    return ( ( xA > xB ) ? xA : xB );
+    return ( ( a > b ) ? a : b );
 }
 
 /*
-max
+max{3}
 -----------------------
 
 Description:
@@ -278,26 +284,30 @@ Description:
 
     Usage:
         int arr[] = { 162, 26, 31, 34, 255, 64, 7 }
-        int maximum;
-        max( arr, 7, maximum );
+        int largest;
+        max( arr, 7, largest );
 
 Arguments:
-    paxValues:      Pointer to an array of values to find the largest element of.
-                    Cannot be nullptr.
-    uiNumItems:     The number of items in the array.
-                    Must be at least 1.
-    xMaxOut:        Will contain the largest value in the array after the function runs.
+    values:                 Pointer to an array of values to find the largest element of.
+                                Cannot be nullptr.
+    numItems:               The number of items in the array.
+                                Must be at least 1.
+    maxOut:                 Will contain the largest value in the array after the function runs.
 
 Returns:
-    void:           N/A
+    void:                   N/A
+
+Throws:
+    NullPointerException:   If values is nullptr.
+    SizeException:          If numItems is 0.
 */
-template<typename T>
-inline void max( const T* paxValues, uint32 uiNumItems, T& xMaxOut )
+template< typename T >
+inline void max( const T* values, uint32 numItems, T& maxOut )
 {
 
 #ifdef BS_MINMAX_CHECKNULLPTR
 
-    if( paxValues == nullptr ) {
+    if( values == nullptr ) {
         throw NullPointerException();
     }
 
@@ -305,16 +315,16 @@ inline void max( const T* paxValues, uint32 uiNumItems, T& xMaxOut )
 
 #ifdef BS_MINMAX_CHECKSIZE
 
-    if( uiNumItems == 0 ) {
+    if( numItems == 0 ) {
         throw SizeException();
     }
 
 #endif //BS_MINMAX_CHECKSIZE
 
-    xMaxOut = *paxValues;
-    while( ( --uiNumItems ) > 0u ) {
-        if( *( ++paxValues ) > xMaxOut )
-            xMaxOut = *paxValues;
+    maxOut = *values;
+    while( ( --numItems ) > 0u ) {
+        if( *( ++values ) > maxOut )
+            maxOut = *values;
     }
 }
 
@@ -335,45 +345,49 @@ Description:
     this function focuses on both a smallest and largest value.
 
     IMPORTANT:
-    _MinInOut is expected to be less than or equal to _MaxInOut prior to calling this function.
+    minInOut is expected to be less than or equal to maxInOut prior to calling this function.
 
     Usage:
-        int iMin = 10
-        int iMax = 15;
+        int smallest    = 10;
+        int largest     = 15;
 
-        int iA   = 20;
-        int iB   = 5;
-        int iC   = 30
+        int a           = 20;
+        int b           = 5;
+        int c           = 30
         
-        electMinMax( iMin, iMax, iA );
-        electMinMax( iMin, iMax, iB );
-        electMinMax( iMin, iMax, iC );
+        electMinMax( smallest, largest, a );
+        electMinMax( smallest, largest, b );
+        electMinMax( smallest, largest, c );
 
 Arguments:
-    xMinInOut:      Currently the smallest value. Can potentially be replaced by _Candidate.
-    xMaxInOut:      Currently the largest value. Can potentially be replaced by _Candidate.
-    xCandidate:     A value potentially larger or smaller than _Candidate.
+    minInOut:       Currently the smallest value. Can potentially be replaced by candidate.
+    maxInOut:       Currently the largest value. Can potentially be replaced by candidate.
+    candidate:      A value potentially smaller than minInOut or larger than maxInOut.
 
 Returns:
     void:           N/A
 */
-template<typename T>
-inline void electMinMax( T& xMinInOut, T& xMaxInOut, const T& xCandidate )
+template< typename T >
+inline void electMinMax( T& minInOut, T& maxInOut, const T& candidate )
 {
-    if( xCandidate > xMaxInOut ) {
-        xMaxInOut = xCandidate;
-    } else if( xCandidate < xMinInOut ) {
-        xMinInOut = xCandidate;
+    if( candidate > maxInOut ) {
+        maxInOut = candidate;
+    } else if( candidate < minInOut ) {
+        minInOut = candidate;
     }
 }
 
 /*
-minMax
+minMax{1}
 -----------------------
 
 Description:
-    Takes two values, compares them, and sets _MinOut to the smaller value,
-    and _MaxOut to the larger value.
+    Takes two values, compares them, and sets minOut to the smaller value,
+    and maxOut to the larger value.
+
+    Note:
+        With minMax{1}, minOut and maxOut CANNOT be the same variable as "a" and "b".
+        Instead, you should use minMax{2}.
 
     Usage:
         int a = 1;
@@ -383,42 +397,34 @@ Description:
         minMax( a, b, smallest, largest );
 
 Arguments:
-    xA:         A value.
-    xB:         Another value.
-    xMinOut:    A given variable set to the smaller of the two values.
-    xMaxOut:    A given variable set to the larger of the two values.
+    a:          A value.
+    b:          Another value.
+    minOut:     A given variable set to the smaller of the two values.
+    maxOut:     A given variable set to the larger of the two values.
 
 Returns:
     void:       N/A
 */
-template <typename T>
-inline void minMax( const T& xA, const T& xB, T& xMinOut, T& xMaxOut )
+template< typename T >
+inline void minMax( const T& a, const T& b, T& minOut, T& maxOut )
 {
-    if( xA > xB ) {
-        xMinOut = xB;
-        xMaxOut = xA;
+    if( a > b ) {
+        minOut = b;
+        maxOut = a;
     } else {
-        xMinOut = xA;
-        xMaxOut = xB;
+        minOut = a;
+        maxOut = b;
     }
 }
 
 /*
-minMax
+minMax{2}
 -----------------------
 
 Description:
     Takes two values, compares them, and if necessary swaps
-    them so that xAInMinOut will be the minimum value,
-    and xBInMaxOut will be the maximum value.
-
-    If the items are already in order, this function is more efficient than
-    running MinMax( xAInMinOut, xBInMaxOut, xAInMinOut, xBInMaxOut ).
-
-    However, if the items are out of order, this function is less efficient than the above function.
-    That being said, this function is best used for things that are likely to be in order already (if this is possible to know, of course).
-    
-    Overall, the difference in the efficiency of the two functions isn't huge, so don't worry about it too much.
+    them so that aInMinOut will be the minimum value,
+    and bInMaxOut will be the maximum value.
 
     Usage:
         int a = 2;
@@ -426,23 +432,23 @@ Description:
         minMax( a, b );
 
 Arguments:
-    xAInMinOut:     A reference to an existing variable holding the first value.
+    aInMinOut:      A reference to an existing variable holding the first value.
                     Will contain the smaller of the two values after the function runs.
-    xBInMaxOut:     A reference to an existing variable holding the second value.
+    bInMaxOut:      A reference to an existing variable holding the second value.
                     Will contain the larger of the two values after the function runs.
 
 Returns:
     void:           N/A
 */
-template <typename T>
-inline void minMax( T& xAInMinOut, T& xBInMaxOut )
+template< typename T >
+inline void minMax( T& aInMinOut, T& bInMaxOut )
 {
-    if( xAInMinOut > xBInMaxOut )
-        std::swap( xAInMinOut, xBInMaxOut );
+    if( aInMinOut > bInMaxOut )
+        std::swap( aInMinOut, bInMaxOut );
 }
 
 /*
-minMax
+minMax{3}
 -----------------------
 
 Description:
@@ -455,23 +461,27 @@ Description:
         minMax( arr, 7, smallest, largest );
 
 Arguments:
-    _paValues:      Pointer to an array of values to find the min/max of.
-                    Cannot be nullptr.
-    uiNumItems:     The number of items in the array.
-                    Must be at least 1.
-    _MinOut:        Will contain the smallest value in the array after the function runs.
-    _MaxOut:        Will contain the largest value in the array after the function runs.
+    values:         Pointer to an array of values to find the min/max of.
+                        Cannot be nullptr.
+    numItems:       The number of items in the array.
+                        Must be at least 1.
+    minOut:         Will contain the smallest value in the array after the function runs.
+    maxOut:         Will contain the largest value in the array after the function runs.
 
 Returns:
     void:           N/A
+
+Throws:
+    NullPointerException:   If values is nullptr.
+    SizeException:          If numItems is 0.
 */
-template<typename T>
-inline void minMax( const T* paxValues, uint32 uiNumItems, T& xMinOut, T& xMaxOut )
+template< typename T >
+inline void minMax( const T* values, uint32 numItems, T& minOut, T& maxOut )
 {
 
 #ifdef BS_MINMAX_CHECKNULLPTR
 
-    if( paxValues == nullptr ) {
+    if( values == nullptr ) {
         throw NullPointerException();
     }
 
@@ -479,19 +489,19 @@ inline void minMax( const T* paxValues, uint32 uiNumItems, T& xMinOut, T& xMaxOu
 
 #ifdef BS_MINMAX_CHECKSIZE
 
-    if( uiNumItems == 0 ) {
+    if( numItems == 0 ) {
         throw SizeException();
     }
 
 #endif //BS_MINMAX_CHECKSIZE
 
-    xMinOut = xMaxOut = *paxValues;
-    while( (--uiNumItems) > 0u ) {
-        ++paxValues;
-        if( *paxValues > xMaxOut )
-            xMaxOut = *paxValues;
-        else if( *paxValues < xMinOut )
-            xMinOut = *paxValues;
+    minOut = maxOut = *values;
+    while( (--numItems) > 0u ) {
+        ++values;
+        if( *values > maxOut )
+            maxOut = *values;
+        else if( *values < minOut )
+            minOut = *values;
     }
 }
 

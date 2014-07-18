@@ -105,85 +105,85 @@ const uchar* keyToString( const Key eKey );
 
 class MouseEvent {
 public:
-    MouseEvent( const int32 iX, const int32 iY );
+    MouseEvent( const int32 x, const int32 y );
     int32 getX() const;
     int32 getY() const;
 private:
-    int32 m_iX, m_iY;
+    int32 m_x, m_y;
 };
 
 class MouseButtonEvent : public MouseEvent {
 public:
-    MouseButtonEvent( const MouseButton eButton, const int32 iX, const int32 iY );
+    MouseButtonEvent( const MouseButton button, const int32 x, const int32 y );
     MouseButton getButton() const;
 private:
-    MouseButton m_eButton;
+    MouseButton m_button;
 };
 
 class MouseDownEvent : public MouseButtonEvent {
 public:
-    MouseDownEvent( const MouseButton eButton, const int32 iX, const int32 iY );
+    MouseDownEvent( const MouseButton button, const int32 x, const int32 y );
 };
 
 class MouseUpEvent : public MouseButtonEvent {
 public:
-    MouseUpEvent( const MouseButton eButton, const int32 iX, const int32 iY );
+    MouseUpEvent( const MouseButton button, const int32 x, const int32 y );
 };
 
 class MouseMoveEvent : public MouseEvent {
 public:
-    MouseMoveEvent( const int32 iX, const int32 iY );
+    MouseMoveEvent( const int32 x, const int32 y );
 };
 
 class MouseScrollEvent : public MouseEvent {
 public:
-    MouseScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY );
+    MouseScrollEvent( const float scrollAmount, const int32 x, const int32 y );
     float getScrollAmount() const;
 private:
-    float m_fScrollAmount;
+    float m_scrollAmount;
 };
 
 class MouseVScrollEvent : public MouseScrollEvent {
 public:
-    MouseVScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY );
+    MouseVScrollEvent( const float scrollAmount, const int32 x, const int32 y);
 };
 
 class MouseHScrollEvent : public MouseScrollEvent {
 public:
-    MouseHScrollEvent( const float fScrollAmount, const int32 iX, const int32 iY );
+    MouseHScrollEvent( const float scrollAmount, const int32 x, const int32 y );
 };
 
 class KeyEvent {
 public:
-    KeyEvent( const Key eKey );
+    KeyEvent( const Key key );
     Key getKey() const;
 private:
-    Key m_eKey;
+    Key m_key;
 };
 
 class KeyDownEvent : public KeyEvent {
 public:
-    KeyDownEvent( const Key eKey );
+    KeyDownEvent( const Key key );
 };
 
 class KeyUpEvent : public KeyEvent {
 public:
-    KeyUpEvent( const Key eKey );
+    KeyUpEvent( const Key key );
 };
 
 class CharacterTypedEvent {
 public:
     const uchar* getCharacter() const;
 private:
-    uchar m_pszKey[5];
+    uchar m_key[5];
 };
 
 class WindowCloseEvent {
 public:
-    WindowCloseEvent( Window& cWindow );
+    WindowCloseEvent( Window& window );
     Window* getWindow() const;
 private:
-    Window* m_pcWindow;
+    Window* m_window;
 };
 
 }

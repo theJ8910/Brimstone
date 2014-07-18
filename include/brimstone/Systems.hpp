@@ -75,9 +75,9 @@ class AbstractSystem : public ISystem {
 public:
     virtual const DependencySet_t& getDependencies();
 protected:
-    void addDependency( SystemType eType );
+    void addDependency( SystemType type );
 private:
-    DependencySet_t m_aeDependencies;
+    DependencySet_t m_dependencies;
 };
 
 class Systems {
@@ -86,26 +86,26 @@ private:
     typedef std::vector< ISystem* >                     SystemsStack_t;
     typedef std::unordered_set< SystemType >            SystemTypeSet_t;
 public:
-    static void add( SystemType eType );
+    static void add( SystemType type );
     
     template< typename T >
-    static T* get( SystemType eType );
+    static T* get( SystemType type );
 
     static void startAll();
     static void stopAll();
 private:
-    static void add( SystemType eType, SystemTypeSet_t& aeDependencyChain );
+    static void add( SystemType type, SystemTypeSet_t& dependencyChain );
 
-    static SystemsMap_t     m_acSystemsByType;
-    static SystemsStack_t   m_acSystemsByLoadOrder;
+    static SystemsMap_t     m_systemsByType;
+    static SystemsStack_t   m_systemsByLoadOrder;
 public:
     static FactoryManager< SystemType, ISystem* >& getFactoryManager();
 };
 
 template< typename T >
-T* Systems::get( SystemType eType ) {
-    auto it = m_acSystemsByType.find( eType );
-    return it != m_acSystemsByType.end() ? static_cast< T* >( it->second ) : nullptr;
+T* Systems::get( SystemType type ) {
+    auto it = m_systemsByType.find( type );
+    return it != m_systemsByType.end() ? static_cast< T* >( it->second ) : nullptr;
 }
 
 }

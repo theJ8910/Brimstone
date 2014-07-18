@@ -31,7 +31,7 @@ public:
 
     std::weak_ptr< LuaInstance > newInstance();
 private:
-    std::vector< std::shared_ptr< LuaInstance > > m_acInstances;
+    std::vector< std::shared_ptr< LuaInstance > > m_instances;
 };
 
 }

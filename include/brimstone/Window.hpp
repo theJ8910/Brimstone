@@ -35,7 +35,7 @@ Description:
 
 
 //Macros
-#define BS_WINDOW_EVENT( name ) Signal< void( name##Event& ) > m_cSignal##name
+#define BS_WINDOW_EVENT( name ) Signal< void( name##Event& ) > m_signal##name
 
 
 
@@ -47,19 +47,19 @@ public:
     Window();
     ~Window();
 
-    void        setTitle( const ustring& strTitle );
-    void        getTitle( ustring& strTitleOut ) const;
+    void        setTitle( const ustring& title );
+    void        getTitle( ustring& titleOut ) const;
 
-    void        setPopup( const bool bPopup );
+    void        setPopup( const bool popup );
     bool        getPopup() const;
 
-    void        setVisible( const bool bVisible );
+    void        setVisible( const bool visible );
     bool        getVisible() const;
 
-    void        setBounds( const LongRectangle& cBounds );
-    void        getBounds( LongRectangle& cBoundsOut ) const;
+    void        setBounds( const LongRectangle& bounds );
+    void        getBounds( LongRectangle& boundsOut ) const;
 
-    void        setKeyRepeat( const bool bKeyRepeat );
+    void        setKeyRepeat( const bool keyRepeat );
     bool        getKeyRepeat() const;
 
     BS_WINDOW_EVENT( MouseDown      );
@@ -73,12 +73,12 @@ public:
     BS_WINDOW_EVENT( WindowClose    );
 
 private:
-    ustring                 m_strTitle;
-    bool                    m_bPopup;
-    bool                    m_bKeyRepeat;
-    LongRectangle           m_cBounds;
+    ustring                 m_title;
+    bool                    m_popup;
+    bool                    m_keyRepeat;
+    LongRectangle           m_bounds;
 
-    Private::WindowImpl*    m_pcImpl;
+    Private::WindowImpl*    m_impl;
 
 public:
     static void processEvents();

@@ -44,36 +44,36 @@ public:
 public:
     //Construtors
     Rectangle();
-    Rectangle( const I iLeft, const I iTop, const I iRight, const I iBottom );
-    Rectangle( const I* const paiLTRB );
+    Rectangle( const I left, const I top, const I right, const I bottom );
+    Rectangle( const I* const ltrb );
 
     //Rectangle represented as two x bounds and two y bounds
-    void    set( const I iLeft, const I iTop, const I iRight, const I iBottom );
-    void    get( I& iLeft, I& iTop, I& iRight, I& iBottom ) const;
+    void    set( const I left, const I top, const I right, const I bottom );
+    void    get( I& left, I& top, I& right, I& bottom ) const;
 
-    void    set( const I* const paiLTRB );
-    void    get( I* const paiLTRBOut ) const;
+    void    set( const I* const ltrb );
+    void    get( I* const ltrbOut ) const;
 
-    void    setLeft( const I iLeft );
+    void    setLeft( const I left );
     I       getLeft() const;
 
-    void    setTop( const I iTop );
+    void    setTop( const I top );
     I       getTop() const;
 
-    void    setRight( const I iRight );
+    void    setRight( const I right );
     I       getRight() const;
 
-    void    setBottom( const I iBottom );
+    void    setBottom( const I bottom );
     I       getBottom() const;
 
     //Rectangle represented as width and height with top-left corner
-    void    setDimensions( const I iWidth, const I iHeight );
-    void    getDimensions( I& iWidthOut, I& iHeightOut );
+    void    setDimensions( const I width, const I height );
+    void    getDimensions( I& widthOut, I& heightOut );
 
-    void    setWidth( const I iWidth );
+    void    setWidth( const I width );
     I       getWidth() const;
 
-    void    setHeight( const I iHeight );
+    void    setHeight( const I height );
     I       getHeight() const;
 
     //Miscellaneous utility methods
@@ -96,56 +96,56 @@ Rectangle<I>::Rectangle() {
 #endif  //BS_RECTANGLE_ZERO
 
 template< typename I >
-Rectangle<I>::Rectangle( const I iLeft, const I iTop, const I iRight, const I iBottom ) {
-    set( iLeft, iTop, iRight, iBottom );
+Rectangle<I>::Rectangle( const I left, const I top, const I right, const I bottom ) {
+    set( left, top, right, bottom );
 }
 
 template< typename I >
-Rectangle<I>::Rectangle( const I* const paiLTRB ) {
-    set( paiLTRB );
+Rectangle<I>::Rectangle( const I* const ltrb ) {
+    set( ltrb );
 }
 
 template< typename I >
-void Rectangle<I>::set( const I iLeft, const I iTop, const I iRight, const I iBottom ) {
-    left    = iLeft;
-    top     = iTop;
-    right   = iRight;
-    bottom  = iBottom;
+void Rectangle<I>::set( const I left, const I top, const I right, const I bottom ) {
+    this->left      = left;
+    this->top       = top;
+    this->right     = right;
+    this->bottom    = bottom;
 }
 
 template< typename I >
-void Rectangle<I>::get( I& iLeftOut, I& iTopOut, I& iRightOut, I& iBottomOut ) const {
-    iLeftOut    = left;
-    iTopOut     = top;
-    iRightOut   = right;
-    iBottomOut  = bottom;
+void Rectangle<I>::get( I& leftOut, I& topOut, I& rightOut, I& ibottomOut ) const {
+    leftOut     = left;
+    topOut      = top;
+    rightOut    = right;
+    bottomOut   = bottom;
 }
 
 template< typename I >
-void Rectangle<I>::set( const I* const paiLTRB ) {
-    if( paiLTRB == nullptr )
+void Rectangle<I>::set( const I* const ltrb ) {
+    if( ltrb == nullptr )
         throw NullPointerException();
 
-    left    = paiLTRB[ 0 ];
-    top     = paiLTRB[ 1 ];
-    right   = paiLTRB[ 2 ];
-    bottom  = paiLTRB[ 3 ];
+    left    = ltrb[ 0 ];
+    top     = ltrb[ 1 ];
+    right   = ltrb[ 2 ];
+    bottom  = ltrb[ 3 ];
 }
 
 template< typename I >
-void Rectangle<I>::get( I* const paiLTRBOut ) const {
-    if( paiLTRBOut == nullptr )
+void Rectangle<I>::get( I* const ltrbOut ) const {
+    if( ltrbOut == nullptr )
         throw NullPointerException();
 
-    paiLTRBOut[ 0 ] = left;
-    paiLTRBOut[ 1 ] = top;
-    paiLTRBOut[ 2 ] = right;
-    paiLTRBOut[ 3 ] = bottom;
+    ltrbOut[ 0 ] = left;
+    ltrbOut[ 1 ] = top;
+    ltrbOut[ 2 ] = right;
+    ltrbOut[ 3 ] = bottom;
 }
 
 template< typename I >
-void Rectangle<I>::setLeft( const I iLeft ) {
-    left = iLeft;
+void Rectangle<I>::setLeft( const I left ) {
+    this->left = left;
 }
 
 template< typename I >
@@ -154,8 +154,8 @@ I Rectangle<I>::getLeft() const {
 }
 
 template< typename I >
-void Rectangle<I>::setTop( const I iTop ) {
-    top = iTop;
+void Rectangle<I>::setTop( const I top ) {
+    this->top = top;
 }
 
 template< typename I >
@@ -164,8 +164,8 @@ I Rectangle<I>::getTop() const {
 }
 
 template< typename I >
-void Rectangle<I>::setRight( const I iRight ) {
-    right = iRight;
+void Rectangle<I>::setRight( const I right ) {
+    this->right = right;
 }
 
 template< typename I >
@@ -174,8 +174,8 @@ I Rectangle<I>::getRight() const {
 }
 
 template< typename I >
-void Rectangle<I>::setBottom( const I iBottom ) {
-    bottom = iBottom;
+void Rectangle<I>::setBottom( const I bottom ) {
+    this->bottom = bottom;
 }
 
 template< typename I >
@@ -184,20 +184,20 @@ I Rectangle<I>::getBottom() const {
 }
 
 template< typename I >
-void Rectangle<I>::setDimensions( const I iWidth, const I iHeight ) {
-    right   = left  + iWidth;
-    bottom  = top   + iHeight;
+void Rectangle<I>::setDimensions( const I width, const I height ) {
+    right   = left  + width;
+    bottom  = top   + height;
 }
 
 template< typename I >
-void Rectangle<I>::getDimensions( I& iWidthOut, I& iHeightOut ) {
-    iWidthOut   = right - left;
-    iHeightOut  = bottom - top;
+void Rectangle<I>::getDimensions( I& widthOut, I& heightOut ) {
+    widthOut   = right  - left;
+    heightOut  = bottom - top;
 }
 
 template< typename I >
-void Rectangle<I>::setWidth( const I iWidth ) {
-    right = left + iWidth;
+void Rectangle<I>::setWidth( const I width ) {
+    right = left + width;
 }
 
 template< typename I >
@@ -206,8 +206,8 @@ I Rectangle<I>::getWidth() const {
 }
 
 template< typename I >
-void Rectangle<I>::setHeight( const I iHeight ) {
-    bottom = top + iHeight;
+void Rectangle<I>::setHeight( const I height ) {
+    bottom = top + height;
 }
 
 template< typename I >
