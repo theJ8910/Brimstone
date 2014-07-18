@@ -55,7 +55,7 @@ void ConsoleLogger::write( const uchar* pszString, LogMessageType eType ) {
 }
 
 FileLogger::FileLogger( const uchar* pszFilepath ) :
-    m_fout( pszFilepath, std::ofstream::out | std::ofstream::app | std::ofstream::ate ) {
+    m_fout( pszFilepath, std::ios::out | std::ios::app | std::ios::ate ) {
 
     if( m_fout.bad() )
         throw IOException();
