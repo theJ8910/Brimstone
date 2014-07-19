@@ -105,7 +105,7 @@ void Signal< Return_t ( Args... ) >::connect( const Slot_t& slot ) {
 //Connect signal to a slot (managed by a scoped connection)
 template< typename Return_t, typename... Args >
 void Signal< Return_t ( Args... ) >::connect( const Slot_t& slot, ScopedConnection_t& scopedConnection ) {
-    m_apcSlots.emplace_back( slot, &scopedConnection );
+    m_slots.emplace_back( slot, &scopedConnection );
     scopedConnection.connected( *this );
 }
 

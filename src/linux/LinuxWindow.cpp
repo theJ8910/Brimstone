@@ -238,7 +238,7 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
                 m_parent->m_signalMouseVScroll( eventObj );
 
             //Horizontal scrolling (note: direction is assumed and needs to be tested somehow)
-            } else if( iButton == 6 || iButton == 7 ) {
+            } else if( button == 6 || button == 7 ) {
                 MouseHScrollEvent eventObj(
                     xEvent.xbutton.button == 6 ? -1.0f : 1.0f,
                     xEvent.xbutton.x,
@@ -249,13 +249,13 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
 
             //Actual buttons
             } else {
-                MouseUpEvent eventObj(
+                MouseDownEvent eventObj(
                     xButtonToMouseButton( button ),
                     xEvent.xbutton.x,
                     xEvent.xbutton.y
                 );
 
-                m_parent->m_signalMouseUp( eventObj );
+                m_parent->m_signalMouseDown( eventObj );
             }
         } break;
         //Button up
@@ -266,12 +266,12 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             if( button == Button4 || button == Button5 || button == 6 || button == 7 )
                 break;
 
-            MouseDownEvent eventObj(
+            MouseUpEvent eventObj(
                 xButtonToMouseButton( button ),
                 xEvent.xbutton.x,
                 xEvent.xbutton.y
             );
-            m_parent->m_signalMouseDown( eventObj );
+            m_parent->m_signalMouseUp( eventObj );
         } break;
         //Unhandled event
         default: {

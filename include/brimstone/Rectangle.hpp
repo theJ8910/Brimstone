@@ -114,7 +114,7 @@ void Rectangle<I>::set( const I left, const I top, const I right, const I bottom
 }
 
 template< typename I >
-void Rectangle<I>::get( I& leftOut, I& topOut, I& rightOut, I& ibottomOut ) const {
+void Rectangle<I>::get( I& leftOut, I& topOut, I& rightOut, I& bottomOut ) const {
     leftOut     = left;
     topOut      = top;
     rightOut    = right;
