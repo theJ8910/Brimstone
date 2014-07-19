@@ -19,6 +19,7 @@ Description:
 //Includes
 #include <string>       //std::string, std::wstring
 #include <sstream>      //ostream, istream, stringstream, istringstream, ostringstream, etc
+#include <stdint.h>     //int8_t, int16_t, etc
 
 
 
