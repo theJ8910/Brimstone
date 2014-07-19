@@ -56,12 +56,12 @@ uint32 utf8ToCodePoint( const uchar* utf8Buffer, const size_t byteCount ) {
             throw SizeException();
 
         //Verify that the next byte is a continuation byte. 
-        if (((*(utf8Buffer + 1)) & 0xC0) != 0x80) {
+        if( ( (*( utf8Buffer + 1)) & 0xC0 ) != 0x80 ) {
             throw MalformedStringException();
         }
 
-        return uint32( firstByte       & 0x1F ) <<  6 |
-            uint32((*(utf8Buffer + 1)) & 0x3F);
+        return uint32( firstByte           & 0x1F ) <<  6 |
+               uint32( (*(utf8Buffer + 1)) & 0x3F );
     //Three-byte sequence
     } else if( ( firstByte & 0xF0 ) == 0xE0 ) {
         if( byteCount < 3 )

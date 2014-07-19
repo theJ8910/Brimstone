@@ -15,7 +15,6 @@ Description:
 #include <brimstone/linux/LinuxWindow.hpp>      //Class header
 #include <brimstone/util/Range.hpp>             //ClampedValue
 #include <brimstone/WindowEvents.hpp>           //MouseClickEvent, MouseMoveEvent, KeyPressEvent
-#include <brimstone/util/Range.hpp>             //ClampedValue
 #include <brimstone/Exception.hpp>              //NullPointerException
 
 #include <brimstone/Logger.hpp>                 //TEMP
@@ -29,42 +28,42 @@ Description:
 namespace Brimstone {
 namespace Private {
 
-LinuxWindow::XWinToWindowMap    LinuxWindow::m_acWindowMap;
-Display*                        LinuxWindow::m_pcDisplay = nullptr;
-int                             LinuxWindow::m_iScreen = 0;
+LinuxWindow::XWinToWindowMap    LinuxWindow::m_windowMap;
+Display*                        LinuxWindow::m_display  = nullptr;
+int                             LinuxWindow::m_screen   = 0;
 
-LinuxWindow::LinuxWindow( Window& cParent ) : m_pcParent( &cParent ) {
-    if( m_acWindowMap.empty() ) {
-        m_pcDisplay = XOpenDisplay( nullptr );
-        if( m_pcDisplay == nullptr )
+LinuxWindow::LinuxWindow( Window& parent ) : m_parent( &parent ) {
+    if( m_windowMap.empty() ) {
+        m_display = XOpenDisplay( nullptr );
+        if( m_display == nullptr )
             throw NullPointerException();
-        m_iScreen = DefaultScreen( m_pcDisplay );
+        m_screen = DefaultScreen( m_display );
     }
 
-    unsigned long iBlack, iWhite;
-    iBlack      = BlackPixel( m_pcDisplay, m_iScreen );
-    iWhite      = WhitePixel( m_pcDisplay, m_iScreen );
+    unsigned long black, white;
+    black       = BlackPixel( m_display, m_screen );
+    white       = WhitePixel( m_display, m_screen );
 
     //Get title
-    ustring strTitle;
-    cParent.getTitle( strTitle );
+    ustring title;
+    parent.getTitle( title );
 
     //Get bounds
-    LongRectangle cBounds;
-    cParent.getBounds( cBounds );
-    long iWidth  = cBounds.getWidth();
-    long iHeight = cBounds.getHeight();
+    LongRectangle bounds;
+    parent.getBounds( bounds );
+    long width  = bounds.getWidth();
+    long height = bounds.getHeight();
 
-    m_cWindow   = XCreateSimpleWindow( m_pcDisplay, DefaultRootWindow( m_pcDisplay ), cBounds.left, cBounds.top, iWidth, iHeight, 5, iWhite, iBlack );
-    if( !m_cWindow )
+    m_window    = XCreateSimpleWindow( m_display, DefaultRootWindow( m_display ), bounds.left, bounds.top, width, height, 5, white, black );
+    if( !m_window )
         throw NullPointerException();  
 
     //Set title
-    XSetStandardProperties( m_pcDisplay, m_cWindow, strTitle.c_str(), strTitle.c_str(), None, nullptr, 0, nullptr );
+    XSetStandardProperties( m_display, m_window, title.c_str(), title.c_str(), None, nullptr, 0, nullptr );
 
     //Tell X what kinds of events we're interested in
     XSelectInput(
-        m_pcDisplay, m_cWindow,
+        m_display, m_window,
         ButtonPressMask     | ButtonReleaseMask   |
         PointerMotionMask   |
         KeyPressMask        | KeyReleaseMask      |
@@ -74,17 +73,17 @@ LinuxWindow::LinuxWindow( Window& cParent ) : m_pcParent( &cParent ) {
 
     //Create an input method and context.
     //We need this to translate key press events to typed characters.
-    m_pcInputMethod = XOpenIM( m_pcDisplay, nullptr, nullptr, nullptr );
-    if( m_pcInputMethod != nullptr ) {
-        m_pcInputContext = XCreateIC(
-            m_pcInputMethod,
-            XNClientWindow, m_cWindow,
-            XNFocusWindow,  m_cWindow,
+    m_inputMethod = XOpenIM( m_display, nullptr, nullptr, nullptr );
+    if( m_inputMethod != nullptr ) {
+        m_inputContext = XCreateIC(
+            m_inputMethod,
+            XNClientWindow, m_window,
+            XNFocusWindow,  m_window,
             XNInputStyle,   XIMPreeditNothing | XIMStatusNothing,
             nullptr
         );
     } else {
-        m_pcInputContext = nullptr;
+        m_inputContext = nullptr;
     }
 
     //X doesn't add decorations to a created Window - the system's Window Manager is in charge of this.
@@ -98,54 +97,54 @@ LinuxWindow::LinuxWindow( Window& cParent ) : m_pcParent( &cParent ) {
     //NOTE: XInternAtom can return None if the third parameter (only_if_exists) is true,
     //      therefore we set it to "false" to ensure the atom is always created.
     //NOTE: you can run xlsatoms ("X list atoms") in a terminal to get registered atoms
-    m_uiCloseAtom = XInternAtom( m_pcDisplay, "WM_DELETE_WINDOW", false );
-    XSetWMProtocols( m_pcDisplay, m_cWindow, &m_uiCloseAtom, 1 );
+    m_closeAtom = XInternAtom( m_display, "WM_DELETE_WINDOW", false );
+    XSetWMProtocols( m_display, m_window, &m_closeAtom, 1 );
 
-    m_acWindowMap.emplace( m_cWindow, *this );
+    m_windowMap.emplace( m_window, *this );
 
-    //XClearWindow( m_pcDisplay, m_cWindow );
-    //XMapRaised( m_pcDisplay, m_cWindow );
-    XMapWindow( m_pcDisplay, m_cWindow );
+    //XClearWindow( m_display, m_window );
+    //XMapRaised( m_display, m_window );
+    XMapWindow( m_display, m_window );
 }
 
 LinuxWindow::~LinuxWindow() {
-    if( m_pcInputContext != nullptr )
-        XDestroyIC( m_pcInputContext );
+    if( m_inputContext != nullptr )
+        XDestroyIC( m_inputContext );
 
-    if( m_pcInputMethod != nullptr )
-        XCloseIM( m_pcInputMethod );
+    if( m_inputMethod != nullptr )
+        XCloseIM( m_inputMethod );
 
     //XFreeGC( m_pcDisplay, m_cGraphicsContext );
-    XDestroyWindow( m_pcDisplay, m_cWindow );
+    XDestroyWindow( m_display, m_window );
     
-    m_acWindowMap.erase( m_cWindow );
+    m_windowMap.erase( m_window );
 
-    if( m_acWindowMap.empty() ) {
-        XCloseDisplay( m_pcDisplay );
-        m_pcDisplay = nullptr;
+    if( m_windowMap.empty() ) {
+        XCloseDisplay( m_display );
+        m_display = nullptr;
     }
 }
 
 void LinuxWindow::processEvents() {
-    XEvent cXEvent;
+    XEvent xEvent;
     //int iEventsQueued = XEventsQueued( m_pcDisplay, QueuedAlready );
-    while( m_pcDisplay != nullptr ) {
-        XNextEvent( m_pcDisplay, &cXEvent );
-        mainProc( cXEvent );
+    while( m_display != nullptr ) {
+        XNextEvent( m_display, &xEvent );
+        mainProc( xEvent );
     }
 }
 
-void LinuxWindow::mainProc( XEvent& cXEvent ) {
+void LinuxWindow::mainProc( XEvent& xEvent ) {
     //Locate what Window this belongs to
-    auto it = m_acWindowMap.find( cXEvent.xany.window );
-    if( it == m_acWindowMap.end() )
+    auto it = m_windowMap.find( xEvent.xany.window );
+    if( it == m_windowMap.end() )
         return;
 
-    it->second.windowProc( cXEvent );
+    it->second.windowProc( xEvent );
 }
 
-void LinuxWindow::windowProc( XEvent& cXEvent ) {
-    switch( cXEvent.type ) {
+void LinuxWindow::windowProc( XEvent& xEvent ) {
+    switch( xEvent.type ) {
         //Window close request
         case ClientMessage: {
             //Client messages are generic, so we need to determine for certain that we were sent a close request.
@@ -154,9 +153,9 @@ void LinuxWindow::windowProc( XEvent& cXEvent ) {
             //The .format field tells us how we should interpret the data.
             //Atoms are 32-bit unsigned ints, so we're expecting the message to contain 32-bit values.
             //This is good to check because another message could have a different size, but the same data in l[0].
-            if( cXEvent.xclient.format == 32 && (Atom)( cXEvent.xclient.data.l[0] ) == m_uiCloseAtom ) {
-                WindowCloseEvent cEvent( *m_pcParent );
-                m_pcParent->m_cSignalWindowClose( cEvent );
+            if( xEvent.xclient.format == 32 && (Atom)( xEvent.xclient.data.l[0] ) == m_closeAtom ) {
+                WindowCloseEvent eventObj( *m_parent );
+                m_parent->m_signalWindowClose( eventObj );
             }
         } break;
         //Window moved or resized
@@ -164,125 +163,125 @@ void LinuxWindow::windowProc( XEvent& cXEvent ) {
         } break;
         //Mouse move
         case MotionNotify: {
-            MouseMoveEvent cEvent( cXEvent.xbutton.x, cXEvent.xbutton.y );
-            m_pcParent->m_cSignalMouseMove( cEvent );
+            MouseMoveEvent eventObj( xEvent.xbutton.x, xEvent.xbutton.y );
+            m_parent->m_signalMouseMove( eventObj );
         } break;
         //Key down / Character typed
         case KeyPress: {
             //The docs aren't too clear on the string returned by XLookupString.
             //I assumed it returns 1 encoding plus a null character, but this doesn't
             //seem to be the case for all keys.
-            CharacterTypedEvent cTypedEvent;
-            uchar* pszTranslatedCharacter = const_cast< uchar* >( cTypedEvent.getCharacter() );
-            KeySym cKeySym;
+            CharacterTypedEvent typedEvent;
+            uchar* translatedCharacter = const_cast< uchar* >( typedEvent.getCharacter() );
+            KeySym keySym;
 
             //Note: we're only interested in the KeySym at this point.
             //The translated character is ignored
-            XLookupString( &cXEvent.xkey, pszTranslatedCharacter, 4, &cKeySym, nullptr );
+            XLookupString( &xEvent.xkey, translatedCharacter, 4, &keySym, nullptr );
 
             //Dispatch a keydown event
-            KeyDownEvent cEvent( xKeySymToKey( cKeySym ) );
-            m_pcParent->m_cSignalKeyDown( cEvent );
+            KeyDownEvent keydownEvent( xKeySymToKey( keySym ) );
+            m_parent->m_signalKeyDown( keydownEvent );
 
             //Why do I need to do this...?
-            if( XFilterEvent( &cXEvent, None ) ) {
+            if( XFilterEvent( &xEvent, None ) ) {
                 logInfo( "Filtered a keypress event" );
                 break;
             }
 
-            int iCount;
+            int count;
 #ifdef X_HAVE_UTF8_STRING
             
-            if( m_pcInputContext != nullptr ) {
-                iCount = Xutf8LookupString( m_pcInputContext, &cXEvent.xkey, pszTranslatedCharacter, 4, nullptr, nullptr );
+            if( m_inputContext != nullptr ) {
+                count = Xutf8LookupString( m_inputContext, &xEvent.xkey, translatedCharacter, 4, nullptr, nullptr );
             } else
 #endif
             {
-                iCount = XLookupString( &cXEvent.xkey, pszTranslatedCharacter, 4, nullptr, nullptr );
+                count = XLookupString( &xEvent.xkey, translatedCharacter, 4, nullptr, nullptr );
             }
             
-            //NOTE: Xutf8LookupString and XLookupString return 0 when
+            //NOTE: Xutf8LookupString and XLookupString return a count of 0 when
             //trying to get the character for a non-character keycode (SHIFT, for instance).
-            if( iCount == 0 )
+            if( count == 0 )
                 break;
 
             //A UTF-8 encoding of a single code point should never exceed 4 bytes in length
-            if( iCount > 4 )
+            if( count > 4 )
                 throw UnexpectedResultException();
 
             //Null terminate the string (this is a problem with the strings for some keys, such as Numpad /)
-            pszTranslatedCharacter[iCount] = 0;
+            translatedCharacter[count] = 0;
             
-            m_pcParent->m_cSignalCharacterTyped( cTypedEvent );
+            m_parent->m_signalCharacterTyped( typedEvent );
         } break;
         //Key up
         case KeyRelease: {
-            char szTranslatedCharacter[5];
-            KeySym cKeySym;
-            XLookupString( &cXEvent.xkey, szTranslatedCharacter, sizeof( szTranslatedCharacter ), &cKeySym, nullptr );
+            char translatedCharacter[5];
+            KeySym keySym;
+            XLookupString( &xEvent.xkey, translatedCharacter, sizeof( translatedCharacter ), &keySym, nullptr );
 
             //Dispatch a KeyUp event
-            KeyUpEvent cEvent( xKeySymToKey( cKeySym ) );
-            m_pcParent->m_cSignalKeyUp( cEvent );
+            KeyUpEvent eventObj( xKeySymToKey( keySym ) );
+            m_parent->m_signalKeyUp( eventObj );
         } break;
         //Button down
         case ButtonPress: {
-            int iButton = cXEvent.xbutton.button;
+            int button = xEvent.xbutton.button;
             //Vertical scrolling
-            if( iButton == Button4 || iButton == Button5 ) {
-                MouseVScrollEvent cEvent(
-                    cXEvent.xbutton.button == Button4 ? 1.0f : -1.0f,
-                    cXEvent.xbutton.x,
-                    cXEvent.xbutton.y
+            if( button == Button4 || button == Button5 ) {
+                MouseVScrollEvent eventObj(
+                    xEvent.xbutton.button == Button4 ? 1.0f : -1.0f,
+                    xEvent.xbutton.x,
+                    xEvent.xbutton.y
                 );
 
-                m_pcParent->m_cSignalMouseVScroll( cEvent );
+                m_parent->m_signalMouseVScroll( eventObj );
 
             //Horizontal scrolling (note: direction is assumed and needs to be tested somehow)
             } else if( iButton == 6 || iButton == 7 ) {
-                MouseHScrollEvent cEvent(
-                    cXEvent.xbutton.button == 6 ? -1.0f : 1.0f,
-                    cXEvent.xbutton.x,
-                    cXEvent.xbutton.y
+                MouseHScrollEvent eventObj(
+                    xEvent.xbutton.button == 6 ? -1.0f : 1.0f,
+                    xEvent.xbutton.x,
+                    xEvent.xbutton.y
                 );
 
-                m_pcParent->m_cSignalMouseHScroll( cEvent );
+                m_parent->m_signalMouseHScroll( eventObj );
 
             //Actual buttons
             } else {
-                MouseUpEvent cEvent(
-                    xButtonToMouseButton( iButton ),
-                    cXEvent.xbutton.x,
-                    cXEvent.xbutton.y
+                MouseUpEvent eventObj(
+                    xButtonToMouseButton( button ),
+                    xEvent.xbutton.x,
+                    xEvent.xbutton.y
                 );
 
-                m_pcParent->m_cSignalMouseUp( cEvent );
+                m_parent->m_signalMouseUp( eventObj );
             }
         } break;
         //Button up
         case ButtonRelease: {
-            int iButton = cXEvent.xbutton.button;
+            int button = xEvent.xbutton.button;
 
-            //Ignore wheel scrolling. This is handled in the ButtonPress case below
-            if( iButton == Button4 || iButton == Button5 || iButton == 6 || iButton == 7 )
+            //Ignore wheel scrolling. This is handled in the ButtonPress case above
+            if( button == Button4 || button == Button5 || button == 6 || button == 7 )
                 break;
 
-            MouseDownEvent cEvent(
-                xButtonToMouseButton( iButton ),
-                cXEvent.xbutton.x,
-                cXEvent.xbutton.y
+            MouseDownEvent eventObj(
+                xButtonToMouseButton( button ),
+                xEvent.xbutton.x,
+                xEvent.xbutton.y
             );
-            m_pcParent->m_cSignalMouseDown( cEvent );
+            m_parent->m_signalMouseDown( eventObj );
         } break;
         //Unhandled event
         default: {
-            logError( ( boost::format( "Unhandled event: %1%" ) % cXEvent.type ).str().c_str() );
+            logError( ( boost::format( "Unhandled event: %1%" ) % xEvent.type ).str().c_str() );
         } break;
     }
 }
 
-MouseButton LinuxWindow::xButtonToMouseButton( const int iButton ) {
-    switch( iButton ) {
+MouseButton LinuxWindow::xButtonToMouseButton( const int button ) {
+    switch( button ) {
     case Button1:
         return MouseButton::LEFT;
     case Button2:
@@ -298,16 +297,16 @@ MouseButton LinuxWindow::xButtonToMouseButton( const int iButton ) {
     
     //The invalid button is returned if an unrecognized button is provided.
     default:
-        logError( ( boost::format( "Unrecognized button: 0x%|04x|" ) % iButton ).str().c_str() );
+        logError( ( boost::format( "Unrecognized button: 0x%|04x|" ) % button ).str().c_str() );
         return MouseButton::INVALID;
     }
 }
 
-Key LinuxWindow::xKeySymToKey( const KeySym& pcKeySym ) {
-    KeySym pcLower, pcUpper;
-    XConvertCase( pcKeySym, &pcLower, &pcUpper );
+Key LinuxWindow::xKeySymToKey( const KeySym& keySym ) {
+    KeySym lower, upper;
+    XConvertCase( keySym, &lower, &upper );
     
-    switch( pcLower ) {
+    switch( lower ) {
     case XK_Escape:         return Key::ESCAPE;             //0xff1b
     case XK_F1:             return Key::F1;                 //0xffbe
     case XK_F2:             return Key::F2;                 //0xffbf
@@ -447,21 +446,21 @@ Key LinuxWindow::xKeySymToKey( const KeySym& pcKeySym ) {
 
     //The invalid key is returned if an unrecognized keycode is provided.
     default:
-        logError( ( boost::format( "Unrecognized keycode: 0x%|04x|" ) % pcLower ).str().c_str() );
+        logError( ( boost::format( "Unrecognized keycode: 0x%|04x|" ) % lower ).str().c_str() );
         return Key::INVALID;
     }
 }
 
-void LinuxWindow::setTitle( const ustring& strTitle ) {
+void LinuxWindow::setTitle( const ustring& title ) {
 }
 
-void LinuxWindow::setPopup( const bool bPopup ) {
+void LinuxWindow::setPopup( const bool popup ) {
 }
 
-void LinuxWindow::setBounds( const LongRectangle& cBounds ) {
+void LinuxWindow::setBounds( const LongRectangle& bounds ) {
 }
 
-LinuxWindow::LinuxWindow( const LinuxWindow& ) : m_pcParent( nullptr ) {
+LinuxWindow::LinuxWindow( const LinuxWindow& ) : m_parent( nullptr ) {
 }
 
 LinuxWindow& LinuxWindow::operator =( const LinuxWindow& ) {

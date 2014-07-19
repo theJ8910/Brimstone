@@ -57,11 +57,11 @@ public:
     void pushStack( std::tuple< Types... >& argTuple );
 
     //Push one value to the stack
-    void pushStack( const bool b );
-    void pushStack( const int32 i );
-    void pushStack( const float f );
-    void pushStack( const double d );
-    void pushStack( const uchar* str );
+    void pushStack( const bool value );
+    void pushStack( const intN value );
+    void pushStack( const float value );
+    void pushStack( const double value );
+    void pushStack( const uchar* value );
 
     //Push zero values to the stack
     void pushStack();
@@ -74,11 +74,11 @@ public:
     void popStack( std::tuple< Types... >& tupleOut );
 
     //Pop one value from the stack
-    void popStack( bool& bOut );
-    void popStack( intN& iOut );
-    void popStack( float& fOut );
-    void popStack( double& dOut );
-    void popStack( const uchar*& strOut );
+    void popStack( bool& valueOut );
+    void popStack( intN& valueOut );
+    void popStack( float& valueOut );
+    void popStack( double& valueOut );
+    void popStack( const uchar*& valueOut );
 
     //Pop zero values from the stack
     void popStack();
@@ -91,7 +91,7 @@ private:
     template< typename T, int... Integers >
     void popStackTuple( T& tuple, Sequence< Integers... > seq );
 
-    void callFunction( const int32 args, const int32 iReturnValues );
+    void callFunction( const int32 args, const int32 returnValues );
 
 private:
     lua_State* m_state;
