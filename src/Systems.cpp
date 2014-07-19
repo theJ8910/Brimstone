@@ -20,10 +20,10 @@ Description:
 namespace Brimstone {
 
 //Static initializers
-Systems::SystemsMap_t   Systems::m_systemsByType;
-Systems::SystemsStack_t Systems::m_systemsByLoadOrder;
+Systems::SystemsMap     Systems::m_systemsByType;
+Systems::SystemsStack   Systems::m_systemsByLoadOrder;
 
-const AbstractSystem::DependencySet_t& AbstractSystem::getDependencies() {
+const AbstractSystem::DependencySet& AbstractSystem::getDependencies() {
     return m_dependencies;
 }
 
@@ -32,11 +32,11 @@ void AbstractSystem::addDependency( SystemType type ) {
 }
 
 void Systems::add( SystemType type ) {
-    SystemTypeSet_t dependencyChain;
+    SystemTypeSet dependencyChain;
     add( type, dependencyChain );
 }
 
-void Systems::add( SystemType type, SystemTypeSet_t& dependencyChain ) {
+void Systems::add( SystemType type, SystemTypeSet& dependencyChain ) {
     //System already added
     if( m_systemsByType.count( type ) > 0 )
         return;
