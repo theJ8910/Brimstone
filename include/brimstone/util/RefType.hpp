@@ -20,10 +20,10 @@ Description:
     template< typename T >
     class SomeClass {
     private:
-        typedef typename RefType<T>::ref       TRef_t;
-        typedef typename RefType<T>::const_ref TConstRef_t;
+        typedef typename RefType<T>::ref       TRef;
+        typedef typename RefType<T>::const_ref TConstRef;
     public:
-        void SomeMethod( TConstRef_t param ) {
+        void SomeMethod( TConstRef param ) {
         };
     };
 */

@@ -52,8 +52,8 @@ namespace Private {
 
     template< int N >
     struct SimplifyMethod {
-        template< class X, class XFn_t >
-        inline static GenericClassPtr convert( X* pThis, XFn_t fn, GenericMethodPtr& fnOut ) {
+        template< class X, class XFn >
+        inline static GenericClassPtr convert( X* self, XFn fn, GenericMethodPtr& fnOut ) {
             static_assert( N != DELEGATE_POINTER_SIZE, "Unsupported method pointer size" );
             return nullptr;
         }
@@ -62,110 +62,110 @@ namespace Private {
     //Single-inheritance
     template<>
     struct SimplifyMethod< DELEGATE_POINTER_SIZE > {
-        template< class X, class XFn_t >
-        inline static GenericClassPtr convert( X* pThis, XFn_t fn, GenericMethodPtr& fnOut ) {
+        template< class X, class XFn >
+        inline static GenericClassPtr convert( X* self, XFn fn, GenericMethodPtr& fnOut ) {
             fnOut = reinterpret_cast< GenericMethodPtr >( fn );
-            return reinterpret_cast< GenericClassPtr >( pThis );
+            return reinterpret_cast< GenericClassPtr >( self );
         }
     };
 
-    //Method_t is expected to be of the form:
-    //    Return_t GenericClass::(*)( Arg1, Arg2, ... )
-    //StaticMethod_t is expected to be of the form:
-    //    Return_t (*)( Arg1, Arg2, ... )
-    template< typename Method_t, typename StaticMethod_t >
+    //Method is expected to be of the form:
+    //    Return GenericClass::(*)( Arg1, Arg2, ... )
+    //StaticMethod is expected to be of the form:
+    //    Return (*)( Arg1, Arg2, ... )
+    template< typename Method, typename StaticMethod >
     class Closure {
     public:
-        template< typename X, class XFn_t >
-        void                bindMethod( X* pThis, XFn_t fn );
+        template< typename X, class XFn >
+        void                bindMethod( X* self, XFn fn );
 
-        template< typename X, class XFn_t >
-        void                bindConstMethod( const X* pThis, XFn_t fn );
+        template< typename X, class XFn >
+        void                bindConstMethod( const X* self, XFn fn );
 
-        template< typename Delegate_t, typename Invoker_t, typename Fn_t >
-        void                bindStaticMethod( Delegate_t* pDelegate, Invoker_t invoker, Fn_t fn );
+        template< typename Delegate, typename Invoker, typename Fn >
+        void                bindStaticMethod( Delegate* dlgt, Invoker invoker, Fn fn );
 
-        GenericClassPtr     getThis() const;
-        Method_t            getMethod() const;
-        StaticMethod_t      getStaticMethod() const;
-
-        template< typename, typename >
-        friend bool operator ==( const Closure< Method_t, StaticMethod_t >& left, const Closure< Method_t, StaticMethod_t >& right );
+        GenericClassPtr     getSelf() const;
+        Method              getMethod() const;
+        StaticMethod        getStaticMethod() const;
 
         template< typename, typename >
-        friend bool operator !=( const Closure< Method_t, StaticMethod_t >& left, const Closure< Method_t, StaticMethod_t >& right );
+        friend bool operator ==( const Closure< Method, StaticMethod >& left, const Closure< Method, StaticMethod >& right );
+
+        template< typename, typename >
+        friend bool operator !=( const Closure< Method, StaticMethod >& left, const Closure< Method, StaticMethod >& right );
 
     private:
-        GenericClassPtr     m_this;
+        GenericClassPtr     m_self;
         GenericMethodPtr    m_method;
 #ifndef BS_DELEGATE_POINTER_HACK
         GenericFunctionPtr  m_staticMethod;
 #endif //BS_DELEGATE_POINTER_HACK
     };
 
-    template< typename Method_t, typename StaticMethod_t >
-    template< typename X, class XFn_t >
-    inline void Closure< Method_t, StaticMethod_t >::bindMethod( X* pThis, XFn_t fn ) {
-        m_this = SimplifyMethod< sizeof( fn ) >::convert( pThis, fn, m_method );
+    template< typename Method, typename StaticMethod >
+    template< typename X, class XFn >
+    inline void Closure< Method, StaticMethod >::bindMethod( X* self, XFn fn ) {
+        m_self = SimplifyMethod< sizeof( fn ) >::convert( self, fn, m_method );
 #ifndef BS_DELEGATE_POINTER_HACK
         m_staticMethod = nullptr;
 #endif //BS_DELEGATE_POINTER_HACK
     }
 
-    template< typename Method_t, typename StaticMethod_t >
-    template< typename X, class XFn_t >
-    inline void Closure< Method_t, StaticMethod_t >::bindConstMethod( const X* pThis, XFn_t fn ) {
-        m_this = SimplifyMethod< sizeof( fn ) >::convert( const_cast< X* >( pThis ), fn, m_method );
+    template< typename Method, typename StaticMethod >
+    template< typename X, class XFn >
+    inline void Closure< Method, StaticMethod >::bindConstMethod( const X* self, XFn fn ) {
+        m_self = SimplifyMethod< sizeof( fn ) >::convert( const_cast< X* >( self ), fn, m_method );
 #ifndef BS_DELEGATE_POINTER_HACK
         m_staticMethod = nullptr;
 #endif //BS_DELEGATE_POINTER_HACK
     }
 
-    template< typename Method_t, typename StaticMethod_t >
-    template< typename Delegate_t, typename Invoker_t, typename Fn_t >
-    inline void Closure< Method_t, StaticMethod_t >::bindStaticMethod( Delegate_t* pDelegate, Invoker_t invoker, Fn_t fn ) {
+    template< typename Method, typename StaticMethod >
+    template< typename Delegate, typename Invoker, typename Fn >
+    inline void Closure< Method, StaticMethod >::bindStaticMethod( Delegate* dlgt, Invoker invoker, Fn fn ) {
 #ifdef BS_DELEGATE_POINTER_HACK
-        static_assert( sizeof( StaticMethod_t ) == sizeof( this ), "Can't pointer hack" );
-        SimplifyMethod< sizeof( invoker ) >::convert( pDelegate, invoker, m_method );
-        m_this = universal_cast< GenericClassPtr >( fn );
+        static_assert( sizeof( StaticMethod ) == sizeof( this ), "Can't pointer hack" );
+        SimplifyMethod< sizeof( invoker ) >::convert( dlgt, invoker, m_method );
+        m_self = universal_cast< GenericClassPtr >( fn );
 #else //BS_DELEGATE_POINTER_HACK
-        m_this          = SimplifyMethod< sizeof( invoker ) >::convert( pDelegate, invoker, m_method );
+        m_self          = SimplifyMethod< sizeof( invoker ) >::convert( dlgt, invoker, m_method );
         m_staticMethod  = reinterpret_cast< GenericFunctionPtr >( fn );
 #endif //BS_DELEGATE_POINTER_HACK
     }
 
-    template< typename Method_t, typename StaticMethod_t >
-    inline GenericClassPtr Closure< Method_t, StaticMethod_t >::getThis() const {
-        return m_this;
+    template< typename Method, typename StaticMethod >
+    inline GenericClassPtr Closure< Method, StaticMethod >::getSelf() const {
+        return m_self;
     }
 
-    template< typename Method_t, typename StaticMethod_t >
-    inline Method_t Closure< Method_t, StaticMethod_t >::getMethod() const {
-        return reinterpret_cast< Method_t >( m_method );
+    template< typename Method, typename StaticMethod >
+    inline Method Closure< Method, StaticMethod >::getMethod() const {
+        return reinterpret_cast< Method >( m_method );
     }
 
-    template< typename Method_t, typename StaticMethod_t >
-    inline StaticMethod_t Closure< Method_t, StaticMethod_t >::getStaticMethod() const {
+    template< typename Method, typename StaticMethod >
+    inline StaticMethod Closure< Method, StaticMethod >::getStaticMethod() const {
 #ifdef BS_DELEGATE_POINTER_HACK
         //HACK: When a static method is bound:
-        //    pThis   = the static function
+        //    self    = the static function
         //    pMethod = the staticInvoker method of the Delegate class
         //Invoking a Delegate performs:
-        //    ( closure.getThis() )->( closure.getMethod() )()
+        //    ( closure.getSelf() )->( closure.getMethod() )()
         //In other words, it runs the staticInvoker() method, passing the static function as "this"!
         //    staticInvoker() calls ( closure.getStaticMethod() )().
         //    Since "closure" is the only object in Delegate, &closure == this == the static method.
         //    So we just reinterpret "this" as being a function pointer instead of a data pointer and return it.
-        static_assert( sizeof( StaticMethod_t ) == sizeof( this ), "Can't pointer hack" );
-        return universal_cast< StaticMethod_t >( this );
+        static_assert( sizeof( StaticMethod ) == sizeof( this ), "Can't pointer hack" );
+        return universal_cast< StaticMethod >( this );
 #else  //BS_DELEGATE_POINTER_HACK
-        return reinterpret_cast< StaticMethod_t >( m_staticMethod );
+        return reinterpret_cast< StaticMethod >( m_staticMethod );
 #endif //BS_DELEGATE_POINTER_HACK
     }
 
-    template< typename Method_t, typename StaticMethod_t >
-    bool operator ==( const Closure< Method_t, StaticMethod_t >& left, const Closure< Method_t, StaticMethod_t >& right ) {
-        return ( left.m_this            == right.m_this         &&
+    template< typename Method, typename StaticMethod >
+    bool operator ==( const Closure< Method, StaticMethod >& left, const Closure< Method, StaticMethod >& right ) {
+        return ( left.m_self            == right.m_self         &&
                  left.m_method          == right.m_method
     #ifndef BS_DELEGATE_POINTER_HACK
                                                                 &&
@@ -174,9 +174,9 @@ namespace Private {
                );
     }
 
-    template< typename Method_t, typename StaticMethod_t >
-    bool operator !=( const Closure< Method_t, StaticMethod_t >& left, const Closure< Method_t, StaticMethod_t >& right ) {
-        return ( left.m_this            != right.m_this         ||
+    template< typename Method, typename StaticMethod >
+    bool operator !=( const Closure< Method, StaticMethod >& left, const Closure< Method, StaticMethod >& right ) {
+        return ( left.m_self            != right.m_self         ||
                  left.m_method          != right.m_method
     #ifndef BS_DELEGATE_POINTER_HACK
                                                                 ||
@@ -197,31 +197,31 @@ class Delegate;
 Specialized version of the delegate template that takes a function signature.
 Delegates can be bound to either methods, static methods, or functors
 */
-template< typename Return_t, typename... Args >
-class Delegate< Return_t ( Args... ) > {
+template< typename Return, typename... Args >
+class Delegate< Return ( Args... ) > {
 public:
     Delegate();
 
     //Bind an object + a method of its class
-    template< typename T, typename BaseClass_t >
-    Delegate( T* ptr, Return_t (BaseClass_t::*method)( Args... ) );
+    template< typename T, typename BaseClass >
+    Delegate( T* ptr, Return (BaseClass::*method)( Args... ) );
 
     //Bind an object + a const method of its class
-    template< typename T, typename BaseClass_t >
-    Delegate( const T* ptr, Return_t (BaseClass_t::*constMethod)( Args... ) const );
+    template< typename T, typename BaseClass >
+    Delegate( const T* ptr, Return (BaseClass::*constMethod)( Args... ) const );
 
     //Bind static method / normal function
-    Delegate(Return_t(*staticFunction)(Args...));
+    Delegate( Return (*staticFunction)( Args... ) );
 
-    template< typename T, typename BaseClass_t >
-    void bind( T* ptr, Return_t (BaseClass_t::*fn)( Args... ) );
+    template< typename T, typename BaseClass >
+    void bind( T* ptr, Return (BaseClass::*fn)( Args... ) );
 
-    template< typename T, typename BaseClass_t >
-    void bind( const T* ptr, Return_t (BaseClass_t::*fn)( Args... ) const );
+    template< typename T, typename BaseClass >
+    void bind( const T* ptr, Return (BaseClass::*fn)( Args... ) const );
 
-    void bind( Return_t (*staticFunction)( Args... ) );
+    void bind( Return (*staticFunction)( Args... ) );
 
-    Return_t operator()( Args... args ) const;
+    Return operator()( Args... args ) const;
 
     template< typename Signature >
     friend bool operator ==( const Delegate< Signature >& left, const Delegate< Signature >& right );
@@ -229,54 +229,54 @@ public:
     template< typename Signature >
     friend bool operator !=( const Delegate< Signature >& left, const Delegate< Signature >& right );
 private:
-    Return_t staticInvoker( Args... args );
+    Return staticInvoker( Args... args );
 private:
-    typedef Return_t (Private::GenericClass::*Method_t)( Args... );
-    typedef Return_t (*StaticMethod_t)( Args... );
-    Private::Closure< Method_t, StaticMethod_t >    m_closure;
+    typedef Return (Private::GenericClass::*Method)( Args... );
+    typedef Return (*StaticMethod)( Args... );
+    Private::Closure< Method, StaticMethod >    m_closure;
 };
 
-template< typename Return_t, typename... Args >
-Delegate< Return_t ( Args... ) >::Delegate() {
+template< typename Return, typename... Args >
+Delegate< Return ( Args... ) >::Delegate() {
 }
 
-template< typename Return_t, typename... Args >
-template< typename T, typename BaseClass_t >
-Delegate< Return_t ( Args... ) >::Delegate( T* ptr, Return_t (BaseClass_t::*method)( Args... ) ) {
+template< typename Return, typename... Args >
+template< typename T, typename BaseClass >
+Delegate< Return ( Args... ) >::Delegate( T* ptr, Return (BaseClass::*method)( Args... ) ) {
     bind( ptr, method );
 }
 
-template< typename Return_t, typename... Args >
-template< typename T, typename BaseClass_t >
-Delegate< Return_t ( Args... ) >::Delegate( const T* ptr, Return_t (BaseClass_t::*constMethod)( Args... ) const ) {
+template< typename Return, typename... Args >
+template< typename T, typename BaseClass >
+Delegate< Return ( Args... ) >::Delegate( const T* ptr, Return (BaseClass::*constMethod)( Args... ) const ) {
     bind( ptr, constMethod );
 }
 
-template< typename Return_t, typename... Args >
-Delegate< Return_t ( Args... ) >::Delegate( Return_t (*staticFunction)( Args... ) ) {
+template< typename Return, typename... Args >
+Delegate< Return ( Args... ) >::Delegate( Return (*staticFunction)( Args... ) ) {
     bind( staticFunction );
 }
 
-template< typename Return_t, typename... Args >
-template< typename T, typename BaseClass_t >
-inline void Delegate< Return_t ( Args... ) >::bind( T* ptr, Return_t (BaseClass_t::*method)( Args... ) ) {
+template< typename Return, typename... Args >
+template< typename T, typename BaseClass >
+inline void Delegate< Return ( Args... ) >::bind( T* ptr, Return (BaseClass::*method)( Args... ) ) {
     m_closure.bindMethod( ptr, method );
 }
 
-template< typename Return_t, typename... Args >
-template< typename T, typename BaseClass_t >
-inline void Delegate< Return_t ( Args... ) >::bind( const T* ptr, Return_t (BaseClass_t::*constMethod)( Args... ) const ) {
+template< typename Return, typename... Args >
+template< typename T, typename BaseClass >
+inline void Delegate< Return ( Args... ) >::bind( const T* ptr, Return (BaseClass::*constMethod)( Args... ) const ) {
     m_closure.bindConstMethod( ptr, constMethod );
 }
 
-template< typename Return_t, typename... Args >
-inline void Delegate< Return_t ( Args... ) >::bind( Return_t (*staticFunction)( Args... ) ) {
+template< typename Return, typename... Args >
+inline void Delegate< Return ( Args... ) >::bind( Return (*staticFunction)( Args... ) ) {
     m_closure.bindStaticMethod( this, &Delegate::staticInvoker, staticFunction );
 }
 
-template< typename Return_t, typename... Args >
-Return_t Delegate< Return_t ( Args... ) >::operator()( Args... args ) const {
-    return ( ( m_closure.getThis() )->*( m_closure.getMethod() ) )( args... );
+template< typename Return, typename... Args >
+Return Delegate< Return ( Args... ) >::operator()( Args... args ) const {
+    return ( ( m_closure.getSelf() )->*( m_closure.getMethod() ) )( args... );
 }
 
 template< typename Signature >
@@ -289,24 +289,24 @@ bool operator !=( const Delegate< Signature >& left, const Delegate< Signature >
     return left.m_closure != right.m_closure;
 }
 
-template< typename Return_t, typename... Args >
-Return_t Delegate< Return_t ( Args... ) >::staticInvoker( Args... args ) {
+template< typename Return, typename... Args >
+Return Delegate< Return ( Args... ) >::staticInvoker( Args... args ) {
     return ( *( m_closure.getStaticMethod() ) )( args... );
 }
 
-template< typename Return_t, typename... Args >
-inline Delegate< Return_t ( Args... ) > bind( Return_t (*staticFunction)( Args... ) ) {
-    return Delegate< Return_t ( Args... ) >( staticFunction );
+template< typename Return, typename... Args >
+inline Delegate< Return ( Args... ) > bind( Return (*staticFunction)( Args... ) ) {
+    return Delegate< Return ( Args... ) >( staticFunction );
 }
 
-template< typename T, typename BaseClass, typename Return_t, typename... Args >
-inline Delegate< Return_t ( Args... ) > bind( T* pThis, Return_t (BaseClass::*method)( Args... ) ) {
-    return Delegate< Return_t ( Args... ) >( pThis, method );
+template< typename T, typename BaseClass, typename Return, typename... Args >
+inline Delegate< Return ( Args... ) > bind( T* self, Return (BaseClass::*method)( Args... ) ) {
+    return Delegate< Return ( Args... ) >( self, method );
 }
 
-template< typename T, typename BaseClass, typename Return_t, typename... Args >
-inline Delegate< Return_t ( Args... ) > bind( const T* pThis, Return_t (BaseClass::*constMethod)( Args... ) const ) {
-    return Delegate< Return_t ( Args... ) >( pThis, constMethod );
+template< typename T, typename BaseClass, typename Return, typename... Args >
+inline Delegate< Return ( Args... ) > bind( const T* self, Return (BaseClass::*constMethod)( Args... ) const ) {
+    return Delegate< Return ( Args... ) >( self, constMethod );
 }
 
 }

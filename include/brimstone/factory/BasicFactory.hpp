@@ -26,27 +26,27 @@ Description:
 
 namespace Brimstone {
 
-template< typename Abstract_t, typename Concrete_t >
-class BasicFactory : public IFactory< Abstract_t > {
+template< typename Abstract, typename Concrete >
+class BasicFactory : public IFactory< Abstract > {
 public:
-    virtual Abstract_t create() const;
+    virtual Abstract create() const;
 };
 
-template< typename Abstract_t, typename Concrete_t >
-Abstract_t BasicFactory< Abstract_t, Concrete_t >::create() const {
-    return Concrete_t();
+template< typename Abstract, typename Concrete >
+Abstract BasicFactory< Abstract, Concrete >::create() const {
+    return Concrete();
 }
 
 //Specialization for pointer types
-template< typename Abstract_t, typename Concrete_t >
-class BasicFactory< Abstract_t*, Concrete_t* > : public IFactory< Abstract_t* > {
+template< typename Abstract, typename Concrete >
+class BasicFactory< Abstract*, Concrete* > : public IFactory< Abstract* > {
 public:
-    virtual Abstract_t* create() const;
+    virtual Abstract* create() const;
 };
 
-template< typename Abstract_t, typename Concrete_t >
-Abstract_t* BasicFactory< Abstract_t*, Concrete_t* >::create() const {
-    return new Concrete_t;
+template< typename Abstract, typename Concrete >
+Abstract* BasicFactory< Abstract*, Concrete* >::create() const {
+    return new Concrete;
 }
 
 //Make a BasicFactory (with the given abstract and concrete types) that adds itself

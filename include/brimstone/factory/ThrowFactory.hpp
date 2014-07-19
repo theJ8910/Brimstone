@@ -27,15 +27,15 @@ Description:
 namespace Brimstone {
 
 //Basic implementation of IFactory, whose .create() method throws concreteClassName with its default constructor.
-template< typename Concrete_t >
+template< typename Concrete >
 class ThrowFactory : public IFactory< void > {
 public:
     virtual void create() const;
 };
 
-template< typename Concrete_t >
-virtual void ThrowFactory< Concrete_t >::create() const {
-    throw Concrete_t();
+template< typename Concrete >
+virtual void ThrowFactory< Concrete >::create() const {
+    throw Concrete();
 }
 
 //Make a ThrowFactory (with the given concrete type) that adds itself

@@ -22,10 +22,10 @@ Description:
 
 namespace Brimstone {
 
-template< typename Signature_t >
+template< typename Signature >
 class Signal;
 
-template< typename Signature_t >
+template< typename Signature >
 class ScopedConnection;
 
 //When connecting a Signal to a Slot, the connection optionally can be managed by a ScopedConnection.
@@ -39,19 +39,19 @@ class ScopedConnection< Return ( Args... ) > {
 friend class Signal< Return ( Args... ) >;
 
 public:
-    typedef Return Signature_t( Args... );    //Signature_t;
-    typedef Signal< Signature_t >               Signal_t;
-    typedef ScopedConnection< Signature_t >     My_t;
+    typedef Return Signature( Args... );      //Signature;
+    typedef Signal< Signature >                 Signal;
+    typedef ScopedConnection< Signature >       My;
 
-    typedef std::vector< Signal_t* >            SignalCollection_t;
+    typedef std::vector< Signal* >            SignalCollection;
 public:
     ~ScopedConnection();
     void release();
 private:
-    void connected( Signal_t& signal );
-    void disconnected( Signal_t& signal );
+    void connected( Signal& signal );
+    void disconnected( Signal& signal );
 private:
-    SignalCollection_t  m_signals;
+    SignalCollection    m_signals;
 };
 
 template< typename Return, typename... Args >
@@ -70,12 +70,12 @@ void ScopedConnection< Return ( Args... ) >::release() {
 }
 
 template< typename Return, typename... Args >
-void ScopedConnection< Return ( Args... ) >::connected( Signal_t& signal ) {
+void ScopedConnection< Return ( Args... ) >::connected( Signal& signal ) {
     m_signals.push_back( &signal );
 }
 
 template< typename Return, typename... Args >
-void ScopedConnection< Return ( Args... ) >::disconnected( Signal_t& signal ) {
+void ScopedConnection< Return ( Args... ) >::disconnected( Signal& signal ) {
     auto it = std::find( m_signals.begin(), m_signals.end(), &signal );
     if( it == m_signals.end() )
         return;

@@ -51,73 +51,73 @@ template< typename Return, typename... Args >
 class Signal< Return ( Args... ) > {
     friend class ScopedConnection< Return ( Args... ) >;
 private:
-    typedef Return Signature_t( Args... );            //Signature_t;
-    typedef Delegate< Signature_t >                     Slot_t;
-    typedef Signal< Signature_t >                       My_t;
-    typedef ScopedConnection< Signature_t >             ScopedConnection_t;
-    typedef std::pair< Slot_t, ScopedConnection_t* >    Connection_t;
+    typedef Return Signature( Args... );              //Signature;
+    typedef Delegate< Signature >                       Slot;
+    typedef Signal< Signature >                         My;
+    typedef ScopedConnection< Signature >               ScopedConnection;
+    typedef std::pair< Slot, ScopedConnection* >        Connection;
 
-    typedef std::vector< Connection_t >                 SlotCollection_t;
+    typedef std::vector< Connection >                   SlotCollection;
 
 public:
     Signal();
     Signal( const Signal& toCopy );
     ~Signal();
 
-    void connect( const Slot_t& slot );
-    void connect( const Slot_t& slot, ScopedConnection_t& scopedConnection );
-    void disconnect( const Slot_t& slot );
+    void connect( const Slot& slot );
+    void connect( const Slot& slot, ScopedConnection& scopedConnection );
+    void disconnect( const Slot& slot );
     void disconnectAll();
 
     void emit( Args... args ) const;
     void operator()( Args... args ) const;
 
 private:
-    void disconnect( const ScopedConnection_t& scopedConnection );
-    void release( const ScopedConnection_t& scopedConnection );
+    void disconnect( const ScopedConnection& scopedConnection );
+    void release( const ScopedConnection& scopedConnection );
     void disconnectAllFromSC();
     Signal& operator =( const Signal& toCopy );
     
 private:
-    SlotCollection_t    m_slots;
+    SlotCollection      m_slots;
 };
 
 //Do-nothing default constructor (needed because we have a copy constructor)
-template< typename Return_t, typename... Args >
-Signal< Return_t ( Args... ) >::Signal() {}
+template< typename Return, typename... Args >
+Signal< Return ( Args... ) >::Signal() {}
 
 //Do-nothing copy constructor (needed because we want Signal to be copyable, but not its connections)
-template< typename Return_t, typename... Args >
-Signal< Return_t ( Args... ) >::Signal( const Signal& toCopy ) {}
+template< typename Return, typename... Args >
+Signal< Return ( Args... ) >::Signal( const Signal& toCopy ) {}
 
 //Unregisters itself with any remaining scoped connections
-template< typename Return_t, typename... Args >
-Signal< Return_t ( Args... ) >::~Signal() {
+template< typename Return, typename... Args >
+Signal< Return ( Args... ) >::~Signal() {
     disconnectAllFromSC();
 }
 
 //Connect signal to a slot (not managed by a scoped connection)
-template< typename Return_t, typename... Args >
-void Signal< Return_t ( Args... ) >::connect( const Slot_t& slot ) {
+template< typename Return, typename... Args >
+void Signal< Return ( Args... ) >::connect( const Slot& slot ) {
     m_slots.emplace_back( slot, nullptr );
 }
 
 //Connect signal to a slot (managed by a scoped connection)
-template< typename Return_t, typename... Args >
-void Signal< Return_t ( Args... ) >::connect( const Slot_t& slot, ScopedConnection_t& scopedConnection ) {
+template< typename Return, typename... Args >
+void Signal< Return ( Args... ) >::connect( const Slot& slot, ScopedConnection& scopedConnection ) {
     m_slots.emplace_back( slot, &scopedConnection );
     scopedConnection.connected( *this );
 }
 
 //Disconnect a slot, inform scoped connection (if any)
-template< typename Return_t, typename... Args >
-void Signal< Return_t ( Args... ) >::disconnect( const Slot_t& slot ) {
+template< typename Return, typename... Args >
+void Signal< Return ( Args... ) >::disconnect( const Slot& slot ) {
     for( auto it = m_slots.begin(); it != m_slots.end(); ++it ) {
         if( it->first != slot )
             continue;
 
         //Inform associated scoped connection we're no longer connected
-        ScopedConnection_t* scope = it->second;
+        ScopedConnection* scope = it->second;
         if( scope != nullptr )
             scope->disconnected( *this );
                 
@@ -128,28 +128,28 @@ void Signal< Return_t ( Args... ) >::disconnect( const Slot_t& slot ) {
 }
 
 //Disconnect all connected slots, inform their scoped connections
-template< typename Return_t, typename... Args >
-void Signal< Return_t ( Args... ) >::disconnectAll() {
+template< typename Return, typename... Args >
+void Signal< Return ( Args... ) >::disconnectAll() {
     disconnectAllFromSC();
     m_slots.clear();
 }
 
 //Invoke connected slots (method form)
-template< typename Return_t, typename... Args >
-void Signal< Return_t ( Args... ) >::emit( Args... args ) const {
+template< typename Return, typename... Args >
+void Signal< Return ( Args... ) >::emit( Args... args ) const {
     for( auto it = m_slots.begin(); it != m_slots.end(); ++it )
         (*it).first( std::forward< Args >( args )... );
 }
 
 //Invoke connected slots (call operator form)
-template< typename Return_t, typename... Args >
-inline void Signal< Return_t ( Args... ) >::operator ()( Args... args ) const {
+template< typename Return, typename... Args >
+inline void Signal< Return ( Args... ) >::operator ()( Args... args ) const {
     emit( std::forward< Args >( args )... );
 }
 
 //Disconnect all slots managed by the given scoped connection
-template< typename Return_t, typename... Args >
-void Signal< Return_t ( Args... ) >::disconnect( const ScopedConnection_t& scopedConnection ) {
+template< typename Return, typename... Args >
+void Signal< Return ( Args... ) >::disconnect( const ScopedConnection& scopedConnection ) {
     //HACK: We don't bother to inform cScopedConnection about individual slots being disconnected()
     //because it's assumed that this method will only be called when the cScopedConnection is being destroyed.
     for( auto it = m_slots.begin(); it != m_slots.end(); /* N/A */ ) {
@@ -164,8 +164,8 @@ void Signal< Return_t ( Args... ) >::disconnect( const ScopedConnection_t& scope
 }
 
 //All slots managed by the given scoped connection will no longer be managed by it
-template< typename Return_t, typename... Args >
-void Signal< Return_t ( Args... ) >::release( const ScopedConnection_t& scopedConnection ) {
+template< typename Return, typename... Args >
+void Signal< Return ( Args... ) >::release( const ScopedConnection& scopedConnection ) {
     for( auto it = m_slots.begin(); it != m_slots.end(); ++it ) {
         if( it->second != &scopedConnection )
             continue;
@@ -175,16 +175,16 @@ void Signal< Return_t ( Args... ) >::release( const ScopedConnection_t& scopedCo
 }
 
 //Do-nothing assignment operator
-template< typename Return_t, typename... Args >
-Signal< Return_t ( Args... ) >& Signal< Return_t ( Args... ) >::operator =( const Signal& toCopy ) {
+template< typename Return, typename... Args >
+Signal< Return ( Args... ) >& Signal< Return ( Args... ) >::operator =( const Signal& toCopy ) {
     return *this;
 }
 
-template< typename Return_t, typename... Args >
-void Signal< Return_t ( Args... ) >::disconnectAllFromSC() {
+template< typename Return, typename... Args >
+void Signal< Return ( Args... ) >::disconnectAllFromSC() {
     for( auto it = m_slots.begin(); it != m_slots.end(); ++it ) {
         //Inform associated scoped connection we're no longer connected
-        ScopedConnection_t* scope = it->second;
+        ScopedConnection* scope = it->second;
         if( scope != nullptr )
             scope->disconnected( *this );
     }

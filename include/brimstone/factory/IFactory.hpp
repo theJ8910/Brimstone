@@ -15,10 +15,10 @@ Description:
 
 
 //Factory interface template
-template< typename Abstract_t >
+template< typename Abstract >
 class IFactory {
 public:
-    virtual Abstract_t create() const = 0;
+    virtual Abstract create() const = 0;
 };
 
 

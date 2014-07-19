@@ -31,37 +31,37 @@ namespace Brimstone {
 
 
 //Factory manager template
-//Maps keys (of type Key_t) to factories (that create objects of type Abstract_t)
+//Maps keys (of type Key) to factories (that create objects of type Abstract)
 //Call manager.create( key ) to create an object from a managed factory with that key
-template< typename Key_t, typename Abstract_t >
+template< typename Key, typename Abstract >
 class FactoryManager {
 private:
-    typedef typename RefType<Key_t>::ref                                KeyRef_t;
-    typedef typename RefType<Key_t>::const_ref                          KeyConstRef_t;
-    typedef std::unordered_map< Key_t, const IFactory< Abstract_t >& >  Map_t;
-    typedef typename Map_t::value_type                                  MapPair_t;
+    typedef typename RefType< Key >::ref                                KeyRef;
+    typedef typename RefType< Key >::const_ref                          KeyConstRef;
+    typedef std::unordered_map< Key, const IFactory< Abstract >& >      Map;
+    typedef typename Map::value_type                                    MapPair;
 
 private:
-    Map_t m_map;
+    Map m_map;
 public:
-    void add( KeyConstRef_t key, const IFactory< Abstract_t >& factory );
-    void remove( KeyConstRef_t key );
+    void add( KeyConstRef key, const IFactory< Abstract >& factory );
+    void remove( KeyConstRef key );
 
-    Abstract_t create( KeyConstRef_t key ) const;
+    Abstract create( KeyConstRef key ) const;
 };
 
-template< typename Key_t, typename Abstract_t >
-void FactoryManager< Key_t, Abstract_t >::add( KeyConstRef_t key, const IFactory< Abstract_t >& factory ) {
+template< typename Key, typename Abstract >
+void FactoryManager< Key, Abstract >::add( KeyConstRef key, const IFactory< Abstract >& factory ) {
     m_map.emplace( key, factory );
 }
 
-template< typename Key_t, typename Abstract_t >
-void FactoryManager< Key_t, Abstract_t >::remove( KeyConstRef_t key ) {
+template< typename Key, typename Abstract >
+void FactoryManager< Key, Abstract >::remove( KeyConstRef key ) {
     m_map.erase( key );
 }
 
-template< typename Key_t, typename Abstract_t >
-Abstract_t FactoryManager< Key_t, Abstract_t >::create( KeyConstRef_t key ) const {
+template< typename Key, typename Abstract >
+Abstract FactoryManager< Key, Abstract >::create( KeyConstRef key ) const {
     auto it = m_map.find( key );
     if( it == m_map.end() )
         throw NoSuchElementException();

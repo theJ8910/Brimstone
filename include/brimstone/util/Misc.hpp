@@ -58,12 +58,12 @@ struct TupleSize< std::tuple< Types... > > {
 //http://stackoverflow.com/questions/18837857/cant-use-enum-class-as-unordered-map-key
 template< typename T >
 struct EnumHasher {
-    typedef T                                               Enum_t;
-    typedef typename std::underlying_type< Enum_t >::type   Underlying_t;
-    typedef typename std::hash< Underlying_t >::result_type Result_t;
+    typedef T                                               Enum;
+    typedef typename std::underlying_type< Enum >::type     Underlying;
+    typedef typename std::hash< Underlying >::result_type   Result;
 
-    Result_t operator()( const Enum_t& enumr ) const {
-        return std::hash< Underlying_t >()( static_cast< Underlying_t >( enumr ) );
+    Result operator()( const Enum& enumr ) const {
+        return std::hash< Underlying >()( static_cast< Underlying >( enumr ) );
     }
 };
 

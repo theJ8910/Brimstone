@@ -20,40 +20,40 @@ Description:
 namespace Brimstone {
 namespace Private {
 
-template< typename From_t, typename To_t >
+template< typename From, typename To >
 union UniversalUnion{
-    From_t  from;
-    To_t    to;
+    From  from;
+    To    to;
 };
 
 }
 
 /*
-Casts "from" from From_t to To_t if it is possible to do so implicitly.
+Casts "from" from From to To if it is possible to do so implicitly.
 This mostly just serves as a readability aid to indicate implicit conversions.
 Usage:
-    implicit_cast< To_t >( from )
+    implicit_cast< To >( from )
 */
-template< typename To_t, typename From_t >
-inline To_t implicit_cast( From_t from ) {
+template< typename To, typename From >
+inline To implicit_cast( From from ) {
     return from;
 }
 
 /*
-Casts "from" from From_t to To_t in an unsafe manner.
-Both From_t and To_t must be the same size, or invoking universal_cast will fail with a compile error.
+Casts "from" from From to To in an unsafe manner.
+Both From and To must be the same size, or invoking universal_cast will fail with a compile error.
 Usage:
-    universal_cast< To_t >( from );
+    universal_cast< To >( from );
 */
-template< typename To_t, typename From_t >
-inline To_t universal_cast( From_t from ) {
-    Private::UniversalUnion< From_t, To_t > u;
+template< typename To, typename From >
+inline To universal_cast( From from ) {
+    Private::UniversalUnion< From, To > u;
 
     //The type we're casting from needs to be the same size as the type we're casting to.
     //Furthermore, the union of the two types must have the same size as well.
     //If they don't, this indicates the compiler uses an odd representation for unions,
     //which could interfere with the cast.
-    static_assert( sizeof( From_t ) == sizeof( u ) && sizeof( From_t ) == sizeof( To_t ), "Cannot universal cast these two types" );
+    static_assert( sizeof( From ) == sizeof( u ) && sizeof( From ) == sizeof( To ), "Cannot universal cast these two types" );
 
     u.from = from;
     return u.to;

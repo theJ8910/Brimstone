@@ -63,28 +63,28 @@ namespace Brimstone {
 
 class ISystem {
 protected:
-    typedef std::unordered_set< SystemType > DependencySet_t;
+    typedef std::unordered_set< SystemType > DependencySet;
 public:
     virtual void start() = 0;
     virtual void stop() = 0;
 
-    virtual const DependencySet_t& getDependencies() = 0;
+    virtual const DependencySet& getDependencies() = 0;
 };
 
 class AbstractSystem : public ISystem {
 public:
-    virtual const DependencySet_t& getDependencies();
+    virtual const DependencySet& getDependencies();
 protected:
     void addDependency( SystemType type );
 private:
-    DependencySet_t m_dependencies;
+    DependencySet m_dependencies;
 };
 
 class Systems {
 private:
-    typedef std::unordered_map< SystemType, ISystem* >  SystemsMap_t;
-    typedef std::vector< ISystem* >                     SystemsStack_t;
-    typedef std::unordered_set< SystemType >            SystemTypeSet_t;
+    typedef std::unordered_map< SystemType, ISystem* >  SystemsMap;
+    typedef std::vector< ISystem* >                     SystemsStack;
+    typedef std::unordered_set< SystemType >            SystemTypeSet;
 public:
     static void add( SystemType type );
     
@@ -94,10 +94,10 @@ public:
     static void startAll();
     static void stopAll();
 private:
-    static void add( SystemType type, SystemTypeSet_t& dependencyChain );
+    static void add( SystemType type, SystemTypeSet& dependencyChain );
 
-    static SystemsMap_t     m_systemsByType;
-    static SystemsStack_t   m_systemsByLoadOrder;
+    static SystemsMap     m_systemsByType;
+    static SystemsStack   m_systemsByLoadOrder;
 public:
     static FactoryManager< SystemType, ISystem* >& getFactoryManager();
 };
