@@ -54,8 +54,8 @@ private:
     typedef Return Signature( Args... );              //Signature;
     typedef Delegate< Signature >                       Slot;
     typedef Signal< Signature >                         My;
-    typedef ScopedConnection< Signature >               ScopedConnection;
-    typedef std::pair< Slot, ScopedConnection* >        Connection;
+    typedef ScopedConnection< Signature >               MyScopedConnection;
+    typedef std::pair< Slot, MyScopedConnection* >        Connection;
 
     typedef std::vector< Connection >                   SlotCollection;
 
@@ -65,7 +65,7 @@ public:
     ~Signal();
 
     void connect( const Slot& slot );
-    void connect( const Slot& slot, ScopedConnection& scopedConnection );
+    void connect( const Slot& slot, MyScopedConnection& scopedConnection );
     void disconnect( const Slot& slot );
     void disconnectAll();
 
@@ -73,8 +73,8 @@ public:
     void operator()( Args... args ) const;
 
 private:
-    void disconnect( const ScopedConnection& scopedConnection );
-    void release( const ScopedConnection& scopedConnection );
+    void disconnect( const MyScopedConnection& scopedConnection );
+    void release( const MyScopedConnection& scopedConnection );
     void disconnectAllFromSC();
     Signal& operator =( const Signal& toCopy );
     
@@ -104,7 +104,7 @@ void Signal< Return ( Args... ) >::connect( const Slot& slot ) {
 
 //Connect signal to a slot (managed by a scoped connection)
 template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::connect( const Slot& slot, ScopedConnection& scopedConnection ) {
+void Signal< Return ( Args... ) >::connect( const Slot& slot, MyScopedConnection& scopedConnection ) {
     m_slots.emplace_back( slot, &scopedConnection );
     scopedConnection.connected( *this );
 }
@@ -117,7 +117,7 @@ void Signal< Return ( Args... ) >::disconnect( const Slot& slot ) {
             continue;
 
         //Inform associated scoped connection we're no longer connected
-        ScopedConnection* scope = it->second;
+        MyScopedConnection* scope = it->second;
         if( scope != nullptr )
             scope->disconnected( *this );
                 
@@ -149,9 +149,9 @@ inline void Signal< Return ( Args... ) >::operator ()( Args... args ) const {
 
 //Disconnect all slots managed by the given scoped connection
 template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::disconnect( const ScopedConnection& scopedConnection ) {
-    //HACK: We don't bother to inform cScopedConnection about individual slots being disconnected()
-    //because it's assumed that this method will only be called when the cScopedConnection is being destroyed.
+void Signal< Return ( Args... ) >::disconnect( const MyScopedConnection& scopedConnection ) {
+    //HACK: We don't bother to inform scopedConnection about individual slots being disconnected()
+    //because it's assumed that this method will only be called when the scopedConnection is being destroyed.
     for( auto it = m_slots.begin(); it != m_slots.end(); /* N/A */ ) {
         //Skip this slot if it isn't managed by the given scoped connection.
         if( it->second != &scopedConnection )
@@ -165,7 +165,7 @@ void Signal< Return ( Args... ) >::disconnect( const ScopedConnection& scopedCon
 
 //All slots managed by the given scoped connection will no longer be managed by it
 template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::release( const ScopedConnection& scopedConnection ) {
+void Signal< Return ( Args... ) >::release( const MyScopedConnection& scopedConnection ) {
     for( auto it = m_slots.begin(); it != m_slots.end(); ++it ) {
         if( it->second != &scopedConnection )
             continue;
@@ -184,7 +184,7 @@ template< typename Return, typename... Args >
 void Signal< Return ( Args... ) >::disconnectAllFromSC() {
     for( auto it = m_slots.begin(); it != m_slots.end(); ++it ) {
         //Inform associated scoped connection we're no longer connected
-        ScopedConnection* scope = it->second;
+        MyScopedConnection* scope = it->second;
         if( scope != nullptr )
             scope->disconnected( *this );
     }

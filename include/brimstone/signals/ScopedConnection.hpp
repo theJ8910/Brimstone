@@ -40,16 +40,16 @@ friend class Signal< Return ( Args... ) >;
 
 public:
     typedef Return Signature( Args... );      //Signature;
-    typedef Signal< Signature >                 Signal;
+    typedef Signal< Signature >                 MySignal;
     typedef ScopedConnection< Signature >       My;
 
-    typedef std::vector< Signal* >            SignalCollection;
+    typedef std::vector< MySignal* >            SignalCollection;
 public:
     ~ScopedConnection();
     void release();
 private:
-    void connected( Signal& signal );
-    void disconnected( Signal& signal );
+    void connected( MySignal& signal );
+    void disconnected( MySignal& signal );
 private:
     SignalCollection    m_signals;
 };
@@ -70,12 +70,12 @@ void ScopedConnection< Return ( Args... ) >::release() {
 }
 
 template< typename Return, typename... Args >
-void ScopedConnection< Return ( Args... ) >::connected( Signal& signal ) {
+void ScopedConnection< Return ( Args... ) >::connected( MySignal& signal ) {
     m_signals.push_back( &signal );
 }
 
 template< typename Return, typename... Args >
-void ScopedConnection< Return ( Args... ) >::disconnected( Signal& signal ) {
+void ScopedConnection< Return ( Args... ) >::disconnected( MySignal& signal ) {
     auto it = std::find( m_signals.begin(), m_signals.end(), &signal );
     if( it == m_signals.end() )
         return;
