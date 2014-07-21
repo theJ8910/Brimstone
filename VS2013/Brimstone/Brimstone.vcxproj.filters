@@ -82,6 +82,21 @@
     <ClInclude Include="..\..\include\brimstone\Logger.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Vector.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Point2.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Macros.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\PointN.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Point3.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Exception.cpp">

@@ -171,6 +171,8 @@
     <ClInclude Include="..\..\include\brimstone\Logger.hpp" />
     <ClInclude Include="..\..\include\brimstone\Lua.hpp" />
     <ClInclude Include="..\..\include\brimstone\LuaInstance.hpp" />
+    <ClInclude Include="..\..\include\brimstone\Point2.hpp" />
+    <ClInclude Include="..\..\include\brimstone\PointN.hpp" />
     <ClInclude Include="..\..\include\brimstone\Rectangle.hpp" />
     <ClInclude Include="..\..\include\brimstone\signals\Delegate.hpp" />
     <ClInclude Include="..\..\include\brimstone\signals\Signal.hpp" />
@@ -178,12 +180,15 @@
     <ClInclude Include="..\..\include\brimstone\Systems.hpp" />
     <ClInclude Include="..\..\include\brimstone\types.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Cast.hpp" />
+    <ClInclude Include="..\..\include\brimstone\util\Macros.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\MinMax.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Misc.hpp" />
+    <ClInclude Include="..\..\include\brimstone\util\Point3.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Range.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\RefType.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Sequence.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Unicode.hpp" />
+    <ClInclude Include="..\..\include\brimstone\Vector.hpp" />
     <ClInclude Include="..\..\include\brimstone\Window.hpp" />
     <ClInclude Include="..\..\include\brimstone\WindowEvents.hpp" />
     <ClInclude Include="..\..\include\brimstone\windows\WindowsException.hpp" />
