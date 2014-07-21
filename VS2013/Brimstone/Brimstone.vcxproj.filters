@@ -94,7 +94,7 @@
     <ClInclude Include="..\..\include\brimstone\PointN.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\brimstone\util\Point3.hpp">
+    <ClInclude Include="..\..\include\brimstone\Point3.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,12 @@
 #ifndef BS_POINT3_HPP
 #define BS_POINT3_HPP
 
+#pragma warning( push )
+
+//C4201: nonstandard extension used : nameless struct/union
+//It's a non-standard feature, but VC++, G++, and LLVM support it so it shouldn't be too much of an issue
+#pragma warning( disable: 4201 )
+
 
 
 
@@ -17,7 +23,7 @@ class PointN< T, 3 > {
 public:
     union {
         T data[3];
-        T x, y;
+        struct { T x, y, z; };
     };
 public:
     BS_POINT_DECLARE_METHODS()
@@ -29,6 +35,11 @@ public:
     void set( const T* const xyz, const uintN count );
     void get( T& xOut, T& yOut, T& zOut );
     void get( T* const xyzOut, const uintN count );
+
+    template< typename T2 >
+    friend bool     operator ==( const PointN< T2, 3 >& left, const PointN< T2, 3 >& right );
+    template< typename T2 >
+    friend bool		operator !=( const PointN< T2, 3 >& left, const PointN< T2, 3 >& right );
 };
 
 BS_POINT_DEFINE_METHODS( 3, BS_POINT_TMPL( 3 ) )
@@ -42,7 +53,7 @@ PointN< T, 3 >::PointN()
 }
 
 template< typename T >
-PointN< T, 3 >::PointN( T x, T y ) : x( x ), y( y )
+PointN< T, 3 >::PointN( T x, T y, T z ) : x( x ), y( y ), z( z )
 {
 }
 
@@ -79,6 +90,19 @@ void PointN< T, 3 >::get( T* const xyzOut, const uintN count ) {
     xyzOut[2] = z;
 }
 
+template< typename T >
+bool operator ==( const PointN< T, 3 >& left, PointN< T, 3 >& right ) {
+    return left.x == right.x &&
+           left.y == right.y &&
+           left.z == right.z;
+}
+
+template< typename T >
+bool operator !=( const PointN< T, 3 >& left, const PointN< T, 3 >& right ) {
+    return left.x != right.x ||
+           left.y != right.y ||
+           left.z != right.z;
+}
 
 //Typedefs
 //3D point using "T".
@@ -98,5 +122,7 @@ typedef Point3< double > Point3d;
 
 
 
+
+#pragma warning( pop )
 
 #endif //BS_POINT2_HPP

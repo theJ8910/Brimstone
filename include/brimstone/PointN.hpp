@@ -29,8 +29,8 @@ PointN< T, N >
     operator T*(); \
     operator const T*() const; \
     \
-    T&      operator []( const intN component ); \
-    T       operator []( const intN component ) const;
+    T&              operator []( const intN component ); \
+    T               operator []( const intN component ) const;
 
 #define BS_POINT_DEFINE_METHODS( N, tmpl ) \
     tmpl \
@@ -62,6 +62,8 @@ PointN< T, N >
 
 namespace Brimstone {
 
+
+
 template< typename T, int N >
 class PointN {
 public:
@@ -73,6 +75,11 @@ public:
 
     void    set( const T* const values, const uintN count );
     void    get( T* const valuesOut, const uintN count ) const;
+
+    template< typename T2, int N2 >
+    friend bool     operator ==( const PointN<T2, N2>& left, const PointN<T2, N2>& right );
+    template< typename T2, int N2 >
+    friend bool		operator !=( const PointN<T2, N2>& left, const PointN<T2, N2>& right );
 };
 
 BS_POINT_DEFINE_METHODS( N, BS_POINT_THIS_TMPL() )
@@ -101,6 +108,22 @@ void PointN< T, N >::get( T* const valuesOut, const uintN count ) const {
 
     for( int i = 0; i < N; ++i )
         valuesOut[i] = data[i];
+}
+
+template< typename T, int N >
+bool operator ==( const PointN< T, N >& left, PointN< T, N >& right ) {
+    for( int i = 0; i < N; ++i )
+        if( left[i] != right[i] )
+            return false;
+    return true;
+}
+
+template< typename T, int N >
+bool operator !=( const PointN< T, N >& left, const PointN< T, N >& right ) {
+    for( int i = 0; i < N; ++i )
+        if( left[i] == right[i] )
+            return true;
+	return false;
 }
 
 }

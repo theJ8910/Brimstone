@@ -88,7 +88,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BS_BUILD_WINDOWS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BS_BUILD_WINDOWS;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\luajit-2.0\include;E:\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -106,7 +106,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BS_BUILD_WINDOWS;BS_BUILD_64BIT;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BS_BUILD_WINDOWS;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_BUILD_64BIT;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\luajit-2.0\include;E:\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -172,6 +172,7 @@
     <ClInclude Include="..\..\include\brimstone\Lua.hpp" />
     <ClInclude Include="..\..\include\brimstone\LuaInstance.hpp" />
     <ClInclude Include="..\..\include\brimstone\Point2.hpp" />
+    <ClInclude Include="..\..\include\brimstone\Point3.hpp" />
     <ClInclude Include="..\..\include\brimstone\PointN.hpp" />
     <ClInclude Include="..\..\include\brimstone\Rectangle.hpp" />
     <ClInclude Include="..\..\include\brimstone\signals\Delegate.hpp" />
@@ -183,7 +184,6 @@
     <ClInclude Include="..\..\include\brimstone\util\Macros.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\MinMax.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Misc.hpp" />
-    <ClInclude Include="..\..\include\brimstone\util\Point3.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Range.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\RefType.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Sequence.hpp" />

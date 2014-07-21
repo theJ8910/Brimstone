@@ -1,6 +1,12 @@
 #ifndef BS_POINT2_HPP
 #define BS_POINT2_HPP
 
+#pragma warning( push )
+
+//C4201: nonstandard extension used : nameless struct/union
+//It's a non-standard feature, but VC++, G++, and LLVM support it so it shouldn't be too much of an issue
+#pragma warning( disable: 4201 )
+
 
 
 
@@ -17,7 +23,7 @@ class PointN< T, 2 > {
 public:
     union {
         T data[2];
-        T x, y;
+        struct { T x, y; };
     };
 public:
     BS_POINT_DECLARE_METHODS()
@@ -29,6 +35,11 @@ public:
     void set( const T* const xy, const uintN count );
     void get( T& xOut, T& yOut );
     void get( T* const xyOut, const uintN count );
+
+    template< typename T2 >
+    friend bool     operator ==( const PointN<T2, 2>& left, const PointN<T2, 2>& right );
+    template< typename T2 >
+    friend bool		operator !=( const PointN<T2, 2>& left, const PointN<T2, 2>& right );
 };
 
 BS_POINT_DEFINE_METHODS( 2, BS_POINT_TMPL( 2 ) )
@@ -76,6 +87,18 @@ void PointN< T, 2 >::get( T* const xyOut, const uintN count ) {
     xyOut[1] = y;
 }
 
+template< typename T >
+bool operator ==( const PointN< T, 2 >& left, PointN< T, 2 >& right ) {
+    return left.x == right.x &&
+           left.y == right.y;
+}
+
+template< typename T >
+bool operator !=( const PointN< T, 2 >& left, const PointN< T, 2 >& right ) {
+    return left.x != right.x ||
+           left.y != right.y;
+}
+
 
 //Typedefs
 //2D point using "T".
@@ -92,5 +115,10 @@ typedef Point2< float  > Point2f;
 typedef Point2< double > Point2d;
 
 }
+
+
+
+
+#pragma warning( pop )
 
 #endif //BS_POINT2_HPP

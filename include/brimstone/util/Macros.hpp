@@ -25,7 +25,6 @@ Description:
 #ifdef BS_CHECK_NULLPTR
 
 #define BS_ASSERT_NON_NULLPTR( ptr ) \
-
     if( ptr == nullptr ) \
         throw ::Brimstone::NullPointerException();
 
