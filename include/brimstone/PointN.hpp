@@ -1,3 +1,13 @@
+﻿/*
+PointN.hpp
+-----------------------
+Copyright (c) 2014, theJ89
+
+Description:
+    Adds a generic point class, PointN.
+    You can specify what type of data the point uses (int, float, etc) as well as the dimension of the point.
+    2D and 3D specializations of PointN are provided in Point2.hpp and Point3.hpp.
+*/
 #ifndef BS_POINTN_HPP
 #define BS_POINTN_HPP
 
@@ -64,6 +74,7 @@ namespace Brimstone {
 
 
 
+
 template< typename T, int N >
 class PointN {
 public:
@@ -79,7 +90,7 @@ public:
     template< typename T2, int N2 >
     friend bool     operator ==( const PointN<T2, N2>& left, const PointN<T2, N2>& right );
     template< typename T2, int N2 >
-    friend bool		operator !=( const PointN<T2, N2>& left, const PointN<T2, N2>& right );
+    friend bool     operator !=( const PointN<T2, N2>& left, const PointN<T2, N2>& right );
 };
 
 BS_POINT_DEFINE_METHODS( N, BS_POINT_THIS_TMPL() )
@@ -123,9 +134,12 @@ bool operator !=( const PointN< T, N >& left, const PointN< T, N >& right ) {
     for( int i = 0; i < N; ++i )
         if( left[i] == right[i] )
             return true;
-	return false;
+    return false;
 }
 
 }
+
+
+
 
 #endif //BS_POINTN_HPP

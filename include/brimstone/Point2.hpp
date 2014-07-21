@@ -1,3 +1,16 @@
+﻿/*
+Point2.hpp
+-----------------------
+Copyright (c) 2014, theJ89
+
+Description:
+    Specialization of PointN for 2D points.
+    Adds the following typedefs for convenience:
+        Point2< T > - uses "T"
+        Point2i - uses signed 32-bit integers
+        Point2f - uses floats
+        Point2d - uses doubles
+*/
 #ifndef BS_POINT2_HPP
 #define BS_POINT2_HPP
 
@@ -39,7 +52,7 @@ public:
     template< typename T2 >
     friend bool     operator ==( const PointN<T2, 2>& left, const PointN<T2, 2>& right );
     template< typename T2 >
-    friend bool		operator !=( const PointN<T2, 2>& left, const PointN<T2, 2>& right );
+    friend bool     operator !=( const PointN<T2, 2>& left, const PointN<T2, 2>& right );
 };
 
 BS_POINT_DEFINE_METHODS( 2, BS_POINT_TMPL( 2 ) )
@@ -101,17 +114,10 @@ bool operator !=( const PointN< T, 2 >& left, const PointN< T, 2 >& right ) {
 
 
 //Typedefs
-//2D point using "T".
 template< typename T >
 using Point2 = PointN< T, 2 >;
-
-//2D point using 32-bit signed integers
 typedef Point2< int32  > Point2i;
-
-//2D point using floats
 typedef Point2< float  > Point2f;
-
-//2D point using doubles
 typedef Point2< double > Point2d;
 
 }

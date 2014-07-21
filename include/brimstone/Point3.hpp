@@ -1,3 +1,16 @@
+﻿/*
+Point3.hpp
+-----------------------
+Copyright (c) 2014, theJ89
+
+Description:
+    Specialization of PointN for 3D points.
+    Adds the following typedefs for convenience:
+        Point3< T > - uses "T"
+        Point3i - uses signed 32-bit integers
+        Point3f - uses floats
+        Point3d - uses doubles
+*/
 #ifndef BS_POINT3_HPP
 #define BS_POINT3_HPP
 
@@ -105,17 +118,10 @@ bool operator !=( const PointN< T, 3 >& left, const PointN< T, 3 >& right ) {
 }
 
 //Typedefs
-//3D point using "T".
 template< typename T >
 using Point3 = PointN< T, 3 >;
-
-//3D point using 32-bit signed integers
 typedef Point3< int32  > Point3i;
-
-//3D point using floats
 typedef Point3< float  > Point3f;
-
-//3D point using doubles
 typedef Point3< double > Point3d;
 
 }
