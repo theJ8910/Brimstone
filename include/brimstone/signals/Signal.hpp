@@ -30,11 +30,12 @@ Description:
 
 
 //Includes
-#include <vector>                   //std::vector
-#include <utility>                  //std::move, std::forward
-#include <algorithm>                //std::find
-#include "Delegate.hpp"             //Delegate
-#include "ScopedConnection.hpp"     //ScopedConnection
+#include <vector>                                   //std::vector
+#include <utility>                                  //std::move, std::forward
+#include <algorithm>                                //std::find
+
+#include <brimstone/signals/Delegate.hpp>           //Delegate
+#include <brimstone/signals/ScopedConnection.hpp>   //ScopedConnection
 
 
 

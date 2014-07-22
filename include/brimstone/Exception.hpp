@@ -28,7 +28,7 @@ Description:
 
 
 //Includes
-#include "types.hpp"    //uchar, ustring
+#include <brimstone/types.hpp>    //uchar, ustring
 
 
 

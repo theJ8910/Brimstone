@@ -22,7 +22,7 @@ Window::Window() :
     m_title( "Default Window Title" ),
     m_popup( false ),
     m_keyRepeat( false ),
-    m_bounds( 0, 0, 1024, 768 ),
+    m_bounds( Point2i( 32, 32 ), 1024, 768 ),
     m_impl( nullptr ) {
 }
 
@@ -83,14 +83,14 @@ bool Window::getVisible() const {
     return m_impl != nullptr;
 }
 
-void Window::setBounds( const LongRectangle& bounds ) {
+void Window::setBounds( const Bounds2i& bounds ) {
     m_bounds = bounds;
 
     if( m_impl != nullptr )
         m_impl->setBounds( bounds );
 }
 
-void Window::getBounds( LongRectangle& boundsOut ) const {
+void Window::getBounds( Bounds2i& boundsOut ) const {
     boundsOut = m_bounds;
 }
 

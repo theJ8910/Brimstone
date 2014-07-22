@@ -20,9 +20,9 @@ namespace Brimstone {
 template< typename T >  inline bool         isBetween( const T& val, const T& lowerBound, const T& upperBound );
 template< typename T >  inline bool         isOutside( const T& val, const T& lowerBound, const T& upperBound );
 template< typename T >  inline bool         approxEquals( const T& actualVal, const T& idealVal, const T& tolerance );
-template< typename T >  inline void         clamp( T& valInOut, const T& lowerBound, const T& upperBound );                                         template< typename T >  inline T        ClampedValue( const T& val, const T& lowerBound, const T& upperBound );
-template< typename T >  inline void         lowClamp( T& valInOut, const T& lowerBound );                                                           template< typename T >  inline T        LowClampedValue( const T& val, const T& lowerBound );
-template< typename T >  inline void         highClamp( T& valInOut, const T& upperBound );                                                          template< typename T >  inline T        HighClampedValue( const T& val, const T& upperBound );
+template< typename T >  inline void         clamp( T& valInOut, const T& lowerBound, const T& upperBound );                                         template< typename T >  inline T        clampedValue( const T& val, const T& lowerBound, const T& upperBound );
+template< typename T >  inline void         lowClamp( T& valInOut, const T& lowerBound );                                                           template< typename T >  inline T        lowClampedValue( const T& val, const T& lowerBound );
+template< typename T >  inline void         highClamp( T& valInOut, const T& upperBound );                                                          template< typename T >  inline T        highClampedValue( const T& val, const T& upperBound );
 
 
 

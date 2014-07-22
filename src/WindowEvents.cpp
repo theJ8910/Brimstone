@@ -7,8 +7,14 @@ Description:
     See WindowEvents.hpp for more information.
 */
 
+
+
+
 //Includes
 #include <brimstone/WindowEvents.hpp>   //Class header
+
+
+
 
 namespace Brimstone {
 
@@ -68,20 +74,16 @@ const uchar* keyToString( const Key key ) {
     return keyToStringMap[ (uint)key ];
 }
 
-MouseEvent::MouseEvent( const int32 x, const int32 y ) :
-    m_x( x ), m_y( y ) {
+MouseEvent::MouseEvent( const Point2i& cursorPos ) :
+    m_cursorPos( cursorPos ) {
 }
 
-int32 MouseEvent::getX() const {
-    return m_x;
+Point2i MouseEvent::getCursorPos() const {
+    return m_cursorPos;
 }
 
-int32 MouseEvent::getY() const {
-    return m_y;
-}
-
-MouseButtonEvent::MouseButtonEvent( const MouseButton button, const int32 x, const int32 y ) :
-    MouseEvent( x, y ),
+MouseButtonEvent::MouseButtonEvent( const MouseButton button, const Point2i& cursorPos ) :
+    MouseEvent( cursorPos ),
     m_button( button ) {
 }
 
@@ -89,20 +91,20 @@ MouseButton MouseButtonEvent::getButton() const {
     return m_button;
 }
 
-MouseDownEvent::MouseDownEvent( const MouseButton button, const int32 x, const int32 y ) :
-    MouseButtonEvent( button, x, y ) {
+MouseDownEvent::MouseDownEvent( const MouseButton button, const Point2i& cursorPos ) :
+    MouseButtonEvent( button, cursorPos ) {
 }
 
-MouseUpEvent::MouseUpEvent( const MouseButton button, const int32 x, const int32 y ) :
-    MouseButtonEvent( button, x, y ) {
+MouseUpEvent::MouseUpEvent( const MouseButton button, const Point2i& cursorPos ) :
+    MouseButtonEvent( button, cursorPos ) {
 }
 
-MouseMoveEvent::MouseMoveEvent( const int32 x, const int32 y ) :
-    MouseEvent( x, y ) {
+MouseMoveEvent::MouseMoveEvent( const Point2i& cursorPos ) :
+    MouseEvent( cursorPos ) {
 }
 
-MouseScrollEvent::MouseScrollEvent( const float scrollAmount, const int32 x, const int32 y ) :
-    MouseEvent( x, y ),
+MouseScrollEvent::MouseScrollEvent( const float scrollAmount, const Point2i& cursorPos ) :
+    MouseEvent( cursorPos ),
     m_scrollAmount( scrollAmount ) {
 }
 
@@ -121,12 +123,12 @@ float MouseScrollEvent::getScrollAmount() const {
     return m_scrollAmount;
 }
 
-MouseVScrollEvent::MouseVScrollEvent( const float scrollAmount, const int32 x, const int32 y ) :
-    MouseScrollEvent( scrollAmount, x, y ) {
+MouseVScrollEvent::MouseVScrollEvent( const float scrollAmount, const Point2i& cursorPos ) :
+    MouseScrollEvent( scrollAmount, cursorPos ) {
 }
 
-MouseHScrollEvent::MouseHScrollEvent( const float scrollAmount, const int32 x, const int32 y ) :
-    MouseScrollEvent( scrollAmount, x, y ) {
+MouseHScrollEvent::MouseHScrollEvent( const float scrollAmount, const Point2i& cursorPos ) :
+    MouseScrollEvent( scrollAmount, cursorPos ) {
 }
 
 KeyEvent::KeyEvent( const Key key ) :

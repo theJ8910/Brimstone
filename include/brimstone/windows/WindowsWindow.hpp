@@ -20,7 +20,7 @@ Description:
 #include <unordered_map>                        //std::unordered_map
 
 #include <brimstone/windows/WindowsHeader.hpp>  //HWND, HINSTANCE, ATOM, LRESULT, CALLBACK, WPARAM, LPARAM, etc
-#include <brimstone/Rectangle.hpp>              //LongRectangle
+#include <brimstone/Bounds.hpp>                 //Bounds2i
 #include <brimstone/types.hpp>
 
 
@@ -43,15 +43,14 @@ public:
 
     void            setPopup( const bool popup );
 
-    void            setBounds( const LongRectangle& bounds );
-    void            getBounds( LongRectangle& boundsOut ) const;
+    void            setBounds( const Bounds2i& bounds );
+    void            getBounds( Bounds2i& boundsOut ) const;
 
     HWND            getHandle();
 
 private:
-    void            adjustWindowBounds( long width, long height );
     LRESULT         windowProc( UINT message, WPARAM wParam, LPARAM lParam );
-    void            getMouseCoordinates( LPARAM lParam, int32& xOut, int32& yOut );
+    Point2i         getCursorPos( LPARAM lParam );
 
     WindowsWindow( const WindowsWindow& );
     WindowsWindow&  operator =( const WindowsWindow& );

@@ -7,8 +7,14 @@ Description:
     See Exception.hpp for more information.
 */
 
+
+
+
 //Includes
 #include <brimstone/Exception.hpp>
+
+
+
 
 namespace Brimstone {
 

@@ -27,11 +27,14 @@ Description:
 namespace Brimstone {
 
 //Typedefs
-typedef unsigned char       ubyte;
+
+//Unsigned variants of standard integral types
 typedef unsigned short      ushort;
 typedef unsigned int        uint;
 typedef unsigned long       ulong;
+typedef unsigned long long  ulonglong;
 
+//Signed and unsigned fixed width integral types
 typedef int8_t              int8;
 typedef int16_t             int16;
 typedef int32_t             int32;
@@ -41,17 +44,20 @@ typedef uint16_t            uint16;
 typedef uint32_t            uint32;
 typedef uint64_t            uint64;
 
+//Signed and unsigned "native" integers
+//These are 32-bits on a 32-bit build,
+//and 64-bits on a 64-bit build.
 #ifdef BS_BUILD_64BIT
 
 typedef int64               intN;
 typedef uint64              uintN;
 
-#else
+#else //BS_BUILD_64BIT
 
 typedef int32               intN;
 typedef uint32              uintN;
 
-#endif
+#endif //BS_BUILD_64BIT
 
 //Bytes are represented with characters
 typedef char                byte;
@@ -79,20 +85,6 @@ typedef std::wistringstream wisstream;
 //Like the name suggests, this should be something that can represent reals, like float or double.
 //floats are faster, but doubles are more accurate.
 typedef float real;
-
-
-//Constants
-#if defined( BS_BUILD_WINDOWS )
-
-#define ASCII_NEWLINE       "\r\n";
-#define UNICODE_NEWLINE     L"\r\n";
-
-#elif defined( BS_BUILD_LINUX ) || defined( BS_BUILD_MAC )
-
-#define ASCII_NEWLINE       "\n";
-#define UNICODE_NEWLINE     L"\n";
-
-#endif
 
 }
 

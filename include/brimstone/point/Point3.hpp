@@ -6,25 +6,19 @@ Copyright (c) 2014, theJ89
 Description:
     Specialization of PointN for 3D points.
     Adds the following typedefs for convenience:
-        Point3< T > - uses "T"
-        Point3i - uses signed 32-bit integers
-        Point3f - uses floats
-        Point3d - uses doubles
+        Point3< T >: PointN<T,3>
+        Point3i:     PointN<int32,3>
+        Point3f:     PointN<float,3>
+        Point3d:     PointN<double,3>
 */
 #ifndef BS_POINT3_HPP
 #define BS_POINT3_HPP
-
-#pragma warning( push )
-
-//C4201: nonstandard extension used : nameless struct/union
-//It's a non-standard feature, but VC++, G++, and LLVM support it so it shouldn't be too much of an issue
-#pragma warning( disable: 4201 )
 
 
 
 
 //Includes
-#include <brimstone/PointN.hpp>
+#include <brimstone/point/PointN.hpp>   //PointN
 
 
 
@@ -34,20 +28,37 @@ namespace Brimstone {
 template< typename T >
 class PointN< T, 3 > {
 public:
+//C4201: nonstandard extension used : nameless struct/union
+//It's a non-standard feature, but VC++, G++, and LLVM support it so it shouldn't be too much of an issue
+#pragma warning( push )
+#pragma warning( disable: 4201 )
+
     union {
         T data[3];
         struct { T x, y, z; };
     };
+
+#pragma warning( pop )
 public:
     BS_POINT_DECLARE_METHODS()
 
+    //Constructors
     PointN();
     PointN( T x, T y, T z );
 
+    //Set / get the coordinates
     void set( const T x, const T y, const T z );
     void set( const T* const xyz, const uintN count );
     void get( T& xOut, T& yOut, T& zOut );
     void get( T* const xyzOut, const uintN count );
+
+    //Miscellaneous utility methods
+    void zero();
+    bool isZero() const;
+
+     //Related free functions
+    template< typename T2 >
+    friend std::ostream& operator <<( std::ostream& left, const PointN< T2, 3 >& right );
 
     template< typename T2 >
     friend bool     operator ==( const PointN< T2, 3 >& left, const PointN< T2, 3 >& right );
@@ -55,7 +66,7 @@ public:
     friend bool		operator !=( const PointN< T2, 3 >& left, const PointN< T2, 3 >& right );
 };
 
-BS_POINT_DEFINE_METHODS( 3, BS_POINT_TMPL( 3 ) )
+BS_POINT_DEFINE_METHODS( 3, BS_POINT_TMPL() )
 
 template< typename T >
 PointN< T, 3 >::PointN()
@@ -72,14 +83,14 @@ PointN< T, 3 >::PointN( T x, T y, T z ) : x( x ), y( y ), z( z )
 
 template< typename T >
 void PointN< T, 3 >::set( T x, T y, T z ) {
-    this->x = x;
-    this->y = y;
+    PointN::x = x;
+    PointN::y = y;
 }
 
 template< typename T >
 void PointN< T, 3 >::set( const T* const xyz, const uintN count ) {
-    BS_ASSERT_NON_NULLPTR( xyz )
-    BS_ASSERT_SIZE( count, 3 )
+    BS_ASSERT_NON_NULLPTR( xyz );
+    BS_ASSERT_SIZE( count, 3 );
 
     x = xyz[0];
     y = xyz[1];
@@ -95,12 +106,31 @@ void PointN< T, 3 >::get( T& xOut, T& yOut, T& zOut ) {
 
 template< typename T >
 void PointN< T, 3 >::get( T* const xyzOut, const uintN count ) {
-    BS_ASSERT_NON_NULLPTR( xyzOut )
-    BS_ASSERT_SIZE( count, 3 )
+    BS_ASSERT_NON_NULLPTR( xyzOut );
+    BS_ASSERT_SIZE( count, 3 );
 
     xyzOut[0] = x;
     xyzOut[1] = y;
     xyzOut[2] = z;
+}
+
+template< typename T >
+void PointN< T, 3 >::zero() {
+    x = 0;
+    y = 0;
+    z = 0;
+}
+
+template< typename T >
+bool PointN< T, 3 >::isZero() const {
+    return x == 0 &&
+           y == 0 &&
+           z == 0;
+}
+
+template< typename T >
+std::ostream& operator <<( std::ostream& left, const PointN< T, 3 >& right ) {
+    return left << "( " << right[0] << ", " << right[1] << ", " << right[2] << " )";
 }
 
 template< typename T >
@@ -128,7 +158,5 @@ typedef Point3< double > Point3d;
 
 
 
-
-#pragma warning( pop )
 
 #endif //BS_POINT2_HPP

@@ -49,9 +49,6 @@
     <ClInclude Include="..\..\include\brimstone\Window.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\brimstone\Rectangle.hpp">
-      <Filter>include\brimstone</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\brimstone\windows\WindowsException.hpp">
       <Filter>include\brimstone\windows</Filter>
     </ClInclude>
@@ -85,16 +82,31 @@
     <ClInclude Include="..\..\include\brimstone\Vector.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\brimstone\Point2.hpp">
-      <Filter>include\brimstone</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\brimstone\util\Macros.hpp">
       <Filter>include\brimstone\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\brimstone\PointN.hpp">
+    <ClInclude Include="..\..\include\brimstone\bounds\Bounds2.hpp">
+      <Filter>include\brimstone\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\bounds\BoundsN.hpp">
+      <Filter>include\brimstone\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\bounds\Bounds3.hpp">
+      <Filter>include\brimstone\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\point\PointN.hpp">
+      <Filter>include\brimstone\point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\point\Point2.hpp">
+      <Filter>include\brimstone\point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\point\Point3.hpp">
+      <Filter>include\brimstone\point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Point.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\brimstone\Point3.hpp">
+    <ClInclude Include="..\..\include\brimstone\Bounds.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
   </ItemGroup>
@@ -160,6 +172,12 @@
     </Filter>
     <Filter Include="src\util">
       <UniqueIdentifier>{a52c98cb-9b60-4856-a7c9-90c931719855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\point">
+      <UniqueIdentifier>{40df068d-98bf-4df8-a545-07eb1256e797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\bounds">
+      <UniqueIdentifier>{bbd3d91b-dc4b-42b7-86f0-781555b6d3a1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

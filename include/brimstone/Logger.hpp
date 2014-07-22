@@ -29,6 +29,7 @@ Description:
 #include <fstream>              //std::ofstream
 #include <vector>               //std::vector
 #include <initializer_list>     //std::initializer_list
+
 #include <brimstone/types.hpp>  //uchar
 
 

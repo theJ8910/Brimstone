@@ -18,6 +18,7 @@ Description:
 #include <unordered_map>                        //std::unordered_map
 #include <unordered_set>                        //std::unordered_set
 #include <vector>                               //std::vector
+
 #include <brimstone/factory/FactoryManager.hpp> //FactoryManager
 #include <brimstone/factory/BasicFactory.hpp>   //BasicFactory
 #include <brimstone/util/Misc.hpp>              //BS_MAKE_ENUM_HASHER

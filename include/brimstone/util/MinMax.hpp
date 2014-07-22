@@ -15,16 +15,11 @@ Description:
 
 
 //Includes
-#include <utility>                  //std::swap
-#include <brimstone/Exception.hpp>  //NullPointerException, SizeException
-#include <brimstone/types.hpp>      //uint32
+#include <utility>                      //std::swap
 
-
-
-
-//Defines
-//#define BS_MINMAX_CHECKNULLPTR    //If this is declared, the minmax functions make sure that pointers given as parameters to functions that are required to be non-NULL actually are non-NULL.
-//#define BS_MINMAX_CHECKSIZE       //If this is declared, the minmax functions make sure that functions that require nonzero array sizes are given nonzero sizes.
+#include <brimstone/Exception.hpp>      //NullPointerException, SizeException
+#include <brimstone/types.hpp>          //uint32
+#include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
 
 
 
@@ -79,8 +74,7 @@ Returns:
     void:                   N/A
 */
 template< typename T >
-inline void electMin( T& currentInWinnerOut, const T& candidate )
-{
+inline void electMin( T& currentInWinnerOut, const T& candidate ) {
     if( candidate < currentInWinnerOut )
         currentInWinnerOut = candidate;
 }
@@ -107,8 +101,7 @@ Returns:
     void:       N/A
 */
 template< typename T >
-inline void min( const T& a, const T& b, T& minOut )
-{
+inline void min( const T& a, const T& b, T& minOut ) {
     minOut = ( ( a < b ) ? a : b );
 }
 
@@ -133,8 +126,7 @@ Returns:
     T:      The smaller value.
 */
 template< typename T >
-inline T min( const T& a, const T& b )
-{
+inline T min( const T& a, const T& b ) {
     return ( ( a < b ) ? a : b );
 }
 
@@ -165,24 +157,9 @@ Throws:
     SizeException:          If numItems is 0.
 */
 template< typename T >
-inline void min( const T* values, uint32 numItems, T& minOut )
-{
-
-#ifdef BS_MINMAX_CHECKNULLPTR
-
-    if( values == nullptr ) {
-        throw NullPointerException();
-    }
-
-#endif //BS_MINMAX_CHECKNULLPTR
-
-#ifdef BS_MINMAX_CHECKSIZE
-
-    if( numItems == 0 ) {
-        throw SizeException();
-    }
-
-#endif //BS_MINMAX_CHECKSIZE
+inline void min( const T* values, uint32 numItems, T& minOut ) {
+    BS_ASSERT_NON_NULLPTR( values );
+    BS_ASSERT_SIZE( numItems, 1 );
 
     minOut = *values;
     while( ( --numItems ) > 0u ) {
@@ -217,8 +194,7 @@ Returns:
     void:                   N/A
 */
 template< typename T >
-inline void electMax( T& currentInWinnerOut, const T& candidate )
-{
+inline void electMax( T& currentInWinnerOut, const T& candidate ) {
     if( candidate > currentInWinnerOut )
         currentInWinnerOut = candidate;
 }
@@ -245,8 +221,7 @@ Returns:
     void:       N/A
 */
 template< typename T >
-inline void max( const T& a, const T& b, T& maxOut )
-{
+inline void max( const T& a, const T& b, T& maxOut ) {
     maxOut = ( ( a > b ) ? a : b );
 }
 
@@ -270,8 +245,7 @@ Returns:
     T:      The larger value.
 */
 template< typename T >
-inline T max( const T& a, const T& b )
-{
+inline T max( const T& a, const T& b ) {
     return ( ( a > b ) ? a : b );
 }
 
@@ -302,24 +276,9 @@ Throws:
     SizeException:          If numItems is 0.
 */
 template< typename T >
-inline void max( const T* values, uint32 numItems, T& maxOut )
-{
-
-#ifdef BS_MINMAX_CHECKNULLPTR
-
-    if( values == nullptr ) {
-        throw NullPointerException();
-    }
-
-#endif //BS_MINMAX_CHECKNULLPTR
-
-#ifdef BS_MINMAX_CHECKSIZE
-
-    if( numItems == 0 ) {
-        throw SizeException();
-    }
-
-#endif //BS_MINMAX_CHECKSIZE
+inline void max( const T* values, uint32 numItems, T& maxOut ) {
+    BS_ASSERT_NON_NULLPTR( values );
+    BS_ASSERT_SIZE( numItems, 1 );
 
     maxOut = *values;
     while( ( --numItems ) > 0u ) {
@@ -368,13 +327,11 @@ Returns:
     void:           N/A
 */
 template< typename T >
-inline void electMinMax( T& minInOut, T& maxInOut, const T& candidate )
-{
-    if( candidate > maxInOut ) {
+inline void electMinMax( T& minInOut, T& maxInOut, const T& candidate ) {
+    if( candidate > maxInOut )
         maxInOut = candidate;
-    } else if( candidate < minInOut ) {
+    else if( candidate < minInOut )
         minInOut = candidate;
-    }
 }
 
 /*
@@ -406,8 +363,7 @@ Returns:
     void:       N/A
 */
 template< typename T >
-inline void minMax( const T& a, const T& b, T& minOut, T& maxOut )
-{
+inline void minMax( const T& a, const T& b, T& minOut, T& maxOut ) {
     if( a > b ) {
         minOut = b;
         maxOut = a;
@@ -441,8 +397,7 @@ Returns:
     void:           N/A
 */
 template< typename T >
-inline void minMax( T& aInMinOut, T& bInMaxOut )
-{
+inline void minMax( T& aInMinOut, T& bInMaxOut ) {
     if( aInMinOut > bInMaxOut )
         std::swap( aInMinOut, bInMaxOut );
 }
@@ -476,24 +431,9 @@ Throws:
     SizeException:          If numItems is 0.
 */
 template< typename T >
-inline void minMax( const T* values, uint32 numItems, T& minOut, T& maxOut )
-{
-
-#ifdef BS_MINMAX_CHECKNULLPTR
-
-    if( values == nullptr ) {
-        throw NullPointerException();
-    }
-
-#endif //BS_MINMAX_CHECKNULLPTR
-
-#ifdef BS_MINMAX_CHECKSIZE
-
-    if( numItems == 0 ) {
-        throw SizeException();
-    }
-
-#endif //BS_MINMAX_CHECKSIZE
+inline void minMax( const T* values, uint32 numItems, T& minOut, T& maxOut ) {
+    BS_ASSERT_NON_NULLPTR( values );
+    BS_ASSERT_SIZE( numItems, 1 );
 
     minOut = maxOut = *values;
     while( (--numItems) > 0u ) {

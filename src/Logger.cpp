@@ -17,6 +17,8 @@ Description:
 #include <algorithm>                //std::find
 
 
+
+
 namespace Brimstone {
 
 std::vector< ILogger* > Loggers::m_loggers;

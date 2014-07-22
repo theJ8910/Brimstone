@@ -13,7 +13,9 @@ Description:
 //Includes
 #include <brimstone/LuaInstance.hpp>    //Class header
 #include <brimstone/Exception.hpp>      //LuaException
+
 #include <luajit/lua.hpp>               //lua_State, etc
+
 #include <boost/format.hpp>             //boost::format
 
 

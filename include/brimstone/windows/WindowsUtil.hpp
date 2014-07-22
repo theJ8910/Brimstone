@@ -17,7 +17,7 @@ Description:
 
 
 //Includes
-#include "../types.hpp"        //uchar, wchar, int32
+#include <brimstone/types.hpp>  //uchar, wchar, int32
 
 
 

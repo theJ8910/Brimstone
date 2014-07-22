@@ -22,7 +22,8 @@ Description:
 
 
 //Includes
-#include "types.hpp"    //int32, uchar
+#include <brimstone/types.hpp>  //int32, uchar
+#include <brimstone/Point.hpp>  //Point2i
 
 
 
@@ -105,16 +106,15 @@ const uchar* keyToString( const Key eKey );
 
 class MouseEvent {
 public:
-    MouseEvent( const int32 x, const int32 y );
-    int32 getX() const;
-    int32 getY() const;
+    MouseEvent( const Point2i& cursorPos );
+    Point2i getCursorPos() const;
 private:
-    int32 m_x, m_y;
+    Point2i m_cursorPos;
 };
 
 class MouseButtonEvent : public MouseEvent {
 public:
-    MouseButtonEvent( const MouseButton button, const int32 x, const int32 y );
+    MouseButtonEvent( const MouseButton button, const Point2i& cursorPos );
     MouseButton getButton() const;
 private:
     MouseButton m_button;
@@ -122,22 +122,22 @@ private:
 
 class MouseDownEvent : public MouseButtonEvent {
 public:
-    MouseDownEvent( const MouseButton button, const int32 x, const int32 y );
+    MouseDownEvent( const MouseButton button, const Point2i& cursorPos );
 };
 
 class MouseUpEvent : public MouseButtonEvent {
 public:
-    MouseUpEvent( const MouseButton button, const int32 x, const int32 y );
+    MouseUpEvent( const MouseButton button, const Point2i& cursorPos );
 };
 
 class MouseMoveEvent : public MouseEvent {
 public:
-    MouseMoveEvent( const int32 x, const int32 y );
+    MouseMoveEvent( const Point2i& cursorPos );
 };
 
 class MouseScrollEvent : public MouseEvent {
 public:
-    MouseScrollEvent( const float scrollAmount, const int32 x, const int32 y );
+    MouseScrollEvent( const float scrollAmount, const Point2i& cursorPos );
     float getScrollAmount() const;
 private:
     float m_scrollAmount;
@@ -145,12 +145,12 @@ private:
 
 class MouseVScrollEvent : public MouseScrollEvent {
 public:
-    MouseVScrollEvent( const float scrollAmount, const int32 x, const int32 y);
+    MouseVScrollEvent( const float scrollAmount, const Point2i& cursorPos );
 };
 
 class MouseHScrollEvent : public MouseScrollEvent {
 public:
-    MouseHScrollEvent( const float scrollAmount, const int32 x, const int32 y );
+    MouseHScrollEvent( const float scrollAmount, const Point2i& cursorPos );
 };
 
 class KeyEvent {

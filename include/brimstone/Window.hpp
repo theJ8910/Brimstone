@@ -16,7 +16,7 @@ Description:
 
 
 //Includes
-#include <brimstone/Rectangle.hpp>              //LongRectangle
+#include <brimstone/Bounds.hpp>                 //Bounds2i
 #include <brimstone/signals/Signal.hpp>         //Signal
 #include <brimstone/types.hpp>                  //ustring
 #include <brimstone/WindowEvents.hpp>           //MouseDownEvent, MouseUpEvent, etc
@@ -56,8 +56,8 @@ public:
     void        setVisible( const bool visible );
     bool        getVisible() const;
 
-    void        setBounds( const LongRectangle& bounds );
-    void        getBounds( LongRectangle& boundsOut ) const;
+    void        setBounds( const Bounds2i& bounds );
+    void        getBounds( Bounds2i& boundsOut ) const;
 
     void        setKeyRepeat( const bool keyRepeat );
     bool        getKeyRepeat() const;
@@ -76,7 +76,7 @@ private:
     ustring                 m_title;
     bool                    m_popup;
     bool                    m_keyRepeat;
-    LongRectangle           m_bounds;
+    Bounds2i                m_bounds;
 
     Private::WindowImpl*    m_impl;
 

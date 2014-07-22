@@ -20,9 +20,9 @@ Description:
 #include <brimstone/WindowEvents.hpp>                   //MouseClickEvent, MouseMoveEvent, KeyPressEvent
 #include <brimstone/util/Range.hpp>                     //ClampedValue
 #include <brimstone/Logger.hpp>                         //logError
-#include <boost/format.hpp>                             //boost::format
-
 #include <brimstone/Window.hpp>                         //Really stupid circular dependency hack
+
+#include <boost/format.hpp>                             //boost::format
 
 
 
@@ -56,22 +56,23 @@ WindowsWindow::WindowsWindow( Window& parent ) : m_parent( &parent ) {
     ustring title;
     parent.getTitle( title );
 
+    //Determine style based on whether the window is a popup or not.
+    DWORD style = ( parent.getPopup() ? popupWindow : normalWindow );
+
     //Get bounds
-    LongRectangle bounds;
+    Bounds2i bounds;
     parent.getBounds( bounds );
+    AdjustWindowRect( reinterpret_cast< RECT* >( &bounds ), style, false );
     long width  = bounds.getWidth();
     long height = bounds.getHeight();
-
-    //Get popup
-    bool popup = parent.getPopup();
 
     //Create the window
     m_wnd = CreateWindow(
         windowClass,                                    //Name of Window Class
         utf8to16( title ).c_str(),                      //Title of Window
-        ( popup ? popupWindow : normalWindow ),         //Style of window (flags)
-        bounds.left,                                    //x
-        bounds.top,                                     //y
+        style,                                          //Style of window (flags)
+        bounds.mins.x,                                  //x
+        bounds.mins.y,                                  //y
         width,                                          //w
         height,                                         //h
         nullptr,                                        //parent window
@@ -84,8 +85,6 @@ WindowsWindow::WindowsWindow( Window& parent ) : m_parent( &parent ) {
         throwWindowsException();
 
     m_windowMap.emplace( m_wnd, *this );
-
-    adjustWindowBounds( width, height );
 }
 
 WindowsWindow::~WindowsWindow() {
@@ -104,51 +103,6 @@ void WindowsWindow::processEvents() {
         TranslateMessage( &msg );
         DispatchMessage( &msg );
     }
-}
-
-/*
-WindowsWindow::adjustWindowBounds
------------------------
-
-Description:
-    Called after resizing the window or changing it to a popup.
-
-    Unforunately we need the CLIENT RECTANGLE OF THE WINDOW to be w pixels wide and h pixels high, not the window itself!
-    If this isn't done, the presented image would be stretched.
-
-Arguments:
-    width:  The desired width of the client area.
-    height: The desired height of the client area.
-
-Returns:
-    void:   N/A
-*/
-void WindowsWindow::adjustWindowBounds( long width, long height ) {
-    if( m_parent->getPopup() )
-        return;
-
-    //The window rectangle is the rectangle that surrounds the window,
-    //whereas the client rectangle is the rectangle surrounding the content area inside of the window.
-    RECT wndRect, clientRect;
-
-    if( GetWindowRect( m_wnd, &wndRect ) == FALSE )
-        throwWindowsException();
-
-    //NOTE: GetClientRect() outputs a rectangle whose .left and .top are 0,
-    //which means the right and bottom are the width and height (respectively) of the client area.
-    if( GetClientRect( m_wnd, &clientRect ) == FALSE )
-        throwWindowsException();
-
-    //MoveWindow is sort of a misnomer. You're actually framing the window in a new rectangle, meaning you can position and/or resize.
-    //Here we're effectively adding width/height to the window to give the padding between the window and the client area its own space
-    //so it doesn't take up the client area's space. This is done like so:
-    //newSize =     oldSize + ( oldSize - oldClientSize ) 
-    //        = 2 * oldSize - oldClientSize
-    //NOTE: (x << 1) == (x * 2)
-    width  = ( width  << 1 ) - clientRect.right;
-    height = ( height << 1 ) - clientRect.bottom;
-    if( MoveWindow( m_wnd, wndRect.left, wndRect.top, width, height, TRUE ) == FALSE )
-        throwWindowsException();
 }
 
 Key vkToKeyMap[] = {
@@ -412,92 +366,59 @@ Key vkToKeyMap[] = {
 LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) {
     switch( message ) {
     case WM_MOUSEMOVE: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseMoveEvent eventObj( x, y );
+        MouseMoveEvent eventObj( getCursorPos( lParam ) );
         m_parent->m_signalMouseMove( eventObj );
     } break;
     case WM_LBUTTONDOWN: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseDownEvent eventObj( MouseButton::LEFT, x, y );
+        MouseDownEvent eventObj( MouseButton::LEFT, getCursorPos( lParam ) );
         m_parent->m_signalMouseDown( eventObj );
     } break;
     case WM_LBUTTONUP: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseUpEvent eventObj( MouseButton::LEFT, x, y );
+        MouseUpEvent eventObj( MouseButton::LEFT, getCursorPos( lParam ) );
         m_parent->m_signalMouseUp( eventObj );
     } break;
     case WM_RBUTTONDOWN: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseDownEvent eventObj( MouseButton::RIGHT, x, y );
+        MouseDownEvent eventObj( MouseButton::RIGHT, getCursorPos( lParam ) );
         m_parent->m_signalMouseDown( eventObj );
     } break;
     case WM_RBUTTONUP: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseUpEvent eventObj( MouseButton::RIGHT, x, y );
+        MouseUpEvent eventObj( MouseButton::RIGHT, getCursorPos( lParam ) );
         m_parent->m_signalMouseUp( eventObj );
     } break;
     case WM_MBUTTONDOWN: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseDownEvent eventObj( MouseButton::MIDDLE, x, y );
+        MouseDownEvent eventObj( MouseButton::MIDDLE, getCursorPos( lParam ) );
         m_parent->m_signalMouseDown( eventObj );
     } break;
     case WM_MBUTTONUP: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseUpEvent eventObj( MouseButton::MIDDLE, x, y );
+        MouseUpEvent eventObj( MouseButton::MIDDLE, getCursorPos( lParam ) );
         m_parent->m_signalMouseUp( eventObj );
     } break;
     case WM_XBUTTONDOWN: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
         MouseDownEvent eventObj(
             GET_XBUTTON_WPARAM( wParam ) == XBUTTON1 ?
                 MouseButton::X1 :
                 MouseButton::X2,
-            x, y
+            getCursorPos( lParam )
         );
 
         m_parent->m_signalMouseDown( eventObj );
     } break;
     case WM_XBUTTONUP: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
         MouseUpEvent eventObj(
             GET_XBUTTON_WPARAM( wParam ) == XBUTTON1 ?
                 MouseButton::X1 :
                 MouseButton::X2,
-            x, y
+            getCursorPos( lParam )
         );
 
         m_parent->m_signalMouseUp( eventObj );
     } break;
     case WM_MOUSEWHEEL: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseVScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, x, y );
+        MouseVScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, getCursorPos( lParam ) );
         m_parent->m_signalMouseVScroll( eventObj );
     } break;
     case WM_MOUSEHWHEEL: {
-        int32 x, y;
-        getMouseCoordinates( lParam, x, y );
-
-        MouseHScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, x, y );
+        MouseHScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, getCursorPos( lParam ) );
         m_parent->m_signalMouseHScroll( eventObj ); 
     } break;
     case WM_SYSKEYDOWN:
@@ -579,15 +500,17 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
     return 0;
 }
 
-void WindowsWindow::getMouseCoordinates( LPARAM lParam, int32& xOut, int32& yOut ) {
+Point2i WindowsWindow::getCursorPos( LPARAM lParam ) {
     //The coordinates provided in lParam are relative to the upper-left corner of the window's client area.
     //However, we need to clamp values here because the window will return coordinates outside of the client
     //area as well (borders, etc)! Raw coordinates could even be negative.
-    LongRectangle bounds;
+    Bounds2i bounds;
     m_parent->getBounds( bounds );
 
-    xOut = clampedValue( (long)GET_X_LPARAM( lParam ), 0L, bounds.getWidth()  - 1L );
-    yOut = clampedValue( (long)GET_Y_LPARAM( lParam ), 0L, bounds.getHeight() - 1L );
+    return Point2i(
+        clampedValue( (long)GET_X_LPARAM( lParam ), 0L, bounds.getWidth()  - 1L ),
+        clampedValue( (long)GET_Y_LPARAM( lParam ), 0L, bounds.getHeight() - 1L )
+    );
 }
 
 /*
@@ -734,12 +657,12 @@ void WindowsWindow::setPopup( const bool popup ) {
     SetWindowLongPtr( m_wnd, GWL_STYLE, ( popup ? popupWindow : normalWindow ) );
 }
 
-void WindowsWindow::setBounds( const LongRectangle& bounds ) {
-    if( MoveWindow( m_wnd, bounds.left, bounds.right, bounds.getWidth(), bounds.getHeight(), TRUE ) == FALSE )
+void WindowsWindow::setBounds( const Bounds2i& bounds ) {
+    if( MoveWindow( m_wnd, bounds.mins.x, bounds.mins.y, bounds.getWidth(), bounds.getHeight(), TRUE ) == FALSE )
         throwWindowsException();
 }
 
-void WindowsWindow::getBounds( LongRectangle& boundsOut ) const {
+void WindowsWindow::getBounds( Bounds2i& boundsOut ) const {
     if( GetWindowRect( m_wnd, (LPRECT)(&boundsOut) ) == FALSE )
         throwWindowsException();
 }

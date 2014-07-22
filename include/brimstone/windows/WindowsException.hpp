@@ -19,10 +19,10 @@ Description:
 
 
 //Includes
-#include "WindowsHeader.hpp"                //FormatMessage
-#include <memory>                           //std::unique_ptr
+#include <brimstone/windows/WindowsHeader.hpp>  //FormatMessage
+#include <memory>                               //std::unique_ptr
 
-#include <brimstone/Exception.hpp>          //IException
+#include <brimstone/Exception.hpp>              //IException
 
 
 
