@@ -1,4 +1,4 @@
-﻿/*
+/*
 linux/LinuxWindow.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -16,8 +16,8 @@ Description:
 #include <brimstone/util/Range.hpp>             //ClampedValue
 #include <brimstone/WindowEvents.hpp>           //MouseClickEvent, MouseMoveEvent, KeyPressEvent
 #include <brimstone/Exception.hpp>              //NullPointerException
+#include <brimstone/Logger.hpp>                 //logError
 
-#include <brimstone/Logger.hpp>                 //TEMP
 #include <boost/format.hpp>                     //TEMP
 
 #include <brimstone/Window.hpp>                 //Really stupid circular dependency hack
@@ -49,12 +49,23 @@ LinuxWindow::LinuxWindow( Window& parent ) : m_parent( &parent ) {
     parent.getTitle( title );
 
     //Get bounds
-    LongRectangle bounds;
+    Bounds2i bounds;
     parent.getBounds( bounds );
     long width  = bounds.getWidth();
     long height = bounds.getHeight();
 
-    m_window    = XCreateSimpleWindow( m_display, DefaultRootWindow( m_display ), bounds.left, bounds.top, width, height, 5, white, black );
+    m_window = XCreateSimpleWindow(
+        m_display,
+        DefaultRootWindow( m_display ),
+        bounds.mins.x,
+        bounds.mins.y,
+        width,
+        height,
+        5,
+        white,
+        black
+    );
+
     if( !m_window )
         throw NullPointerException();  
 
@@ -143,28 +154,61 @@ void LinuxWindow::mainProc( XEvent& xEvent ) {
     it->second.windowProc( xEvent );
 }
 
+Point2i LinuxWindow::getCursorPos( const XEvent& xEvent ) {
+    return Point2i( xEvent.xbutton.x, xEvent.xbutton.y );
+}
+
 void LinuxWindow::windowProc( XEvent& xEvent ) {
     switch( xEvent.type ) {
-        //Window close request
-        case ClientMessage: {
-            //Client messages are generic, so we need to determine for certain that we were sent a close request.
-            //Specifically, the first data member should be the "WM_DELETE_WINDOW" atom.
-            //The .data field can be interpreted as an array of 8-bit, 16-bit, or 32-bit values.
-            //The .format field tells us how we should interpret the data.
-            //Atoms are 32-bit unsigned ints, so we're expecting the message to contain 32-bit values.
-            //This is good to check because another message could have a different size, but the same data in l[0].
-            if( xEvent.xclient.format == 32 && (Atom)( xEvent.xclient.data.l[0] ) == m_closeAtom ) {
-                WindowCloseEvent eventObj( *m_parent );
-                m_parent->m_signalWindowClose( eventObj );
-            }
-        } break;
-        //Window moved or resized
-        case ConfigureNotify: {
-        } break;
         //Mouse move
         case MotionNotify: {
-            MouseMoveEvent eventObj( xEvent.xbutton.x, xEvent.xbutton.y );
+            MouseMoveEvent eventObj( getCursorPos( xEvent ) );
             m_parent->m_signalMouseMove( eventObj );
+        } break;
+        //Button down
+        case ButtonPress: {
+            int button = xEvent.xbutton.button;
+            //Vertical scrolling
+            if( button == Button4 || button == Button5 ) {
+                MouseVScrollEvent eventObj(
+                    xEvent.xbutton.button == Button4 ? 1.0f : -1.0f,
+                    getCursorPos( xEvent )
+                );
+
+                m_parent->m_signalMouseVScroll( eventObj );
+
+            //Horizontal scrolling (note: direction is assumed and needs to be tested somehow)
+            } else if( button == 6 || button == 7 ) {
+                MouseHScrollEvent eventObj(
+                    xEvent.xbutton.button == 6 ? -1.0f : 1.0f,
+                    getCursorPos( xEvent )
+                );
+
+                m_parent->m_signalMouseHScroll( eventObj );
+
+            //Actual buttons
+            } else {
+                MouseDownEvent eventObj(
+                    xButtonToMouseButton( button ),
+                    getCursorPos( xEvent )
+                );
+
+                m_parent->m_signalMouseDown( eventObj );
+            }
+        } break;
+        //Button up
+        case ButtonRelease: {
+            int button = xEvent.xbutton.button;
+
+            //Ignore wheel scrolling. This is handled in the ButtonPress case above
+            if( button == Button4 || button == Button5 || button == 6 || button == 7 )
+                break;
+
+            MouseUpEvent eventObj(
+                xButtonToMouseButton( button ),
+                getCursorPos( xEvent )
+            );
+            m_parent->m_signalMouseUp( eventObj );
         } break;
         //Key down / Character typed
         case KeyPress: {
@@ -224,54 +268,21 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             KeyUpEvent eventObj( xKeySymToKey( keySym ) );
             m_parent->m_signalKeyUp( eventObj );
         } break;
-        //Button down
-        case ButtonPress: {
-            int button = xEvent.xbutton.button;
-            //Vertical scrolling
-            if( button == Button4 || button == Button5 ) {
-                MouseVScrollEvent eventObj(
-                    xEvent.xbutton.button == Button4 ? 1.0f : -1.0f,
-                    xEvent.xbutton.x,
-                    xEvent.xbutton.y
-                );
-
-                m_parent->m_signalMouseVScroll( eventObj );
-
-            //Horizontal scrolling (note: direction is assumed and needs to be tested somehow)
-            } else if( button == 6 || button == 7 ) {
-                MouseHScrollEvent eventObj(
-                    xEvent.xbutton.button == 6 ? -1.0f : 1.0f,
-                    xEvent.xbutton.x,
-                    xEvent.xbutton.y
-                );
-
-                m_parent->m_signalMouseHScroll( eventObj );
-
-            //Actual buttons
-            } else {
-                MouseDownEvent eventObj(
-                    xButtonToMouseButton( button ),
-                    xEvent.xbutton.x,
-                    xEvent.xbutton.y
-                );
-
-                m_parent->m_signalMouseDown( eventObj );
-            }
+        //Window moved or resized
+        case ConfigureNotify: {
         } break;
-        //Button up
-        case ButtonRelease: {
-            int button = xEvent.xbutton.button;
-
-            //Ignore wheel scrolling. This is handled in the ButtonPress case above
-            if( button == Button4 || button == Button5 || button == 6 || button == 7 )
-                break;
-
-            MouseUpEvent eventObj(
-                xButtonToMouseButton( button ),
-                xEvent.xbutton.x,
-                xEvent.xbutton.y
-            );
-            m_parent->m_signalMouseUp( eventObj );
+        //Window close request
+        case ClientMessage: {
+            //Client messages are generic, so we need to determine for certain that we were sent a close request.
+            //Specifically, the first data member should be the "WM_DELETE_WINDOW" atom.
+            //The .data field can be interpreted as an array of 8-bit, 16-bit, or 32-bit values.
+            //The .format field tells us how we should interpret the data.
+            //Atoms are 32-bit unsigned ints, so we're expecting the message to contain 32-bit values.
+            //This is good to check because another message could have a different size, but the same data in l[0].
+            if( xEvent.xclient.format == 32 && (Atom)( xEvent.xclient.data.l[0] ) == m_closeAtom ) {
+                WindowCloseEvent eventObj( *m_parent );
+                m_parent->m_signalWindowClose( eventObj );
+            }
         } break;
         //Unhandled event
         default: {
@@ -457,7 +468,7 @@ void LinuxWindow::setTitle( const ustring& title ) {
 void LinuxWindow::setPopup( const bool popup ) {
 }
 
-void LinuxWindow::setBounds( const LongRectangle& bounds ) {
+void LinuxWindow::setBounds( const Bounds2i& bounds ) {
 }
 
 LinuxWindow::LinuxWindow( const LinuxWindow& ) : m_parent( nullptr ) {
