@@ -28,10 +28,10 @@ Description:
 template< typename T, int N >
 PointN< T, N >
 */
-#define BS_POINT_THIS_TMPL() \
+#define BS_POINT_THIS_TMPL()                                                \
     template< typename T, int N >
 
-#define BS_POINT_TMPL() \
+#define BS_POINT_TMPL()                                                     \
     template< typename T >
 
 #define BS_POINT_DECLARE_METHODS()                                          \
@@ -49,7 +49,7 @@ PointN< T, N >
     PointN< T, N >::PointN( std::initializer_list< T > il ) {               \
         set( il.begin(), il.size() );                                       \
     }                                                                       \
-    tmpl \
+    tmpl                                                                    \
     PointN< T, N >::PointN( const T* const values, const uintN count ) {    \
         set( values, count );                                               \
     }                                                                       \
@@ -68,7 +68,7 @@ PointN< T, N >
     }                                                                       \
     tmpl                                                                    \
     T PointN< T, N >::operator []( const intN component ) const {           \
-        BS_ASSERT_INDEX( component, N - 1 )                                 \
+        BS_ASSERT_INDEX( component, N - 1 );                                \
         return data[ component ];                                           \
     }
 
