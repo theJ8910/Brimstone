@@ -34,42 +34,42 @@ PointN< T, N >
 #define BS_POINT_TMPL() \
     template< typename T >
 
-#define BS_POINT_DECLARE_METHODS() \
-    PointN( std::initializer_list< T > il ); \
-    PointN( const T* const values, const uintN count );\
-    \
-    operator T*(); \
-    operator const T*() const; \
-    \
-    T&  operator []( const intN component ); \
+#define BS_POINT_DECLARE_METHODS()                                          \
+    PointN( std::initializer_list< T > il );                                \
+    PointN( const T* const values, const uintN count );                     \
+                                                                            \
+    operator T*();                                                          \
+    operator const T*() const;                                              \
+                                                                            \
+    T&  operator []( const intN component );                                \
     T   operator []( const intN component ) const;
 
-#define BS_POINT_DEFINE_METHODS( N, tmpl ) \
+#define BS_POINT_DEFINE_METHODS( N, tmpl )                                  \
+    tmpl                                                                    \
+    PointN< T, N >::PointN( std::initializer_list< T > il ) {               \
+        set( il.begin(), il.size() );                                       \
+    }                                                                       \
     tmpl \
-    PointN<T,N>::PointN( std::initializer_list< T > il ) { \
-        set( il.begin(), il.size() ); \
-    } \
-    tmpl \
-    PointN<T,N>::PointN( const T* const values, const uintN count ) { \
-        set( values, count ); \
-    } \
-    tmpl \
-    PointN<T,N>::operator T*() { \
-        return data; \
-    } \
-    tmpl \
-    PointN<T,N>::operator const T*() const { \
-        return data; \
-    } \
-    tmpl \
-    T& PointN<T,N>::operator []( const intN component ) { \
-        BS_ASSERT_INDEX( component, N - 1 ) \
-        return data[ component ]; \
-    } \
-    tmpl \
-    T PointN<T,N>::operator []( const intN component ) const { \
-        BS_ASSERT_INDEX( component, N - 1 ) \
-        return data[ component ]; \
+    PointN< T, N >::PointN( const T* const values, const uintN count ) {    \
+        set( values, count );                                               \
+    }                                                                       \
+    tmpl                                                                    \
+    PointN< T, N >::operator T*() {                                         \
+        return data;                                                        \
+    }                                                                       \
+    tmpl                                                                    \
+    PointN< T, N >::operator const T*() const {                             \
+        return data;                                                        \
+    }                                                                       \
+    tmpl                                                                    \
+    T& PointN< T, N >::operator []( const intN component ) {                \
+        BS_ASSERT_INDEX( component, N - 1 );                                \
+        return data[ component ];                                           \
+    }                                                                       \
+    tmpl                                                                    \
+    T PointN< T, N >::operator []( const intN component ) const {           \
+        BS_ASSERT_INDEX( component, N - 1 )                                 \
+        return data[ component ];                                           \
     }
 
 namespace Brimstone {

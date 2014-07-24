@@ -53,50 +53,51 @@ Description:
 
 
 //Macros
-#define BS_BOUNDS_THIS_TMPL() \
+#define BS_BOUNDS_THIS_TMPL()                                                                           \
     template< typename T, int N >
-#define BS_BOUNDS_TMPL() \
+
+#define BS_BOUNDS_TMPL()                                                                                \
     template< typename T >
-#define BS_BOUNDS_DECLARE_METHODS( N ) \
-    BoundsN( std::initializer_list< T > il ); \
-    BoundsN( const T* const values, const uintN count ); \
-    \
-    void set( const PointN< T, N >& mins, const PointN< T, N >& maxs ); \
-    void get( const PointN< T, N >& minsOut, const PointN< T, N >& maxsOut ) const; \
-    \
-    void setDimension( const intN component, const T difference ); \
+
+#define BS_BOUNDS_DECLARE_METHODS( N )                                                                  \
+    BoundsN( std::initializer_list< T > il );                                                           \
+    BoundsN( const T* const values, const uintN count );                                                \
+                                                                                                        \
+    void set( const PointN< T, N >& mins, const PointN< T, N >& maxs );                                 \
+    void get( const PointN< T, N >& minsOut, const PointN< T, N >& maxsOut ) const;                     \
+                                                                                                        \
+    void setDimension( const intN component, const T difference );                                      \
     T    getDimension( const intN component ) const;
 
-#define BS_BOUNDS_DEFINE_METHODS( N, tmpl ) \
-    tmpl \
-    BoundsN< T, N >::BoundsN( std::initializer_list< T > il ) { \
-        set( il.begin(), il.size() ); \
-    } \
-    tmpl \
-    BoundsN< T, N >::BoundsN( const T* const values, const uintN count ) { \
-        set( values, count ); \
-    } \
-    tmpl \
-    void BoundsN< T, N >::set( const PointN< T, N >& mins, const PointN< T, N >& maxs ) { \
-        BoundsN::mins = mins; \
-        BoundsN::maxs = maxs; \
-    } \
-    \
-    tmpl \
-    void BoundsN< T, N >::get( const PointN< T, N >& minsOut, const PointN< T, N >& maxsOut ) const { \
-        minsOut = mins; \
-        maxsOut = maxs; \
-    } \
-    tmpl \
-    void BoundsN< T, N >::setDimension( const intN component, const T difference ) { \
-        BS_ASSERT_INDEX( component, N - 1 ); \
-        maxs[ component ] = mins[ component ] + difference; \
-    } \
-    \
-    tmpl \
-    T BoundsN< T, N >::getDimension( const intN component ) const { \
-        BS_ASSERT_INDEX( component, N - 1 ); \
-        return maxs[ component ] - mins[ component ]; \
+#define BS_BOUNDS_DEFINE_METHODS( N, tmpl )                                                             \
+    tmpl                                                                                                \
+    BoundsN< T, N >::BoundsN( std::initializer_list< T > il ) {                                         \
+        set( il.begin(), il.size() );                                                                   \
+    }                                                                                                   \
+    tmpl                                                                                                \
+    BoundsN< T, N >::BoundsN( const T* const values, const uintN count ) {                              \
+        set( values, count );                                                                           \
+    }                                                                                                   \
+    tmpl                                                                                                \
+    void BoundsN< T, N >::set( const PointN< T, N >& mins, const PointN< T, N >& maxs ) {               \
+        BoundsN::mins = mins;                                                                           \
+        BoundsN::maxs = maxs;                                                                           \
+    }                                                                                                   \
+                                                                                                        \
+    tmpl                                                                                                \
+    void BoundsN< T, N >::get( const PointN< T, N >& minsOut, const PointN< T, N >& maxsOut ) const {   \
+        minsOut = mins;                                                                                 \
+        maxsOut = maxs;                                                                                 \
+    }                                                                                                   \
+    tmpl                                                                                                \
+    void BoundsN< T, N >::setDimension( const intN component, const T difference ) {                    \
+        BS_ASSERT_INDEX( component, N - 1 );                                                            \
+        maxs[ component ] = mins[ component ] + difference;                                             \
+    }                                                                                                   \
+    tmpl                                                                                                \
+    T BoundsN< T, N >::getDimension( const intN component ) const {                                     \
+        BS_ASSERT_INDEX( component, N - 1 );                                                            \
+        return maxs[ component ] - mins[ component ];                                                   \
     }
     
 
