@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-c -Wall -std=c++11 -O3 -I./include/ -DBS_BUILD_LINUX
+CFLAGS=-c -Wall -Wno-unknown-pragmas -std=c++11 -O3 -I./include/ -DBS_BUILD_LINUX
 LFLAGS=0
 OBJS=obj/Exception.o obj/Logger.o obj/Lua.o obj/LuaInstance.o obj/Systems.o obj/Window.o obj/WindowEvents.o obj/util/Unicode.o obj/linux/LinuxWindow.o
 IDIR=include/brimstone
