@@ -60,19 +60,32 @@ Description:
     template< typename T >
 
 #define BS_BOUNDS_DECLARE_METHODS( N )                                                                  \
+    BoundsN();                                                                                          \
+    BoundsN( const PointN< T, N >& mins, const PointN< T, N >& maxs );                                  \
     BoundsN( std::initializer_list< T > il );                                                           \
     BoundsN( const T* const values, const uintN count );                                                \
                                                                                                         \
+    void set( const T* const values, const uintN count );                                               \
+    void get( T* const valuesOut, const uintN count ) const;                                            \
+                                                                                                        \
     void set( const PointN< T, N >& mins, const PointN< T, N >& maxs );                                 \
-    void get( const PointN< T, N >& minsOut, const PointN< T, N >& maxsOut ) const;                     \
+    void get( PointN< T, N >& minsOut, PointN< T, N >& maxsOut ) const;                                 \
                                                                                                         \
     void setDimension( const intN component, const T difference );                                      \
-    T    getDimension( const intN component ) const;
+    T    getDimension( const intN component ) const;                                                    \
+                                                                                                        \
+    void zero();                                                                                        \
+    bool isZero() const;
 
 #define BS_BOUNDS_DEFINE_METHODS( N, tmpl )                                                             \
     tmpl                                                                                                \
     BoundsN< T, N >::BoundsN( std::initializer_list< T > il ) {                                         \
         set( il.begin(), il.size() );                                                                   \
+    }                                                                                                   \
+    tmpl                                                                                                \
+    BoundsN< T, N >::BoundsN( const PointN< T, N >& mins, const PointN< T, N >& maxs ) :                \
+        mins( mins ),                                                                                   \
+        maxs( maxs ) {                                                                                  \
     }                                                                                                   \
     tmpl                                                                                                \
     BoundsN< T, N >::BoundsN( const T* const values, const uintN count ) {                              \
@@ -83,9 +96,8 @@ Description:
         BoundsN::mins = mins;                                                                           \
         BoundsN::maxs = maxs;                                                                           \
     }                                                                                                   \
-                                                                                                        \
     tmpl                                                                                                \
-    void BoundsN< T, N >::get( const PointN< T, N >& minsOut, const PointN< T, N >& maxsOut ) const {   \
+    void BoundsN< T, N >::get( PointN< T, N >& minsOut, PointN< T, N >& maxsOut ) const {               \
         minsOut = mins;                                                                                 \
         maxsOut = maxs;                                                                                 \
     }                                                                                                   \
@@ -122,33 +134,6 @@ public:
 #pragma warning( pop )
 public:
     BS_BOUNDS_DECLARE_METHODS( N )
-
-    //Constructors
-    BoundsN();
-    
-    //Bounds represented as an array of minimum and maximum coordinates
-    void set( const T* const values, const uintN count );
-    void get( T* const valuesOut, const uintN count ) const;
-
-    //Miscellaneous utility methods
-    void zero();
-    bool isZero() const;
-
-    //Related free functions
-    template< typename T2, int N2 >
-    friend  std::ostream&       operator <<( std::ostream& left, const BoundsN< T2, N2 >& right );
-
-    template< typename T2, int N2 >
-    friend  bool                operator ==( BoundsN< T2, N2 > left, BoundsN< T2, N2 > right );
-
-    template< typename T2, int N2 >
-    friend  bool                operator !=( BoundsN< T2, N2 > left, BoundsN< T2, N2 > right );
-
-    template< typename T2, int N2 >
-    friend  void                clamp( PointN< T2, N2 >& pointInOut, const BoundsN< T2, N2 >& bounds );
-
-    template< typename T2, int N2 >
-    friend  PointN< T2, N2 >    clampedPoint( const PointN< T2, N2 >& point, const BoundsN< T2, N2 >& bounds );
 };
 
 template< typename T, int N >

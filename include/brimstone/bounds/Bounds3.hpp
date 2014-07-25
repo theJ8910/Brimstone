@@ -5,7 +5,12 @@ Bounds3.hpp
 Copyright (c) 2014, theJ89
 
 Description:
-    
+    Specialization of BoundsN for 3D bounds (boxes).
+    Adds the following typedefs for convenience:
+        * Bounds3< T >: BoundsN<T,3>
+        * Bounds3i:     BoundsN<int32,3>
+        * Bounds3f:     BoundsN<float,3>
+        * Bounds3d:     BoundsN<double,3>
 */
 #ifndef BS_BOUNDS3_HPP
 #define BS_BOUNDS3_HPP
@@ -42,16 +47,12 @@ public:
     BS_BOUNDS_DECLARE_METHODS( 3 )
 
     //Constructors
-    BoundsN();
     BoundsN( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ );
     BoundsN( const PointN< T, 3 >& mins, T width, T length, T height );
 
     //Set / get the bounds individually
     void set( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ );
     void get( T& minXOut, T& minYOut, T& minZOut, T& maxXOut, T& maxYOut, T& maxZOut ) const;
-
-    void set( const T* const values, const uintN count );
-    void get( T* const valuesOut, const uintN count ) const;
 
     //Set / get the width / length / height, treating (minX, minY, minZ) as an anchor
     void    setDimensions( const T width, const T length, const T height );
@@ -68,21 +69,6 @@ public:
 
     //Miscellaneous utility methods
     T       getVolume() const;
-    void    zero();
-    bool    isZero() const;
-
-    //Related free functions
-    template< typename T2 >
-    friend  bool            operator ==( BoundsN< T2, 3 > left, BoundsN< T2, 3 > right );
-
-    template< typename T2 >
-    friend  bool            operator !=( BoundsN< T2, 3 > left, BoundsN< T2, 3 > right );
-
-    template< typename T2 >
-    friend  void            clamp( PointN< T2, 2 >& pointInOut, const BoundsN< T2, 3 >& bounds );
-
-    template< typename T2 >
-    friend  PointN< T2, 3 > clampedPoint( const PointN< T2, 3 >& point, const BoundsN< T2, 3 >& bounds );
 };
 
 BS_BOUNDS_DEFINE_METHODS( 3, BS_BOUNDS_TMPL() )

@@ -35,8 +35,15 @@ PointN< T, N >
     template< typename T >
 
 #define BS_POINT_DECLARE_METHODS()                                          \
+    PointN();                                                               \
     PointN( std::initializer_list< T > il );                                \
     PointN( const T* const values, const uintN count );                     \
+                                                                            \
+    void    set( const T* const values, const uintN count );                \
+    void    get( T* const valuesOut, const uintN count ) const;             \
+                                                                            \
+    void    zero();                                                         \
+    bool    isZero() const;                                                 \
                                                                             \
     operator T*();                                                          \
     operator const T*() const;                                              \
@@ -83,26 +90,6 @@ public:
     T data[N];
 public:
     BS_POINT_DECLARE_METHODS()
-
-    //Constructors
-    PointN();
-
-    //Set / get the coordinates
-    void    set( const T* const values, const uintN count );
-    void    get( T* const valuesOut, const uintN count ) const;
-
-    //Miscellaneous utility methods
-    void    zero();
-    bool    isZero() const;
-
-    //Related free functions
-    template< typename T2, int N2 >
-    friend  std::ostream&   operator <<( std::ostream& left, const PointN< T2, N2 >& right );
-
-    template< typename T2, int N2 >
-    friend  bool            operator ==( const PointN< T2, N2 >& left, const PointN< T2, N2 >& right );
-    template< typename T2, int N2 >
-    friend  bool            operator !=( const PointN< T2, N2 >& left, const PointN< T2, N2 >& right );
 };
 
 BS_POINT_DEFINE_METHODS( N, BS_POINT_THIS_TMPL() )

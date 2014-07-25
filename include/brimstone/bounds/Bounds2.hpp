@@ -5,11 +5,12 @@ Bounds2.hpp
 Copyright (c) 2014, theJ89
 
 Description:
-    
+    Specialization of BoundsN for 2D bounds (rectangles).
     Adds the following typedefs for convenience:
-        * RectI: Rect<int32>
-        * RectF: Rect<float>
-        * RectD: Rect<double>
+        * Bounds2< T >: BoundsN<T,2>
+        * Bounds2i:     BoundsN<int32,2>
+        * Bounds2f:     BoundsN<float,2>
+        * Bounds2d:     BoundsN<double,2>
 */
 
 #ifndef BS_BOUNDS2_HPP
@@ -47,16 +48,12 @@ public:
     BS_BOUNDS_DECLARE_METHODS( 2 )
 
     //Construtors
-    BoundsN();
     BoundsN( const T minX, const T minY, const T maxX, const T maxY );
     BoundsN( const PointN< T, 2 >& mins, T width, T height );
 
     //Set / get the bounds individually
     void    set( const T minX, const T minY, const T maxX, const T maxY );
     void    get( T& minXOut, T& minYOut, T& maxXOut, T& maxYOut ) const;
-
-    void    set( const T* const values, const uintN count );
-    void    get( T* const valuesOut, const uintN count ) const;
 
     //Set / get the width / height, treating (minX, minY) as an anchor
     void    setDimensions( const T width, const T height );
@@ -70,21 +67,6 @@ public:
 
     //Miscellaneous utility methods
     T       getArea() const;
-    void    zero();
-    bool    isZero() const;
-
-    //Related free functions
-    template< typename T2 >
-    friend  bool            operator ==( BoundsN< T2, 2 > left, BoundsN< T2, 2 > right );
-
-    template< typename T2 >
-    friend  bool            operator !=( BoundsN< T2, 2 > left, BoundsN< T2, 2 > right );
-
-    template< typename T2 >
-    friend  void            clamp( PointN< T2, 2 >& pointInOut, const BoundsN< T2, 2 >& bounds );
-
-    template< typename T2 >
-    friend  PointN< T2, 2 > clampedPoint( const PointN< T2, 2 >& point, const BoundsN< T2, 2 >& bounds );
 };
 
 BS_BOUNDS_DEFINE_METHODS( 2, BS_BOUNDS_TMPL() )

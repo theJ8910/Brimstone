@@ -43,27 +43,11 @@ public:
     BS_POINT_DECLARE_METHODS()
 
     //Constructors
-    PointN();
-    PointN( T x, T y );
+    PointN( const T x, const T y );
 
     //Set / get the coordinates
     void set( const T x, const T y );
-    void set( const T* const xy, const uintN count );
-    void get( T& xOut, T& yOut );
-    void get( T* const xyOut, const uintN count );
-
-    //Miscellaneous utility methods
-    void zero();
-    bool isZero() const;
-
-     //Related free functions
-    template< typename T2 >
-    friend std::ostream& operator <<( std::ostream& left, const PointN< T2, 2 >& right );
-
-    template< typename T2 >
-    friend bool     operator ==( const PointN< T2, 2 >& left, const PointN< T2, 2 >& right );
-    template< typename T2 >
-    friend bool     operator !=( const PointN< T2, 2 >& left, const PointN< T2, 2 >& right );
+    void get( T& xOut, T& yOut ) const;
 };
 
 BS_POINT_DEFINE_METHODS( 2, BS_POINT_TMPL() )
@@ -77,12 +61,12 @@ PointN< T, 2 >::PointN()
 }
 
 template< typename T >
-PointN< T, 2 >::PointN( T x, T y ) : x( x ), y( y )
-{
+PointN< T, 2 >::PointN( const T x, const T y ) :
+    x( x ), y( y ) {
 }
 
 template< typename T >
-void PointN< T, 2 >::set( T x, T y ) {
+void PointN< T, 2 >::set( const T x, const T y ) {
     PointN::x = x;
     PointN::y = y;
 }
@@ -97,13 +81,13 @@ void PointN< T, 2 >::set( const T* const xy, const uintN count ) {
 }
 
 template< typename T >
-void PointN< T, 2 >::get( T& xOut, T& yOut ) {
+void PointN< T, 2 >::get( T& xOut, T& yOut ) const {
     xOut = x;
     yOut = y;
 }
 
 template< typename T >
-void PointN< T, 2 >::get( T* const xyOut, const uintN count ) {
+void PointN< T, 2 >::get( T* const xyOut, const uintN count ) const {
     BS_ASSERT_NON_NULLPTR( xyOut );
     BS_ASSERT_SIZE( count, 2 );
 
