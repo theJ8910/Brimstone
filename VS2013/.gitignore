@@ -2,6 +2,9 @@
 *.sdf
 *.v12.suo
 *.vcxproj.user
-Brimstone/Debug/
-Brimstone/Release/
-Brimstone/x64/
+*.obj
+*.pdb
+*.log
+*.idb
+*.tlog
+*.lastbuildstate

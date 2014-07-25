@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{c194f247-c759-43e4-a4bc-4c4a9610f3be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\console">
+      <UniqueIdentifier>{cc044dc3-ca65-4591-b579-61b5ff1f2bf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\test">
+      <UniqueIdentifier>{712bb813-08d0-4f2d-a4f8-a3a47dc3a991}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\tests\src\console\Menu.cpp">
+      <Filter>src\console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\console\TextColor.cpp">
+      <Filter>src\console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\Test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\types.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\PointN.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\tests\src\MeasureXTime.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tests\src\console\TextColor.hpp">
+      <Filter>src\console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tests\src\console\Menu.hpp">
+      <Filter>src\console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tests\src\Test.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

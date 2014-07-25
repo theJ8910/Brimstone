@@ -48,6 +48,7 @@ Description:
 #include <brimstone/types.hpp>          //int32
 #include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
 #include <brimstone/Point.hpp>          //PointN
+#include <brimstone/util/Range.hpp>     //clamp
 
 
 

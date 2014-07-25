@@ -79,9 +79,6 @@
     <ClInclude Include="..\..\include\brimstone\Logger.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\brimstone\Vector.hpp">
-      <Filter>include\brimstone</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\brimstone\util\Macros.hpp">
       <Filter>include\brimstone\util</Filter>
     </ClInclude>
@@ -108,6 +105,21 @@
     </ClInclude>
     <ClInclude Include="..\..\include\brimstone\Bounds.hpp">
       <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\vector\VectorN.hpp">
+      <Filter>include\brimstone\vector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\vector\Vector2.hpp">
+      <Filter>include\brimstone\vector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\vector\Vector3.hpp">
+      <Filter>include\brimstone\vector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Vector.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Math.hpp">
+      <Filter>include\brimstone\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +156,9 @@
     <ClCompile Include="..\..\src\Logger.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\util\Math.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -178,6 +193,9 @@
     </Filter>
     <Filter Include="include\brimstone\bounds">
       <UniqueIdentifier>{bbd3d91b-dc4b-42b7-86f0-781555b6d3a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\vector">
+      <UniqueIdentifier>{997561cd-dd8d-44c3-8363-6c14ab4e5328}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

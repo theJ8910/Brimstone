@@ -45,8 +45,8 @@ PointN< T, N >
     void    zero();                                                         \
     bool    isZero() const;                                                 \
                                                                             \
-    operator T*();                                                          \
-    operator const T*() const;                                              \
+    explicit operator T*();                                                 \
+    explicit operator const T*() const;                                     \
                                                                             \
     T&  operator []( const intN component );                                \
     T   operator []( const intN component ) const;
@@ -113,7 +113,7 @@ void PointN< T, N >::set( const T* const values, const uintN count ) {
 
 template< typename T, int N >
 void PointN< T, N >::get( T* const valuesOut, const uintN count ) const {
-    BS_ASSERT_NON_NULLPTR( values );
+    BS_ASSERT_NON_NULLPTR( valuesOut );
     BS_ASSERT_SIZE( count, N );
 
     for( int i = 0; i < N; ++i )
@@ -158,7 +158,7 @@ bool operator ==( const PointN< T, N >& left, PointN< T, N >& right ) {
 template< typename T, int N >
 bool operator !=( const PointN< T, N >& left, const PointN< T, N >& right ) {
     for( int i = 0; i < N; ++i )
-        if( left[i] == right[i] )
+        if( left[i] != right[i] )
             return true;
     return false;
 }

@@ -186,6 +186,7 @@
     <ClInclude Include="..\..\include\brimstone\types.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Cast.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Macros.hpp" />
+    <ClInclude Include="..\..\include\brimstone\util\Math.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\MinMax.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Misc.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Range.hpp" />
@@ -193,6 +194,9 @@
     <ClInclude Include="..\..\include\brimstone\util\Sequence.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Unicode.hpp" />
     <ClInclude Include="..\..\include\brimstone\Vector.hpp" />
+    <ClInclude Include="..\..\include\brimstone\vector\Vector2.hpp" />
+    <ClInclude Include="..\..\include\brimstone\vector\Vector3.hpp" />
+    <ClInclude Include="..\..\include\brimstone\vector\VectorN.hpp" />
     <ClInclude Include="..\..\include\brimstone\Window.hpp" />
     <ClInclude Include="..\..\include\brimstone\WindowEvents.hpp" />
     <ClInclude Include="..\..\include\brimstone\windows\WindowsException.hpp" />
@@ -206,6 +210,7 @@
     <ClCompile Include="..\..\src\Lua.cpp" />
     <ClCompile Include="..\..\src\LuaInstance.cpp" />
     <ClCompile Include="..\..\src\Systems.cpp" />
+    <ClCompile Include="..\..\src\util\Math.cpp" />
     <ClCompile Include="..\..\src\util\Unicode.cpp" />
     <ClCompile Include="..\..\src\Window.cpp" />
     <ClCompile Include="..\..\src\WindowEvents.cpp" />
