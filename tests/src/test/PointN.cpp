@@ -35,17 +35,21 @@ namespace UnitTest {
 
 BS_UT_TEST_BEGIN( PointN_constructorInitializerList )
     Point5i pt( { 1, 2, 3, 4, 5 } );
+
     return std::equal( pt.data, pt.data + 5, pt5Values );
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_constructorArray )
     Point5i pt( pt5Values, 5 );
+
     return std::equal( pt.data, pt.data + 5, pt5Values );
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_setArray )
     Point5i pt( pt5Values, 5 );
+
     pt.set( pt5ValuesAlt, 5 );
+
     return std::equal( pt.data, pt.data + 5, pt5ValuesAlt );
 BS_UT_TEST_END()
 
@@ -61,12 +65,14 @@ BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_zero )
     Point5i pt( pt5Values, 5 );
+
     pt.zero();
+
     return std::equal( pt.data, pt.data + 5, pt5Zero );
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_isZero )
-    Point5i pt1( pt5Zero, 5 );
+    Point5i pt1( pt5Zero,   5 );
     Point5i pt2( pt5Values, 5 );
 
     return pt1.isZero() == true &&
@@ -74,8 +80,8 @@ BS_UT_TEST_BEGIN( PointN_isZero )
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_equals )
-    Point5i pt1( pt5Values, 5 );
-    Point5i pt2( pt5Values, 5 );
+    Point5i pt1( pt5Values,    5 );
+    Point5i pt2( pt5Values,    5 );
     Point5i pt3( pt5ValuesAlt, 5 );
 
     return ( pt1 == pt2 ) == true   &&
@@ -83,8 +89,8 @@ BS_UT_TEST_BEGIN( PointN_equals )
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_notEquals )
-    Point5i pt1( pt5Values, 5 );
-    Point5i pt2( pt5Values, 5 );
+    Point5i pt1( pt5Values,    5 );
+    Point5i pt2( pt5Values,    5 );
     Point5i pt3( pt5ValuesAlt, 5 );
 
     return ( pt1 != pt2 ) == false  &&
@@ -113,8 +119,10 @@ BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_index )
     Point5i pt( pt5Values, 5 );
+
     for( int i = 0; i < 5; ++i )
         pt[i] = pt5ValuesAlt[i];
+
     return std::equal( pt.data, pt.data + 5, pt5ValuesAlt );
 BS_UT_TEST_END()
 
@@ -142,7 +150,7 @@ BS_UT_TEST_END()
 
 #ifdef BS_ZERO
 
-BS_UT_TEST_BEGIN( PointN_ZeroConstructor )
+BS_UT_TEST_BEGIN( PointN_constructorZero )
     Point5i pt;
     return pt.isZero();
 BS_UT_TEST_END()
@@ -154,7 +162,7 @@ BS_UT_TEST_END()
 
 #ifdef BS_CHECK_NULLPTR
 
-BS_UT_TEST_BEGIN( PointN_ArrayConstructor_NullPointer )
+BS_UT_TEST_BEGIN( PointN_constructorArray_nullPointer )
     try {
         Point5i pt( nullptr, 5 );
     } catch( const NullPointerException& ) {
@@ -163,7 +171,7 @@ BS_UT_TEST_BEGIN( PointN_ArrayConstructor_NullPointer )
     return false;
 BS_UT_TEST_END()
 
-BS_UT_TEST_BEGIN( PointN_ArraySet_NullPointer )
+BS_UT_TEST_BEGIN( PointN_setArray_nullPointer )
     Point5i pt( pt5Values, 5 );
     try {
         pt.set( nullptr, 5 );
@@ -173,7 +181,7 @@ BS_UT_TEST_BEGIN( PointN_ArraySet_NullPointer )
     return false;
 BS_UT_TEST_END()
 
-BS_UT_TEST_BEGIN( PointN_ArrayGet_NullPointer )
+BS_UT_TEST_BEGIN( PointN_getArray_nullPointer )
     Point5i pt( pt5Values, 5 );
     try {
         pt.get( nullptr, 5 );
@@ -190,7 +198,7 @@ BS_UT_TEST_END()
 
 #ifdef BS_CHECK_SIZE
 
-BS_UT_TEST_BEGIN( PointN_ArrayConstructor_InvalidSize )
+BS_UT_TEST_BEGIN( PointN_constructorArray_invalidSize )
     try {
         Point5i pt( pt5Values, 0 );
     } catch( const SizeException& ) {
@@ -199,8 +207,8 @@ BS_UT_TEST_BEGIN( PointN_ArrayConstructor_InvalidSize )
     return false;
 BS_UT_TEST_END()
 
-BS_UT_TEST_BEGIN( PointN_ArraySet_InvalidSize )
-    Point5i pt( pt5Values, 5 );
+BS_UT_TEST_BEGIN( PointN_setArray_invalidSize )
+    Point5i pt;
     try {
         pt.set( pt5ValuesAlt, 0 );
     } catch( const SizeException& ) {
@@ -209,7 +217,7 @@ BS_UT_TEST_BEGIN( PointN_ArraySet_InvalidSize )
     return false;
 BS_UT_TEST_END()
 
-BS_UT_TEST_BEGIN( PointN_ArrayGet_InvalidSize )
+BS_UT_TEST_BEGIN( PointN_getArray_invalidSize )
     int data[5];
     Point5i pt( pt5Values, 5 );
     try {
@@ -221,6 +229,55 @@ BS_UT_TEST_BEGIN( PointN_ArrayGet_InvalidSize )
 BS_UT_TEST_END()
 
 #endif //BS_CHECK_SIZE
+
+
+
+
+#ifdef BS_CHECK_INDEX
+
+BS_UT_TEST_BEGIN( PointN_index_OOB )
+    Point5i pt;
+    int i;    
+
+    bool negative = false;
+    try {
+        i = pt[-1];
+    } catch( const OutOfBoundsException& ) {
+        negative = true;
+    }
+
+    bool positive = false;
+    try {
+        i = pt[5];
+    } catch( const OutOfBoundsException& ) {
+        positive = true;
+    }
+
+    return negative && positive;
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( PointN_constIndex_OOB )
+    const Point5i pt;
+    int i;
+
+    bool negative = false;
+    try {
+        i = pt[-1];
+    } catch( const OutOfBoundsException& ) {
+        negative = true;
+    }
+
+    bool positive = false;
+    try {
+        i = pt[5];
+    } catch( const OutOfBoundsException& ) {
+        positive = true;
+    }
+
+    return negative && positive;
+BS_UT_TEST_END()
+
+#endif //BS_CHECK_INDEX
 
 }
 }

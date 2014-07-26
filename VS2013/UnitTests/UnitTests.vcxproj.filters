@@ -30,6 +30,12 @@
     <ClCompile Include="..\..\tests\src\test\PointN.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Point2.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Point3.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tests\src\MeasureXTime.hpp">

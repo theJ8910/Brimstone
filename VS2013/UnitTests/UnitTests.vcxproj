@@ -171,6 +171,8 @@
     <ClCompile Include="..\..\tests\src\console\TextColor.cpp" />
     <ClCompile Include="..\..\tests\src\main.cpp" />
     <ClCompile Include="..\..\tests\src\Test.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Point2.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Point3.cpp" />
     <ClCompile Include="..\..\tests\src\test\PointN.cpp" />
     <ClCompile Include="..\..\tests\src\test\types.cpp" />
   </ItemGroup>

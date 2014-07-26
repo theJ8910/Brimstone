@@ -69,6 +69,7 @@ template< typename T >
 void PointN< T, 3 >::set( const T x, const T y, const T z ) {
     PointN::x = x;
     PointN::y = y;
+    PointN::z = z;
 }
 
 template< typename T >
