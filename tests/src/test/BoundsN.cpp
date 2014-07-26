@@ -8,6 +8,12 @@ Description:
 */
 
 //Includes
+
+//C4996: 'std::_Copy_impl': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct.
+//       To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+//It's complaining because I'm copying to a pointer instead of an array, and rightfully so because it's inherently unsafe.
+//However, we can ignore this warning because the program logic ensures it will never copy values outside of the object.
+#define _SCL_SECURE_NO_WARNINGS
 #include <algorithm>
 
 #include "../Test.hpp"
@@ -143,6 +149,30 @@ BS_UT_TEST_BEGIN( BoundsN_notEquals )
 
     return ( b1 != b2 ) == false  &&
            ( b1 != b3 ) == true;
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( BoundsN_clamp )
+    Bounds5i b( b5Values, 10 );
+    PointN< int, 5 > p1( { 0, 1, 2,  3,  4 } );
+    PointN< int, 5 > p2( { 7, 8, 9, 10, 11 } );
+
+    clamp( p1, b );
+    clamp( p2, b );
+
+    return std::equal( p1.data, p1.data + 5, b5Values     ) &&
+           std::equal( p2.data, p2.data + 5, b5Values + 5 );
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( BoundsN_clampedPoint )
+    Bounds5i b( b5Values, 10 );
+    PointN< int, 5 > p1( { 0, 1, 2,  3,  4 } );
+    PointN< int, 5 > p2( { 7, 8, 9, 10, 11 } );
+
+    p1 = clampedPoint( p1, b );
+    p2 = clampedPoint( p2, b );
+
+    return std::equal( p1.data, p1.data + 5, b5Values     ) &&
+           std::equal( p2.data, p2.data + 5, b5Values + 5 );
 BS_UT_TEST_END()
 
 
