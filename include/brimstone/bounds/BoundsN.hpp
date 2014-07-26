@@ -137,6 +137,8 @@ public:
     BS_BOUNDS_DECLARE_METHODS( N )
 };
 
+BS_BOUNDS_DEFINE_METHODS( N, BS_BOUNDS_THIS_TMPL() )
+
 template< typename T, int N >
 BoundsN< T, N >::BoundsN() {
 #ifdef BS_ZERO
