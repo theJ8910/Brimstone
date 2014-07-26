@@ -183,7 +183,7 @@ std::ostream& operator <<( std::ostream& left, const BoundsN< T, N >& right ) {
 }
 
 template< typename T, int N >
-bool operator ==( BoundsN< T, N > left, BoundsN< T, N > right ) {
+bool operator ==( const BoundsN< T, N >& left, const BoundsN< T, N >& right ) {
     for( int i = 0; i < 2*N; ++i )
         if( left.data[ i ] != right.data[ i ] )
             return false;
@@ -191,7 +191,7 @@ bool operator ==( BoundsN< T, N > left, BoundsN< T, N > right ) {
 }
 
 template< typename T, int N >
-bool operator !=( BoundsN< T, N > left, BoundsN< T, N > right ) {
+bool operator !=( const BoundsN< T, N >& left, const BoundsN< T, N >& right ) {
     for( int i = 0; i < 2*N; ++i )
         if( left.data[ i ] != right.data[ i ] )
             return true;

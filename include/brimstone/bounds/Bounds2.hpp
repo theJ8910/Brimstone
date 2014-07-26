@@ -187,7 +187,7 @@ bool BoundsN< T, 2 >::isZero() const {
 }
 
 template< typename T >
-bool operator ==( BoundsN< T, 2 > left, BoundsN< T, 2 > right ) {
+bool operator ==( const BoundsN< T, 2 >& left, const BoundsN< T, 2 >& right ) {
     return left.mins.x == right.mins.x &&
            left.mins.y == right.mins.y &&
            left.maxs.x == right.maxs.x &&
@@ -195,7 +195,7 @@ bool operator ==( BoundsN< T, 2 > left, BoundsN< T, 2 > right ) {
 }
 
 template< typename T >
-bool operator !=( BoundsN< T, 2 > left, BoundsN< T, 2 > right ) {
+bool operator !=( const BoundsN< T, 2 >& left, const BoundsN< T, 2 >& right ) {
     return left.mins.x != right.mins.x ||
            left.mins.y != right.mins.y ||
            left.maxs.x != right.maxs.x ||

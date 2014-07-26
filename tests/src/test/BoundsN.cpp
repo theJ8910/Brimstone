@@ -218,7 +218,7 @@ BS_UT_TEST_BEGIN( BoundsN_setArray_invalidSize )
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( BoundsN_getArray_invalidSize )
-    int data[5];
+    int data[10];
     Bounds5i b( b5Values, 10 );
     try {
         b.get( data, 0 );
