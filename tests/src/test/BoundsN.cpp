@@ -21,19 +21,20 @@ Description:
 #include <brimstone/Bounds.hpp>
 
 namespace {
-    typedef ::Brimstone::BoundsN< int, 5 > Bounds5i;
+    typedef ::Brimstone::BoundsN< int, 5 >  Bounds5i;
+    typedef ::Brimstone::PointN< int, 5 >   Point5i;
     const int b5Zero[10]      {  0,  0,  0,  0,  0,    0,  0,  0,  0,  0 };
     const int b5Values[10]    {  1,  2,  3,  4,  5,    6,  7,  8,  9, 10 };
     const int b5ValuesAlt[10] { 11, 12, 13, 14, 15,   16, 17, 18, 19, 20 };
-    const int b5DimTest[10]   {  1,  2,  3,  4,  5,   11, 12, 13, 14, 15 };
+    const int b5DimTest[10]   {  1,  2,  3,  4,  5,   11, 13, 15, 17, 19 };
 }
 
 namespace Brimstone {
 namespace UnitTest {
 
 BS_UT_TEST_BEGIN( BoundsN_constructorMinMax )
-    PointN< int, 5 > mins( b5Values,     5 );
-    PointN< int, 5 > maxs( b5Values + 5, 5 );
+    Point5i mins( b5Values,     5 );
+    Point5i maxs( b5Values + 5, 5 );
     Bounds5i b( mins, maxs );
 
     return std::equal( b.data, b.data + 10, b5Values );
@@ -61,8 +62,8 @@ BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( BoundsN_setMinMax )
     Bounds5i b( b5Values, 10 );
-    PointN< int, 5 > mins( b5ValuesAlt,     5 );
-    PointN< int, 5 > maxs( b5ValuesAlt + 5, 5 );
+    Point5i mins( b5ValuesAlt,     5 );
+    Point5i maxs( b5ValuesAlt + 5, 5 );
 
     b.set( mins, maxs );
 
@@ -80,20 +81,21 @@ BS_UT_TEST_BEGIN( BoundsN_getArray )
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( BoundsN_getMinMax )
-    PointN< int, 5 > mins( b5Values,     5 );
-    PointN< int, 5 > maxs( b5Values + 5, 5 );
+    Point5i mins( b5Values,     5 );
+    Point5i maxs( b5Values + 5, 5 );
 
     Bounds5i b( b5ValuesAlt, 10 );
     b.get( mins, maxs );
 
-    return std::equal( b.data, b.data + 10, b5ValuesAlt );
+    return std::equal( mins.data, mins.data + 5, b5ValuesAlt     ) &&
+           std::equal( maxs.data, maxs.data + 5, b5ValuesAlt + 5 );
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( BoundsN_setDimension )
     Bounds5i b( b5Values, 10 );
 
     for( int i = 0; i < 5; ++i )
-        b.setDimension( i, 10 );
+        b.setDimension( i, 10 + i );
 
     return std::equal( b.data, b.data + 10, b5DimTest );
 BS_UT_TEST_END()
@@ -102,7 +104,7 @@ BS_UT_TEST_BEGIN( BoundsN_getDimension )
     Bounds5i b( b5DimTest, 10 );
 
     for( int i = 0; i < 5; ++i )
-        if( b.getDimension( i ) != 10 )
+        if( b.getDimension( i ) != 10 + i )
             return false;
 
     return true;
@@ -153,8 +155,8 @@ BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( BoundsN_clamp )
     Bounds5i b( b5Values, 10 );
-    PointN< int, 5 > p1( { 0, 1, 2,  3,  4 } );
-    PointN< int, 5 > p2( { 7, 8, 9, 10, 11 } );
+    Point5i p1( { 0, 1, 2,  3,  4 } );
+    Point5i p2( { 7, 8, 9, 10, 11 } );
 
     clamp( p1, b );
     clamp( p2, b );
@@ -165,8 +167,8 @@ BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( BoundsN_clampedPoint )
     Bounds5i b( b5Values, 10 );
-    PointN< int, 5 > p1( { 0, 1, 2,  3,  4 } );
-    PointN< int, 5 > p2( { 7, 8, 9, 10, 11 } );
+    Point5i p1( { 0, 1, 2,  3,  4 } );
+    Point5i p2( { 7, 8, 9, 10, 11 } );
 
     p1 = clampedPoint( p1, b );
     p2 = clampedPoint( p2, b );

@@ -123,7 +123,7 @@ void BoundsN< T, 2 >::set( const T* const values, const uintN count ) {
 
 template< typename T >
 void BoundsN< T, 2 >::get( T* const valuesOut, const uintN count ) const {
-    BS_ASSERT_NON_NULLPTR( values );
+    BS_ASSERT_NON_NULLPTR( valuesOut );
     BS_ASSERT_SIZE( count, 4 );
 
     valuesOut[ 0 ] = mins.x;

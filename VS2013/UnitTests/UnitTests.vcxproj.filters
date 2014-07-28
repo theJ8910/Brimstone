@@ -39,6 +39,12 @@
     <ClCompile Include="..\..\tests\src\test\BoundsN.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Bounds3.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Bounds2.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tests\src\MeasureXTime.hpp">
