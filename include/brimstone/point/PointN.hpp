@@ -138,9 +138,9 @@ template< typename T, int N >
 std::ostream& operator <<( std::ostream& left, const PointN< T, N >& right ) {
     left << "( ";
     
-    left << right[0];
+    left << right.data[0];
     for( int i = 1; i < N; ++i )
-        left << ", " << right[i];
+        left << ", " << right.data[i];
 
     left << " )";
 
@@ -148,9 +148,9 @@ std::ostream& operator <<( std::ostream& left, const PointN< T, N >& right ) {
 }
 
 template< typename T, int N >
-bool operator ==( const PointN< T, N >& left, PointN< T, N >& right ) {
+bool operator ==( const PointN< T, N >& left, const PointN< T, N >& right ) {
     for( int i = 0; i < N; ++i )
-        if( left[i] != right[i] )
+        if( left.data[i] != right.data[i] )
             return false;
     return true;
 }
@@ -158,7 +158,7 @@ bool operator ==( const PointN< T, N >& left, PointN< T, N >& right ) {
 template< typename T, int N >
 bool operator !=( const PointN< T, N >& left, const PointN< T, N >& right ) {
     for( int i = 0; i < N; ++i )
-        if( left[i] != right[i] )
+        if( left.data[i] != right.data[i] )
             return true;
     return false;
 }

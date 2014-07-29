@@ -109,11 +109,11 @@ bool PointN< T, 2 >::isZero() const {
 
 template< typename T >
 std::ostream& operator <<( std::ostream& left, const PointN< T, 2 >& right ) {
-    return left << "( " << right[0] << ", " << right[1] << " )";
+    return left << "( " << right.x << ", " << right.y << " )";
 }
 
 template< typename T >
-bool operator ==( const PointN< T, 2 >& left, PointN< T, 2 >& right ) {
+bool operator ==( const PointN< T, 2 >& left, const PointN< T, 2 >& right ) {
     return left.x == right.x &&
            left.y == right.y;
 }

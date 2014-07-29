@@ -237,7 +237,7 @@ BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_index_OOB )
     Point5i pt;
-    int i;    
+    int i;
 
     try {
         i = pt[-1];
@@ -261,7 +261,6 @@ BS_UT_TEST_BEGIN( PointN_constIndex_OOB )
         return false;
     } catch( const OutOfBoundsException& ) {}
 
-    bool positive = false;
     try {
         i = pt[5];
         return false;

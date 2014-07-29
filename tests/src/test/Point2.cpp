@@ -260,21 +260,17 @@ BS_UT_TEST_BEGIN( Point2_index_OOB )
     Point2i pt;
     int i;
 
-    bool negative = false;
     try {
         i = pt[-1];
-    } catch( const OutOfBoundsException& ) {
-        negative = true;
-    }
+        return false;
+    } catch( const OutOfBoundsException& ) {}
 
-    bool positive = false;
     try {
         i = pt[2];
-    } catch( const OutOfBoundsException& ) {
-        positive = true;
-    }
+        return false;
+    } catch( const OutOfBoundsException& ) {}
 
-    return negative && positive;
+    return true;
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( Point2_constIndex_OOB )
