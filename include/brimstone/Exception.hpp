@@ -8,6 +8,7 @@ Description:
     Provides several implementations of common exception types:
         * Exception (generic)
         * DivideByZero
+        * DomainException
         * NullPointerException
         * SizeException
         * OutOfBoundsException
@@ -59,7 +60,7 @@ public:
 
     virtual ustring getDescription() const;
 private:
-     ustring m_description;
+    ustring m_description;
 };
 
 /* 
@@ -71,16 +72,6 @@ Macro to automatically declare a basic exception type, without a message
     class exceptionName : public IException { \
     public: \
         virtual ustring getDescription() const; \
-    }
-
-/* 
-BS_DEFINE_BASIC_EXCEPTION
-
-Macro to automatically define a basic exception type, without a message
-*/
-#define BS_DEFINE_BASIC_EXCEPTION( exceptionName ) \
-    ustring exceptionName::getDescription() const { \
-        return #exceptionName; \
     }
 
 /* 
@@ -98,27 +89,19 @@ getDescription() is called.
         exceptionName( const ustring& description ); \
     }
 
-/* 
-BS_DEFINE_MESSAGE_EXCEPTION
-
-Macro to automatically define an exception type deriving from Exception.
-Any exceptions using this macro take a message, which is returned when
-getDescription() is called.
-*/
-#define BS_DEFINE_MESSAGE_EXCEPTION( exceptionName ) \
-    exceptionName::exceptionName() { \
-    } \
-    exceptionName::exceptionName( const uchar* description ) : Exception( description ) { \
-    } \
-    exceptionName::exceptionName( const ustring& description ) : Exception( description ) { \
-    }
-
 /*
 DivideByZeroException
 
 Thrown when a divide by zero would have resulted.
 */
 BS_DECLARE_BASIC_EXCEPTION( DivideByZeroException );
+
+/*
+DomainException
+
+Thrown when invalid input is provided to a mathematics function.
+*/
+BS_DECLARE_BASIC_EXCEPTION( DomainException );
 
 /*
 NullPointerException
@@ -200,6 +183,13 @@ Thrown when an error related to Lua occurs (e.g. loading a script or calling a f
 BS_DECLARE_MESSAGE_EXCEPTION( LuaException );
 
 }
+
+
+
+
+//Not needed outside of this file
+#undef BS_DECLARE_BASIC_EXCEPTION
+#undef BS_DECLARE_MESSAGE_EXCEPTION
 
 
 

@@ -13,7 +13,7 @@ Description:
 
 
 //Includes
-#include "../types.hpp" //Brimstone::int32
+#include <brimstone/types.hpp>  //Brimstone::int32
 
 
 
@@ -28,15 +28,12 @@ On some platforms it may not be available.
 
 inline uint32 leadingZeroCount( const uint32 i );
 
-#elif 
-
-inline uint32 leadingZeroCount( const uint32 i ) {
-    return __builtin_clz( i );
-}
-
 #endif
 
 uint32 closestUpperPowerOfTwo( const uint32 i );
+
+float fastSqrt( const float value );
+float fastInvSqrt( float value );
 
 }
 

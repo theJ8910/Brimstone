@@ -28,7 +28,7 @@ Description:
     if( ptr == nullptr ) \
         throw ::Brimstone::NullPointerException();
 
-#else
+#else  //BS_CHECK_NULLPTR
 
 #define BS_ASSERT_NON_NULLPTR( ptr )
 
@@ -43,7 +43,7 @@ Description:
     if( size < required ) \
         throw ::Brimstone::SizeException();
 
-#else
+#else  //BS_CHECK_SIZE
 
 #define BS_ASSERT_SIZE( size, required )
 
@@ -58,11 +58,67 @@ Description:
     if( index < 0 || index > maxIndex ) \
         throw ::Brimstone::OutOfBoundsException();
 
-#else
+#else  //BS_CHECK_INDEX
 
 #define BS_ASSERT_INDEX( index, maxIndex )
 
 #endif //BS_CHECK_INDEX
+
+
+
+
+#ifdef BS_CHECK_DIVBYZERO
+
+#define BS_ASSERT_NONZERO_DIVISOR( divisor ) \
+    if( divisor == 0 ) \
+        throw ::Brimstone::DivideByZeroException();
+
+#define BS_ASSERT_CAN_NORMALIZE( target ) \
+    if( (target).isZero() ) \
+        throw ::Brimstone::DivideByZeroException();
+
+#else //BS_CHECK_DIVBYZERO
+
+#define BS_ASSERT_NONZERO_DIVISOR( divisor )
+
+#define BS_ASSERT_CAN_NORMALIZE( target )
+
+#endif //BS_CHECK_DIVBYZERO
+
+
+
+
+#ifdef BS_CHECK_DOMAIN
+
+#define BS_ASSERT_DOMAIN( condition ) \
+    if( !( condition ) ) \
+        throw ::Brimstone::DomainException();
+
+#define BS_ASSERT_DOMAIN_GTE( value, min ) \
+    if( value < min ) \
+        throw ::Brimstone::DomainException();
+
+#define BS_ASSERT_DOMAIN_GT( value, min ) \
+    if( value <= min ) \
+        throw ::Brimstone::DomainException();
+
+#define BS_ASSERT_DOMAIN_LTE( value, max ) \
+    if( value > max ) \
+        throw ::Brimstone::DomainException();
+
+#define BS_ASSERT_DOMAIN_LT( value, max ) \
+    if( value >= max ) \
+        throw ::Brimstone::DomainException();
+
+#else  //BS_CHECK_DOMAIN
+
+#define BS_ASSERT_DOMAIN( condition )
+#define BS_ASSERT_DOMAIN_GTE( value, min )
+#define BS_ASSERT_DOMAIN_GT( value, min )
+#define BS_ASSERT_DOMAIN_LTE( value, max )
+#define BS_ASSERT_DOMAIN_LT( value, max )
+
+#endif //BS_CHECK_DOMAIN
 
 
 

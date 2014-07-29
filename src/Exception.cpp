@@ -16,6 +16,32 @@ Description:
 
 
 
+//Macros
+/*
+BS_DEFINE_BASIC_EXCEPTION
+
+Macro to automatically define a basic exception type, without a message
+*/
+#define BS_DEFINE_BASIC_EXCEPTION( exceptionName ) \
+    ustring exceptionName::getDescription() const { \
+        return #exceptionName; \
+    }
+
+/*
+BS_DEFINE_MESSAGE_EXCEPTION
+
+Macro to automatically define an exception type deriving from Exception.
+Any exceptions using this macro take a message, which is returned when
+getDescription() is called.
+*/
+#define BS_DEFINE_MESSAGE_EXCEPTION( exceptionName ) \
+    exceptionName::exceptionName() { \
+    } \
+    exceptionName::exceptionName( const uchar* description ) : Exception( description ) { \
+    } \
+    exceptionName::exceptionName( const ustring& description ) : Exception( description ) { \
+    }
+
 namespace Brimstone {
 
 Exception::Exception() {
@@ -34,6 +60,7 @@ ustring Exception::getDescription() const {
 };
 
 BS_DEFINE_BASIC_EXCEPTION( DivideByZeroException );
+BS_DEFINE_BASIC_EXCEPTION( DomainException );
 BS_DEFINE_BASIC_EXCEPTION( NullPointerException );
 BS_DEFINE_BASIC_EXCEPTION( SizeException );
 BS_DEFINE_BASIC_EXCEPTION( OutOfBoundsException );
@@ -47,3 +74,10 @@ BS_DEFINE_BASIC_EXCEPTION( MalformedStringException );
 BS_DEFINE_MESSAGE_EXCEPTION( LuaException );
 
 }
+
+
+
+
+//Not needed outside of this file
+#undef BS_DEFINE_BASIC_EXCEPTION
+#undef BS_DEFINE_MESSAGE_EXCEPTION
