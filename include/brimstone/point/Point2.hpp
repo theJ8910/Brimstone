@@ -40,7 +40,7 @@ public:
 
 #pragma warning( pop )
 public:
-    BS_POINT_DECLARE_METHODS()
+    BS_POINT_DECLARE_METHODS( 2 )
 
     //Constructors
     PointN( const T x, const T y );
@@ -58,6 +58,13 @@ PointN< T, 2 >::PointN()
     : x( 0 ), y( 0 )
 #endif //BS_ZERO
 {
+}
+
+template< typename T >
+template< typename T2 >
+PointN< T, 2 >::PointN( const PointN< T2, 2 >& toCopy ) :
+    x( (T)toCopy.x ),
+    y( (T)toCopy.y ) {
 }
 
 template< typename T >
@@ -108,6 +115,15 @@ bool PointN< T, 2 >::isZero() const {
 }
 
 template< typename T >
+template< typename T2 >
+PointN< T, 2 >& PointN< T, 2 >::operator =( const PointN< T2, 2 >& right ) {
+    x = (T)right.x;
+    y = (T)right.y;
+
+    return (*this);
+}
+
+template< typename T >
 std::ostream& operator <<( std::ostream& left, const PointN< T, 2 >& right ) {
     return left << "( " << right.x << ", " << right.y << " )";
 }
@@ -123,6 +139,23 @@ bool operator !=( const PointN< T, 2 >& left, const PointN< T, 2 >& right ) {
     return left.x != right.x ||
            left.y != right.y;
 }
+
+template< typename T >
+T distanceSq( const PointN< T, 2 >& left, const PointN< T, 2 >& right ) {
+    T xoff = ( right.x - left.x );
+    T yoff = ( right.y - left.y );
+
+    return xoff * xoff +
+           yoff * yoff;
+}
+
+template< typename T >
+T manhattan( const PointN< T, 2 >& left, const PointN< T, 2 >& right ) {
+    return abs( right.x - left.x ) +
+           abs( right.y - left.y );
+}
+
+
 
 
 //Typedefs

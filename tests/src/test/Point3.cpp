@@ -1,4 +1,4 @@
-/*
+﻿/*
 test/Point3.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -24,9 +24,14 @@ Description:
 
 
 namespace {
-    const int pt3Zero[3]      { 0, 0, 0 };
-    const int pt3Values[3]    { 1, 2, 3 };
-    const int pt3ValuesAlt[3] { 4, 5, 6 };
+    const int pt3Zero[3]      {  0, 0, 0 };
+    const int pt3Values[3]    {  1, 2, 3 };
+    const int pt3ValuesAlt[3] {  4, 5, 6 };
+    const int pt3Distant[3]   { -6, 5, 4 };
+    const int pt3DistanceSq = 59;
+    const int pt3Manhattan  = 11;
+
+    const float pt3ValuesF[3] { 1.0f, 2.0f, 3.0f };
 }
 
 namespace Brimstone {
@@ -48,6 +53,13 @@ BS_UT_TEST_BEGIN( Point3_constructorArray )
     Point3i pt( pt3Values, 3 );
 
     return std::equal( pt.data, pt.data + 3, pt3Values );
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( Point3_constructorCopy )
+    Point3f pt1( pt3ValuesF, 3 );
+    Point3i pt2( pt1 );
+
+    return std::equal( pt2.data, pt2.data + 3, pt3Values );
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( Point3_setValues )
@@ -101,6 +113,15 @@ BS_UT_TEST_BEGIN( Point3_isZero )
 
     return pt1.isZero() == true &&
            pt2.isZero() == false;
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( Point3_assignCopy )
+    Point3f pt1( pt3ValuesF, 3 );
+    Point3i pt2( pt3ValuesAlt, 3 );
+
+    pt2 = pt1;
+
+    return std::equal( pt2.data, pt2.data + 2, pt3Values );
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( Point3_equals )
@@ -167,6 +188,20 @@ BS_UT_TEST_BEGIN( Point3_output )
     sout << pt;
 
     return sout.str() == "( 1, 2, 3 )";
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( Point3_distanceSq )
+    Point3i pt1( pt3Values,  3 );
+    Point3i pt2( pt3Distant, 3 );
+
+    return distanceSq( pt1, pt2 ) == pt3DistanceSq;
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( Point3_manhattan )
+    Point3i pt1( pt3Values,  3 );
+    Point3i pt2( pt3Distant, 3 );
+
+    return manhattan( pt1, pt2 ) == pt3Manhattan;
 BS_UT_TEST_END()
 
 

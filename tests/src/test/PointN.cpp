@@ -18,6 +18,7 @@ Description:
 #include <strstream>            //std::ostringstream
 
 #include "../Test.hpp"
+#include "../utils.hpp"         //isWithin, allWithin, FAST_SQRT_ERR
 
 #include <brimstone/Point.hpp>
 
@@ -25,9 +26,18 @@ Description:
 
 namespace {
     typedef ::Brimstone::PointN< int, 5 > Point5i;
-    const int pt5Zero[5]      { 0, 0, 0, 0,  0 };
-    const int pt5Values[5]    { 1, 2, 3, 4,  5 };
-    const int pt5ValuesAlt[5] { 6, 7, 8, 9, 10 };
+    const int pt5Zero[5]            {   0, 0, 0,  0,  0 };
+    const int pt5Values[5]          {   1, 2, 3,  4,  5 };
+    const int pt5ValuesAlt[5]       {   6, 7, 8,  9, 10 };
+    const int pt5Distant[5]         { -10, 9, 8,  7,  6 };
+    const int pt5Distance   = 14;   //14.3178211 -> 14
+    const int pt5DistanceSq = 205;
+    const int pt5Manhattan  = 27;
+
+    typedef ::Brimstone::PointN< float, 5 > Point5f;
+    const float pt5ValuesF[5]       {   1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
+    const float pt5DistantF[5]      { -10.0f, 9.0f, 8.0f, 7.0f, 6.0f };
+    const float pt5DistanceF = 14.3178211f;
 }
 
 namespace Brimstone {
@@ -43,6 +53,13 @@ BS_UT_TEST_BEGIN( PointN_constructorArray )
     Point5i pt( pt5Values, 5 );
 
     return std::equal( pt.data, pt.data + 5, pt5Values );
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( PointN_constructorCopy )
+    Point5f pt1( pt5ValuesF, 5 );
+    Point5i pt2( pt1 );
+
+    return std::equal( pt2.data, pt2.data + 5, pt5Values );
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_setArray )
@@ -77,6 +94,15 @@ BS_UT_TEST_BEGIN( PointN_isZero )
 
     return pt1.isZero() == true &&
            pt2.isZero() == false;
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( PointN_assignCopy )
+    Point5f pt1( pt5ValuesF, 5 );
+    Point5i pt2( pt5ValuesAlt, 5 );
+
+    pt2 = pt1;
+
+    return std::equal( pt2.data, pt2.data + 5, pt5Values );
 BS_UT_TEST_END()
 
 BS_UT_TEST_BEGIN( PointN_equals )
@@ -143,6 +169,34 @@ BS_UT_TEST_BEGIN( PointN_output )
     sout << pt;
 
     return sout.str() == "( 1, 2, 3, 4, 5 )";
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( PointN_distance_int )
+    Point5i pt1( pt5Values,  5 );
+    Point5i pt2( pt5Distant, 5 );
+
+    return distance( pt1, pt2 ) == pt5Distance;
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( PointN_distance_float )
+    Point5f pt1( pt5ValuesF,  5 );
+    Point5f pt2( pt5DistantF, 5 );
+
+    return isWithin( distance( pt1, pt2 ), pt5DistanceF, FAST_SQRT_ERROR );
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( PointN_distanceSq )
+    Point5i pt1( pt5Values,  5 );
+    Point5i pt2( pt5Distant, 5 );
+
+    return distanceSq( pt1, pt2 ) == pt5DistanceSq;
+BS_UT_TEST_END()
+
+BS_UT_TEST_BEGIN( PointN_manhattan )
+    Point5i pt1( pt5Values,  5 );
+    Point5i pt2( pt5Distant, 5 );
+
+    return manhattan( pt1, pt2 ) == pt5Manhattan;
 BS_UT_TEST_END()
 
 

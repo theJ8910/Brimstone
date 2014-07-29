@@ -19,6 +19,7 @@ Description:
 #include <initializer_list>             //std::initializer_list
 
 #include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
+#include <brimstone/util/Math.hpp>      //fastSqrt
 
 
 
@@ -34,16 +35,21 @@ PointN< T, N >
 #define BS_POINT_TMPL()                                                     \
     template< typename T >
 
-#define BS_POINT_DECLARE_METHODS()                                          \
+#define BS_POINT_DECLARE_METHODS( N )                                       \
     PointN();                                                               \
     PointN( std::initializer_list< T > il );                                \
     PointN( const T* const values, const uintN count );                     \
+    template< typename T2 >                                                 \
+    PointN( const PointN< T2, N >& toCopy );                                \
                                                                             \
     void    set( const T* const values, const uintN count );                \
     void    get( T* const valuesOut, const uintN count ) const;             \
                                                                             \
     void    zero();                                                         \
     bool    isZero() const;                                                 \
+                                                                            \
+    template< typename T2 >                                                 \
+    PointN& operator =( const PointN< T2, N >& right );                     \
                                                                             \
     explicit operator T*();                                                 \
     explicit operator const T*() const;                                     \
@@ -89,7 +95,7 @@ class PointN {
 public:
     T data[N];
 public:
-    BS_POINT_DECLARE_METHODS()
+    BS_POINT_DECLARE_METHODS( N )
 };
 
 BS_POINT_DEFINE_METHODS( N, BS_POINT_THIS_TMPL() )
@@ -100,6 +106,12 @@ PointN< T, N >::PointN() {
     for( int i = 0; i < N; ++i )
         data[i] = 0;
 #endif //BS_ZERO
+}
+
+template< typename T, int N >
+template< typename T2 >
+PointN< T, N >::PointN( const PointN< T2, N >& toCopy ) {
+    (*this) = toCopy;
 }
 
 template< typename T, int N >
@@ -135,6 +147,15 @@ bool PointN< T, N >::isZero() const {
 }
 
 template< typename T, int N >
+template< typename T2 >
+PointN< T, N >& PointN< T, N >::operator =( const PointN< T2, N >& right ) {
+    for( int i = 0; i < N; ++i )
+        data[i] = (T)right.data[i];
+
+    return (*this);
+}
+
+template< typename T, int N >
 std::ostream& operator <<( std::ostream& left, const PointN< T, N >& right ) {
     left << "( ";
     
@@ -161,6 +182,34 @@ bool operator !=( const PointN< T, N >& left, const PointN< T, N >& right ) {
         if( left.data[i] != right.data[i] )
             return true;
     return false;
+}
+
+template< typename T, int N >
+T distanceSq( const PointN< T, N >& left, const PointN< T, N >& right ) {
+    T dist = 0;
+
+    T offset;
+    for( int i = 0; i < N; ++i ) {
+        offset = right.data[i] - left.data[i];
+        dist += offset * offset;
+    }
+
+    return dist;
+}
+
+template< typename T, int N >
+T distance( const PointN< T, N >& left, const PointN< T, N >& right ) {
+    return (T)fastSqrt( (float)distanceSq( left, right ) );
+}
+
+template< typename T, int N >
+T manhattan( const PointN< T, N >& left, const PointN< T, N >& right ) {
+    T md = 0;
+
+    for( int i = 0; i < N; ++i )
+        md += abs( right.data[i] - left.data[i] );
+
+    return md;
 }
 
 }

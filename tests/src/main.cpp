@@ -34,30 +34,34 @@ void doTests() {
     int total = 0;
     bool status;
     for( auto test : getTests() ) {
-        std::cout << test->getName() << ": ";
-
         try {
             status = test->run();
         } catch( ... ) { status = false; }
 
         if( status ) {
             setTextColor( TextColors::GREEN );
-            std::cout << "PASS" << std::endl;
+            std::cout << "PASS";
             setTextColor();
+            std::cout << ": ";
             ++pass;
         } else {
             setTextColor( TextColors::RED );
-            std::cout << "FAIL" << std::endl;
+            std::cout << "FAIL";
             setTextColor();
+            std::cout << ": ";
             ++fail;
         }
+        std::cout << test->getName() << std::endl;
         ++total;
     }
-    std::cout << std::endl
-              << "Unit tests complete." << std::endl
-              << "Passed: " << pass << std::endl
-              << "Failed: " << fail << std::endl
-              << "Total:  " << total << std::endl;
+    std::cout << std::endl;
+    setTextColor( TextColors::YELLOW );
+    std::cout << "Unit tests complete." << std::endl;
+    setTextColor();
+    std::cout << "Passed: " << pass  << std::endl
+              << "Failed: " << fail  << std::endl
+              << "Total:  " << total << std::endl
+              << std::endl;
 }
 
 }
