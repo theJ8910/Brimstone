@@ -343,6 +343,40 @@ UT_TEST_END()
 
 #ifdef BS_CHECK_INDEX
 
+UT_TEST_BEGIN( BoundsN_index_OOB )
+    Bounds5i o;
+    int i;
+
+    try {
+        i = o[(size_t)-1];
+        return false;
+    } catch( const BoundsException& ) {}
+
+    try {
+        i = o[10];
+        return false;
+    } catch( const BoundsException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_constIndex_OOB )
+    const Bounds5i o;
+    int i;
+
+    try {
+        i = o[(size_t)-1];
+        return false;
+    } catch( const BoundsException& ) {}
+
+    try {
+        i = o[10];
+        return false;
+    } catch( const BoundsException& ) {}
+
+    return true;
+UT_TEST_END()
+
 UT_TEST_BEGIN( BoundsN_setDimension_OOB )
     Bounds5i o;
 

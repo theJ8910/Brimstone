@@ -430,7 +430,7 @@ UT_TEST_BEGIN( Bounds2_index_OOB )
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[2];
+        i = o[4];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -447,7 +447,7 @@ UT_TEST_BEGIN( Bounds2_constIndex_OOB )
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[2];
+        i = o[4];
         return false;
     } catch( const BoundsException& ) {}
 
