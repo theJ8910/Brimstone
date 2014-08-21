@@ -7,9 +7,15 @@ Description:
     See utils.hpp for more information.
 */
 
+
+
+
+//Includes
 #include "utils.hpp"    //Header
 
-namespace Brimstone {
+
+
+
 namespace UnitTest {
 
 //Constants
@@ -27,5 +33,4 @@ bool allWithin( const float* values, const float* ideals, const float err, const
     return true;
 }
 
-}
 }

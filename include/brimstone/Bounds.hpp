@@ -17,7 +17,5 @@ Description:
 #include <brimstone/bounds/Bounds3.hpp>
 
 //These macros aren't needed outside of the above files
-#undef BS_BOUNDS_THIS_TMPL
-#undef BS_BOUNDS_TMPL
 #undef BS_BOUNDS_DECLARE_METHODS
 #undef BS_BOUNDS_DEFINE_METHODS

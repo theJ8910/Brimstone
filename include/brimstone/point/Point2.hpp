@@ -11,8 +11,8 @@ Description:
         Point2f:     PointN<float,2>
         Point2d:     PointN<double,2>
 */
-#ifndef BS_POINT2_HPP
-#define BS_POINT2_HPP
+#ifndef BS_POINT_POINT2_HPP
+#define BS_POINT_POINT2_HPP
 
 
 
@@ -23,10 +23,22 @@ Description:
 
 
 
+//Macros
+//Inherited methods from Point2 specializaton, PointN, and Array
+#define BS_POINT2_DECLARE_INHERITED_METHODS( className, spec2 )             \
+    BS_POINT_DECLARE_INHERITED_METHODS( className, 2, spec2 )               \
+    className( const T x, const T y );
+#define BS_POINT2_DEFINE_INHERITED_METHODS( className, tmpl, spec, spec2 )  \
+    BS_POINT_DEFINE_INHERITED_METHODS( className, 2, tmpl, spec, spec2 )    \
+    tmpl                                                                    \
+    className spec::className( const T x, const T y ) :                     \
+        BasePointN( x, y ) {                                                \
+    }
 namespace Brimstone {
+namespace Private {
 
 template< typename T >
-class PointN< T, 2 > {
+class BasePointN< T, 2 > {
 public:
 //C4201: nonstandard extension used : nameless struct/union
 //It's a non-standard feature, but VC++, G++, and LLVM support it so it shouldn't be too much of an issue
@@ -40,20 +52,68 @@ public:
 
 #pragma warning( pop )
 public:
+    BS_POINT2_DECLARE_INHERITED_METHODS( BasePointN, BS_SPEC_2( T2, 2 ) )
+
+    //Generic methods
     BS_POINT_DECLARE_METHODS( 2 )
 
-    //Constructors
-    PointN( const T x, const T y );
-
-    //Set / get the coordinates
+    //Point2-specific methods
     void set( const T x, const T y );
     void get( T& xOut, T& yOut ) const;
 };
 
-BS_POINT_DEFINE_METHODS( 2, BS_POINT_TMPL() )
+BS_ARRAY_DEFINE_METHODS( BasePointN, T, data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ) )
 
 template< typename T >
-PointN< T, 2 >::PointN()
+inline BasePointN< T, 2 >::BasePointN( const T& elem ) :
+    x( elem ),
+    y( elem ) {
+}
+
+template< typename T >
+template< typename T2 >
+inline BasePointN< T, 2 >::BasePointN( const T2& cppRange ) :
+    x( cppRange[0] ),
+    y( cppRange[1] ) {
+    BS_ASSERT_SIZE( rangeSize( cppRange ), 2 );
+}
+
+template< typename T >
+inline BasePointN< T, 2 >::BasePointN( std::initializer_list< T > il ) :
+    x( *( std::begin( il )     ) ),
+    y( *( std::begin( il ) + 1 ) ) {
+    BS_ASSERT_SIZE( rangeSize( il ), 2 );
+}
+
+template< typename T >
+template< typename T2 >
+inline void BasePointN< T, 2 >::set( const T2& cppRange ) {
+    BS_ASSERT_SIZE( rangeSize( cppRange ), 2 );
+    x = cppRange[0];
+    y = cppRange[1];
+}
+template< typename T >
+inline void BasePointN< T, 2 >::set( std::initializer_list< T > il ) {
+    BS_ASSERT_SIZE( rangeSize( il ), 2 );
+    auto it = std::begin( il );
+    x = *( it     );
+    y = *( it + 1 );
+}
+template< typename T >
+template< typename T2 >
+inline void BasePointN< T, 2 >::get( T2& cppRangeOut ) const {
+    BS_ASSERT_SIZE( rangeSize( cppRangeOut ), 2 );
+    cppRangeOut[0] = x;
+    cppRangeOut[1] = y;
+}
+template< typename T >
+inline void BasePointN< T, 2 >::fill( const T& elem ) {
+    x = elem;
+    y = elem;
+}
+
+template< typename T >
+BasePointN< T, 2 >::BasePointN()
 #ifdef BS_ZERO
     : x( 0 ), y( 0 )
 #endif //BS_ZERO
@@ -62,66 +122,61 @@ PointN< T, 2 >::PointN()
 
 template< typename T >
 template< typename T2 >
-PointN< T, 2 >::PointN( const PointN< T2, 2 >& toCopy ) :
-    x( (T)toCopy.x ),
-    y( (T)toCopy.y ) {
+BasePointN< T, 2 >::BasePointN( const BasePointN< T2, 2 >& toCopy ) :
+    x( static_cast<T>( toCopy.x ) ),
+    y( static_cast<T>( toCopy.y ) ) {
 }
 
 template< typename T >
-PointN< T, 2 >::PointN( const T x, const T y ) :
+BasePointN< T, 2 >::BasePointN( const T x, const T y ) :
     x( x ), y( y ) {
 }
 
 template< typename T >
-void PointN< T, 2 >::set( const T x, const T y ) {
-    PointN::x = x;
-    PointN::y = y;
+template< typename T2 >
+BasePointN< T, 2 >& BasePointN< T, 2 >::operator =( const BasePointN< T2, 2 >& right ) {
+    x = static_cast<T>( right.x );
+    y = static_cast<T>( right.y );
+
+    return (*this);
 }
 
 template< typename T >
-void PointN< T, 2 >::set( const T* const xy, const uintN count ) {
-    BS_ASSERT_NON_NULLPTR( xy );
-    BS_ASSERT_SIZE( count, 2 );
-
-    x = xy[0];
-    y = xy[1];
-}
-
-template< typename T >
-void PointN< T, 2 >::get( T& xOut, T& yOut ) const {
-    xOut = x;
-    yOut = y;
-}
-
-template< typename T >
-void PointN< T, 2 >::get( T* const xyOut, const uintN count ) const {
-    BS_ASSERT_NON_NULLPTR( xyOut );
-    BS_ASSERT_SIZE( count, 2 );
-
-    xyOut[0] = x;
-    xyOut[1] = y;
-}
-
-template< typename T >
-void PointN< T, 2 >::zero() {
+void BasePointN< T, 2 >::zero() {
     x = 0;
     y = 0;
 }
 
 template< typename T >
-bool PointN< T, 2 >::isZero() const {
+bool BasePointN< T, 2 >::isZero() const {
     return x == 0 &&
            y == 0;
 }
 
 template< typename T >
-template< typename T2 >
-PointN< T, 2 >& PointN< T, 2 >::operator =( const PointN< T2, 2 >& right ) {
-    x = (T)right.x;
-    y = (T)right.y;
-
-    return (*this);
+void BasePointN< T, 2 >::set( const T x, const T y ) {
+    BasePointN::x = x;
+    BasePointN::y = y;
 }
+
+template< typename T >
+void BasePointN< T, 2 >::get( T& xOut, T& yOut ) const {
+    xOut = x;
+    yOut = y;
+}
+
+}
+
+template< typename T >
+class PointN< T, 2 > : public Private::BasePointN< T, 2 > {
+public:
+    //Specializations of generic methods
+    BS_POINT2_DECLARE_INHERITED_METHODS( PointN, BS_SPEC_2( T2, 2 ) )
+};
+BS_POINT2_DEFINE_INHERITED_METHODS( PointN, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) );
+
+
+
 
 template< typename T >
 std::ostream& operator <<( std::ostream& left, const PointN< T, 2 >& right ) {
@@ -170,4 +225,4 @@ typedef Point2< double > Point2d;
 
 
 
-#endif //BS_POINT2_HPP
+#endif //BS_POINT_POINT2_HPP

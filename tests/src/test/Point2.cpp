@@ -7,330 +7,320 @@ Description:
     Unit tests for PointN<T,2> specialization
 */
 
-//Includes
 
-//C4996: 'std::_Copy_impl': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct.
-//       To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
-//It's complaining because I'm copying to a pointer instead of an array, and rightfully so because it's inherently unsafe.
-//However, we can ignore this warning because the program logic ensures it will never copy values outside of the object.
-#define _SCL_SECURE_NO_WARNINGS
-#include <algorithm>            //std::copy, std::equal
+
+
+//Includes
 #include <strstream>            //std::ostringstream
 
-#include "../Test.hpp"
+#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"         //allEqual, allEqualTo, copyAll
 
 #include <brimstone/Point.hpp>
 
 
 
-namespace {
-    const int pt2Zero[2]      {  0, 0 };
-    const int pt2Values[2]    {  1, 2 };
-    const int pt2ValuesAlt[2] {  3, 4 };
-    const int pt2Distant[2]   { -4, 3 };
-    const int pt2DistanceSq = 26;
-    const int pt2Manhattan  = 6;
 
-    const float pt2ValuesF[2] { 1.0f, 2.0f };
+namespace {
+    using ::Brimstone::Point2i;
+    using ::Brimstone::Point2f;
+    using ::Brimstone::BoundsException;
+
+    const size_t cv_size         = 2;
+    const int    cv_zero[2]      {  0, 0 };
+    const int    cv_values[2]    {  1, 2 };
+    const int    cv_valuesAlt[2] {  3, 4 };
+    const int    cv_distant[2]   { -4, 3 };
+    const int    cv_distanceSq   = 26;
+    const int    cv_manhattan    = 6;
+    const char*  cv_output       = "( 1, 2 )";
+
+    const float cv_valuesF[2]   { 1.0f, 2.0f };
 }
 
-namespace Brimstone {
 namespace UnitTest {
 
-BS_UT_TEST_BEGIN( Point2_constructorValues )
-    Point2i pt( pt2Values[0], pt2Values[1] );
+UT_TEST_BEGIN( Point2_constructorFill )
+    Point2i o( 1 );
 
-    return std::equal( pt.data, pt.data + 2, pt2Values );
-BS_UT_TEST_END()
+    return allEqualTo( o.data, 1 );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_constructorInitializerList )
-    Point2i pt( { 1, 2 } );
+UT_TEST_BEGIN( Point2_constructorCppRange )
+    Point2i o( cv_values );
 
-    return std::equal( pt.data, pt.data + 2, pt2Values );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_constructorArray )
-    Point2i pt( pt2Values, 2 );
+UT_TEST_BEGIN( Point2_constructorInitializerList )
+    Point2i o( { cv_values[0], cv_values[1] } );
 
-    return std::equal( pt.data, pt.data + 2, pt2Values );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_constructorCopy )
-    Point2f pt1( pt2ValuesF, 2 );
-    Point2i pt2( pt1 );
+UT_TEST_BEGIN( Point2_setCppRange )
+    Point2i o( cv_values );
 
-    return std::equal( pt2.data, pt2.data + 2, pt2Values );
-BS_UT_TEST_END()
+    o.set( cv_valuesAlt );
 
-BS_UT_TEST_BEGIN( Point2_setValues )
-    Point2i pt( pt2Values, 2 );
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
 
-    pt.set( pt2ValuesAlt[0], pt2ValuesAlt[1] );
+UT_TEST_BEGIN( Point2_setInitializerList )
+    Point2i o( cv_values );
+    
+    o.set( { cv_valuesAlt[0], cv_valuesAlt[1] } );
 
-    return std::equal( pt.data, pt.data + 2, pt2ValuesAlt );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_setArray )
-    Point2i pt( pt2Values, 2 );
+UT_TEST_BEGIN( Point2_getCppRange )
+    int values[ cv_size ];
+    copyAll( cv_values, values );
+    Point2i o( cv_valuesAlt );
+    
+    o.get( values );
 
-    pt.set( pt2ValuesAlt, 2 );
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
 
-    return std::equal( pt.data, pt.data + 2, pt2ValuesAlt );
-BS_UT_TEST_END()
+UT_TEST_BEGIN( Point2_fill )
+    Point2i o( cv_values );
+    
+    o.fill( 1 );
 
-BS_UT_TEST_BEGIN( Point2_getValues )
-    Point2i pt( pt2Values, 2 );
+    return allEqualTo( o.data, 1 );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_begin )
+    Point2i o( cv_values );
+
+    return o.begin() == std::begin( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_beginConst )
+    const Point2i o( cv_values );
+
+    return o.begin() == std::begin( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_cbegin )
+    Point2i o( cv_values );
+
+    return o.cbegin() == std::cbegin( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_end )
+    Point2i o( cv_values );
+
+    return o.end() == std::end( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_endConst )
+    const Point2i o( cv_values );
+
+    return o.end() == std::end( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_cend )
+    Point2i o( cv_values );
+
+    return o.cend() == std::cend( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_rangedFor )
+    Point2i o( cv_values );
+
+    int idx = 0;
+    for( int& i : o )
+        i = cv_valuesAlt[idx++];
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_rangedForConst )
+    int data[ cv_size ];
+    copyAll( cv_values, data );
+    const Point2i o( cv_valuesAlt );
+    
+    int idx = 0;
+    for( int i : o )
+        data[idx++] = i;
+
+    return allEqual( data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_index )
+    Point2i o( cv_values );
+
+    for( int i = 0; i < cv_size; ++i )
+        o[i] = cv_valuesAlt[i];
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_indexConst )
+    int data[ cv_size ];
+    const Point2i o( cv_values );
+
+    for( int i = 0; i < cv_size; ++i )
+        data[i] = o[i];
+
+    return allEqual( data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_constructorValues )
+    Point2i o( cv_values[0], cv_values[1] );
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_constructorCopy )
+    Point2f o1( cv_valuesF );
+
+    Point2i o2( o1 );
+
+    return allEqual( o2.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_setValues )
+    Point2i o( cv_values );
+
+    o.set( cv_valuesAlt[0], cv_valuesAlt[1] );
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point2_getValues )
+    Point2i o( cv_values );
 
     int x, y;
-    pt.get( x, y );
+    o.get( x, y );
 
-    return x == pt2Values[0] &&
-           y == pt2Values[1];
-BS_UT_TEST_END()
+    return x == cv_values[0] &&
+           y == cv_values[1];
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_getArray )
-    int data[2];
-    std::copy( pt2Values, pt2Values + 2, data );
+UT_TEST_BEGIN( Point2_zero )
+    Point2i o( cv_values );
 
-    Point2i pt( pt2ValuesAlt, 2 );
-    pt.get( data, 2 );
+    o.zero();
 
-    return std::equal( data, data + 2, pt2ValuesAlt );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_zero );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_zero )
-    Point2i pt( pt2Values, 2 );
+UT_TEST_BEGIN( Point2_isZero )
+    Point2i o1( cv_zero );
+    Point2i o2( cv_values );
 
-    pt.zero();
+    return o1.isZero() == true &&
+           o2.isZero() == false;
+UT_TEST_END()
 
-    return std::equal( pt.data, pt.data + 2, pt2Zero );
-BS_UT_TEST_END()
+UT_TEST_BEGIN( Point2_assignCopy )
+    Point2f o1( cv_valuesF );
+    Point2i o2( cv_valuesAlt );
 
-BS_UT_TEST_BEGIN( Point2_isZero )
-    Point2i pt1( pt2Zero,   2 );
-    Point2i pt2( pt2Values, 2 );
+    o2 = o1;
 
-    return pt1.isZero() == true &&
-           pt2.isZero() == false;
-BS_UT_TEST_END()
+    return allEqual( o2.data, cv_values );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_assignCopy )
-    Point2f pt1( pt2ValuesF, 2 );
-    Point2i pt2( pt2ValuesAlt, 2 );
+UT_TEST_BEGIN( Point2_equals )
+    Point2i o1( cv_values );
+    Point2i o2( cv_values );
+    Point2i o3( cv_valuesAlt );
 
-    pt2 = pt1;
+    return ( o1 == o2 ) == true   &&
+           ( o1 == o3 ) == false;
+UT_TEST_END()
 
-    return std::equal( pt2.data, pt2.data + 2, pt2Values );
-BS_UT_TEST_END()
+UT_TEST_BEGIN( Point2_notEquals )
+    Point2i o1( cv_values );
+    Point2i o2( cv_values );
+    Point2i o3( cv_valuesAlt );
 
-BS_UT_TEST_BEGIN( Point2_equals )
-    Point2i pt1( pt2Values,    2 );
-    Point2i pt2( pt2Values,    2 );
-    Point2i pt3( pt2ValuesAlt, 2 );
+    return ( o1 != o2 ) == false  &&
+           ( o1 != o3 ) == true;
+UT_TEST_END()
 
-    return ( pt1 == pt2 ) == true   &&
-           ( pt1 == pt3 ) == false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_notEquals )
-    Point2i pt1( pt2Values,    2 );
-    Point2i pt2( pt2Values,    2 );
-    Point2i pt3( pt2ValuesAlt, 2 );
-
-    return ( pt1 != pt2 ) == false  &&
-           ( pt1 != pt3 ) == true;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_pointer )
-    Point2i pt( pt2Values, 2 );
-
-    int* data = (int*)pt;
-    std::copy( pt2ValuesAlt, pt2ValuesAlt + 2, data );
-
-    return std::equal( pt.data, pt.data + 2, pt2ValuesAlt );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_constPointer )
-    int dataOut[2];
-    std::copy( pt2Values, pt2Values + 2, dataOut );
-    const Point2i pt( pt2ValuesAlt, 2 );
-
-    const int* data = (const int*)pt;
-    std::copy( data, data + 2, dataOut );
-
-    return std::equal( dataOut, dataOut + 2, pt2ValuesAlt );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_index )
-    Point2i pt( pt2Values, 2 );
-
-    for( int i = 0; i < 2; ++i )
-        pt[i] = pt2ValuesAlt[i];
-
-    return std::equal( pt.data, pt.data + 2, pt2ValuesAlt );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_constIndex )
-    int dataOut[2];
-    const Point2i pt( pt2Values, 2 );
-
-    for( int i = 0; i < 2; ++i )
-        dataOut[i] = pt[i];
-
-    return std::equal( dataOut, dataOut + 2, pt2Values );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_output )
-    Point2i pt( pt2Values, 2 );
+UT_TEST_BEGIN( Point2_output )
+    Point2i o( cv_values );
 
     std::stringstream sout;
-    sout << pt;
+    sout << o;
 
     return sout.str() == "( 1, 2 )";
-BS_UT_TEST_END()
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_distanceSq )
-    Point2i pt1( pt2Values,  2 );
-    Point2i pt2( pt2Distant, 2 );
+UT_TEST_BEGIN( Point2_distanceSq )
+    Point2i o1( cv_values );
+    Point2i o2( cv_distant );
 
-    return distanceSq( pt1, pt2 ) == pt2DistanceSq;
-BS_UT_TEST_END()
+    return distanceSq( o1, o2 ) == cv_distanceSq;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_manhattan )
-    Point2i pt1( pt2Values,  2 );
-    Point2i pt2( pt2Distant, 2 );
+UT_TEST_BEGIN( Point2_manhattan )
+    Point2i o1( cv_values );
+    Point2i o2( cv_distant );
 
-    return manhattan( pt1, pt2 ) == pt2Manhattan;
-BS_UT_TEST_END()
+    return manhattan( o1, o2 ) == cv_manhattan;
+UT_TEST_END()
 
 
 
 
 #ifdef BS_ZERO
 
-BS_UT_TEST_BEGIN( Point2_constructorZero )
-    Point2i pt;
-    return pt.isZero();
-BS_UT_TEST_END()
+UT_TEST_BEGIN( Point2_constructorZero )
+    Point2i o;
+    return allEqual( o.data, cv_zero );
+UT_TEST_END()
 
 #endif //BS_ZERO
 
 
 
 
-#ifdef BS_CHECK_NULLPTR
-
-BS_UT_TEST_BEGIN( Point2_constructorArray_nullPointer )
-    try {
-        Point2i pt( nullptr, 2 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_setArray_nullPointer )
-    Point2i pt( pt2Values, 2 );
-    try {
-        pt.set( nullptr, 2 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_getArray_nullPointer )
-    Point2i pt( pt2Values, 2 );
-    try {
-        pt.get( nullptr, 2 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-#endif //BS_CHECK_NULLPTR
-
-
-
-
-#ifdef BS_CHECK_SIZE
-
-BS_UT_TEST_BEGIN( Point2_constructorArray_invalidSize )
-    try {
-        Point2i pt( pt2Values, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_setArray_invalidSize )
-    Point2i pt;
-    try {
-        pt.set( pt2ValuesAlt, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Point2_getArray_invalidSize )
-    int data[2];
-    Point2i pt( pt2Values, 2 );
-    try {
-        pt.get( data, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-
-
-
 #ifdef BS_CHECK_INDEX
 
-BS_UT_TEST_BEGIN( Point2_index_OOB )
-    Point2i pt;
+UT_TEST_BEGIN( Point2_index_OOB )
+    Point2i o;
     int i;
 
     try {
-        i = pt[-1];
+        i = o[(size_t)-1];
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     try {
-        i = pt[2];
+        i = o[2];
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     return true;
-BS_UT_TEST_END()
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Point2_constIndex_OOB )
-    const Point2i pt;
+UT_TEST_BEGIN( Point2_constIndex_OOB )
+    const Point2i o;
     int i;
 
     try {
-        i = pt[-1];
+        i = o[(size_t)-1];
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     try {
-        i = pt[2];
+        i = o[2];
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     return true;
-BS_UT_TEST_END()
+UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
 
 
 
-#endif //BS_CHECK_SIZE
-
-}
 }

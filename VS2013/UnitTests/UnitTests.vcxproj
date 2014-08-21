@@ -90,9 +90,9 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BS_UT_BUILD_WINDOWS;BS_BUILD_WINDOWS;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;UT_BUILD_WINDOWS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
@@ -108,9 +108,9 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BS_UT_BUILD_WINDOWS;BS_BUILD_WINDOWS;BS_BUILD_64BIT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_64BIT;UT_BUILD_WINDOWS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
@@ -124,13 +124,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BS_UT_BUILD_WINDOWS;BS_BUILD_WINDOWS;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;UT_BUILD_WINDOWS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
@@ -146,13 +146,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BS_UT_BUILD_WINDOWS;BS_BUILD_WINDOWS;BS_BUILD_64BIT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_64BIT;UT_BUILD_WINDOWS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
@@ -171,19 +171,26 @@
     <ClCompile Include="..\..\tests\src\console\TextColor.cpp" />
     <ClCompile Include="..\..\tests\src\main.cpp" />
     <ClCompile Include="..\..\tests\src\Test.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Array.cpp" />
     <ClCompile Include="..\..\tests\src\test\Bounds2.cpp" />
     <ClCompile Include="..\..\tests\src\test\Bounds3.cpp" />
     <ClCompile Include="..\..\tests\src\test\BoundsN.cpp" />
     <ClCompile Include="..\..\tests\src\test\Point2.cpp" />
     <ClCompile Include="..\..\tests\src\test\Point3.cpp" />
     <ClCompile Include="..\..\tests\src\test\PointN.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Range.cpp" />
     <ClCompile Include="..\..\tests\src\test\types.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Vector2.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Vector3.cpp" />
+    <ClCompile Include="..\..\tests\src\test\VectorN.cpp" />
+    <ClCompile Include="..\..\tests\src\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tests\src\console\Menu.hpp" />
     <ClInclude Include="..\..\tests\src\console\TextColor.hpp" />
     <ClInclude Include="..\..\tests\src\MeasureXTime.hpp" />
     <ClInclude Include="..\..\tests\src\Test.hpp" />
+    <ClInclude Include="..\..\tests\src\utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

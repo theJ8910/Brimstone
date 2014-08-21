@@ -7,6 +7,9 @@ Description:
     See console/Menu.h for more information.
 */
 
+
+
+
 //Includes
 #include <iostream>
 #include "Menu.hpp"
@@ -15,7 +18,6 @@ Description:
 
 
 
-namespace Brimstone {
 namespace UnitTest {
 
 /*
@@ -76,5 +78,4 @@ int menu( const char* const* const choices, const int numChoices )
     return choice - 1;
 }
 
-}
 }

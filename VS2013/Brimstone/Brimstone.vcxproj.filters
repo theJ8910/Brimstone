@@ -43,9 +43,6 @@
     <ClInclude Include="..\..\include\brimstone\util\MinMax.hpp">
       <Filter>include\brimstone\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\brimstone\util\Range.hpp">
-      <Filter>include\brimstone\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\brimstone\Window.hpp">
       <Filter>include\brimstone</Filter>
     </ClInclude>
@@ -119,6 +116,15 @@
       <Filter>include\brimstone</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\brimstone\util\Math.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Clamp.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Array.hpp">
+      <Filter>include\brimstone\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\util\Range.hpp">
       <Filter>include\brimstone\util</Filter>
     </ClInclude>
   </ItemGroup>

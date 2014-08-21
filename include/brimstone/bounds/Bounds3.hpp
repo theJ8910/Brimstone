@@ -12,8 +12,8 @@ Description:
         * Bounds3f:     BoundsN<float,3>
         * Bounds3d:     BoundsN<double,3>
 */
-#ifndef BS_BOUNDS3_HPP
-#define BS_BOUNDS3_HPP
+#ifndef BS_BOUNDS_BOUNDS3_HPP
+#define BS_BOUNDS_BOUNDS3_HPP
 
 
 
@@ -39,6 +39,14 @@ public:
             PointN< T, 3 > mins;
             PointN< T, 3 > maxs;
         };
+        struct {
+            T minX;
+            T minY;
+            T minZ;
+            T maxX;
+            T maxY;
+            T maxZ;
+        };
         T data[ 6 ];
     };
 
@@ -48,7 +56,7 @@ public:
 
     //Constructors
     BoundsN( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ );
-    BoundsN( const PointN< T, 3 >& mins, T width, T length, T height );
+    BoundsN( const PointN< T, 3 >& mins, const T width, const T length, const T height );
 
     //Set / get the bounds individually
     void set( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ );
@@ -71,123 +79,173 @@ public:
     T       getVolume() const;
 };
 
-BS_BOUNDS_DEFINE_METHODS( 3, BS_BOUNDS_TMPL() )
+BS_BOUNDS_DEFINE_METHODS( 3, BS_TMPL_1( typename T ) )
+
+template< typename T >
+inline BoundsN< T, 3 >::BoundsN( const T& elem ) :
+    minX( elem ), minY( elem ), minZ( elem ),
+    maxX( elem ), maxY( elem ), maxZ( elem ) {
+}
+
+template< typename T >
+template< typename T2 >
+inline BoundsN< T, 3 >::BoundsN( const T2& cppRange ) :
+    minX( cppRange[0] ), minY( cppRange[1] ), minZ( cppRange[2] ),
+    maxX( cppRange[3] ), maxY( cppRange[4] ), maxZ( cppRange[5] ) {
+    BS_ASSERT_SIZE( rangeSize( cppRange ), 6 );
+}
+
+template< typename T >
+inline BoundsN< T, 3 >::BoundsN( std::initializer_list< T > il ) :
+    minX( *( std::begin( il )     ) ),
+    minY( *( std::begin( il ) + 1 ) ),
+    minZ( *( std::begin( il ) + 2 ) ),
+    maxX( *( std::begin( il ) + 3 ) ),
+    maxY( *( std::begin( il ) + 4 ) ),
+    maxZ( *( std::begin( il ) + 5 ) ) {
+    BS_ASSERT_SIZE( rangeSize( il ), 6 );
+}
+
+template< typename T >
+template< typename T2 >
+inline void BoundsN< T, 3 >::set( const T2& cppRange ) {
+    BS_ASSERT_SIZE( rangeSize( cppRange ), 6 );
+    minX = cppRange[0];
+    minY = cppRange[1];
+    minZ = cppRange[2];
+    maxX = cppRange[3];
+    maxY = cppRange[4];
+    maxZ = cppRange[5];
+}
+
+template< typename T >
+inline void BoundsN< T, 3 >::set( std::initializer_list< T > il ) {
+    BS_ASSERT_SIZE( rangeSize( il ), 6 );
+    auto it = std::begin( il );
+    minX = *( it     );
+    minY = *( it + 1 );
+    minZ = *( it + 2 );
+    maxX = *( it + 3 );
+    maxY = *( it + 4 );
+    maxZ = *( it + 5 );
+}
+
+template< typename T >
+template< typename T2 >
+inline void BoundsN< T, 3 >::get( T2& cppRangeOut ) const {
+    BS_ASSERT_SIZE( rangeSize( cppRangeOut ), 6 );
+    cppRangeOut[0] = minX;
+    cppRangeOut[1] = minY;
+    cppRangeOut[2] = minZ;
+    cppRangeOut[3] = maxX;
+    cppRangeOut[4] = maxY;
+    cppRangeOut[5] = maxZ;
+}
+
+template< typename T >
+inline void BoundsN< T, 3 >::fill( const T& elem ) {
+    minX = elem;
+    minY = elem;
+    minZ = elem;
+    maxX = elem;
+    maxY = elem;
+    maxZ = elem;
+}
 
 template< typename T >
 BoundsN< T, 3 >::BoundsN()
 #ifdef BS_ZERO
-    : mins( 0, 0, 0 ), maxs( 0, 0, 0 )
+    : minX( 0 ), minY( 0 ), minZ( 0 ),
+      maxX( 0 ), maxY( 0 ), maxZ( 0 )
 #endif  //BS_ZERO
 {
 }
 
 template< typename T >
-BoundsN< T, 3 >::BoundsN( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ ) :
-    mins( minX, minY, minZ ), maxs( maxX, maxY, maxZ ) {
+template< typename T2 >
+BoundsN< T, 3 >::BoundsN( const BoundsN< T2, 3 >& toCopy ) :
+    minX( static_cast< T >( toCopy.minX ) ), minY( static_cast< T >( toCopy.minY ) ), minZ( static_cast< T >( toCopy.minZ ) ),
+    maxX( static_cast< T >( toCopy.maxX ) ), maxY( static_cast< T >( toCopy.maxY ) ), maxZ( static_cast< T >( toCopy.maxZ ) ) {
 }
 
 template< typename T >
-BoundsN< T, 3 >::BoundsN( const PointN< T, 3 >& mins, T width, T length, T height ) :
+BoundsN< T, 3 >::BoundsN( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ ) :
+    minX( minX ), minY( minY ), minZ( minZ ),
+    maxX( maxX ), maxY( maxY ), maxZ( maxZ ) {
+}
+
+template< typename T >
+BoundsN< T, 3 >::BoundsN( const PointN< T, 3 >& mins, const T width, const T length, const T height ) :
     mins( mins ),
-    maxs(
-        mins.x + width,
-        mins.y + length,
-        mins.z + height
-    ) {
+    maxX( mins.x + width  ),
+    maxY( mins.y + length ),
+    maxZ( mins.z + height ) {
 }
 
 template< typename T >
 void BoundsN< T, 3 >::set( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ ) {
-    mins.x = minX;
-    mins.y = minY;
-    mins.z = minZ;
+    BoundsN::minX = minX;
+    BoundsN::minY = minY;
+    BoundsN::minZ = minZ;
 
-    maxs.x = maxX;
-    maxs.y = maxY;
-    maxs.z = maxZ;
+    BoundsN::maxX = maxX;
+    BoundsN::maxY = maxY;
+    BoundsN::maxZ = maxZ;
 }
 
 template< typename T >
 void BoundsN< T, 3 >::get( T& minXOut, T& minYOut, T& minZOut, T& maxXOut, T& maxYOut, T& maxZOut ) const {
-    minXOut = mins.x;
-    minYOut = mins.y;
-    minZOut = mins.z;
+    minXOut = minX;
+    minYOut = minY;
+    minZOut = minZ;
 
-    maxXOut = maxs.x;
-    maxYOut = maxs.y;
-    maxZOut = maxs.z;
-}
-
-template< typename T >
-void BoundsN< T, 3 >::set( const T* const values, const uintN count ) {
-    BS_ASSERT_NON_NULLPTR( values );
-    BS_ASSERT_SIZE( count, 6 );
-
-    mins.x = values[ 0 ];
-    mins.y = values[ 1 ];
-    mins.z = values[ 2 ];
-
-    maxs.x = values[ 3 ];
-    maxs.y = values[ 4 ];
-    maxs.z = values[ 5 ];
-}
-
-template< typename T >
-void BoundsN< T, 3 >::get( T* const valuesOut, const uintN count ) const {
-    BS_ASSERT_NON_NULLPTR( valuesOut );
-    BS_ASSERT_SIZE( count, 6 );
-
-    valuesOut[ 0 ] = mins.x;
-    valuesOut[ 1 ] = mins.y;
-    valuesOut[ 2 ] = mins.z;
-
-    valuesOut[ 3 ] = maxs.x;
-    valuesOut[ 4 ] = maxs.y;
-    valuesOut[ 5 ] = maxs.z;
+    maxXOut = maxX;
+    maxYOut = maxY;
+    maxZOut = maxZ;
 }
 
 template< typename T >
 void BoundsN< T, 3 >::setDimensions( const T width, const T length, const T height ) {
-    maxs.x = mins.x + width;
-    maxs.y = mins.y + length;
-    maxs.z = mins.z + height;
+    maxX = minX + width;
+    maxY = minY + length;
+    maxZ = minZ + height;
 }
 
 template< typename T >
 void BoundsN< T, 3 >::getDimensions( T& widthOut, T& lengthOut, T& heightOut ) const {
-    widthOut  = maxs.x - mins.x;
-    lengthOut = maxs.y - mins.y;
-    heightOut = maxs.z - mins.z;
+    widthOut  = maxX - minX;
+    lengthOut = maxY - minY;
+    heightOut = maxZ - minZ;
 }
 
 template< typename T >
 void BoundsN< T, 3 >::setWidth( const T width ) {
-    maxs.x = mins.x + width;
+    maxX = minX + width;
 }
 
 template< typename T >
 T BoundsN< T, 3 >::getWidth() const {
-    return maxs.x - mins.x;
+    return maxX - minX;
 }
 
 template< typename T >
 void BoundsN< T, 3 >::setLength( const T length ) {
-    maxs.y = mins.y + length;
+    maxY = minY + length;
 }
 
 template< typename T >
 T BoundsN< T, 3 >::getLength() const {
-    return maxs.y - mins.y;
+    return maxY - minY;
 }
 
 template< typename T >
 void BoundsN< T, 3 >::setHeight( const T height ) {
-    maxs.z = mins.z + height;
+    maxZ = minZ + height;
 }
 
 template< typename T >
 T BoundsN< T, 3 >::getHeight() const {
-    return maxs.z - mins.z;
+    return maxZ - minZ;
 }
 
 template< typename T >
@@ -197,59 +255,72 @@ T BoundsN< T, 3 >::getVolume() const {
 
 template< typename T >
 void BoundsN< T, 3 >::zero() {
-    mins.x = 0;
-    mins.y = 0;
-    mins.z = 0;
+    minX = 0;
+    minY = 0;
+    minZ = 0;
 
-    maxs.x = 0;
-    maxs.y = 0;
-    maxs.z = 0;
+    maxX = 0;
+    maxY = 0;
+    maxZ = 0;
 }
 
 template< typename T >
 bool BoundsN< T, 3 >::isZero() const {
-    return mins.x == 0 &&
-           mins.y == 0 &&
-           mins.z == 0 &&
-           maxs.x == 0 &&
-           maxs.y == 0 &&
-           maxs.z == 0;
+    return minX == 0 &&
+           minY == 0 &&
+           minZ == 0 &&
+           maxX == 0 &&
+           maxY == 0 &&
+           maxZ == 0;
 }
 
+template< typename T >
+template< typename T2 >
+BoundsN< T, 3 >& BoundsN< T, 3 >::operator =( const BoundsN< T2, 3 >& right ) {
+    minX = static_cast< T >( right.minX );
+    minY = static_cast< T >( right.minY );
+    minZ = static_cast< T >( right.minZ );
+
+    maxX = static_cast< T >( right.maxX );
+    maxY = static_cast< T >( right.maxY );
+    maxZ = static_cast< T >( right.maxZ );
+
+    return (*this);
+}
 
 template< typename T >
 bool operator ==( const BoundsN< T, 3 >& left, const BoundsN< T, 3 >& right ) {
-    return left.mins.x == right.mins.x &&
-           left.mins.y == right.mins.y &&
-           left.mins.z == right.mins.z &&
-           left.maxs.x == right.maxs.x &&
-           left.maxs.y == right.maxs.y &&
-           left.maxs.z == right.maxs.z;
+    return left.minX == right.minX &&
+           left.minY == right.minY &&
+           left.minZ == right.minZ &&
+           left.maxX == right.maxX &&
+           left.maxY == right.maxY &&
+           left.maxZ == right.maxZ;
 }
 
 template< typename T >
 bool operator !=( const BoundsN< T, 3 >& left, const BoundsN< T, 3 >& right ) {
-    return left.mins.x != right.mins.x ||
-           left.mins.y != right.mins.y ||
-           left.mins.z != right.mins.z ||
-           left.maxs.x != right.maxs.x ||
-           left.maxs.y != right.maxs.y ||
-           left.maxs.z != right.maxs.z;
+    return left.minX != right.minX ||
+           left.minY != right.minY ||
+           left.minZ != right.minZ ||
+           left.maxX != right.maxX ||
+           left.maxY != right.maxY ||
+           left.maxZ != right.maxZ;
 }
 
 template< typename T >
 void clamp( PointN< T, 3 >& pointInOut, const BoundsN< T, 3 >& bounds ) {
-    clamp( pointInOut.x, bounds.mins.x, bounds.maxs.x );
-    clamp( pointInOut.y, bounds.mins.y, bounds.maxs.y );
-    clamp( pointInOut.z, bounds.mins.z, bounds.maxs.z );
+    clamp( pointInOut.x, bounds.minX, bounds.maxX );
+    clamp( pointInOut.y, bounds.minY, bounds.maxY );
+    clamp( pointInOut.z, bounds.minZ, bounds.maxZ );
 }
 
 template< typename T >
 PointN< T, 3 > clampedPoint( const PointN< T, 3 >& point, const BoundsN< T, 3 >& bounds ) {
     return PointN< T, 3 >(
-        clampedValue( point.x, bounds.mins.x, bounds.maxs.x ),
-        clampedValue( point.y, bounds.mins.y, bounds.maxs.y ),
-        clampedValue( point.z, bounds.mins.z, bounds.maxs.z )
+        clampedValue( point.x, bounds.minX, bounds.maxX ),
+        clampedValue( point.y, bounds.minY, bounds.maxY ),
+        clampedValue( point.z, bounds.minZ, bounds.maxZ )
     );
 }
 
@@ -265,4 +336,4 @@ typedef Bounds3< double >   Bounds3d;
 
 
 
-#endif //BS_BOUNDS3_HPP
+#endif //BS_BOUNDS_BOUNDS3_HPP

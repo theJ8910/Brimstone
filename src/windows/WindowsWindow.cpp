@@ -18,7 +18,7 @@ Description:
 #include <brimstone/windows/WindowsUtil.hpp>            //utf8to16
 #include <brimstone/windows/WindowsException.hpp>       //throwWindowsException
 #include <brimstone/WindowEvents.hpp>                   //MouseClickEvent, MouseMoveEvent, KeyPressEvent
-#include <brimstone/util/Range.hpp>                     //ClampedValue
+#include <brimstone/util/Clamp.hpp>                     //clampedValue
 #include <brimstone/Logger.hpp>                         //logError
 #include <brimstone/Window.hpp>                         //Really stupid circular dependency hack
 

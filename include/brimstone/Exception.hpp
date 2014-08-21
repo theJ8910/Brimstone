@@ -11,7 +11,7 @@ Description:
         * DomainException
         * NullPointerException
         * SizeException
-        * OutOfBoundsException
+        * BoundsException
         * NoSuchElementException
         * UnexpectedResultException
         * FormatException
@@ -118,11 +118,12 @@ Thrown when something is smaller than expected
 BS_DECLARE_BASIC_EXCEPTION( SizeException );
 
 /*
-OutOfBoundsException
+BoundsException
 
-Thrown when trying to get/set something outside of the bounds of a container.
+Thrown when trying to get/set something outside of the bounds of a container,
+or when a pair of bounds, is specified in the wrong order (i.e. min > max)
 */
-BS_DECLARE_BASIC_EXCEPTION( OutOfBoundsException );
+BS_DECLARE_BASIC_EXCEPTION( BoundsException );
 
 /*
 NoSuchElementException

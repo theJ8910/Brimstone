@@ -27,6 +27,15 @@
     <ClCompile Include="..\..\tests\src\test\types.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tests\src\utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Array.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Range.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\tests\src\test\PointN.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
@@ -36,13 +45,22 @@
     <ClCompile Include="..\..\tests\src\test\Point3.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\BoundsN.cpp">
+    <ClCompile Include="..\..\tests\src\test\Vector2.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Vector3.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\VectorN.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Bounds2.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\tests\src\test\Bounds3.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Bounds2.cpp">
+    <ClCompile Include="..\..\tests\src\test\BoundsN.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
   </ItemGroup>
@@ -57,6 +75,9 @@
       <Filter>src\console</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tests\src\Test.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tests\src\utils.hpp">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

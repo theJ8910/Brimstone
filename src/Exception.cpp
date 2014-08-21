@@ -63,7 +63,7 @@ BS_DEFINE_BASIC_EXCEPTION( DivideByZeroException );
 BS_DEFINE_BASIC_EXCEPTION( DomainException );
 BS_DEFINE_BASIC_EXCEPTION( NullPointerException );
 BS_DEFINE_BASIC_EXCEPTION( SizeException );
-BS_DEFINE_BASIC_EXCEPTION( OutOfBoundsException );
+BS_DEFINE_BASIC_EXCEPTION( BoundsException );
 BS_DEFINE_BASIC_EXCEPTION( NoSuchElementException );
 BS_DEFINE_BASIC_EXCEPTION( UnexpectedResultException );
 BS_DEFINE_BASIC_EXCEPTION( FormatException );

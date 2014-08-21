@@ -7,396 +7,486 @@ Description:
     Unit tests for Bounds2
 */
 
+
+
+
 //Includes
-
-//C4996: 'std::_Copy_impl': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct.
-//       To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
-//It's complaining because I'm copying to a pointer instead of an array, and rightfully so because it's inherently unsafe.
-//However, we can ignore this warning because the program logic ensures it will never copy values outside of the object.
-#define _SCL_SECURE_NO_WARNINGS
-#include <algorithm>
-
 #include "../Test.hpp"
+#include "../utils.hpp"         //allEqual
 
 #include <brimstone/Bounds.hpp>
 
+
+
+
 namespace {
-    const int b2Zero[4]       {  0,  0,    0,  0 };
-    const int b2Values[4]     {  1,  2,    3,  4 };
-    const int b2ValuesAlt[4]  {  5,  6,    7,  8 };
-    const int b2WidthTest[4]  {  1,  2,   11,  4 };
-    const int b2HeightTest[4] {  1,  2,    3, 13 };
-    const int b2DimTest[4]    {  1,  2,   11, 13 };
+    using ::Brimstone::Bounds2i;
+    using ::Brimstone::Point2i;
+    using ::Brimstone::Bounds2f;
+    using ::Brimstone::BoundsException;
+
+    const size_t cv_size             = 2;
+    const int    cv_zero[4]          {  0,  0,    0,  0 };
+    const int    cv_values[4]        {  1,  2,    3,  4 };
+    const int    cv_valuesMins[2]    {  1,  2 };
+    const int    cv_valuesMaxs[2]    {  3,  4 };
+    const int    cv_valuesAlt[4]     {  5,  6,    7,  8 };
+    const int    cv_valuesAltMins[2] {  5,  6 };
+    const int    cv_valuesAltMaxs[2] {  7,  8 };
+    const int    cv_widthTest[4]     {  1,  2,   11,  4 };
+    const int    cv_heightTest[4]    {  1,  2,    3, 13 };
+    const int    cv_width            = 10;
+    const int    cv_height           = 11;
+    const int    cv_dimTest[4]       {  1,  2,   11, 13 };
+    const int    cv_area             = cv_width * cv_height;
+    const int    cv_outsideMins[2]   {  0,  1 };
+    const int    cv_outsideMaxs[2]   {  4,  5 };
+    const char*  cv_output           = "[ ( 1, 2 ), ( 3, 4 ) ]";
+
+    const float  cv_valuesAltF[4]    { 5.0f, 6.0f, 7.0f, 8.0f };
 }
 
-namespace Brimstone {
+
 namespace UnitTest {
 
-BS_UT_TEST_BEGIN( Bounds2_constructorValues )
-    Bounds2i b(
-        b2Values[0], b2Values[1],
-        b2Values[2], b2Values[3]
+UT_TEST_BEGIN( Bounds2_constructorFill )
+    Bounds2i o( 1 );
+
+    return allEqualTo( o.data, 1 );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_constructorCppRange )
+    Bounds2i o( cv_values );
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_constructorInitializerList )
+    Bounds2i o( {
+        cv_values[0],
+        cv_values[1],
+        cv_values[2],
+        cv_values[3]
+    } );
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_setCppRange )
+    Bounds2i o( cv_values );
+
+    o.set( cv_valuesAlt );
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_setInitializerList )
+    Bounds2i o( cv_values );
+    
+    o.set( {
+        cv_valuesAlt[0],
+        cv_valuesAlt[1],
+        cv_valuesAlt[2],
+        cv_valuesAlt[3]
+    } );
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getCppRange )
+    int values[ 2*cv_size ];
+    copyAll( cv_values, values );
+    Bounds2i o( cv_valuesAlt );
+    
+    o.get( values );
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_fill )
+    Bounds2i o( cv_values );
+    
+    o.fill( 1 );
+
+    return allEqualTo( o.data, 1 );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_begin )
+    Bounds2i o( cv_values );
+
+    return o.begin() == std::begin( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_beginConst )
+    const Bounds2i o( cv_values );
+
+    return o.begin() == std::begin( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_cbegin )
+    Bounds2i o( cv_values );
+
+    return o.cbegin() == std::cbegin( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_end )
+    Bounds2i o( cv_values );
+
+    return o.end() == std::end( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_endConst )
+    const Bounds2i o( cv_values );
+
+    return o.end() == std::end( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_cend )
+    Bounds2i o( cv_values );
+
+    return o.cend() == std::cend( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_rangedFor )
+    Bounds2i o( cv_values );
+
+    int idx = 0;
+    for( int& i : o )
+        i = cv_valuesAlt[idx++];
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_rangedForConst )
+    int data[2*cv_size];
+    copyAll( cv_values, data );
+    const Bounds2i o( cv_valuesAlt );
+    
+    int idx = 0;
+    for( int i : o )
+        data[idx++] = i;
+
+    return allEqual( data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_index )
+    Bounds2i o( cv_values );
+
+    for( size_t i = 0; i < 2*cv_size; ++i )
+        o[i] = cv_valuesAlt[i];
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_indexConst )
+    int data[2*cv_size];
+    const Bounds2i o( cv_values );
+
+    for( size_t i = 0; i < 2*cv_size; ++i )
+        data[i] = o[i];
+
+    return allEqual( data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_constructorCopy )
+    Bounds2f o1( cv_valuesAltF );
+    
+    Bounds2i o2( o1 );
+
+    return allEqual( o2.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_assignCopy )
+    Bounds2f o1( cv_valuesAltF );
+    Bounds2i o2( cv_values );
+
+    o2 = o1;
+    
+    return allEqual( o2.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_constructorValues )
+    Bounds2i o(
+        cv_values[0], cv_values[1],
+        cv_values[2], cv_values[3]
     );
 
-    return std::equal( b.data, b.data + 4, b2Values );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_constructorPointDims )
-    Point2i p( b2Values[0], b2Values[1] );
-    Bounds2i b( p, 10, 11 );
+UT_TEST_BEGIN( Bounds2_constructorPointDims )
+    Point2i p( cv_values[0], cv_values[1] );
+    Bounds2i o( p, 10, 11 );
 
-    return std::equal( b.data, b.data + 4, b2DimTest );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_constructorMinMax )
-    Point2i mins( b2Values,     2 );
-    Point2i maxs( b2Values + 2, 2 );
-    Bounds2i b( mins, maxs );
+UT_TEST_BEGIN( Bounds2_constructorMinMax )
+    Point2i mins( cv_valuesMins );
+    Point2i maxs( cv_valuesMaxs );
+    Bounds2i o( mins, maxs );
 
-    return std::equal( b.data, b.data + 4, b2Values );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_constructorInitializerList )
-    Bounds2i b( { 1, 2, 3, 4 } );
+UT_TEST_BEGIN( Bounds2_setValues )
+    Bounds2i o( cv_values );
 
-    return std::equal( b.data, b.data + 4, b2Values );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_constructorArray )
-    Bounds2i b( b2Values, 4 );
-
-    return std::equal( b.data, b.data + 4, b2Values );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_setValues )
-    Bounds2i b( b2Values, 4 );
-
-    b.set(
-        b2Values[0], b2Values[1],
-        b2Values[2], b2Values[3]
+    o.set(
+        cv_valuesAlt[0], cv_valuesAlt[1],
+        cv_valuesAlt[2], cv_valuesAlt[3]
     );
 
-    return std::equal( b.data, b.data + 4, b2Values );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_setArray )
-    Bounds2i b( b2Values, 4 );
+UT_TEST_BEGIN( Bounds2_setMinMax )
+    Bounds2i o( cv_values );
+    Point2i mins( cv_valuesAltMins );
+    Point2i maxs( cv_valuesAltMaxs );
 
-    b.set( b2ValuesAlt, 4 );
+    o.set( mins, maxs );
 
-    return std::equal( b.data, b.data + 4, b2ValuesAlt );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_setMinMax )
-    Bounds2i b( b2Values, 4 );
-    Point2i mins( b2ValuesAlt,     2 );
-    Point2i maxs( b2ValuesAlt + 2, 2 );
+UT_TEST_BEGIN( Bounds2_getMinMax )
+    Point2i mins( cv_valuesMins );
+    Point2i maxs( cv_valuesMaxs );
 
-    b.set( mins, maxs );
+    Bounds2i o( cv_valuesAlt );
+    o.get( mins, maxs );
 
-    return std::equal( b.data, b.data + 4, b2ValuesAlt );
-BS_UT_TEST_END()
+    return allEqual( mins.data, cv_valuesAltMins ) &&
+           allEqual( maxs.data, cv_valuesAltMaxs );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_getValues )
-    Bounds2i b( b2Values, 4 );
+UT_TEST_BEGIN( Bounds2_setDimensions )
+    Bounds2i o( cv_values );
 
-    int data[4];
+    o.setDimensions( cv_width, cv_height );
 
-    b.get(
-        data[0], data[1],
-        data[2], data[3]
-    );
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
 
-    return std::equal( data, data + 4, b2Values );
-BS_UT_TEST_END()
+UT_TEST_BEGIN( Bounds2_setWidth )
+    Bounds2i o( cv_values );
 
-BS_UT_TEST_BEGIN( Bounds2_getArray )
-    int data[4];
-    std::copy( b2Values, b2Values + 4, data );
+    o.setWidth( cv_width );
 
-    Bounds2i b( b2ValuesAlt, 4 );
-    b.get( data, 4 );
+    return allEqual( o.data, cv_widthTest );
+UT_TEST_END()
 
-    return std::equal( data, data + 4, b2ValuesAlt );
-BS_UT_TEST_END()
+UT_TEST_BEGIN( Bounds2_setHeight )
+    Bounds2i o( cv_values );
 
-BS_UT_TEST_BEGIN( Bounds2_getMinMax )
-    Point2i mins( b2Values,     2 );
-    Point2i maxs( b2Values + 2, 2 );
+    o.setHeight( cv_height );
 
-    Bounds2i b( b2ValuesAlt, 4 );
-    b.get( mins, maxs );
+    return allEqual( o.data, cv_heightTest );
+UT_TEST_END()
 
-    return std::equal( mins.data, mins.data + 2, b2ValuesAlt     ) &&
-           std::equal( maxs.data, maxs.data + 2, b2ValuesAlt + 2 );
-BS_UT_TEST_END()
+UT_TEST_BEGIN( Bounds2_setDimension )
+    Bounds2i o( cv_values );
 
-BS_UT_TEST_BEGIN( Bounds2_setDimensions )
-    Bounds2i b( b2Values, 4 );
+    for( int i = 0; i < cv_size; ++i )
+        o.setDimension( i, 10 + i );
 
-    b.setDimensions( 10, 11 );
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
 
-    return std::equal( b.data, b.data + 4, b2DimTest );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_setWidth )
-    Bounds2i b( b2Values, 4 );
-
-    b.setWidth( 10 );
-
-    return std::equal( b.data, b.data + 4, b2WidthTest );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_setHeight )
-    Bounds2i b( b2Values, 4 );
-
-    b.setHeight( 11 );
-
-    return std::equal( b.data, b.data + 4, b2HeightTest );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_setDimension )
-    Bounds2i b( b2Values, 4 );
-
-    for( int i = 0; i < 2; ++i )
-        b.setDimension( i, 10 + i );
-
-    return std::equal( b.data, b.data + 4, b2DimTest );
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_getDimensions )
-    Bounds2i b( b2DimTest, 4 );
+UT_TEST_BEGIN( Bounds2_getDimensions )
+    Bounds2i o( cv_dimTest );
     int width, height;
 
-    b.getDimensions( width, height );
+    o.getDimensions( width, height );
 
-    return width  == 10 &&
-           height == 11;
-BS_UT_TEST_END()
+    return width  == cv_width &&
+           height == cv_height;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_getWidth )
-    Bounds2i b( b2WidthTest, 4 );
+UT_TEST_BEGIN( Bounds2_getWidth )
+    Bounds2i o( cv_widthTest );
 
-    int width = b.getWidth();
+    int width = o.getWidth();
 
-    return width == 10;
-BS_UT_TEST_END()
+    return width == cv_width;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_getHeight )
-    Bounds2i b( b2HeightTest, 4 );
+UT_TEST_BEGIN( Bounds2_getHeight )
+    Bounds2i o( cv_heightTest );
 
-    int height = b.getHeight();
+    int height = o.getHeight();
 
-    return height == 11;
-BS_UT_TEST_END()
+    return height == cv_height;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_getDimension )
-    Bounds2i b( b2DimTest, 4 );
+UT_TEST_BEGIN( Bounds2_getDimension )
+    Bounds2i o( cv_dimTest );
 
-    for( int i = 0; i < 2; ++i )
-        if( b.getDimension( i ) != 10 + i )
+    for( size_t i = 0; i < cv_size; ++i )
+        if( o.getDimension( i ) != (int)( 10 + i ) )
             return false;
 
     return true;
-BS_UT_TEST_END()
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_getVolume )
-    Bounds2i b( b2DimTest, 4 );
+UT_TEST_BEGIN( Bounds2_getArea )
+    Bounds2i o( cv_dimTest );
 
-    return b.getArea() == 10 * 11;
-BS_UT_TEST_END()
+    return o.getArea() == cv_area;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_output )
-    Bounds2i b( b2Values, 4 );
+UT_TEST_BEGIN( Bounds2_output )
+    Bounds2i o( cv_values );
 
     std::stringstream sout;
-    sout << b;
+    sout << o;
 
-    return sout.str() == "[ ( 1, 2 ), ( 3, 4 ) ]";
-BS_UT_TEST_END()
+    return sout.str() == cv_output;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_zero )
-    Bounds2i b( b2Values, 4 );
+UT_TEST_BEGIN( Bounds2_zero )
+    Bounds2i o( cv_values );
 
-    b.zero();
+    o.zero();
 
-    return std::equal( b.data, b.data + 4, b2Zero );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_zero );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_isZero )
-    Bounds2i b1( b2Zero,   4 );
-    Bounds2i b2( b2Values, 4 );
+UT_TEST_BEGIN( Bounds2_isZero )
+    Bounds2i o1( cv_zero );
+    Bounds2i o2( cv_values );
 
-    return b1.isZero() == true &&
-           b2.isZero() == false;
-BS_UT_TEST_END()
+    return o1.isZero() == true &&
+           o2.isZero() == false;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_equals )
-    Bounds2i b1( b2Values,    4 );
-    Bounds2i b2( b2Values,    4 );
-    Bounds2i b3( b2ValuesAlt, 4 );
+UT_TEST_BEGIN( Bounds2_equals )
+    Bounds2i o1( cv_values );
+    Bounds2i o2( cv_values );
+    Bounds2i o3( cv_valuesAlt );
 
-    return ( b1 == b2 ) == true   &&
-           ( b1 == b3 ) == false;
-BS_UT_TEST_END()
+    return ( o1 == o2 ) == true   &&
+           ( o1 == o3 ) == false;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_notEquals )
-    Bounds2i b1( b2Values,    4 );
-    Bounds2i b2( b2Values,    4 );
-    Bounds2i b3( b2ValuesAlt, 4 );
+UT_TEST_BEGIN( Bounds2_notEquals )
+    Bounds2i o1( cv_values );
+    Bounds2i o2( cv_values );
+    Bounds2i o3( cv_valuesAlt );
 
-    return ( b1 != b2 ) == false  &&
-           ( b1 != b3 ) == true;
-BS_UT_TEST_END()
+    return ( o1 != o2 ) == false  &&
+           ( o1 != o3 ) == true;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_clamp )
-    Bounds2i b( b2Values, 4 );
-    Point2i p1( { 0, 1 } );
-    Point2i p2( { 3, 4 } );
+UT_TEST_BEGIN( Bounds2_clamp )
+    Bounds2i o( cv_values );
+    Point2i p1( cv_outsideMins );
+    Point2i p2( cv_outsideMaxs );
 
-    clamp( p1, b );
-    clamp( p2, b );
+    clamp( p1, o );
+    clamp( p2, o );
 
-    return std::equal( p1.data, p1.data + 2, b2Values     ) &&
-           std::equal( p2.data, p2.data + 2, b2Values + 2 );
-BS_UT_TEST_END()
+    return allEqual( p1.data, cv_valuesMins ) &&
+           allEqual( p2.data, cv_valuesMaxs );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( Bounds2_clampedPoint )
-    Bounds2i b( b2Values, 4 );
-    Point2i p1( { 0, 1 } );
-    Point2i p2( { 3, 4 } );
+UT_TEST_BEGIN( Bounds2_clampedPoint )
+    Bounds2i o( cv_values );
+    Point2i p1( cv_outsideMins );
+    Point2i p2( cv_outsideMaxs );
 
-    p1 = clampedPoint( p1, b );
-    p2 = clampedPoint( p2, b );
+    p1 = clampedPoint( p1, o );
+    p2 = clampedPoint( p2, o );
 
-    return std::equal( p1.data, p1.data + 2, b2Values     ) &&
-           std::equal( p2.data, p2.data + 2, b2Values + 2 );
-BS_UT_TEST_END()
+    return allEqual( p1.data, cv_valuesMins ) &&
+           allEqual( p2.data, cv_valuesMaxs );
+UT_TEST_END()
 
 
 
 
 #ifdef BS_ZERO
 
-BS_UT_TEST_BEGIN( Bounds2_constructorZero )
-    Bounds2i b;
-    return b.isZero();
-BS_UT_TEST_END()
+UT_TEST_BEGIN( Bounds2_constructorZero )
+    Bounds2i o;
+    return allEqual( o.data, cv_zero );
+UT_TEST_END()
 
 #endif //BS_ZERO
 
 
 
 
-#ifdef BS_CHECK_NULLPTR
-
-BS_UT_TEST_BEGIN( Bounds2_constructorArray_nullPointer )
-    try {
-        Bounds2i b( nullptr, 4 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_setArray_nullPointer )
-    Bounds2i b( b2Values, 4 );
-    try {
-        b.set( nullptr, 4 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_getArray_nullPointer )
-    Bounds2i pt( b2Values, 4 );
-    try {
-        pt.get( nullptr, 4 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-#endif //BS_CHECK_NULLPTR
-
-
-
-
-#ifdef BS_CHECK_SIZE
-
-BS_UT_TEST_BEGIN( Bounds2_constructorArray_invalidSize )
-    try {
-        Bounds2i pt( b2Values, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_setArray_invalidSize )
-    Bounds2i b;
-    try {
-        b.set( b2ValuesAlt, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_getArray_invalidSize )
-    int data[4];
-    Bounds2i b( b2Values, 4 );
-    try {
-        b.get( data, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-#endif //BS_CHECK_SIZE
-
-
-
-
 #ifdef BS_CHECK_INDEX
 
-BS_UT_TEST_BEGIN( Bounds2_setDimension_OOB )
-    Bounds2i b;
-
-    try {
-        b.setDimension( -1, 10 );
-        return false;
-    } catch( const OutOfBoundsException& ) {}
-
-    try {
-        b.setDimension( 2, 10 );
-        return false;
-    } catch( const OutOfBoundsException& ) {}
-
-    return true;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( Bounds2_getDimension_OOB )
-    Bounds2i b;
+UT_TEST_BEGIN( Bounds2_index_OOB )
+    Bounds2i o;
     int i;
 
     try {
-        i = b.getDimension( -1 );
+        i = o[(size_t)-1];
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     try {
-        i = b.getDimension( 2 );
+        i = o[2];
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     return true;
-BS_UT_TEST_END()
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_constIndex_OOB )
+    const Bounds2i o;
+    int i;
+
+    try {
+        i = o[(size_t)-1];
+        return false;
+    } catch( const BoundsException& ) {}
+
+    try {
+        i = o[2];
+        return false;
+    } catch( const BoundsException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_setDimension_OOB )
+    Bounds2i o;
+
+    try {
+        o.setDimension( (size_t)-1, 10 );
+        return false;
+    } catch( const BoundsException& ) {}
+
+    try {
+        o.setDimension( 2, 10 );
+        return false;
+    } catch( const BoundsException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getDimension_OOB )
+    Bounds2i o;
+    int i;
+
+    try {
+        i = o.getDimension( (size_t)-1 );
+        return false;
+    } catch( const BoundsException& ) {}
+
+    try {
+        i = o.getDimension( 2 );
+        return false;
+    } catch( const BoundsException& ) {}
+
+    return true;
+UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
-}
 }

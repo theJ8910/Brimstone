@@ -7,22 +7,20 @@ Description:
 	Declares functions for working with console-based menus.
 */
 
-#ifndef BS_UT_MENU_HPP
-#define BS_UT_MENU_HPP
+#ifndef UT_MENU_HPP
+#define UT_MENU_HPP
 
 
 
 
-namespace Brimstone {
 namespace UnitTest {
 
 //Forward declarations
 int menu( const char* const* const choices, const int numChoices );
 
 }
-}
 
 
 
 
-#endif //BS_UT_MENU_HPP
+#endif //UT_MENU_HPP

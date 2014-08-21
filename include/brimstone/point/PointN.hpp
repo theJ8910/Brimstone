@@ -8,159 +8,156 @@ Description:
     You can specify what type of data the point uses (int, float, etc) as well as the dimension of the point.
     2D and 3D specializations of PointN are provided in Point2.hpp and Point3.hpp.
 */
-#ifndef BS_POINTN_HPP
-#define BS_POINTN_HPP
+#ifndef BS_POINT_POINTN_HPP
+#define BS_POINT_POINTN_HPP
 
 
 
 
 //Includes
-#include <iostream>                     //std::ostream
-#include <initializer_list>             //std::initializer_list
+#include <iostream>                         //std::ostream
+#include <initializer_list>                 //std::initializer_list
+#include <algorithm>                        //std::fill
 
-#include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
-#include <brimstone/util/Math.hpp>      //fastSqrt
+#include <brimstone/util/Array.hpp>         //BS_ARRAY_DECLARE_METHODS(), BS_ARRAY_DEFINE_METHODS()
+#include <brimstone/util/Macros.hpp>        //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
+#include <brimstone/util/Math.hpp>          //fastSqrt
 
 
 
 
 //Macros
-/*
-template< typename T, int N >
-PointN< T, N >
-*/
-#define BS_POINT_THIS_TMPL()                                                \
-    template< typename T, int N >
-
-#define BS_POINT_TMPL()                                                     \
-    template< typename T >
-
-#define BS_POINT_DECLARE_METHODS( N )                                       \
-    PointN();                                                               \
-    PointN( std::initializer_list< T > il );                                \
-    PointN( const T* const values, const uintN count );                     \
-    template< typename T2 >                                                 \
-    PointN( const PointN< T2, N >& toCopy );                                \
-                                                                            \
-    void    set( const T* const values, const uintN count );                \
-    void    get( T* const valuesOut, const uintN count ) const;             \
-                                                                            \
-    void    zero();                                                         \
-    bool    isZero() const;                                                 \
-                                                                            \
-    template< typename T2 >                                                 \
-    PointN& operator =( const PointN< T2, N >& right );                     \
-                                                                            \
-    explicit operator T*();                                                 \
-    explicit operator const T*() const;                                     \
-                                                                            \
-    T&  operator []( const intN component );                                \
-    T   operator []( const intN component ) const;
-
-#define BS_POINT_DEFINE_METHODS( N, tmpl )                                  \
-    tmpl                                                                    \
-    PointN< T, N >::PointN( std::initializer_list< T > il ) {               \
-        set( il.begin(), il.size() );                                       \
-    }                                                                       \
-    tmpl                                                                    \
-    PointN< T, N >::PointN( const T* const values, const uintN count ) {    \
-        set( values, count );                                               \
-    }                                                                       \
-    tmpl                                                                    \
-    PointN< T, N >::operator T*() {                                         \
-        return data;                                                        \
-    }                                                                       \
-    tmpl                                                                    \
-    PointN< T, N >::operator const T*() const {                             \
-        return data;                                                        \
-    }                                                                       \
-    tmpl                                                                    \
-    T& PointN< T, N >::operator []( const intN component ) {                \
-        BS_ASSERT_INDEX( component, N - 1 );                                \
-        return data[ component ];                                           \
-    }                                                                       \
-    tmpl                                                                    \
-    T PointN< T, N >::operator []( const intN component ) const {           \
-        BS_ASSERT_INDEX( component, N - 1 );                                \
-        return data[ component ];                                           \
+//Classes that inherit from BasePointN should use these macros.
+//They implement constructors and other methods that forward calls back to the base class.
+//className is expected to be the name of a class template that takes two parameters:
+//  A typename named "T", and a size_t.
+//N is supplied for the second parameter of the class template. You can provide the name
+//of a template parameter( e.g. N) or a number (2, 3, etc) if used in a specialization.
+//spec2 is the specialization that should be used for the parameter in the copy constructor
+//and assignment operator.
+//It is usually BS_SPEC_2( T2, N ) which translates to < T2, N >.
+#define BS_POINT_DECLARE_INHERITED_METHODS( className, N, spec2 )                       \
+    BS_ARRAY_DECLARE_INHERITED_METHODS( className, T )                                  \
+    className();                                                                        \
+                                                                                        \
+    template< typename T2 >                                                             \
+    className( const className spec2& toCopy );                                         \
+                                                                                        \
+    template< typename T2 >                                                             \
+    className& operator =( const className spec2& right );
+#define BS_POINT_DEFINE_INHERITED_METHODS( className, N, tmpl, spec, spec2 )            \
+    BS_ARRAY_DEFINE_INHERITED_METHODS( className, T, BasePointN, tmpl, spec )           \
+    tmpl                                                                                \
+    className spec::className() : BasePointN() {}                                       \
+                                                                                        \
+    tmpl                                                                                \
+    template< typename T2 >                                                             \
+    className spec::className( const className spec2& toCopy ) :                        \
+        BasePointN( static_cast< const BasePointN spec2& >( toCopy ) ) {                \
+    }                                                                                   \
+                                                                                        \
+    tmpl                                                                                \
+    template< typename T2 >                                                             \
+    className spec& className spec::operator =( const className spec2& right ) {        \
+        BasePointN::operator =( right );                                                \
+        return *this;                                                                   \
     }
 
+//Variants of BasePointN use this to redeclare methods common to all specialiations.
+#define BS_POINT_DECLARE_METHODS( N )                                                   \
+    BS_ARRAY_DECLARE_METHODS( BasePointN, T )                                           \
+    void zero();                                                                        \
+    bool isZero() const;
+
+
+
+
 namespace Brimstone {
+namespace Private {
 
-
-
-
-template< typename T, int N >
-class PointN {
+template< typename T, size_t N >
+class BasePointN {
 public:
     T data[N];
 public:
+    //Generic methods
+    BS_POINT_DECLARE_INHERITED_METHODS( BasePointN, N, BS_SPEC_2( T2, N ) )
     BS_POINT_DECLARE_METHODS( N )
 };
 
-BS_POINT_DEFINE_METHODS( N, BS_POINT_THIS_TMPL() )
+BS_ARRAY_DEFINE_GENERIC_METHODS( BasePointN, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_METHODS( BasePointN, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
 
-template< typename T, int N >
-PointN< T, N >::PointN() {
+template< typename T, size_t N >
+BasePointN< T, N >::BasePointN() {
 #ifdef BS_ZERO
-    for( int i = 0; i < N; ++i )
-        data[i] = 0;
+    std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
 #endif //BS_ZERO
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
 template< typename T2 >
-PointN< T, N >::PointN( const PointN< T2, N >& toCopy ) {
+BasePointN< T, N >::BasePointN( const BasePointN< T2, N >& toCopy ) {
     (*this) = toCopy;
 }
 
-template< typename T, int N >
-void PointN< T, N >::set( const T* const values, const uintN count ) {
-    BS_ASSERT_NON_NULLPTR( values );
-    BS_ASSERT_SIZE( count, N );
+template< typename T, size_t N >
+template< typename T2 >
+BasePointN< T, N >& BasePointN< T, N >::operator =( const BasePointN< T2, N >& right ) {
+    for( size_t i = 0; i < N; ++i )
+        data[i] = static_cast<T>( right.data[i] );
 
-    for( int i = 0; i < N; ++i )
-        data[i] = values[i];
+    return (*this);
 }
 
-template< typename T, int N >
-void PointN< T, N >::get( T* const valuesOut, const uintN count ) const {
-    BS_ASSERT_NON_NULLPTR( valuesOut );
-    BS_ASSERT_SIZE( count, N );
-
-    for( int i = 0; i < N; ++i )
-        valuesOut[i] = data[i];
+template< typename T, size_t N >
+void BasePointN< T, N >::zero() {
+    std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
 }
 
-template< typename T, int N >
-void PointN< T, N >::zero() {
-    for( int i = 0; i < N; ++i )
-        data[i] = 0;
-}
-
-template< typename T, int N >
-bool PointN< T, N >::isZero() const {
-    for( int i = 0; i < N; ++i )
+template< typename T, size_t N >
+bool BasePointN< T, N >::isZero() const {
+    for( size_t i = 0; i < N; ++i )
         if( data[i] != 0 )
             return false;
     return true;
 }
 
-template< typename T, int N >
-template< typename T2 >
-PointN< T, N >& PointN< T, N >::operator =( const PointN< T2, N >& right ) {
-    for( int i = 0; i < N; ++i )
-        data[i] = (T)right.data[i];
-
-    return (*this);
 }
 
-template< typename T, int N >
+
+
+
+template< typename T, size_t N >
+class PointN : public Private::BasePointN< T, N > {
+public:
+    BS_POINT_DECLARE_INHERITED_METHODS( PointN, N, BS_SPEC_2( T2, N ) )
+};
+
+BS_POINT_DEFINE_INHERITED_METHODS( PointN, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) )
+
+template< typename T, size_t N >
+bool operator ==( const PointN< T, N >& left, const PointN< T, N >& right ) {
+    for( size_t i = 0; i < N; ++i )
+        if( left.data[i] != right.data[i] )
+            return false;
+    return true;
+}
+
+template< typename T, size_t N >
+bool operator !=( const PointN< T, N >& left, const PointN< T, N >& right ) {
+    for( size_t i = 0; i < N; ++i )
+        if( left.data[i] != right.data[i] )
+            return true;
+    return false;
+}
+
+template< typename T, size_t N >
 std::ostream& operator <<( std::ostream& left, const PointN< T, N >& right ) {
     left << "( ";
-    
+
     left << right.data[0];
-    for( int i = 1; i < N; ++i )
+    for( size_t i = 1; i < N; ++i )
         left << ", " << right.data[i];
 
     left << " )";
@@ -168,28 +165,12 @@ std::ostream& operator <<( std::ostream& left, const PointN< T, N >& right ) {
     return left;
 }
 
-template< typename T, int N >
-bool operator ==( const PointN< T, N >& left, const PointN< T, N >& right ) {
-    for( int i = 0; i < N; ++i )
-        if( left.data[i] != right.data[i] )
-            return false;
-    return true;
-}
-
-template< typename T, int N >
-bool operator !=( const PointN< T, N >& left, const PointN< T, N >& right ) {
-    for( int i = 0; i < N; ++i )
-        if( left.data[i] != right.data[i] )
-            return true;
-    return false;
-}
-
-template< typename T, int N >
+template< typename T, size_t N >
 T distanceSq( const PointN< T, N >& left, const PointN< T, N >& right ) {
     T dist = 0;
 
     T offset;
-    for( int i = 0; i < N; ++i ) {
+    for( size_t i = 0; i < N; ++i ) {
         offset = right.data[i] - left.data[i];
         dist += offset * offset;
     }
@@ -197,16 +178,16 @@ T distanceSq( const PointN< T, N >& left, const PointN< T, N >& right ) {
     return dist;
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
 T distance( const PointN< T, N >& left, const PointN< T, N >& right ) {
     return (T)fastSqrt( (float)distanceSq( left, right ) );
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
 T manhattan( const PointN< T, N >& left, const PointN< T, N >& right ) {
     T md = 0;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         md += abs( right.data[i] - left.data[i] );
 
     return md;
@@ -217,4 +198,4 @@ T manhattan( const PointN< T, N >& left, const PointN< T, N >& right ) {
 
 
 
-#endif //BS_POINTN_HPP
+#endif //BS_POINT_POINTN_HPP

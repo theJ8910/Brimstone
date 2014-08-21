@@ -25,8 +25,8 @@ Description:
     Finally it calls its .end() to clean up anything test-specific,
     and reports the results to the user.
 */
-#ifndef BS_UT_MEASUREXTIME_HPP
-#define BS_UT_MEASUREXTIME_HPP
+#ifndef UT_MEASUREXTIME_HPP
+#define UT_MEASUREXTIME_HPP
 
 
 
@@ -36,7 +36,9 @@ Description:
 #include <string>       //std::string
 #include <chrono>       //std::chrono::high_resolution_clock
 
-namespace Brimstone {
+
+
+
 namespace UnitTest {
 
 //Run a single test
@@ -80,9 +82,8 @@ public:
 };
 
 }
-}
 
 
 
 
-#endif //BS_UT_MEASUREXTIME_HPP
+#endif //UT_MEASUREXTIME_HPP

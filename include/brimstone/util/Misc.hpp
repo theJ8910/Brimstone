@@ -20,17 +20,30 @@ Description:
 
 
 //Macros
-#define BS_MAKE_ENUM_HASHER( type ) \
-namespace std \
-{ \
-    template<> \
-    struct hash< type > : public Brimstone::EnumHasher< type > {}; \
-}
+#define BS_MAKE_ENUM_HASHER( type )                                     \
+    namespace std {                                                     \
+        template<>                                                      \
+        struct hash< type > : public Brimstone::EnumHasher< type > {};  \
+    }
 
 
 
 
 namespace Brimstone {
+
+//Returns how many elements are in a C++ range
+template< typename T >
+inline size_t rangeSize( const T& cppRange ) {
+    return static_cast< size_t >( std::end( cppRange ) - std::begin( cppRange ) );
+}
+template< typename T >
+inline size_t rangeSize( std::initializer_list< T > il ) {
+    return static_cast< size_t >( std::end( il ) - std::begin( il ) );
+}
+template< typename T, size_t N >
+inline size_t rangeSize( const T (&/* cppRange */)[N] ) {
+    return N;
+}
 
 //Counts how many elements a given object has.
 //Non-tuples have a size of "1".

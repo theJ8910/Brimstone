@@ -25,7 +25,6 @@ Description:
 
 
 
-namespace Brimstone {
 namespace UnitTest {
 
 void doTests() {
@@ -65,12 +64,11 @@ void doTests() {
 }
 
 }
-}
 
 const char* const choices[] = { "Do Tests", "", "Quit" };
 
-int main( int argc, char** argv ) {
-    using namespace Brimstone::UnitTest;
+int main( int /* argc */, char** /* argv */ ) {
+    using namespace UnitTest;
 
     initTextColor();
 

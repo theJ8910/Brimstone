@@ -6,8 +6,8 @@ Copyright (c) 2014, theJ89
 Description:
     Miscellaneous math functions are declared here.
 */
-#ifndef BS_MATH_HPP
-#define BS_MATH_HPP
+#ifndef BS_UTIL_MATH_HPP
+#define BS_UTIL_MATH_HPP
 
 
 
@@ -37,4 +37,4 @@ float fastInvSqrt( float value );
 
 }
 
-#endif //BS_MATH_HPP
+#endif //BS_UTIL_MATH_HPP

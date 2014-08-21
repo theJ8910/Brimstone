@@ -1,270 +1,247 @@
-﻿/*
+/*
 util/Range.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
 Description:
-    Defines several functions for testing if a given scalar is within a range,
-    or restricting the given scalar to a range.
-*/
+    Adds a class for representing a range of values, Range.
+    To avoid confusion:
+        * A C++ range (sometimes written cppRange) is a type that can be given
+          to std::begin() and std::end(), such an an array, std::vector, etc.
+          to get a pair of iterators denoting the beginning and end of the values stored
+          by that type.
+        * A Range (always written with a capital R) is a class introduced by Brimstone in this file.
+          Ranges store a pair of iterators, begin and end.
+          These iterators do not change for the lifetime of the Range.
+          All Ranges are C++ ranges, but not all C++ ranges are Ranges.
 
+    Various classes in Brimstone take C++ ranges as arguments.
+    Sometimes you want to pass only part of a C++ range, though.
+    In this case, you'd construct a Range for that part and pass it to the function.
+    This file defines a helper function, slice, which aids doing this.
+*/
 #ifndef BS_UTIL_RANGE_HPP
 #define BS_UTIL_RANGE_HPP
 
 
 
 
+//Includes
+#include <initializer_list>             //std::initializer_list
+#include <algorithm>                    //std::fill, std::copy
+#include <type_traits>                  //std::remove_reference
+
+#include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE
+#include <brimstone/util/Misc.hpp>      //rangeSize
+
+
+
 namespace Brimstone {
 
-//Faster ------------------------------------------------------------------------------------------------------------------------------------------ Slower
-template< typename T >  inline bool         isBetween( const T& val, const T& lowerBound, const T& upperBound );
-template< typename T >  inline bool         isOutside( const T& val, const T& lowerBound, const T& upperBound );
-template< typename T >  inline bool         approxEquals( const T& actualVal, const T& idealVal, const T& tolerance );
-template< typename T >  inline void         clamp( T& valInOut, const T& lowerBound, const T& upperBound );                                         template< typename T >  inline T        clampedValue( const T& val, const T& lowerBound, const T& upperBound );
-template< typename T >  inline void         lowClamp( T& valInOut, const T& lowerBound );                                                           template< typename T >  inline T        lowClampedValue( const T& val, const T& lowerBound );
-template< typename T >  inline void         highClamp( T& valInOut, const T& upperBound );                                                          template< typename T >  inline T        highClampedValue( const T& val, const T& upperBound );
+template< typename Iter, typename ConstIter >
+class Range {
+private:
+    const Iter m_begin;
+    const Iter m_end;
+public:
+    //Note: MSVC 2013 is buggy. It fails to compile decltype statements that work on other compilers, like G++.
+    //Originally, this took the decltype() of *m_begin, but MSVC reports the following error:
+    //    error C2171: '*' : illegal on operands of type 'int *const '
+    typedef decltype( **static_cast< Iter*      >( nullptr ) )  Ref;
+    typedef decltype( **static_cast< ConstIter* >( nullptr ) )  ConstRef;
+    typedef typename std::remove_reference< Ref >::type         Value;
+public:
+    template< typename T >
+    inline Range( T& cppRange );
+    inline Range( const Iter begin, const Iter end );
+    inline Range( const Iter begin, const size_t size );
 
+    template< typename T >
+    inline void set( const T& cppRange );
+    inline void set( std::initializer_list< Value > il );
+    template< typename T >
+    inline void get( T& cppRangeOut ) const;
 
+    inline Iter      begin();
+    inline ConstIter begin() const;
+    inline ConstIter cbegin() const;
+    inline Iter      end();
+    inline ConstIter end() const;
+    inline ConstIter cend() const;
 
+    inline Ref       operator []( const size_t index );
+    inline ConstRef  operator []( const size_t index ) const;
 
-/*
-isBetween
------------------------
+    inline void      fill( ConstRef elem );
+    inline size_t    size() const;
+    inline bool      empty() const;
+private:
+    inline Range& operator =( const Range& right );
+};
 
-Description:
-    Takes a value and the lower and upper bounds of a range of numbers.
-    Returns true if the value is between the two bounds (inclusive; i.e. the bounds count as "inside" the range).
-    Returns false otherwise.
-
-    WARNING: In order for the function to work properly, lowerBound must be less than or equal to upperBound.
-
-Arguments:
-    val:                A value.
-    lowerBound:         The smallest value in the range.
-    upperBound:         The largest value in the range.
-
-Returns:
-    bool:               true if the value is between the two bounds, false otherwise.
-*/
+template< typename Iter, typename ConstIter >
 template< typename T >
-inline bool isBetween( const T& val, const T& lowerBound, const T& upperBound )
-{
-    return ( val >= lowerBound && val <= upperBound );
+inline Range< Iter, ConstIter >::Range( T& cppRange ) :
+    m_begin( std::begin( cppRange ) ),
+    m_end(   std::end(   cppRange ) ) {
 }
 
-/*
-isOutside
------------------------
+template< typename Iter, typename ConstIter >
+inline Range< Iter, ConstIter >::Range( const Iter begin, const Iter end ) :
+    m_begin( begin ),
+    m_end(   end   ) {
+    BS_ASSERT_NON_NULLPTR( begin );
+    BS_ASSERT_NON_NULLPTR( end );
+    BS_ASSERT_BOUNDS( begin, end );
+}
 
-Description:
-    Takes a value and the lower and upper bounds of a range of numbers.
-    Returns true if the value is outside of that range (the range is inclusive; i.e. the bounds count as "inside" the range).
-    Returns false otherwise.
+template< typename Iter, typename ConstIter >
+inline Range< Iter, ConstIter >::Range( const Iter begin, const size_t size ) :
+    m_begin( begin        ),
+    m_end(   begin + size ) {
+    BS_ASSERT_NON_NULLPTR( begin );
+}
 
-    WARNING: In order for the function to work properly, lowerBound must be less than or equal to upperBound.
-
-Arguments:
-    val:                A value.
-    lowerBound:         The smallest value in the range.
-    upperBound:         The largest value in the range.
-
-Returns:
-    bool:               true if the value is outside the two bounds, false otherwise.
-*/
+template< typename Iter, typename ConstIter >
 template< typename T >
-inline bool isOutside( const T& val, const T& lowerBound, const T& upperBound )
-{
-    return ( val < lowerBound || val > upperBound );
+inline void Range< Iter, ConstIter >::set( const T& cppRange ) {
+    BS_ASSERT_SIZE( rangeSize( cppRange ), size() );
+    std::copy( std::begin( cppRange ), std::end( cppRange ), m_begin );
 }
 
-/*
-approxEquals
------------------------
+template< typename Iter, typename ConstIter >
+inline void Range< Iter, ConstIter >::set( std::initializer_list< Value > il ) {
+    BS_ASSERT_SIZE( rangeSize( il ), size() );
+    std::copy( std::begin( il ), std::end( il ), m_begin );
+}
 
-Description:
-    Compares two values - an 'actual' and an 'ideal' - to see if they are "approximately equal" to one another.
-    These two values are approximately equal if the difference between them is less than or equal to the given tolerance value.
-    This means that the actual can be larger or smaller than the ideal by at most the given tolerance value.
-
-    Returns true if the difference between the two values is less than or equal to the tolerance.
-    Returns false otherwise.
-
-    NOTE: The actual and ideal names have no real significance to how the function operates; they were simply chosen arbitarily to tell the two values apart.
-          In fact, the actual and ideal values can be swapped with one another without affecting the result of this function.
-
-Arguments:
-    actualVal:          One of the two values to compare.
-    idealVal:           One of the two values to compare.
-    tolerance:          The most these two values can differ without being non-approximately equal.
-                        Must be a non-negative number.
-
-Returns:
-    bool:               true if the two values are approximately equal, false otherwise.
-*/
-
+template< typename Iter, typename ConstIter >
 template< typename T >
-inline bool approxEquals( const T& actualVal, const T& idealVal, const T& tolerance )
-{
-    return abs( actualVal - idealVal ) <= tolerance;
+inline void Range< Iter, ConstIter >::get( T& cppRangeOut ) const {
+    BS_ASSERT_SIZE( rangeSize( cppRangeOut ), size() );
+    std::copy( m_begin, m_end, std::begin( cppRangeOut ) );
 }
 
-/*
-clamp
------------------------
+template< typename Iter, typename ConstIter >
+inline Iter Range< Iter, ConstIter >::begin() {
+    return m_begin;
+}
 
-Description:
-    Takes a value and two bounds.
-    If the value exceeds either of the bounds, replaces it with the bound it exceeded.
+template< typename Iter, typename ConstIter >
+inline ConstIter Range< Iter, ConstIter >::begin() const {
+    return m_begin;
+}
 
-    WARNING: In order for the function to work properly, lowerBound must be less than or equal to upperBound.
+template< typename Iter, typename ConstIter >
+inline ConstIter Range< Iter, ConstIter >::cbegin() const {
+    return m_begin;
+}
 
-Arguments:
-    valInOut:           The value to potentially clamp.
-    lowerBound:         The smallest that val can be.
-    upperBound:         The largest that val can be.
+template< typename Iter, typename ConstIter >
+inline Iter Range< Iter, ConstIter >::end() {
+    return m_end;
+}
 
-Returns:
-    void:               N/A
-*/
+template< typename Iter, typename ConstIter >
+inline ConstIter Range< Iter, ConstIter >::end() const {
+    return m_end;
+}
+
+template< typename Iter, typename ConstIter >
+inline ConstIter Range< Iter, ConstIter >::cend() const {
+    return m_end;
+}
+
+template< typename Iter, typename ConstIter >
+inline auto Range< Iter, ConstIter >::operator []( const size_t index ) -> Ref {
+    BS_ASSERT_INDEX( index, size() - 1 );
+
+    return m_begin[ index ];
+}
+
+template< typename Iter, typename ConstIter >
+inline auto Range< Iter, ConstIter >::operator []( const size_t index ) const -> ConstRef {
+    BS_ASSERT_INDEX( index, size() - 1 );
+
+    return m_begin[ index ];
+}
+
+template< typename Iter, typename ConstIter >
+inline void Range< Iter, ConstIter >::fill( ConstRef elem ) {
+    std::fill( m_begin, m_end, elem );
+}
+
+template< typename Iter, typename ConstIter >
+inline size_t Range< Iter, ConstIter >::size() const {
+    return rangeSize( *this );
+}
+
+template< typename Iter, typename ConstIter >
+inline bool Range< Iter, ConstIter >::empty() const {
+    return m_begin == m_end;
+}
+
+template< typename Iter, typename ConstIter >
+inline Range< Iter, ConstIter >& Range< Iter, ConstIter >::operator =( const Range& right ) {
+    //warning C4512: 'Brimstone::Range<int *,const int *>' : assignment operator could not be generated
+    //Solved by implementing a private, do-nothing operator =.
+}
+
+
+
+
+namespace Private {
+
+//Given a c++ range of type T, defines a typedef for a Range that iterates over that container.
 template< typename T >
-inline void clamp( T& valInOut, const T& lowerBound, const T& upperBound )
-{
-    if( valInOut > upperBound )
-        valInOut = upperBound;
-    else if( valInOut < lowerBound )
-        valInOut = lowerBound;
+struct RangeFromCpp {
+    //Note: Objects of this struct are never instantiated.
+    //These are defined here for use in the decltype below.
+    T m_instance;
+    const T m_constInstance;
+
+    typedef Range<
+        decltype( std::begin( m_instance      ) ),
+        decltype( std::begin( m_constInstance ) )
+    > type;
+};
+
 }
 
-/*
-clampedValue
------------------------
-
-Description:
-    Takes a value and two bounds.
-    The returned value is between these two bounds (inclusive).
-
-    If the value is beneath the lower bound, the lower bound is returned.
-    If the value is above the upper bound, the upper bound is returned.
-    Otherwise, the value itself is returned.
-
-    WARNING: In order for the function to work properly, lowerBound must be less than or equal to upperBound.
-
-Arguments:
-    val:                The value to potentially clamp.
-    lowerBound:         The smallest that val can be.
-    upperBound:         The largest that val can be.
-
-Returns:
-    T:                  A value between lowerBound and upperBound (inclusive).
-*/
+//slice{1}
+//Returns a Range of values from a C++ range between two indices, [begin, end).
+//Usage example:
+//    int myArray[5] = { 1, 2, 3, 4, 5 };
+//    Vector3i v( slice( myArray, 1, 4 ) );
+//NOTE: "end" is exclusive, so the range returned by slice
+//in the example above will cover indices 1, 2, and 3.
 template< typename T >
-inline T clampedValue( const T& val, const T& lowerBound, const T& upperBound )
-{
-    if( val > upperBound )
-        return upperBound;
-    else if( val < lowerBound )
-        return lowerBound;
-    
-    return val;
+inline typename Private::RangeFromCpp<T>::type slice( T& cppRange, const size_t begin, const size_t end ) {
+    BS_ASSERT_INDEX( begin, rangeSize( cppRange ) - 1 );
+    BS_ASSERT_INDEX( end,   rangeSize( cppRange ) );
+
+    return typename Private::RangeFromCpp< T >::type(
+        std::begin( cppRange ) + begin,
+        std::begin( cppRange ) + end
+    );
 }
 
-/*
-lowClamp
------------------------
-
-Description:
-    Takes a value and a lower bound.
-    If the value is below the lower bound, it is replaced with the lower bound.
-
-Arguments:
-    valInOut:           The value to potentially clamp.
-    lowerBound:         The smallest that valInOut can be.
-
-Returns:
-    void:               N/A
-*/
+//slice{2}
+//Same as slice{1}, but only takes a single index, begin.
+//Returns a Range of values with indices greater than or equal to begin.
+//e.g. if an cppRange is int myArray[] = { 0, 1, 2, 3, 4 },
+//then slice( myArray, 2 ) would return a Range covering { 2, 3, 4 }.
 template< typename T >
-inline void lowClamp( T& valInOut, const T& lowerBound )
-{
-    if( valInOut < lowerBound )
-        valInOut = lowerBound;
-}
+inline typename Private::RangeFromCpp<T>::type slice( T& cppRange, const size_t begin ) {
+    size_t size = rangeSize( cppRange );
+    BS_ASSERT_INDEX( begin, size - 1 );
 
-/*
-lowClampedValue
------------------------
-
-Description:
-    Takes a value and a lower bound.
-    If the value is below the lower bound, the lower bound is returned.
-    Otherwise, the value itself is returned.
-
-Arguments:
-    val:                The value to potentially clamp.
-    lowerBound:         The smallest that val can be.
-
-Returns:
-    T:                  A value no larger than lowerBound.
-*/
-template< typename T >
-inline T lowClampedValue( const T& val, const T& lowerBound )
-{
-    if( val < lowerBound )
-        return lowerBound;
-
-    return val;
-}
-
-/*
-highClamp
------------------------
-
-Description:
-    Takes a value and an upper bound.
-    If the value is above the upper bound, it is replaced with the upper bound.
-
-Arguments:
-    valInOut:           The value to potentially clamp.
-    upperBound:         The largest that valInOut can be.
-
-Returns:
-    void:               N/A
-*/
-template< typename T >
-inline void highClamp( T& valInOut, const T& upperBound )
-{
-    if( valInOut > upperBound )
-        valInOut = upperBound;
-}
-
-/*
-highClampedValue
------------------------
-
-Description:
-    Takes a value and an upper bound.
-    If the value is above the upper bound, the upper bound is returned.
-    Otherwise, the value itself is returned.
-
-Arguments:
-    val:                The value to potentially clamp.
-    upperBound:         The largest that val can be.
-
-Returns:
-    T:                  A value no larger than upperBound.
-*/
-template< typename T >
-inline T highClampedValue( const T& val, const T& upperBound )
-{
-    if( val > upperBound )
-        return upperBound;
-
-    return val;
+    return typename Private::RangeFromCpp< T >::type(
+        std::begin( cppRange ) + begin,
+        std::begin( cppRange ) + size
+    );
 }
 
 }
-
-
-
 
 #endif //BS_UTIL_RANGE_HPP

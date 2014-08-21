@@ -7,300 +7,375 @@ Description:
     Unit tests for BoundsN
 */
 
+
+
+
 //Includes
-
-//C4996: 'std::_Copy_impl': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct.
-//       To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
-//It's complaining because I'm copying to a pointer instead of an array, and rightfully so because it's inherently unsafe.
-//However, we can ignore this warning because the program logic ensures it will never copy values outside of the object.
-#define _SCL_SECURE_NO_WARNINGS
-#include <algorithm>
-
 #include "../Test.hpp"
+#include "../utils.hpp"         //allEqual, allEqualTo
 
 #include <brimstone/Bounds.hpp>
 
+
+
+
 namespace {
-    typedef ::Brimstone::BoundsN< int, 5 >  Bounds5i;
-    typedef ::Brimstone::PointN< int, 5 >   Point5i;
-    const int b5Zero[10]      {  0,  0,  0,  0,  0,    0,  0,  0,  0,  0 };
-    const int b5Values[10]    {  1,  2,  3,  4,  5,    6,  7,  8,  9, 10 };
-    const int b5ValuesAlt[10] { 11, 12, 13, 14, 15,   16, 17, 18, 19, 20 };
-    const int b5DimTest[10]   {  1,  2,  3,  4,  5,   11, 13, 15, 17, 19 };
+    typedef ::Brimstone::BoundsN< int, 5 >   Bounds5i;
+    typedef ::Brimstone::PointN< int, 5 >    Point5i;
+    typedef ::Brimstone::BoundsN< float, 5 > Bounds5f;
+    using   ::Brimstone::BoundsException;
+
+    const size_t cv_size             = 5;
+    const int    cv_zero[10]         {  0,  0,  0,  0,  0,    0,  0,  0,  0,  0 };
+    const int    cv_values[10]       {  1,  2,  3,  4,  5,    6,  7,  8,  9, 10 };
+    const int    cv_valuesMins[5]    {  1,  2,  3,  4,  5 };
+    const int    cv_valuesMaxs[5]    {  6,  7,  8,  9, 10 };
+    const int    cv_valuesAlt[10]    { 11, 12, 13, 14, 15,   16, 17, 18, 19, 20 };
+    const int    cv_valuesAltMins[5] { 11, 12, 13, 14, 15 };
+    const int    cv_valuesAltMaxs[5] { 16, 17, 18, 19, 20 };
+    const int    cv_dimTest[10]      {  1,  2,  3,  4,  5,   11, 13, 15, 17, 19 };
+    const int    cv_outsideMins[5]   {  0,  1,  2,  3,  4 };
+    const int    cv_outsideMaxs[5]   {  7,  8,  9, 10, 11 };
+    const char*  cv_output           = "[ ( 1, 2, 3, 4, 5 ), ( 6, 7, 8, 9, 10 ) ]";
+
+    const float  cv_valuesAltF[10]   { 11.0f, 12.0f, 13.0f, 14.0f, 15.0f,   16.0f, 17.0f, 18.0f, 19.0f, 20.0f };
 }
 
-namespace Brimstone {
 namespace UnitTest {
 
-BS_UT_TEST_BEGIN( BoundsN_constructorMinMax )
-    Point5i mins( b5Values,     5 );
-    Point5i maxs( b5Values + 5, 5 );
-    Bounds5i b( mins, maxs );
+UT_TEST_BEGIN( BoundsN_constructorFill )
+    Bounds5i o( 1 );
 
-    return std::equal( b.data, b.data + 10, b5Values );
-BS_UT_TEST_END()
+    return allEqualTo( o.data, 1 );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_constructorInitializerList )
-    Bounds5i b( { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } );
+UT_TEST_BEGIN( BoundsN_constructorCppRange )
+    Bounds5i o( cv_values );
 
-    return std::equal( b.data, b.data + 10, b5Values );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_constructorArray )
-    Bounds5i b( b5Values, 10 );
+UT_TEST_BEGIN( BoundsN_constructorInitializerList )
+    Bounds5i o( {
+        cv_values[0],
+        cv_values[1],
+        cv_values[2],
+        cv_values[3],
+        cv_values[4],
+        cv_values[5],
+        cv_values[6],
+        cv_values[7],
+        cv_values[8],
+        cv_values[9]
+    } );
 
-    return std::equal( b.data, b.data + 10, b5Values );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_setArray )
-    Bounds5i b( b5Values, 10 );
+UT_TEST_BEGIN( BoundsN_setCppRange )
+    Bounds5i o( cv_values );
 
-    b.set( b5ValuesAlt, 10 );
+    o.set( cv_valuesAlt );
 
-    return std::equal( b.data, b.data + 10, b5ValuesAlt );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_setMinMax )
-    Bounds5i b( b5Values, 10 );
-    Point5i mins( b5ValuesAlt,     5 );
-    Point5i maxs( b5ValuesAlt + 5, 5 );
+UT_TEST_BEGIN( BoundsN_setInitializerList )
+    Bounds5i o( cv_values );
+    
+    o.set( {
+        cv_valuesAlt[0],
+        cv_valuesAlt[1],
+        cv_valuesAlt[2],
+        cv_valuesAlt[3],
+        cv_valuesAlt[4],
+        cv_valuesAlt[5],
+        cv_valuesAlt[6],
+        cv_valuesAlt[7],
+        cv_valuesAlt[8],
+        cv_valuesAlt[9]
+    } );
 
-    b.set( mins, maxs );
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
 
-    return std::equal( b.data, b.data + 10, b5ValuesAlt );
-BS_UT_TEST_END()
+UT_TEST_BEGIN( BoundsN_getCppRange )
+    int values[ 2*cv_size ];
+    copyAll( cv_values, values );
+    Bounds5i o( cv_valuesAlt );
+    
+    o.get( values );
 
-BS_UT_TEST_BEGIN( BoundsN_getArray )
-    int data[10];
-    std::copy( b5Values, b5Values + 10, data );
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
 
-    Bounds5i b( b5ValuesAlt, 10 );
-    b.get( data, 10 );
+UT_TEST_BEGIN( BoundsN_fill )
+    Bounds5i o( cv_values );
+    
+    o.fill( 1 );
 
-    return std::equal( data, data + 10, b5ValuesAlt );
-BS_UT_TEST_END()
+    return allEqualTo( o.data, 1 );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_getMinMax )
-    Point5i mins( b5Values,     5 );
-    Point5i maxs( b5Values + 5, 5 );
+UT_TEST_BEGIN( BoundsN_begin )
+    Bounds5i o( cv_values );
 
-    Bounds5i b( b5ValuesAlt, 10 );
-    b.get( mins, maxs );
+    return o.begin() == std::begin( o.data );
+UT_TEST_END()
 
-    return std::equal( mins.data, mins.data + 5, b5ValuesAlt     ) &&
-           std::equal( maxs.data, maxs.data + 5, b5ValuesAlt + 5 );
-BS_UT_TEST_END()
+UT_TEST_BEGIN( BoundsN_beginConst )
+    const Bounds5i o( cv_values );
 
-BS_UT_TEST_BEGIN( BoundsN_setDimension )
-    Bounds5i b( b5Values, 10 );
+    return o.begin() == std::begin( o.data );
+UT_TEST_END()
 
-    for( int i = 0; i < 5; ++i )
-        b.setDimension( i, 10 + i );
+UT_TEST_BEGIN( BoundsN_cbegin )
+    Bounds5i o( cv_values );
 
-    return std::equal( b.data, b.data + 10, b5DimTest );
-BS_UT_TEST_END()
+    return o.cbegin() == std::cbegin( o.data );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_getDimension )
-    Bounds5i b( b5DimTest, 10 );
+UT_TEST_BEGIN( BoundsN_end )
+    Bounds5i o( cv_values );
 
-    for( int i = 0; i < 5; ++i )
-        if( b.getDimension( i ) != 10 + i )
+    return o.end() == std::end( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_endConst )
+    const Bounds5i o( cv_values );
+
+    return o.end() == std::end( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_cend )
+    Bounds5i o( cv_values );
+
+    return o.cend() == std::cend( o.data );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_rangedFor )
+    Bounds5i o( cv_values );
+
+    int idx = 0;
+    for( int& i : o )
+        i = cv_valuesAlt[idx++];
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_rangedForConst )
+    int data[2*cv_size];
+    copyAll( cv_values, data );
+    const Bounds5i o( cv_valuesAlt );
+    
+    int idx = 0;
+    for( int i : o )
+        data[idx++] = i;
+
+    return allEqual( data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_index )
+    Bounds5i o( cv_values );
+
+    for( size_t i = 0; i < 2*cv_size; ++i )
+        o[i] = cv_valuesAlt[i];
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_indexConst )
+    int data[2*cv_size];
+    const Bounds5i o( cv_values );
+
+    for( size_t i = 0; i < 2*cv_size; ++i )
+        data[i] = o[i];
+
+    return allEqual( data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_constructorCopy )
+    Bounds5f o1( cv_valuesAltF );
+    
+    Bounds5i o2( o1 );
+
+    return allEqual( o2.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_assignCopy )
+    Bounds5f o1( cv_valuesAltF );
+    Bounds5i o2( cv_values );
+
+    o2 = o1;
+    
+    return allEqual( o2.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_constructorMinMax )
+    Point5i mins( cv_valuesMins );
+    Point5i maxs( cv_valuesMaxs );
+    Bounds5i o( mins, maxs );
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_setMinMax )
+    Bounds5i o( cv_values );
+    Point5i mins( cv_valuesMins );
+    Point5i maxs( cv_valuesMaxs );
+
+    o.set( mins, maxs );
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_getMinMax )
+    Point5i mins( cv_valuesMins );
+    Point5i maxs( cv_valuesMaxs );
+
+    Bounds5i o( cv_valuesAlt );
+    o.get( mins, maxs );
+
+    return allEqual( mins.data, cv_valuesAltMins ) &&
+           allEqual( maxs.data, cv_valuesAltMaxs );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_setDimension )
+    Bounds5i o( cv_values );
+
+    for( int i = 0; i < cv_size; ++i )
+        o.setDimension( i, 10 + i );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_getDimension )
+    Bounds5i o( cv_dimTest );
+
+    for( size_t i = 0; i < cv_size; ++i )
+        if( o.getDimension( i ) != (int)( 10 + i ) )
             return false;
 
     return true;
-BS_UT_TEST_END()
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_output )
-    Bounds5i b( b5Values, 10 );
+UT_TEST_BEGIN( BoundsN_output )
+    Bounds5i o( cv_values );
 
     std::stringstream sout;
-    sout << b;
+    sout << o;
 
-    return sout.str() == "[ ( 1, 2, 3, 4, 5 ), ( 6, 7, 8, 9, 10 ) ]";
-BS_UT_TEST_END()
+    return sout.str() == cv_output;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_zero )
-    Bounds5i b( b5Values, 10 );
+UT_TEST_BEGIN( BoundsN_zero )
+    Bounds5i o( cv_values );
 
-    b.zero();
+    o.zero();
 
-    return std::equal( b.data, b.data + 10, b5Zero );
-BS_UT_TEST_END()
+    return allEqual( o.data, cv_zero );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_isZero )
-    Bounds5i b1( b5Zero,   10 );
-    Bounds5i b2( b5Values, 10 );
+UT_TEST_BEGIN( BoundsN_isZero )
+    Bounds5i o1( cv_zero );
+    Bounds5i o2( cv_values );
 
-    return b1.isZero() == true &&
-           b2.isZero() == false;
-BS_UT_TEST_END()
+    return o1.isZero() == true &&
+           o2.isZero() == false;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_equals )
-    Bounds5i b1( b5Values,    10 );
-    Bounds5i b2( b5Values,    10 );
-    Bounds5i b3( b5ValuesAlt, 10 );
+UT_TEST_BEGIN( BoundsN_equals )
+    Bounds5i o1( cv_values );
+    Bounds5i o2( cv_values );
+    Bounds5i o3( cv_valuesAlt );
 
-    return ( b1 == b2 ) == true   &&
-           ( b1 == b3 ) == false;
-BS_UT_TEST_END()
+    return ( o1 == o2 ) == true   &&
+           ( o1 == o3 ) == false;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_notEquals )
-    Bounds5i b1( b5Values,    10 );
-    Bounds5i b2( b5Values,    10 );
-    Bounds5i b3( b5ValuesAlt, 10 );
+UT_TEST_BEGIN( BoundsN_notEquals )
+    Bounds5i o1( cv_values );
+    Bounds5i o2( cv_values );
+    Bounds5i o3( cv_valuesAlt );
 
-    return ( b1 != b2 ) == false  &&
-           ( b1 != b3 ) == true;
-BS_UT_TEST_END()
+    return ( o1 != o2 ) == false  &&
+           ( o1 != o3 ) == true;
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_clamp )
-    Bounds5i b( b5Values, 10 );
-    Point5i p1( { 0, 1, 2,  3,  4 } );
-    Point5i p2( { 7, 8, 9, 10, 11 } );
+UT_TEST_BEGIN( BoundsN_clamp )
+    Bounds5i o( cv_values );
+    Point5i p1( cv_outsideMins );
+    Point5i p2( cv_outsideMaxs );
 
-    clamp( p1, b );
-    clamp( p2, b );
+    clamp( p1, o );
+    clamp( p2, o );
 
-    return std::equal( p1.data, p1.data + 5, b5Values     ) &&
-           std::equal( p2.data, p2.data + 5, b5Values + 5 );
-BS_UT_TEST_END()
+    return allEqual( p1.data, cv_valuesMins ) &&
+           allEqual( p2.data, cv_valuesMaxs );
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_clampedPoint )
-    Bounds5i b( b5Values, 10 );
-    Point5i p1( { 0, 1, 2,  3,  4 } );
-    Point5i p2( { 7, 8, 9, 10, 11 } );
+UT_TEST_BEGIN( BoundsN_clampedPoint )
+    Bounds5i o( cv_values );
+    Point5i p1( cv_outsideMins );
+    Point5i p2( cv_outsideMaxs );
 
-    p1 = clampedPoint( p1, b );
-    p2 = clampedPoint( p2, b );
+    p1 = clampedPoint( p1, o );
+    p2 = clampedPoint( p2, o );
 
-    return std::equal( p1.data, p1.data + 5, b5Values     ) &&
-           std::equal( p2.data, p2.data + 5, b5Values + 5 );
-BS_UT_TEST_END()
+    return allEqual( p1.data, cv_valuesMins ) &&
+           allEqual( p2.data, cv_valuesMaxs );
+UT_TEST_END()
 
 
 
 
 #ifdef BS_ZERO
 
-BS_UT_TEST_BEGIN( BoundsN_constructorZero )
-    Bounds5i b;
-    return b.isZero();
-BS_UT_TEST_END()
+UT_TEST_BEGIN( BoundsN_constructorZero )
+    Bounds5i o;
+    return allEqual( o.data, cv_zero );
+UT_TEST_END()
 
 #endif //BS_ZERO
 
 
 
 
-#ifdef BS_CHECK_NULLPTR
-
-BS_UT_TEST_BEGIN( BoundsN_constructorArray_nullPointer )
-    try {
-        Bounds5i b( nullptr, 10 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( BoundsN_setArray_nullPointer )
-    Bounds5i b( b5Values, 10 );
-    try {
-        b.set( nullptr, 10 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( BoundsN_getArray_nullPointer )
-    Bounds5i pt( b5Values, 10 );
-    try {
-        pt.get( nullptr, 10 );
-    } catch( const NullPointerException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-#endif //BS_CHECK_NULLPTR
-
-
-
-
-#ifdef BS_CHECK_SIZE
-
-BS_UT_TEST_BEGIN( BoundsN_constructorArray_invalidSize )
-    try {
-        Bounds5i pt( b5Values, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( BoundsN_setArray_invalidSize )
-    Bounds5i b;
-    try {
-        b.set( b5ValuesAlt, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-BS_UT_TEST_BEGIN( BoundsN_getArray_invalidSize )
-    int data[10];
-    Bounds5i b( b5Values, 10 );
-    try {
-        b.get( data, 0 );
-    } catch( const SizeException& ) {
-        return true;
-    }
-    return false;
-BS_UT_TEST_END()
-
-#endif //BS_CHECK_SIZE
-
-
-
-
 #ifdef BS_CHECK_INDEX
 
-BS_UT_TEST_BEGIN( BoundsN_setDimension_OOB )
-    Bounds5i b;
+UT_TEST_BEGIN( BoundsN_setDimension_OOB )
+    Bounds5i o;
 
     try {
-        b.setDimension( -1, 10 );
+        o.setDimension( (size_t)-1, 10 );
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     try {
-        b.setDimension( 5, 10 );
+        o.setDimension( 5, 10 );
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     return true;
-BS_UT_TEST_END()
+UT_TEST_END()
 
-BS_UT_TEST_BEGIN( BoundsN_getDimension_OOB )
-    Bounds5i b;
+UT_TEST_BEGIN( BoundsN_getDimension_OOB )
+    Bounds5i o;
     int i;
 
     try {
-        i = b.getDimension( -1 );
+        i = o.getDimension( (size_t)(-1) );
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     try {
-        i = b.getDimension( 5 );
+        i = o.getDimension( 5 );
         return false;
-    } catch( const OutOfBoundsException& ) {}
+    } catch( const BoundsException& ) {}
 
     return true;
-BS_UT_TEST_END()
+UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
-}
 }

@@ -35,8 +35,8 @@ Description:
 
     Rect is a template class that can take any numerical type.
 */
-#ifndef BS_BOUNDSN_HPP
-#define BS_BOUNDSN_HPP
+#ifndef BS_BOUNDS_BOUNDSN_HPP
+#define BS_BOUNDS_BOUNDSN_HPP
 
 
 
@@ -44,53 +44,44 @@ Description:
 //Includes
 #include <iostream>                     //std::ostream
 #include <initializer_list>             //std::initializer_list
+#include <iterator>                     //std::begin, std::end
+#include <algorithm>                    //std::fill
 
 #include <brimstone/types.hpp>          //int32
 #include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
 #include <brimstone/Point.hpp>          //PointN
-#include <brimstone/util/Range.hpp>     //clamp
+#include <brimstone/util/Clamp.hpp>     //clamp
 
 
 
 
 //Macros
-#define BS_BOUNDS_THIS_TMPL()                                                                           \
-    template< typename T, int N >
-
-#define BS_BOUNDS_TMPL()                                                                                \
-    template< typename T >
-
 #define BS_BOUNDS_DECLARE_METHODS( N )                                                                  \
+    BS_ARRAY_DECLARE_INHERITED_METHODS( BoundsN, T )                                                    \
+    BS_ARRAY_DECLARE_METHODS( BoundsN, T )                                                              \
     BoundsN();                                                                                          \
     BoundsN( const PointN< T, N >& mins, const PointN< T, N >& maxs );                                  \
-    BoundsN( std::initializer_list< T > il );                                                           \
-    BoundsN( const T* const values, const uintN count );                                                \
-                                                                                                        \
-    void set( const T* const values, const uintN count );                                               \
-    void get( T* const valuesOut, const uintN count ) const;                                            \
+    template< typename T2 >                                                                             \
+    BoundsN( const BoundsN< T2, N >& toCopy );                                                          \
                                                                                                         \
     void set( const PointN< T, N >& mins, const PointN< T, N >& maxs );                                 \
     void get( PointN< T, N >& minsOut, PointN< T, N >& maxsOut ) const;                                 \
                                                                                                         \
-    void setDimension( const intN component, const T difference );                                      \
-    T    getDimension( const intN component ) const;                                                    \
+    void setDimension( const size_t component, const T difference );                                    \
+    T    getDimension( const size_t component ) const;                                                  \
                                                                                                         \
     void zero();                                                                                        \
-    bool isZero() const;
+    bool isZero() const;                                                                                \
+                                                                                                        \
+    template< typename T2 >                                                                             \
+    BoundsN< T, N >& operator =( const BoundsN< T2, N >& toCopy );
 
 #define BS_BOUNDS_DEFINE_METHODS( N, tmpl )                                                             \
-    tmpl                                                                                                \
-    BoundsN< T, N >::BoundsN( std::initializer_list< T > il ) {                                         \
-        set( il.begin(), il.size() );                                                                   \
-    }                                                                                                   \
+    BS_ARRAY_DEFINE_METHODS( BoundsN, T, data, tmpl, BS_SPEC_2( T, N ) )                                \
     tmpl                                                                                                \
     BoundsN< T, N >::BoundsN( const PointN< T, N >& mins, const PointN< T, N >& maxs ) :                \
         mins( mins ),                                                                                   \
         maxs( maxs ) {                                                                                  \
-    }                                                                                                   \
-    tmpl                                                                                                \
-    BoundsN< T, N >::BoundsN( const T* const values, const uintN count ) {                              \
-        set( values, count );                                                                           \
     }                                                                                                   \
     tmpl                                                                                                \
     void BoundsN< T, N >::set( const PointN< T, N >& mins, const PointN< T, N >& maxs ) {               \
@@ -103,12 +94,12 @@ Description:
         maxsOut = maxs;                                                                                 \
     }                                                                                                   \
     tmpl                                                                                                \
-    void BoundsN< T, N >::setDimension( const intN component, const T difference ) {                    \
+    void BoundsN< T, N >::setDimension( const size_t component, const T difference ) {                  \
         BS_ASSERT_INDEX( component, N - 1 );                                                            \
         maxs[ component ] = mins[ component ] + difference;                                             \
     }                                                                                                   \
     tmpl                                                                                                \
-    T BoundsN< T, N >::getDimension( const intN component ) const {                                     \
+    T BoundsN< T, N >::getDimension( const size_t component ) const {                                   \
         BS_ASSERT_INDEX( component, N - 1 );                                                            \
         return maxs[ component ] - mins[ component ];                                                   \
     }
@@ -116,7 +107,7 @@ Description:
 
 namespace Brimstone {
 
-template< typename T, int N >
+template< typename T, size_t N >
 class BoundsN {
 public:
 //C4201: nonstandard extension used : nameless struct/union
@@ -137,78 +128,77 @@ public:
     BS_BOUNDS_DECLARE_METHODS( N )
 };
 
-BS_BOUNDS_DEFINE_METHODS( N, BS_BOUNDS_THIS_TMPL() )
+BS_ARRAY_DEFINE_GENERIC_METHODS( BoundsN, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_BOUNDS_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
 
-template< typename T, int N >
+template< typename T, size_t N >
 BoundsN< T, N >::BoundsN() {
 #ifdef BS_ZERO
-for( int i = 0; i < 2*N; ++i )
+for( size_t i = 0; i < 2*N; ++i )
     data[i] = 0;
 #endif //BS_ZERO
 }
 
-template< typename T, int N >
-void BoundsN< T, N >::set( const T* const values, const uintN count ) {
-    BS_ASSERT_NON_NULLPTR( values );
-    BS_ASSERT_SIZE( count, 2*N );
-    for( int i = 0; i < 2*N; ++i )
-        data[i] = values[ i ];
+template< typename T, size_t N >
+template< typename T2 >
+BoundsN< T, N >::BoundsN( const BoundsN< T2, N >& toCopy ) {
+    (*this) = toCopy;
 }
 
-template< typename T, int N >
-void BoundsN< T, N >::get( T* const valuesOut, const uintN count ) const {
-    BS_ASSERT_NON_NULLPTR( valuesOut );
-    BS_ASSERT_SIZE( count, 2*N );
-    for( int i = 0; i < 2*N; ++i )
-        valuesOut[i] = data[i];
-}
-
-template< typename T, int N >
+template< typename T, size_t N >
 void BoundsN< T, N >::zero() {
-    for( int i = 0; i < 2*N; ++i )
-        data[i] = 0;
+    std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
 bool BoundsN< T, N >::isZero() const {
-    for( int i = 0; i < 2*N; ++i )
+    for( size_t i = 0; i < 2*N; ++i )
         if( data[i] != 0 )
             return false;
     return true;
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
+template< typename T2 >
+BoundsN< T, N >& BoundsN< T, N >::operator =( const BoundsN< T2, N >& right ) {
+    for( size_t i = 0; i < 2*N; ++i )
+        data[i] = static_cast<T>( right.data[i] );
+
+    return (*this);
+}
+
+template< typename T, size_t N >
 std::ostream& operator <<( std::ostream& left, const BoundsN< T, N >& right ) {
     return left << "[ " << right.mins << ", " << right.maxs << " ]";
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
 bool operator ==( const BoundsN< T, N >& left, const BoundsN< T, N >& right ) {
-    for( int i = 0; i < 2*N; ++i )
+    for( size_t i = 0; i < 2*N; ++i )
         if( left.data[ i ] != right.data[ i ] )
             return false;
     return true;
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
 bool operator !=( const BoundsN< T, N >& left, const BoundsN< T, N >& right ) {
-    for( int i = 0; i < 2*N; ++i )
+    for( size_t i = 0; i < 2*N; ++i )
         if( left.data[ i ] != right.data[ i ] )
             return true;
     return false;
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
 void clamp( PointN< T, N >& pointInOut, const BoundsN< T, N >& bounds ) {
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         clamp( pointInOut[i], bounds.mins[i], bounds.maxs[i] );
 }
 
-template< typename T, int N >
+template< typename T, size_t N >
 PointN< T, N > clampedPoint( const PointN< T, N >& point, const BoundsN< T, N >& bounds ) {
     PointN< T, N > pointOut;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         pointOut[i] = clampedValue( point[i], bounds.mins[i], bounds.maxs[i] );
 
     return pointOut;
@@ -219,4 +209,4 @@ PointN< T, N > clampedPoint( const PointN< T, N >& point, const BoundsN< T, N >&
 
 
 
-#endif //BS_BOUNDSN_HPP
+#endif //BS_BOUNDS_BOUNDSN_HPP

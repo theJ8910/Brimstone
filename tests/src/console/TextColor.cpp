@@ -13,28 +13,27 @@ Description:
 //Includes
 #include "TextColor.hpp"
 
-#ifdef BS_UT_BUILD_LINUX
+#ifdef UT_BUILD_LINUX
 #include <stdio.h>
-#endif //BS_UT_BUILD_LINUX
+#endif //UT_BUILD_LINUX
 
 
 
 
-namespace Brimstone {
 namespace UnitTest {
 
 //Globals
-#ifdef BS_UT_BUILD_WINDOWS
+#ifdef UT_BUILD_WINDOWS
 HANDLE console = 0;
-#endif //BS_UT_BUILD_WINDOWS
+#endif //UT_BUILD_WINDOWS
 
 
 
 
 //Forward Declarations
-#ifdef BS_UT_BUILD_LINUX
+#ifdef UT_BUILD_LINUX
 uint8 getXTIndex( unsigned char red, unsigned char green, unsigned char blue );
-#endif //BS_UT_BUILD_LINUX
+#endif //UT_BUILD_LINUX
 
 
 
@@ -53,9 +52,9 @@ Returns:
     void:   N/A
 */
 void initTextColor() {
-#ifdef BS_UT_BUILD_WINDOWS
+#ifdef UT_BUILD_WINDOWS
     console = GetStdHandle( STD_OUTPUT_HANDLE );
-#endif //BS_UT_BUILD_WINDOWS
+#endif //UT_BUILD_WINDOWS
 }
 
 
@@ -80,19 +79,21 @@ Returns:
 */
 void setTextColor( const TextColors textColor, const TextColors backgroundColor ) {
 
-#ifdef BS_UT_BUILD_WINDOWS
+#ifdef UT_BUILD_WINDOWS
 
     //Background colors are defined the same way as foreground colors, but four bits shifted to the left
     SetConsoleTextAttribute( console, (unsigned short)textColor | ( (unsigned short)backgroundColor << (unsigned short)4u ) );
 
-#endif //BS_UT_BUILD_WINDOWS
+#endif //UT_BUILD_WINDOWS
 
-#ifdef BS_UT_BUILD_LINUX
+#ifdef UT_BUILD_LINUX
 
     printf( "\x1B[38;5;%um\x1B[48;5;%um", textColor, backgroundColor );
 
-#endif //BS_UT_BUILD_LINUX
+#endif //UT_BUILD_LINUX
 }
+
+#ifdef UT_BUILD_LINUX
 
 /*
 setTextColorXT{1}
@@ -111,17 +112,11 @@ Returns:
     void:           N/A
 */
 void setTextColorXT( const unsigned char xtermIndex ) {
-
-#ifdef BS_UT_BUILD_LINUX
-
     //NOTE: \x1B is short for "character with hexidecimal value 1B". 1B in hex is 16+11 = 27.
     //In the ASCII table, character 27 is the "escape" control character.
     //38 indicates we want to use xterm256 colors to set the foreground color
     //5 needs to be given after that as well (I'm guessing this is related to the 6 degrees each color has, 0-5?)
     printf( "\x1B[38;5;%um", xtermIndex );
-
-#endif //BS_UT_BUILD_LINUX
-
 }
 
 /*
@@ -141,13 +136,7 @@ Returns:
     void:           N/A
 */
 void setTextColorXT( const unsigned char red, const unsigned char green, const unsigned char blue ) {
-
-#ifdef BS_UT_BUILD_LINUX
-
     setTextColorXT( getXTIndex( red, green, blue ) );
-
-#endif //BS_UT_BUILD_LINUX
-
 }
 
 /*
@@ -167,13 +156,7 @@ Returns:
     void:           N/A
 */
 void setBackgroundColorXT( const unsigned char xtermIndex ) {
-
-#ifdef BS_UT_BUILD_LINUX
-
     printf( "\x1B[48;5;%um", xtermIndex );
-
-#endif //BS_UT_BUILD_LINUX
-
 }
 
 /*
@@ -194,19 +177,10 @@ Arguments:
 Returns:
     void:           N/A
 */
-void setBackgroundColorXT( const unsigned char red, const unsigned char green, const unsigned char blue )
-{
-
-#ifdef BS_UT_BUILD_LINUX
-
+void setBackgroundColorXT( const unsigned char red, const unsigned char green, const unsigned char blue ) {
     //Same as setting foreground color, except 48 indicates we want to use xterm256 colors to set the background color
     setBackgroundColorXT( getXTIndex( red, green, blue ) );
-
-#endif //BS_UT_BUILD_LINUX
-
 }
-
-#ifdef BS_UT_BUILD_LINUX
 
 /*
 getXTIndex
@@ -230,10 +204,10 @@ unsigned char getXTIndex( const unsigned char red, const unsigned char green, co
     if( red == green && red == blue ) {
         //RGB less than 16 uses the system black
         if( red < 16 ) {
-        colorIndex = 0;
+            colorIndex = 0;
         //RGB greater than 237 uses the system white
         } else if( red > 237 ) {
-        colorIndex = 15;
+            colorIndex = 15;
 
         //RGB between [16, 237] use the greyscale index range
         } else {
@@ -262,7 +236,13 @@ unsigned char getXTIndex( const unsigned char red, const unsigned char green, co
     return colorIndex;
 }
 
-#endif //BS_UT_BUILD_LINUX
+#else //UT_BUILD_LINUX
 
-}
+void setTextColorXT( const unsigned char ) {}
+void setTextColorXT( const unsigned char, const unsigned char, const unsigned char ) {}
+void setBackgroundColorXT( const unsigned char ) {}
+void setBackgroundColorXT( const unsigned char, const unsigned char, const unsigned char ) {}
+
+#endif //UT_BUILD_LINUX
+
 }

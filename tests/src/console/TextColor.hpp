@@ -8,22 +8,26 @@ Description:
     and defines enums that can be given as arguments to TextColor().
 */
 
-#ifndef BS_UT_TEXTCOLOR_HPP
-#define BS_UT_TEXTCOLOR_HPP
+#ifndef UT_TEXTCOLOR_HPP
+#define UT_TEXTCOLOR_HPP
 
 
 
-
-namespace Brimstone {
-namespace UnitTest {
-
-//On windows we need to track a handle to the console window (windows.h is needed for this),
-//and use combinations of Windows color enums.
-#ifdef BS_UT_BUILD_WINDOWS
 
 //Includes
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+
+
+
+namespace UnitTest {
+
+//On windows we need to track a handle to the console window (windows.h is needed for this),
+//and use combinations of Windows color enums.
+#ifdef UT_BUILD_WINDOWS
+
+
 
 //Worthless Globals
 extern HANDLE console;
@@ -56,10 +60,10 @@ enum class TextColors {
     DEFAULT_BACKGROUND = BLACK,
 };
 
-#endif //BS_UT_BUILD_WINDOWS
+#endif //UT_BUILD_WINDOWS
 
 //On linux we use xterm256 color indices
-#ifdef BS_UT_BUILD_LINUX
+#ifdef UT_BUILD_LINUX
 
 enum class TextColors {
 
@@ -89,7 +93,7 @@ enum class TextColors {
     DEFAULT_BACKGROUND = BLACK,
 };
 
-#endif //BS_UT_BUILD_LINUX
+#endif //UT_BUILD_LINUX
 
 //Forward declarations
 void initTextColor();
@@ -102,9 +106,8 @@ void setXTBackgroundColor( const unsigned char xtermIndex );
 void setXTBackgroundColor( const unsigned char red, const unsigned char green, const unsigned char blue );
 
 }
-}
 
 
 
 
-#endif //BS_UT_TEXTCOLOR_HPP
+#endif //UT_TEXTCOLOR_HPP
