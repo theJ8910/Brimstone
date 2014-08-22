@@ -80,7 +80,7 @@ WindowsWindow::WindowsWindow( Window& parent ) : m_parent( &parent ) {
         instance,                                       //this window belongs to this instance of our program
         nullptr                                         //Window creation data (which is?)
     );
-    
+
     if( !m_wnd )
         throwWindowsException();
 
@@ -90,7 +90,7 @@ WindowsWindow::WindowsWindow( Window& parent ) : m_parent( &parent ) {
 WindowsWindow::~WindowsWindow() {
     DestroyWindow( m_wnd );
     m_windowMap.erase( m_wnd );
-    
+
     if( m_windowMap.empty() )
         PostQuitMessage( 0 );
 }
@@ -419,7 +419,7 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
     } break;
     case WM_MOUSEHWHEEL: {
         MouseHScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, getCursorPos( lParam ) );
-        m_parent->m_signalMouseHScroll( eventObj ); 
+        m_parent->m_signalMouseHScroll( eventObj );
     } break;
     case WM_SYSKEYDOWN:
     case WM_KEYDOWN: {
@@ -475,7 +475,7 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
 
             //Null terminate the string
             utf8[utf8Count] = 0;
-                
+
             m_parent->m_signalCharacterTyped( eventObj );
         }
     } break;
@@ -563,7 +563,7 @@ Arguments:
 Returns:
     LRESULT:    Appears to be a pointer or number.
                 0 seems to be the appropriate value to return in most cases.
-                The only time something other than 0 is returned (I assume) is when DefWindowProc() returns something. 
+                The only time something other than 0 is returned (I assume) is when DefWindowProc() returns something.
                 DefWindowProc() runs when a message we don't specifically handle here is processed.
 */
 LRESULT CALLBACK WindowsWindow::mainProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {

@@ -205,7 +205,7 @@ max{1}
 
 Description:
     Takes two values, compares them, and sets maxOut to the larger value.
-    
+
     Usage:
         int a = 1;
         int b = 2;
@@ -294,7 +294,7 @@ electMinMax
 Description:
     In this function, two values (the first and second are the values currently considered smallest and largest, respectively) are compared
     with a third value, which can possibly replace one value or the other (but not both).
-    
+
     That is, one of thee things can happen:
     If the third value is beneath min, it becomes the new min;
     If the third value is above max, it becomes the new max;
@@ -313,7 +313,7 @@ Description:
         int a           = 20;
         int b           = 5;
         int c           = 30
-        
+
         electMinMax( smallest, largest, a );
         electMinMax( smallest, largest, b );
         electMinMax( smallest, largest, c );

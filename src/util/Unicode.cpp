@@ -38,7 +38,6 @@ Returns:
 Throws:
     SizeException:              If byteCount is 0, or if a character is encoded with "N" bytes and byteCount < N.
     MalformedStringException:   If the UTF-8 string is not properly encoded.
-    
 */
 uint32 utf8ToCodePoint( const uchar* utf8Buffer, const size_t byteCount ) {
     //Byte count of 0
@@ -55,7 +54,7 @@ uint32 utf8ToCodePoint( const uchar* utf8Buffer, const size_t byteCount ) {
         if( byteCount < 2 )
             throw SizeException();
 
-        //Verify that the next byte is a continuation byte. 
+        //Verify that the next byte is a continuation byte.
         if( ( (*( utf8Buffer + 1)) & 0xC0 ) != 0x80 ) {
             throw MalformedStringException();
         }

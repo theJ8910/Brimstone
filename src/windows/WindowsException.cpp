@@ -32,7 +32,7 @@ DWORD WindowsException::getErrorCode() const {
 
 ustring WindowsException::getDescription() const {
     LPWSTR message = nullptr;
-        
+
     DWORD messageSize = FormatMessageW(
         FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM     |

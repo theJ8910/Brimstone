@@ -85,7 +85,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_setInitializerList )
     Bounds3i o( cv_values );
-    
+
     o.set( {
         cv_valuesAlt[0],
         cv_valuesAlt[1],
@@ -102,7 +102,7 @@ UT_TEST_BEGIN( Bounds3_getCppRange )
     int values[ 2*cv_size ];
     copyAll( cv_values, values );
     Bounds3i o( cv_valuesAlt );
-    
+
     o.get( values );
 
     return allEqual( o.data, cv_valuesAlt );
@@ -110,7 +110,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_fill )
     Bounds3i o( cv_values );
-    
+
     o.fill( 1 );
 
     return allEqualTo( o.data, 1 );
@@ -166,7 +166,7 @@ UT_TEST_BEGIN( Bounds3_rangedForConst )
     int data[2*cv_size];
     copyAll( cv_values, data );
     const Bounds3i o( cv_valuesAlt );
-    
+
     int idx = 0;
     for( int i : o )
         data[idx++] = i;
@@ -195,7 +195,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_constructorCopy )
     Bounds3f o1( cv_valuesAltF );
-    
+
     Bounds3i o2( o1 );
 
     return allEqual( o2.data, cv_valuesAlt );
@@ -206,7 +206,7 @@ UT_TEST_BEGIN( Bounds3_assignCopy )
     Bounds3i o2( cv_values );
 
     o2 = o1;
-    
+
     return allEqual( o2.data, cv_valuesAlt );
 UT_TEST_END()
 

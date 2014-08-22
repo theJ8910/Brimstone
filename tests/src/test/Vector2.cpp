@@ -31,7 +31,7 @@ namespace {
     const int    cv_zero[2]            {  0,  0 };
     const int    cv_values[2]          {  1,  2 };
     const int    cv_valuesAlt[2]       {  3,  4 };
-    
+
     const int    cv_unit[2]            {  0,  1 };
     const int    cv_lengthSq           = 5;
     const int    cv_length             = 2;  //Rounded down from 2.23606798f
@@ -90,7 +90,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_setInitializerList )
     Vector2i o( cv_values );
-    
+
     o.set( { cv_valuesAlt[0], cv_valuesAlt[1] } );
 
     return allEqual( o.data, cv_valuesAlt );
@@ -100,7 +100,7 @@ UT_TEST_BEGIN( Vector2_getCppRange )
     int values[ cv_size ];
     copyAll( cv_values, values );
     Vector2i o( cv_valuesAlt );
-    
+
     o.get( values );
 
     return allEqual( o.data, cv_valuesAlt );
@@ -108,7 +108,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_fill )
     Vector2i o( cv_values );
-    
+
     o.fill( 1 );
 
     return allEqualTo( o.data, 1 );
@@ -164,7 +164,7 @@ UT_TEST_BEGIN( Vector2_rangedForConst )
     int data[cv_size];
     copyAll( cv_values, data );
     const Vector2i o( cv_valuesAlt );
-    
+
     int idx = 0;
     for( int i : o )
         data[idx++] = i;
@@ -217,7 +217,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_constructorCopy )
     Vector2f o1( cv_valuesF );
-    
+
     Vector2i o2( o1 );
 
     return allEqual( o2.data, cv_values );
@@ -327,7 +327,7 @@ UT_TEST_BEGIN( Vector2_assignCopy )
     Vector2i o2( cv_valuesAlt );
 
     o2 = o1;
-    
+
     return allEqual( o2.data, cv_values );
 UT_TEST_END()
 
@@ -343,7 +343,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector2_addAssign_vector )
     Vector2i o1( cv_arithmetic1 );
     Vector2i o2( cv_arithmetic2 );
-    
+
     o1 += o2;
 
     return allEqual( o1.data, cv_addResult );
@@ -352,7 +352,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector2_subAssign_vector )
     Vector2i o1( cv_arithmetic1 );
     Vector2i o2( cv_arithmetic2 );
-    
+
     o1 -= o2;
 
     return allEqual( o1.data, cv_subResult );
@@ -361,7 +361,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector2_mulAssign_vector )
     Vector2i o1( cv_arithmetic1 );
     Vector2i o2( cv_arithmetic2 );
-    
+
     o1 *= o2;
 
     return allEqual( o1.data, cv_mulResult );
@@ -370,7 +370,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector2_divAssign_vector )
     Vector2i o1( cv_arithmetic1 );
     Vector2i o2( cv_arithmetic2 );
-    
+
     o1 /= o2;
 
     return allEqual( o1.data, cv_divResult );
@@ -378,7 +378,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_addAssign_scalar )
     Vector2i o( cv_arithmetic1 );
-    
+
     o += cv_scalar;
 
     return allEqual( o.data, cv_addScalarResult );
@@ -386,7 +386,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_subAssign_scalar )
     Vector2i o( cv_arithmetic1 );
-    
+
     o -= cv_scalar;
 
     return allEqual( o.data, cv_subScalarResult );
@@ -394,7 +394,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_mulAssign_scalar )
     Vector2i o( cv_arithmetic1 );
-    
+
     o *= cv_scalar;
 
     return allEqual( o.data, cv_mulScalarResult );
@@ -402,7 +402,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_divAssign_scalar )
     Vector2i o( cv_arithmetic1 );
-    
+
     o /= cv_scalar;
 
     return allEqual( o.data, cv_divScalarResult );

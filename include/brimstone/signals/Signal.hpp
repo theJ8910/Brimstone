@@ -6,7 +6,7 @@ Copyright (c) 2014, theJ89
 Description:
     Signals and slots are a modular form of the observer pattern.
     Signals are analagous to subjects, and slots are analagous to observers.
-    
+
     Signals are callable objects (i.e. functors) that maintain a list of
     zero or more callbacks functions (known as slots).
     When a signal is called, it calls each registered slot, passing the values given to the call.
@@ -78,7 +78,7 @@ private:
     void release( const MyScopedConnection& scopedConnection );
     void disconnectAllFromSC();
     Signal& operator =( const Signal& toCopy );
-    
+
 private:
     SlotCollection      m_slots;
 };
@@ -121,7 +121,7 @@ void Signal< Return ( Args... ) >::disconnect( const Slot& slot ) {
         MyScopedConnection* scope = it->second;
         if( scope != nullptr )
             scope->disconnected( *this );
-                
+
         //Erase the slot
         m_slots.erase( it );
         return;

@@ -68,7 +68,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Point3_setInitializerList )
     Point3i o( cv_values );
-    
+
     o.set( { cv_valuesAlt[0], cv_valuesAlt[1], cv_valuesAlt[2] } );
 
     return allEqual( o.data, cv_valuesAlt );
@@ -78,7 +78,7 @@ UT_TEST_BEGIN( Point3_getCppRange )
     int values[ cv_size ];
     copyAll( cv_values, values );
     Point3i o( cv_valuesAlt );
-    
+
     o.get( values );
 
     return allEqual( o.data, cv_valuesAlt );
@@ -86,7 +86,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Point3_fill )
     Point3i o( cv_values );
-    
+
     o.fill( 1 );
 
     return allEqualTo( o.data, 1 );
@@ -142,7 +142,7 @@ UT_TEST_BEGIN( Point3_rangedForConst )
     int data[ cv_size ];
     copyAll( cv_values, data );
     const Point3i o( cv_valuesAlt );
-    
+
     int idx = 0;
     for( int i : o )
         data[idx++] = i;

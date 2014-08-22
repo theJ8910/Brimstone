@@ -71,7 +71,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( PointN_setInitializerList )
     Point5i o( cv_values );
-    
+
     o.set( { cv_valuesAlt[0], cv_valuesAlt[1], cv_valuesAlt[2], cv_valuesAlt[3], cv_valuesAlt[4] } );
 
     return allEqual( o.data, cv_valuesAlt );
@@ -81,7 +81,7 @@ UT_TEST_BEGIN( PointN_getCppRange )
     int values[ cv_size ];
     copyAll( cv_values, values );
     Point5i o( cv_valuesAlt );
-    
+
     o.get( values );
 
     return allEqual( o.data, cv_valuesAlt );
@@ -89,7 +89,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( PointN_fill )
     Point5i o( cv_values );
-    
+
     o.fill( 1 );
 
     return allEqualTo( o.data, 1 );
@@ -145,7 +145,7 @@ UT_TEST_BEGIN( PointN_rangedForConst )
     int data[cv_size];
     copyAll( cv_values, data );
     const Point5i o( cv_valuesAlt );
-    
+
     int idx = 0;
     for( int i : o )
         data[idx++] = i;
@@ -174,7 +174,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( PointN_constructorCopy )
     Point5f o1( cv_valuesF );
-    
+
     Point5i o2( o1 );
 
     return allEqual( o2.data, cv_values );

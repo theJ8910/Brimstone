@@ -138,7 +138,7 @@ UT_TEST_BEGIN( Range_rangedFor )
 
     int idx = 0;
     for( int& i : o )
-        i = cv_valuesAlt[idx++]; 
+        i = cv_valuesAlt[idx++];
 
     return allEqual( data, cv_valuesAlt );
 UT_TEST_END()

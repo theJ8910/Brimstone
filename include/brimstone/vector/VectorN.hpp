@@ -206,7 +206,7 @@ VectorN< T, N >::VectorN( const PointN< T, N >& from, const PointN< T, N >& to )
 template< typename T, size_t N >
 T VectorN< T, N >::getLengthSq() const {
     T lengthSq = 0;
-    
+
     for( int i = 0; i < N; ++i )
         lengthSq += data[i] * data[i];
 
@@ -284,7 +284,7 @@ VectorN< T, N >& VectorN< T, N >::operator /=( const T right ) {
 template< typename T, size_t N >
 std::ostream& operator <<( std::ostream& left, const VectorN< T, N >& right ) {
     left << "< ";
-    
+
     left << right.data[0];
     for( int i = 1; i < N; ++i )
         left << ", " << right.data[i];
@@ -432,7 +432,7 @@ VectorN< T, N > operator /( const VectorN< T, N >& left, const T right ) {
 template< typename T, size_t N >
 T dot( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
     T dp = 0;
-    
+
     for( int i = 0; i < N; ++i )
         dp += left.data[i] * right.data[i];
 

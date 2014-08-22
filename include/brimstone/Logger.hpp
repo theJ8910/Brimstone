@@ -9,7 +9,7 @@ Description:
     Provides two logger implementations:
         ConsoleLogger (for logging to std::cout)
         FileLogger (for logging to a file)
-    
+
     Provides a static Loggers class that loggers can be added or removed to.
     By doing Loggers::write( message, type ); you can write to all the registered loggers at once.
 

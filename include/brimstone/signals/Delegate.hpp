@@ -29,7 +29,7 @@ Description:
 //Defines
 //If method pointers are the same size as data pointers on this compiler,
 //you can reduce the # of pointers in the Closure from 3 to 2.
-#define BS_DELEGATE_POINTER_HACK  
+#define BS_DELEGATE_POINTER_HACK
 
 
 

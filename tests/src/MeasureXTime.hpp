@@ -5,14 +5,14 @@ Copyright (c) 2014, theJ89
 
 Description:
     Functions are provided here to measure the execution times of particular functions, and compare them to other functions.
-    
+
     Typically, to test a function you inherit from Brimstone::UnitTest::BaseTest,
     and override its methods as needed.
 
     Then you call:
     Brimstone::UnitTest::measure< TestName >()
     where TestName is the name of your class.
-    
+
     You can also supply multiple tests if you want to compare runtimes:
     Brimstone::UnitTest::measure< Test1Name, Test2Name >
 

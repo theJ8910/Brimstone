@@ -120,7 +120,7 @@ template< typename InPtr, typename T, size_t NT >
 void copyAll( InPtr from, T (&to)[NT] ) {
     static_assert(
         std::is_pointer< InPtr >::value &&
-        std::is_same< 
+        std::is_same<
             const T,
             std::remove_pointer< InPtr >::type
         >::value,
@@ -140,7 +140,7 @@ template< typename T, size_t NF, typename OutPtr >
 void copyAll( const T (&from)[NF], OutPtr to ) {
     static_assert(
         std::is_pointer< OutPtr >::value &&
-        std::is_same< 
+        std::is_same<
             T,
             std::remove_pointer< OutPtr >::type
         >::value,

@@ -63,7 +63,7 @@ private:
     ustring m_description;
 };
 
-/* 
+/*
 BS_DECLARE_BASIC_EXCEPTION
 
 Macro to automatically declare a basic exception type, without a message
@@ -74,7 +74,7 @@ Macro to automatically declare a basic exception type, without a message
         virtual ustring getDescription() const; \
     }
 
-/* 
+/*
 BS_DECLARE_MESSAGE_EXCEPTION
 
 Macro to automatically declare an exception type deriving from Exception.

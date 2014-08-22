@@ -8,13 +8,13 @@ http://stackoverflow.com/questions/7858817/unpacking-a-tuple-to-call-a-matching-
 
 Description:
     Sequences are template meta-programming helper objects.
-    
+
     In general MakeSequence< N >::type (where N is some number greater than 0)
     will be a Sequence< 0, 1, 2, ..., N - 1 >.
 
     In general, MakeReverseSequence< N >::type (where N is some number greater than 0)
     will be a Sequence< N - 1, ..., 2, 1, 0 >.
-    
+
     A variadic template function can be designed that takes a Sequence as a parameter like so:
         template< int... Integers >
         void someFunction( Sequence< Integers... > s ) {
@@ -32,8 +32,6 @@ Description:
     This parameter pack can be expanded and used in an expression you want to repeat.
     This is particularly useful for "unpacking" an std::tuple and passing its values to a function:
         anotherFunction( std::get< Integers >( tuple )... )
-
-    
 */
 #ifndef BS_UTIL_SEQUENCE_HPP
 #define BS_UTIL_SEQUENCE_HPP

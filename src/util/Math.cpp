@@ -41,7 +41,7 @@ uint32 closestUpperPowerOfTwo( const uint32 i ) {
 
     Example: Lets say 3 is given to closestUpperPowerOfTwo.
     The closest power of 2 greater than or equal to 3 is 4.
-    
+
     We start by subtracting 1 from the given number.
     This ensures powers of 2 aren't rounded up to the next power (e.g. 4 rounded up to 8).
 

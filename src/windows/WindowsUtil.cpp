@@ -36,7 +36,7 @@ Description:
 
 Arguments:
     utf8Bytes:          UTF-8 encoded string (using std::string) to convert.
-    
+
 Returns:
     wstring:            UTF-16 encoded string (using std::wstring) converted from the given string.
 */
@@ -70,7 +70,7 @@ Description:
 
 Arguments:
     utf8Bytes:          UTF-8 encoded string (using std::string) to convert.
-    
+
 Returns:
     wstring:            UTF-16 encoded string (using std::wstring) converted from the given string.
 */
@@ -102,7 +102,7 @@ Description:
 
 Arguments:
     utf8Bytes:          UTF-8 encoded string (using std::string) to convert.
-    
+
 Returns:
     wstring:            UTF-16 encoded string (using std::wstring) converted from the given string.
 */
@@ -127,7 +127,7 @@ Description:
 
 Arguments:
     utf16Chars:         UTF-16 encoded string (using std::wstring) to convert.
-    
+
 Returns:
     ustring:            UTF-8 encoded string (using std::string) converted from the given string.
 */
@@ -164,7 +164,7 @@ Arguments:
     utf16CharCount:     The number of CHARACTERS (not bytes) to convert from utf16Chars.
                             Can be -1 if utf16Chars is a null terminated string.
     utf8BytesOut:       Pointer to a buffer of bytes (char) that will hold the UTF-8 encoded characters.
-    
+
 Returns:
     ustring:            UTF-8 encoded string converted from the given string.
 */

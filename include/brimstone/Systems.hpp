@@ -88,7 +88,7 @@ private:
     typedef std::unordered_set< SystemType >            SystemTypeSet;
 public:
     static void add( SystemType type );
-    
+
     template< typename T >
     static T* get( SystemType type );
 

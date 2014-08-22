@@ -89,7 +89,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_setInitializerList )
     Bounds4i o( cv_values );
-    
+
     o.set( {
         cv_valuesAlt[0],
         cv_valuesAlt[1],
@@ -108,7 +108,7 @@ UT_TEST_BEGIN( Bounds4_getCppRange )
     int values[ 2*cv_size ];
     copyAll( cv_values, values );
     Bounds4i o( cv_valuesAlt );
-    
+
     o.get( values );
 
     return allEqual( o.data, cv_valuesAlt );
@@ -116,7 +116,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_fill )
     Bounds4i o( cv_values );
-    
+
     o.fill( 1 );
 
     return allEqualTo( o.data, 1 );
@@ -172,7 +172,7 @@ UT_TEST_BEGIN( Bounds4_rangedForConst )
     int data[2*cv_size];
     copyAll( cv_values, data );
     const Bounds4i o( cv_valuesAlt );
-    
+
     int idx = 0;
     for( int i : o )
         data[idx++] = i;
@@ -201,7 +201,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_constructorCopy )
     Bounds4f o1( cv_valuesAltF );
-    
+
     Bounds4i o2( o1 );
 
     return allEqual( o2.data, cv_valuesAlt );
@@ -212,7 +212,7 @@ UT_TEST_BEGIN( Bounds4_assignCopy )
     Bounds4i o2( cv_values );
 
     o2 = o1;
-    
+
     return allEqual( o2.data, cv_valuesAlt );
 UT_TEST_END()
 

@@ -83,7 +83,7 @@ enum class Key {
     //Windows key for instance
     LSYSTEM,  RSYSTEM,
     MENU,
-    
+
     //Keys above the arrow keys
     PRINT_SCREEN, SCROLL_LOCK, PAUSE_BREAK,
     INSERT, DEL, HOME, END, PAGE_UP, PAGE_DOWN,

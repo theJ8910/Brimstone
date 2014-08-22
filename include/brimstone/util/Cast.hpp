@@ -113,7 +113,7 @@ dynamic_cast:
             X   Y
              \ /
               Z
-        
+
         This means that all Z objects count as both X and Y objects.
 
         Lets say you have the following pointer:

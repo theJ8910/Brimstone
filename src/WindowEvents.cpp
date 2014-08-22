@@ -53,7 +53,7 @@ const uchar* keyToString( const Key key ) {
         "LeftShift",    "RightShift",
         "LeftControl",  "RightControl",
         "LeftAlt",      "RightAlt",
-        
+
         "LeftSystem",   "RightSystem",
         "Menu",
 
@@ -119,7 +119,7 @@ float MouseScrollEvent::getScrollAmount() const {
     //        -: backwards (towards the user)
     //    If scrolling horizontally:
     //        +: to the right
-    //        -: to the left 
+    //        -: to the left
     return m_scrollAmount;
 }
 

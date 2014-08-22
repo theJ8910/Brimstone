@@ -103,7 +103,7 @@ Description:
         BS_ASSERT_INDEX( component, N - 1 );                                                            \
         return maxs[ component ] - mins[ component ];                                                   \
     }
-    
+
 
 namespace Brimstone {
 

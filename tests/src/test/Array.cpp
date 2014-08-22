@@ -57,7 +57,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Array_setInitializerList )
     Array5i o( cv_values );
-    
+
     o.set( { cv_valuesAlt[0], cv_valuesAlt[1], cv_valuesAlt[2], cv_valuesAlt[3], cv_valuesAlt[4] } );
 
     return allEqual( o.m_data, cv_valuesAlt );
@@ -67,7 +67,7 @@ UT_TEST_BEGIN( Array_getCppRange )
     int values[5];
     copyAll( cv_values, values );
     Array5i o( cv_valuesAlt );
-    
+
     o.get( values );
 
     return allEqual( o.m_data, cv_valuesAlt );
@@ -75,7 +75,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Array_fill )
     Array5i o( cv_values );
-    
+
     o.fill( 1 );
 
     return allEqualTo( o.m_data, 1 );
@@ -122,7 +122,7 @@ UT_TEST_BEGIN( Array_rangedFor )
 
     int idx = 0;
     for( int& i : o )
-        i = cv_valuesAlt[idx++]; 
+        i = cv_valuesAlt[idx++];
 
     return allEqual( o.m_data, cv_valuesAlt );
 UT_TEST_END()
@@ -131,7 +131,7 @@ UT_TEST_BEGIN( Array_rangedForConst )
     int data[cv_size];
     copyAll( cv_values, data );
     const Array5i o( cv_valuesAlt );
-    
+
     int idx = 0;
     for( int i : o )
         data[idx++] = i;
