@@ -1,15 +1,15 @@
 /*
-Vector2.hpp
+vector/Vector2.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
 Description:
-    Specialization of VectorN for 2D vectors.
+    Specialization of Vector for 2D vectors.
     Adds the following typedefs for convenience:
-        Vector2< T >: VectorN<T,2>
-        Vector2i:     VectorN<int32,2>
-        Vector2f:     VectorN<float,2>
-        Vector2d:     VectorN<double,2>
+        Vector2< T >: Vector<T,2>
+        Vector2i:     Vector<int32,2>
+        Vector2f:     Vector<float,2>
+        Vector2d:     Vector<double,2>
 */
 #ifndef BS_VECTOR_VECTOR2_HPP
 #define BS_VECTOR_VECTOR2_HPP
@@ -28,47 +28,47 @@ namespace Brimstone {
 namespace Private {
 
 template< typename T >
-void intNormalize( VectorN< T, 2 >& vecInOut );
+void intNormalize( Vector< T, 2 >& vecInOut );
 
 template< typename T >
-void floatNormalize( VectorN< T, 2 >& vecInOut );
+void floatNormalize( Vector< T, 2 >& vecInOut );
 
 }
 
 template< typename T >
-class VectorN< T, 2 > : public Private::BasePointN< T, 2 > {
+class Vector< T, 2 > : public Private::BasePoint< T, 2 > {
 public:
-    BS_POINT2_DECLARE_INHERITED_METHODS( VectorN, BS_SPEC_2( T2, 2 ) )
+    BS_POINT2_DECLARE_INHERITED_METHODS( Vector, BS_SPEC_2( T2, 2 ) )
     BS_VECTOR_DECLARE_METHODS( 2 )
 };
-BS_POINT2_DEFINE_INHERITED_METHODS( VectorN, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) )
+BS_POINT2_DEFINE_INHERITED_METHODS( Vector, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) )
 BS_VECTOR_DEFINE_METHODS( 2, BS_TMPL_1( typename T ) )
 
 template< typename T >
 template< typename T2 >
-VectorN< T, 2 >::VectorN( const PointN< T2, 2 >& to ) :
-    BasePointN(
+Vector< T, 2 >::Vector( const Point< T2, 2 >& to ) :
+    BasePoint(
         static_cast< T >( to.x ),
         static_cast< T >( to.y )
     ) {
 }
 
 template< typename T >
-VectorN< T, 2 >::VectorN( const PointN< T, 2 >& from, const PointN< T, 2 >& to ) :
-    BasePointN(
+Vector< T, 2 >::Vector( const Point< T, 2 >& from, const Point< T, 2 >& to ) :
+    BasePoint(
         ( to.x - from.x ),
         ( to.y - from.y )
     ) {
 }
 
 template< typename T >
-T VectorN< T, 2 >::getLengthSq() const {
+T Vector< T, 2 >::getLengthSq() const {
     return x * x +
            y * y;
 }
 
 template< typename T >
-VectorN< T, 2 >& VectorN< T, 2 >::operator +=( const VectorN& right ) {
+Vector< T, 2 >& Vector< T, 2 >::operator +=( const Vector& right ) {
     x += right.x;
     y += right.y;
 
@@ -76,7 +76,7 @@ VectorN< T, 2 >& VectorN< T, 2 >::operator +=( const VectorN& right ) {
 }
 
 template< typename T >
-VectorN< T, 2 >& VectorN< T, 2 >::operator -=( const VectorN& right ) {
+Vector< T, 2 >& Vector< T, 2 >::operator -=( const Vector& right ) {
     x -= right.x;
     y -= right.y;
 
@@ -84,7 +84,7 @@ VectorN< T, 2 >& VectorN< T, 2 >::operator -=( const VectorN& right ) {
 }
 
 template< typename T >
-VectorN< T, 2 >& VectorN< T, 2 >::operator *=( const VectorN& right ) {
+Vector< T, 2 >& Vector< T, 2 >::operator *=( const Vector& right ) {
     x *= right.x;
     y *= right.y;
 
@@ -92,7 +92,7 @@ VectorN< T, 2 >& VectorN< T, 2 >::operator *=( const VectorN& right ) {
 }
 
 template< typename T >
-VectorN< T, 2 >& VectorN< T, 2 >::operator /=( const VectorN& right ) {
+Vector< T, 2 >& Vector< T, 2 >::operator /=( const Vector& right ) {
     BS_ASSERT_NONZERO_DIVISOR( right.x );
     BS_ASSERT_NONZERO_DIVISOR( right.y );
 
@@ -103,7 +103,7 @@ VectorN< T, 2 >& VectorN< T, 2 >::operator /=( const VectorN& right ) {
 }
 
 template< typename T >
-VectorN< T, 2 >& VectorN< T, 2 >::operator +=( const T right ) {
+Vector< T, 2 >& Vector< T, 2 >::operator +=( const T right ) {
     x += right;
     y += right;
 
@@ -111,7 +111,7 @@ VectorN< T, 2 >& VectorN< T, 2 >::operator +=( const T right ) {
 }
 
 template< typename T >
-VectorN< T, 2 >& VectorN< T, 2 >::operator -=( const T right ) {
+Vector< T, 2 >& Vector< T, 2 >::operator -=( const T right ) {
     x -= right;
     y -= right;
 
@@ -119,7 +119,7 @@ VectorN< T, 2 >& VectorN< T, 2 >::operator -=( const T right ) {
 }
 
 template< typename T >
-VectorN< T, 2 >& VectorN< T, 2 >::operator *=( const T right ) {
+Vector< T, 2 >& Vector< T, 2 >::operator *=( const T right ) {
     x *= right;
     y *= right;
 
@@ -127,7 +127,7 @@ VectorN< T, 2 >& VectorN< T, 2 >::operator *=( const T right ) {
 }
 
 template< typename T >
-VectorN< T, 2 >& VectorN< T, 2 >::operator /=( const T right ) {
+Vector< T, 2 >& Vector< T, 2 >::operator /=( const T right ) {
     BS_ASSERT_NONZERO_DIVISOR( right );
 
     x /= right;
@@ -137,105 +137,105 @@ VectorN< T, 2 >& VectorN< T, 2 >::operator /=( const T right ) {
 }
 
 template< typename T >
-std::ostream& operator <<( std::ostream& left, const VectorN< T, 2 >& right ) {
+std::ostream& operator <<( std::ostream& left, const Vector< T, 2 >& right ) {
     return left << "< " << right.x << ", " << right.y << " >";
 }
 
 template< typename T >
-VectorN< T, 2 > operator -( const VectorN< T, 2 >& right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator -( const Vector< T, 2 >& right ) {
+    return Vector< T, 2 >(
         -right.x,
         -right.y
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator +( const VectorN< T, 2 >& left, const VectorN< T, 2 >& right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator +( const Vector< T, 2 >& left, const Vector< T, 2 >& right ) {
+    return Vector< T, 2 >(
         left.x + right.x,
         left.y + right.y
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator -( const VectorN< T, 2 >& left, const VectorN< T, 2 >& right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator -( const Vector< T, 2 >& left, const Vector< T, 2 >& right ) {
+    return Vector< T, 2 >(
         left.x - right.x,
         left.y - right.y
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator *( const VectorN< T, 2 >& left, const VectorN< T, 2 >& right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator *( const Vector< T, 2 >& left, const Vector< T, 2 >& right ) {
+    return Vector< T, 2 >(
         left.x * right.x,
         left.y * right.y
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator /( const VectorN< T, 2 >& left, const VectorN< T, 2 >& right ) {
+Vector< T, 2 > operator /( const Vector< T, 2 >& left, const Vector< T, 2 >& right ) {
     BS_ASSERT_NONZERO_DIVISOR( right.x );
     BS_ASSERT_NONZERO_DIVISOR( right.y );
 
-    return VectorN< T, 2 >(
+    return Vector< T, 2 >(
         left.x / right.x,
         left.y / right.y
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator +( const T left, const VectorN< T, 2 >& right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator +( const T left, const Vector< T, 2 >& right ) {
+    return Vector< T, 2 >(
         left + right.x,
         left + right.y
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator +( const VectorN< T, 2 >& left, const T right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator +( const Vector< T, 2 >& left, const T right ) {
+    return Vector< T, 2 >(
         left.x + right,
         left.y + right
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator -( const VectorN< T, 2 >& left, const T right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator -( const Vector< T, 2 >& left, const T right ) {
+    return Vector< T, 2 >(
         left.x - right,
         left.y - right
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator *( const T left, const VectorN< T, 2 >& right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator *( const T left, const Vector< T, 2 >& right ) {
+    return Vector< T, 2 >(
         left * right.x,
         left * right.y
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator *( const VectorN< T, 2 >& left, const T right ) {
-    return VectorN< T, 2 >(
+Vector< T, 2 > operator *( const Vector< T, 2 >& left, const T right ) {
+    return Vector< T, 2 >(
         left.x * right,
         left.y * right
     );
 }
 
 template< typename T >
-VectorN< T, 2 > operator /( const VectorN< T, 2 >& left, const T right ) {
+Vector< T, 2 > operator /( const Vector< T, 2 >& left, const T right ) {
     BS_ASSERT_NONZERO_DIVISOR( right );
 
-    return VectorN< T, 2 >(
+    return Vector< T, 2 >(
         left.x / right,
         left.y / right
     );
 }
 
 template< typename T >
-T dot( const VectorN< T, 2 >& left, const VectorN< T, 2 >& right ) {
+T dot( const Vector< T, 2 >& left, const Vector< T, 2 >& right ) {
     return left.x * right.x +
            left.y * right.y;
 }
@@ -243,7 +243,7 @@ T dot( const VectorN< T, 2 >& left, const VectorN< T, 2 >& right ) {
 namespace Private {
 
 template< typename T >
-void intNormalize( VectorN< T, 2 >& vecInOut ) {
+void intNormalize( Vector< T, 2 >& vecInOut ) {
     BS_ASSERT_CAN_NORMALIZE( vecInOut );
 
     T absX = abs( vecInOut.x );
@@ -260,7 +260,7 @@ void intNormalize( VectorN< T, 2 >& vecInOut ) {
 
 
 template< typename T >
-void floatNormalize( VectorN< T, 2 >& vecInOut ) {
+void floatNormalize( Vector< T, 2 >& vecInOut ) {
     BS_ASSERT_CAN_NORMALIZE( vecInOut );
 
     T invLen = fastInvSqrt( vecInOut.getLengthSq() );
@@ -272,7 +272,7 @@ void floatNormalize( VectorN< T, 2 >& vecInOut ) {
 
 //Typedefs
 template< typename T >
-using Vector2 = VectorN< T, 2 >;
+using Vector2 = Vector< T, 2 >;
 typedef Vector2< int32  > Vector2i;
 typedef Vector2< float  > Vector2f;
 typedef Vector2< double > Vector2d;

@@ -20,9 +20,9 @@ Description:
 
 
 namespace {
-    typedef ::Brimstone::BoundsN< int, 5 >   Bounds5i;
-    typedef ::Brimstone::PointN< int, 5 >    Point5i;
-    typedef ::Brimstone::BoundsN< float, 5 > Bounds5f;
+    typedef ::Brimstone::Bounds< int, 5 >   Bounds5i;
+    typedef ::Brimstone::Point< int, 5 >    Point5i;
+    typedef ::Brimstone::Bounds< float, 5 > Bounds5f;
     using   ::Brimstone::BoundsException;
 
     const size_t cv_size             = 5;

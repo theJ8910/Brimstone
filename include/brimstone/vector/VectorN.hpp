@@ -1,12 +1,12 @@
 /*
-VectorN.hpp
+vector/VectorN.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
 Description:
-    Adds a generic vector class, VectorN.
+    Adds a generic vector class, Vector.
     You can specify what type of data the vector uses (int, float, etc) as well as the dimension of the vector.
-    2D and 3D specializations of VectorN are provided in Vector2.hpp and Vector3.hpp.
+    2D, 3D and 4D specializations of Vector are provided in Vector2.hpp, Vector3.hpp, and Vector4.hpp, respectively.
 */
 #ifndef BS_VECTOR_VECTORN_HPP
 #define BS_VECTOR_VECTORN_HPP
@@ -18,7 +18,7 @@ Description:
 #include <initializer_list>             //std::initializer_list
 #include <cstdlib>                      //abs
 
-#include <brimstone/Point.hpp>          //BasePointN
+#include <brimstone/Point.hpp>          //BasePoint
 #include <brimstone/util/Math.hpp>      //fastSqrt, fastInvSqrt
 
 
@@ -62,8 +62,8 @@ The upper bound is slightly higher than the lower bound, so we choose that for t
 //Macros
 #define BS_VECTOR_DECLARE_METHODS( N )                                              \
     template< typename T2 >                                                         \
-    VectorN( const PointN< T2, N >& to );                                           \
-    VectorN( const PointN< T, N >& from, const PointN< T, N >& to );                \
+    Vector( const Point< T2, N >& to );                                             \
+    Vector( const Point< T, N >& from, const Point< T, N >& to );                   \
                                                                                     \
     T getLength() const;                                                            \
     T getLengthSq() const;                                                          \
@@ -71,140 +71,140 @@ The upper bound is slightly higher than the lower bound, so we choose that for t
     void normalize();                                                               \
     bool isUnitVec() const;                                                         \
                                                                                     \
-    VectorN&    operator +=( const VectorN& right );                                \
-    VectorN&    operator -=( const VectorN& right );                                \
-    VectorN&    operator *=( const VectorN& right );                                \
-    VectorN&    operator /=( const VectorN& right );                                \
-    VectorN&    operator +=( const T right );                                       \
-    VectorN&    operator -=( const T right );                                       \
-    VectorN&    operator *=( const T right );                                       \
-    VectorN&    operator /=( const T right );
+    Vector&    operator +=( const Vector& right );                                  \
+    Vector&    operator -=( const Vector& right );                                  \
+    Vector&    operator *=( const Vector& right );                                  \
+    Vector&    operator /=( const Vector& right );                                  \
+    Vector&    operator +=( const T right );                                        \
+    Vector&    operator -=( const T right );                                        \
+    Vector&    operator *=( const T right );                                        \
+    Vector&    operator /=( const T right );
 
 #define BS_VECTOR_DEFINE_METHODS( N, tmpl )                                         \
     tmpl                                                                            \
-    T VectorN< T, N >::getLength() const {                                          \
+    T Vector< T, N >::getLength() const {                                           \
         return (T)fastSqrt( (float)getLengthSq() );                                 \
     }                                                                               \
     tmpl                                                                            \
-    void VectorN< T, N >::normalize() {                                             \
+    void Vector< T, N >::normalize() {                                              \
         Private::normalize( *this );                                                \
     }                                                                               \
     tmpl                                                                            \
-    bool VectorN< T, N >::isUnitVec() const {                                       \
+    bool Vector< T, N >::isUnitVec() const {                                        \
         return Private::isUnitVec( *this );                                         \
     }                                                                               \
 
 namespace Brimstone {
 
 template< typename T, size_t N >
-class VectorN;
+class Vector;
 
 namespace Private {
 
 template< typename T, size_t N >
-void normalize( VectorN< T, N >& vecInOut );
+void normalize( Vector< T, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< int8, N >& vecInOut );
+void normalize( Vector< int8, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< uint8, N >& vecInOut );
+void normalize( Vector< uint8, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< int16, N >& vecInOut );
+void normalize( Vector< int16, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< uint16, N >& vecInOut );
+void normalize( Vector< uint16, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< int32, N >& vecInOut );
+void normalize( Vector< int32, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< uint32, N >& vecInOut );
+void normalize( Vector< uint32, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< int64, N >& vecInOut );
+void normalize( Vector< int64, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< uint64, N >& vecInOut );
+void normalize( Vector< uint64, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< float, N >& vecInOut );
+void normalize( Vector< float, N >& vecInOut );
 
 template< size_t N >
-void normalize( VectorN< double, N >& vecInOut );
+void normalize( Vector< double, N >& vecInOut );
 
 template< typename T, size_t N >
-void intNormalize( VectorN< T, N >& vecInOut );
+void intNormalize( Vector< T, N >& vecInOut );
 
 template< typename T, size_t N >
-void floatNormalize( VectorN< T, N >& vecInOut );
+void floatNormalize( Vector< T, N >& vecInOut );
 
 template< typename T, size_t N >
-bool isUnitVec( const VectorN< T, N >& vec );
+bool isUnitVec( const Vector< T, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< int8, N >& vec );
+bool isUnitVec( const Vector< int8, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< uint8, N >& vec );
+bool isUnitVec( const Vector< uint8, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< int16, N >& vec );
+bool isUnitVec( const Vector< int16, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< uint16, N >& vec );
+bool isUnitVec( const Vector< uint16, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< int32, N >& vec );
+bool isUnitVec( const Vector< int32, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< uint32, N >& vec );
+bool isUnitVec( const Vector< uint32, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< int64, N >& vec );
+bool isUnitVec( const Vector< int64, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< uint64, N >& vec );
+bool isUnitVec( const Vector< uint64, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< float, N >& vec );
+bool isUnitVec( const Vector< float, N >& vec );
 
 template< size_t N >
-bool isUnitVec( const VectorN< double, N >& vec );
+bool isUnitVec( const Vector< double, N >& vec );
 
 template< typename T, size_t N >
-bool intIsUnitVec( const VectorN< T, N >& vec );
+bool intIsUnitVec( const Vector< T, N >& vec );
 
 template< typename T, size_t N >
-bool floatIsUnitVec( const VectorN< T, N >& vec );
+bool floatIsUnitVec( const Vector< T, N >& vec );
 
 }
 
 template< typename T, size_t N >
-class VectorN : public Private::BasePointN< T, N > {
+class Vector : public Private::BasePoint< T, N > {
 public:
-    BS_POINT_DECLARE_INHERITED_METHODS( VectorN, N, BS_SPEC_2( T2, N ) )
+    BS_POINT_DECLARE_INHERITED_METHODS( Vector, N, BS_SPEC_2( T2, N ) )
     BS_VECTOR_DECLARE_METHODS( N )
 };
-BS_POINT_DEFINE_INHERITED_METHODS( VectorN, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) );
+BS_POINT_DEFINE_INHERITED_METHODS( Vector, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) );
 BS_VECTOR_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
 
 template< typename T, size_t N >
 template< typename T2 >
-VectorN< T, N >::VectorN( const PointN< T2, N >& to ) {
+Vector< T, N >::Vector( const Point< T2, N >& to ) {
     for( size_t i = 0; i < N; ++i )
         data[i] = static_cast< T >( to.data[i] );
 }
 
 template< typename T, size_t N >
-VectorN< T, N >::VectorN( const PointN< T, N >& from, const PointN< T, N >& to ) {
+Vector< T, N >::Vector( const Point< T, N >& from, const Point< T, N >& to ) {
     for( int i = 0; i < N; ++i )
         data[i] = to.data[i] - from.data[i];
 }
 
 template< typename T, size_t N >
-T VectorN< T, N >::getLengthSq() const {
+T Vector< T, N >::getLengthSq() const {
     T lengthSq = 0;
 
     for( int i = 0; i < N; ++i )
@@ -214,7 +214,7 @@ T VectorN< T, N >::getLengthSq() const {
 }
 
 template< typename T, size_t N >
-VectorN< T, N >& VectorN< T, N >::operator +=( const VectorN& right ) {
+Vector< T, N >& Vector< T, N >::operator +=( const Vector& right ) {
     for( int i = 0; i < N; ++i )
         data[i] += right.data[i];
 
@@ -222,7 +222,7 @@ VectorN< T, N >& VectorN< T, N >::operator +=( const VectorN& right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N >& VectorN< T, N >::operator -=( const VectorN& right ) {
+Vector< T, N >& Vector< T, N >::operator -=( const Vector& right ) {
     for( int i = 0; i < N; ++i )
         data[i] -= right.data[i];
 
@@ -230,7 +230,7 @@ VectorN< T, N >& VectorN< T, N >::operator -=( const VectorN& right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N >& VectorN< T, N >::operator *=( const VectorN& right ) {
+Vector< T, N >& Vector< T, N >::operator *=( const Vector& right ) {
     for( int i = 0; i < N; ++i )
         data[i] *= right.data[i];
 
@@ -238,7 +238,7 @@ VectorN< T, N >& VectorN< T, N >::operator *=( const VectorN& right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N >& VectorN< T, N >::operator /=( const VectorN& right ) {
+Vector< T, N >& Vector< T, N >::operator /=( const Vector& right ) {
     for( int i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( right.data[i] );
         data[i] /= right.data[i];
@@ -248,7 +248,7 @@ VectorN< T, N >& VectorN< T, N >::operator /=( const VectorN& right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N >& VectorN< T, N >::operator +=( const T right ) {
+Vector< T, N >& Vector< T, N >::operator +=( const T right ) {
     for( int i = 0; i < N; ++i )
         data[i] += right;
 
@@ -256,7 +256,7 @@ VectorN< T, N >& VectorN< T, N >::operator +=( const T right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N >& VectorN< T, N >::operator -=( const T right ) {
+Vector< T, N >& Vector< T, N >::operator -=( const T right ) {
     for( int i = 0; i < N; ++i )
         data[i] -= right;
 
@@ -264,7 +264,7 @@ VectorN< T, N >& VectorN< T, N >::operator -=( const T right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N >& VectorN< T, N >::operator *=( const T right ) {
+Vector< T, N >& Vector< T, N >::operator *=( const T right ) {
     for( int i = 0; i < N; ++i )
         data[i] *= right;
 
@@ -272,7 +272,7 @@ VectorN< T, N >& VectorN< T, N >::operator *=( const T right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N >& VectorN< T, N >::operator /=( const T right ) {
+Vector< T, N >& Vector< T, N >::operator /=( const T right ) {
     BS_ASSERT_NONZERO_DIVISOR( right );
 
     for( int i = 0; i < N; ++i )
@@ -282,7 +282,7 @@ VectorN< T, N >& VectorN< T, N >::operator /=( const T right ) {
 }
 
 template< typename T, size_t N >
-std::ostream& operator <<( std::ostream& left, const VectorN< T, N >& right ) {
+std::ostream& operator <<( std::ostream& left, const Vector< T, N >& right ) {
     left << "< ";
 
     left << right.data[0];
@@ -295,7 +295,7 @@ std::ostream& operator <<( std::ostream& left, const VectorN< T, N >& right ) {
 }
 
 template< typename T, size_t N >
-bool operator ==( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
+bool operator ==( const Vector< T, N >& left, const Vector< T, N >& right ) {
     for( size_t i = 0; i < N; ++i )
         if( left.data[i] != right.data[i] )
             return false;
@@ -303,7 +303,7 @@ bool operator ==( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
 }
 
 template< typename T, size_t N >
-bool operator !=( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
+bool operator !=( const Vector< T, N >& left, const Vector< T, N >& right ) {
     for( size_t i = 0; i < N; ++i )
         if( left.data[i] != right.data[i] )
             return true;
@@ -311,13 +311,13 @@ bool operator !=( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator +( const VectorN< T, N >& right ) {
+Vector< T, N > operator +( const Vector< T, N >& right ) {
     return right;
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator -( const VectorN< T, N >& right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator -( const Vector< T, N >& right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out.data[i] = -right.data[i];
@@ -326,8 +326,8 @@ VectorN< T, N > operator -( const VectorN< T, N >& right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator +( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator +( const Vector< T, N >& left, const Vector< T, N >& right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out.data[i] = left.data[i] + right.data[i];
@@ -336,8 +336,8 @@ VectorN< T, N > operator +( const VectorN< T, N >& left, const VectorN< T, N >& 
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator -( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator -( const Vector< T, N >& left, const Vector< T, N >& right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out.data[i] = left.data[i] - right.data[i];
@@ -346,8 +346,8 @@ VectorN< T, N > operator -( const VectorN< T, N >& left, const VectorN< T, N >& 
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator *( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator *( const Vector< T, N >& left, const Vector< T, N >& right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out.data[i] = left.data[i] * right.data[i];
@@ -356,8 +356,8 @@ VectorN< T, N > operator *( const VectorN< T, N >& left, const VectorN< T, N >& 
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator /( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator /( const Vector< T, N >& left, const Vector< T, N >& right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( right.data[i] );
@@ -368,8 +368,8 @@ VectorN< T, N > operator /( const VectorN< T, N >& left, const VectorN< T, N >& 
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator +( const T left, const VectorN< T, N >& right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator +( const T left, const Vector< T, N >& right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out[i] = left + right[i];
@@ -378,8 +378,8 @@ VectorN< T, N > operator +( const T left, const VectorN< T, N >& right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator +( const VectorN< T, N >& left, const T right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator +( const Vector< T, N >& left, const T right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out[i] = left[i] + right;
@@ -388,8 +388,8 @@ VectorN< T, N > operator +( const VectorN< T, N >& left, const T right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator -( const VectorN< T, N >& left, const T right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator -( const Vector< T, N >& left, const T right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out[i] = left[i] - right;
@@ -398,8 +398,8 @@ VectorN< T, N > operator -( const VectorN< T, N >& left, const T right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator *( const T left, const VectorN< T, N >& right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator *( const T left, const Vector< T, N >& right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out[i] = left * right[i];
@@ -408,8 +408,8 @@ VectorN< T, N > operator *( const T left, const VectorN< T, N >& right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator *( const VectorN< T, N >& left, const T right ) {
-    VectorN< T, N > out;
+Vector< T, N > operator *( const Vector< T, N >& left, const T right ) {
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out[i] = left[i] * right;
@@ -418,10 +418,10 @@ VectorN< T, N > operator *( const VectorN< T, N >& left, const T right ) {
 }
 
 template< typename T, size_t N >
-VectorN< T, N > operator /( const VectorN< T, N >& left, const T right ) {
+Vector< T, N > operator /( const Vector< T, N >& left, const T right ) {
     BS_ASSERT_NONZERO_DIVISOR( right );
 
-    VectorN< T, N > out;
+    Vector< T, N > out;
 
     for( int i = 0; i < N; ++i )
         out[i] = left[i] / right;
@@ -430,7 +430,7 @@ VectorN< T, N > operator /( const VectorN< T, N >& left, const T right ) {
 }
 
 template< typename T, size_t N >
-T dot( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
+T dot( const Vector< T, N >& left, const Vector< T, N >& right ) {
     T dp = 0;
 
     for( int i = 0; i < N; ++i )
@@ -442,34 +442,34 @@ T dot( const VectorN< T, N >& left, const VectorN< T, N >& right ) {
 namespace Private {
 
 template< typename T, size_t N >
-void normalize( const VectorN< T, N >& vec ) {
+void normalize( const Vector< T, N >& vec ) {
     //By default, do nothing for exotic types
     //Make an override if you want it to do something special
 }
 
 template< size_t N >
-void normalize( VectorN< int8,   N >& vecInOut ) { intNormalize( vecInOut );   }
+void normalize( Vector< int8,   N >& vecInOut ) { intNormalize( vecInOut );   }
 template< size_t N >
-void normalize( VectorN< uint8,  N >& vecInOut ) { intNormalize( vecInOut );   }
+void normalize( Vector< uint8,  N >& vecInOut ) { intNormalize( vecInOut );   }
 template< size_t N >
-void normalize( VectorN< int16,  N >& vecInOut ) { intNormalize( vecInOut );   }
+void normalize( Vector< int16,  N >& vecInOut ) { intNormalize( vecInOut );   }
 template< size_t N >
-void normalize( VectorN< uint16, N >& vecInOut ) { intNormalize( vecInOut );   }
+void normalize( Vector< uint16, N >& vecInOut ) { intNormalize( vecInOut );   }
 template< size_t N >
-void normalize( VectorN< int32,  N >& vecInOut ) { intNormalize( vecInOut );   }
+void normalize( Vector< int32,  N >& vecInOut ) { intNormalize( vecInOut );   }
 template< size_t N >
-void normalize( VectorN< uint32, N >& vecInOut ) { intNormalize( vecInOut );   }
+void normalize( Vector< uint32, N >& vecInOut ) { intNormalize( vecInOut );   }
 template< size_t N >
-void normalize( VectorN< int64,  N >& vecInOut ) { intNormalize( vecInOut );   }
+void normalize( Vector< int64,  N >& vecInOut ) { intNormalize( vecInOut );   }
 template< size_t N >
-void normalize( VectorN< uint64, N >& vecInOut ) { intNormalize( vecInOut );   }
+void normalize( Vector< uint64, N >& vecInOut ) { intNormalize( vecInOut );   }
 template< size_t N >
-void normalize( VectorN< float,  N >& vecInOut ) { floatNormalize( vecInOut ); }
+void normalize( Vector< float,  N >& vecInOut ) { floatNormalize( vecInOut ); }
 template< size_t N >
-void normalize( VectorN< double, N >& vecInOut ) { floatNormalize( vecInOut ); }
+void normalize( Vector< double, N >& vecInOut ) { floatNormalize( vecInOut ); }
 
 template< typename T, size_t N >
-void intNormalize( VectorN< T, N >& vecInOut ) {
+void intNormalize( Vector< T, N >& vecInOut ) {
     BS_ASSERT_CAN_NORMALIZE( vecInOut );
 
     T* maxp   = vecInOut.data;
@@ -502,7 +502,7 @@ void intNormalize( VectorN< T, N >& vecInOut ) {
 
 
 template< typename T, size_t N >
-void floatNormalize( VectorN< T, N >& vecInOut ) {
+void floatNormalize( Vector< T, N >& vecInOut ) {
     BS_ASSERT_CAN_NORMALIZE( vecInOut );
 
     T invLen = fastInvSqrt( vecInOut.getLengthSq() );
@@ -511,40 +511,40 @@ void floatNormalize( VectorN< T, N >& vecInOut ) {
 }
 
 template< typename T, size_t N >
-bool isUnitVector( const VectorN< T, N >& vec ) {
+bool isUnitVector( const Vector< T, N >& vec ) {
     //By default, return false for exotic types
     //Make an override if you want it to do something special
     return false;
 }
 
 template< size_t N >
-bool isUnitVec( const VectorN< int8,   N >& vec ) { return intIsUnitVec( vec );   }
+bool isUnitVec( const Vector< int8,   N >& vec ) { return intIsUnitVec( vec );   }
 template< size_t N >
-bool isUnitVec( const VectorN< uint8,  N >& vec ) { return intIsUnitVec( vec );   }
+bool isUnitVec( const Vector< uint8,  N >& vec ) { return intIsUnitVec( vec );   }
 template< size_t N >
-bool isUnitVec( const VectorN< int16,  N >& vec ) { return intIsUnitVec( vec );   }
+bool isUnitVec( const Vector< int16,  N >& vec ) { return intIsUnitVec( vec );   }
 template< size_t N >
-bool isUnitVec( const VectorN< uint16, N >& vec ) { return intIsUnitVec( vec );   }
+bool isUnitVec( const Vector< uint16, N >& vec ) { return intIsUnitVec( vec );   }
 template< size_t N >
-bool isUnitVec( const VectorN< int32,  N >& vec ) { return intIsUnitVec( vec );   }
+bool isUnitVec( const Vector< int32,  N >& vec ) { return intIsUnitVec( vec );   }
 template< size_t N >
-bool isUnitVec( const VectorN< uint32, N >& vec ) { return intIsUnitVec( vec );   }
+bool isUnitVec( const Vector< uint32, N >& vec ) { return intIsUnitVec( vec );   }
 template< size_t N >
-bool isUnitVec( const VectorN< int64,  N >& vec ) { return intIsUnitVec( vec );   }
+bool isUnitVec( const Vector< int64,  N >& vec ) { return intIsUnitVec( vec );   }
 template< size_t N >
-bool isUnitVec( const VectorN< uint64, N >& vec ) { return intIsUnitVec( vec );   }
+bool isUnitVec( const Vector< uint64, N >& vec ) { return intIsUnitVec( vec );   }
 template< size_t N >
-bool isUnitVec( const VectorN< float,  N >& vec ) { return floatIsUnitVec( vec ); }
+bool isUnitVec( const Vector< float,  N >& vec ) { return floatIsUnitVec( vec ); }
 template< size_t N >
-bool isUnitVec( const VectorN< double, N >& vec ) { return floatIsUnitVec( vec ); }
+bool isUnitVec( const Vector< double, N >& vec ) { return floatIsUnitVec( vec ); }
 
 template< typename T, size_t N >
-bool intIsUnitVec( const VectorN< T, N >& vec ) {
+bool intIsUnitVec( const Vector< T, N >& vec ) {
     return vec.getLengthSq() == (T)1;
 }
 
 template< typename T, size_t N >
-bool floatIsUnitVec( const VectorN< T, N >& vec ) {
+bool floatIsUnitVec( const Vector< T, N >& vec ) {
     return abs( (T)1.0 - vec.getLengthSq() ) < BS_VECTOR_UNIT_MAX_ERROR;
 }
 

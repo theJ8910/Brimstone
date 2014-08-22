@@ -1,15 +1,15 @@
 ﻿/*
-Point4.hpp
+point/Point4.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
 Description:
-    Specialization of PointN for 4D points.
+    Specialization of Point for 4D points.
     Adds the following typedefs for convenience:
-        Point4< T >: PointN<T,4>
-        Point4i:     PointN<int32,4>
-        Point4f:     PointN<float,4>
-        Point4d:     PointN<double,4>
+        Point4< T >: Point<T,4>
+        Point4i:     Point<int32,4>
+        Point4f:     Point<float,4>
+        Point4d:     Point<double,4>
 */
 #ifndef BS_POINT_POINT4_HPP
 #define BS_POINT_POINT4_HPP
@@ -18,7 +18,7 @@ Description:
 
 
 //Includes
-#include <brimstone/point/PointN.hpp>   //PointN
+#include <brimstone/point/PointN.hpp>   //Point
 
 
 
@@ -31,14 +31,14 @@ Description:
     BS_POINT_DEFINE_INHERITED_METHODS( className, 4, tmpl, spec, spec2 )        \
     tmpl                                                                        \
     className spec::className( const T x, const T y, const T z, const T w ) :   \
-        BasePointN( x, y, z, w ) {                                              \
+        BasePoint( x, y, z, w ) {                                               \
     }
 
 namespace Brimstone {
 namespace Private {
 
 template< typename T >
-class BasePointN< T, 4 > {
+class BasePoint< T, 4 > {
 public:
 //C4201: nonstandard extension used : nameless struct/union
 //It's a non-standard feature, but VC++, G++, and LLVM support it so it shouldn't be too much of an issue
@@ -52,7 +52,7 @@ public:
 
 #pragma warning( pop )
 public:
-    BS_POINT4_DECLARE_INHERITED_METHODS( BasePointN, BS_SPEC_2( T2, 4 ) )
+    BS_POINT4_DECLARE_INHERITED_METHODS( BasePoint, BS_SPEC_2( T2, 4 ) )
 
     //Generic methods
     BS_POINT_DECLARE_METHODS( 4 )
@@ -62,10 +62,10 @@ public:
     void get( T& xOut, T& yOut, T& zOut, T& wOut ) const;
 };
 
-BS_ARRAY_DEFINE_METHODS( BasePointN, T, data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ) )
+BS_ARRAY_DEFINE_METHODS( BasePoint, T, data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ) )
 
 template< typename T >
-inline BasePointN< T, 4 >::BasePointN( const T& elem ) :
+inline BasePoint< T, 4 >::BasePoint( const T& elem ) :
     x( elem ),
     y( elem ),
     z( elem ),
@@ -74,7 +74,7 @@ inline BasePointN< T, 4 >::BasePointN( const T& elem ) :
 
 template< typename T >
 template< typename T2 >
-inline BasePointN< T, 4 >::BasePointN( const T2& cppRange ) :
+inline BasePoint< T, 4 >::BasePoint( const T2& cppRange ) :
     x( cppRange[0] ),
     y( cppRange[1] ),
     z( cppRange[2] ),
@@ -83,7 +83,7 @@ inline BasePointN< T, 4 >::BasePointN( const T2& cppRange ) :
 }
 
 template< typename T >
-inline BasePointN< T, 4 >::BasePointN( std::initializer_list< T > il ) :
+inline BasePoint< T, 4 >::BasePoint( std::initializer_list< T > il ) :
     x( *( std::begin( il )     ) ),
     y( *( std::begin( il ) + 1 ) ),
     z( *( std::begin( il ) + 2 ) ),
@@ -93,7 +93,7 @@ inline BasePointN< T, 4 >::BasePointN( std::initializer_list< T > il ) :
 
 template< typename T >
 template< typename T2 >
-inline void BasePointN< T, 4 >::set( const T2& cppRange ) {
+inline void BasePoint< T, 4 >::set( const T2& cppRange ) {
     BS_ASSERT_SIZE( rangeSize( cppRange ), 4 );
     x = cppRange[0];
     y = cppRange[1];
@@ -102,7 +102,7 @@ inline void BasePointN< T, 4 >::set( const T2& cppRange ) {
 }
 
 template< typename T >
-inline void BasePointN< T, 4 >::set( std::initializer_list< T > il ) {
+inline void BasePoint< T, 4 >::set( std::initializer_list< T > il ) {
     BS_ASSERT_SIZE( rangeSize( il ), 4 );
     auto it = std::begin( il );
     x = *( it     );
@@ -113,7 +113,7 @@ inline void BasePointN< T, 4 >::set( std::initializer_list< T > il ) {
 
 template< typename T >
 template< typename T2 >
-inline void BasePointN< T, 4 >::get( T2& cppRangeOut ) const {
+inline void BasePoint< T, 4 >::get( T2& cppRangeOut ) const {
     BS_ASSERT_SIZE( rangeSize( cppRangeOut ), 4 );
     cppRangeOut[0] = x;
     cppRangeOut[1] = y;
@@ -122,7 +122,7 @@ inline void BasePointN< T, 4 >::get( T2& cppRangeOut ) const {
 }
 
 template< typename T >
-inline void BasePointN< T, 4 >::fill( const T& elem ) {
+inline void BasePoint< T, 4 >::fill( const T& elem ) {
     x = elem;
     y = elem;
     z = elem;
@@ -130,7 +130,7 @@ inline void BasePointN< T, 4 >::fill( const T& elem ) {
 }
 
 template< typename T >
-BasePointN< T, 4 >::BasePointN()
+BasePoint< T, 4 >::BasePoint()
 #ifdef BS_ZERO
     : x( 0 ), y( 0 ), z( 0 ), w( 0 )
 #endif //BS_ZERO
@@ -139,7 +139,7 @@ BasePointN< T, 4 >::BasePointN()
 
 template< typename T >
 template< typename T2 >
-BasePointN< T, 4 >::BasePointN( const BasePointN< T2, 4 >& toCopy ) :
+BasePoint< T, 4 >::BasePoint( const BasePoint< T2, 4 >& toCopy ) :
     x( static_cast<T>( toCopy.x ) ),
     y( static_cast<T>( toCopy.y ) ),
     z( static_cast<T>( toCopy.z ) ),
@@ -147,7 +147,7 @@ BasePointN< T, 4 >::BasePointN( const BasePointN< T2, 4 >& toCopy ) :
 }
 
 template< typename T >
-void BasePointN< T, 4 >::zero() {
+void BasePoint< T, 4 >::zero() {
     x = 0;
     y = 0;
     z = 0;
@@ -155,7 +155,7 @@ void BasePointN< T, 4 >::zero() {
 }
 
 template< typename T >
-bool BasePointN< T, 4 >::isZero() const {
+bool BasePoint< T, 4 >::isZero() const {
     return x == 0 &&
            y == 0 &&
            z == 0 &&
@@ -163,20 +163,20 @@ bool BasePointN< T, 4 >::isZero() const {
 }
 
 template< typename T >
-BasePointN< T, 4 >::BasePointN( const T x, const T y, const T z, const T w ) :
+BasePoint< T, 4 >::BasePoint( const T x, const T y, const T z, const T w ) :
     x( x ), y( y ), z( z ), w( w ) {
 }
 
 template< typename T >
-void BasePointN< T, 4 >::set( const T x, const T y, const T z, const T w ) {
-    BasePointN::x = x;
-    BasePointN::y = y;
-    BasePointN::z = z;
-    BasePointN::w = w;
+void BasePoint< T, 4 >::set( const T x, const T y, const T z, const T w ) {
+    BasePoint::x = x;
+    BasePoint::y = y;
+    BasePoint::z = z;
+    BasePoint::w = w;
 }
 
 template< typename T >
-void BasePointN< T, 4 >::get( T& xOut, T& yOut, T& zOut, T& wOut ) const {
+void BasePoint< T, 4 >::get( T& xOut, T& yOut, T& zOut, T& wOut ) const {
     xOut = x;
     yOut = y;
     zOut = z;
@@ -185,7 +185,7 @@ void BasePointN< T, 4 >::get( T& xOut, T& yOut, T& zOut, T& wOut ) const {
 
 template< typename T >
 template< typename T2 >
-BasePointN< T, 4 >& BasePointN< T, 4 >::operator =( const BasePointN< T2, 4 >& right ) {
+BasePoint< T, 4 >& BasePoint< T, 4 >::operator =( const BasePoint< T2, 4 >& right ) {
     x = static_cast< T >( right.x );
     y = static_cast< T >( right.y );
     z = static_cast< T >( right.z );
@@ -200,23 +200,23 @@ BasePointN< T, 4 >& BasePointN< T, 4 >::operator =( const BasePointN< T2, 4 >& r
 
 
 template< typename T >
-class PointN< T, 4 > : public Private::BasePointN< T, 4 > {
+class Point< T, 4 > : public Private::BasePoint< T, 4 > {
 public:
     //Specializations of generic methods
-    BS_POINT4_DECLARE_INHERITED_METHODS( PointN, BS_SPEC_2( T2, 4 ) )
+    BS_POINT4_DECLARE_INHERITED_METHODS( Point, BS_SPEC_2( T2, 4 ) )
 };
-BS_POINT4_DEFINE_INHERITED_METHODS( PointN, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ), BS_SPEC_2( T2, 4 ) );
+BS_POINT4_DEFINE_INHERITED_METHODS( Point, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ), BS_SPEC_2( T2, 4 ) );
 
 
 
 
 template< typename T >
-std::ostream& operator <<( std::ostream& left, const PointN< T, 4 >& right ) {
+std::ostream& operator <<( std::ostream& left, const Point< T, 4 >& right ) {
     return left << "( " << right.x << ", " << right.y << ", " << right.z << ", " << right.w << " )";
 }
 
 template< typename T >
-bool operator ==( const PointN< T, 4 >& left, const PointN< T, 4 >& right ) {
+bool operator ==( const Point< T, 4 >& left, const Point< T, 4 >& right ) {
     return left.x == right.x &&
            left.y == right.y &&
            left.z == right.z &&
@@ -224,7 +224,7 @@ bool operator ==( const PointN< T, 4 >& left, const PointN< T, 4 >& right ) {
 }
 
 template< typename T >
-bool operator !=( const PointN< T, 4 >& left, const PointN< T, 4 >& right ) {
+bool operator !=( const Point< T, 4 >& left, const Point< T, 4 >& right ) {
     return left.x != right.x ||
            left.y != right.y ||
            left.z != right.z ||
@@ -232,7 +232,7 @@ bool operator !=( const PointN< T, 4 >& left, const PointN< T, 4 >& right ) {
 }
 
 template< typename T >
-T distanceSq( const PointN< T, 4 >& left, const PointN< T, 4 >& right ) {
+T distanceSq( const Point< T, 4 >& left, const Point< T, 4 >& right ) {
     T xoff = ( right.x - left.x );
     T yoff = ( right.y - left.y );
     T zoff = ( right.z - left.z );
@@ -245,7 +245,7 @@ T distanceSq( const PointN< T, 4 >& left, const PointN< T, 4 >& right ) {
 }
 
 template< typename T >
-T manhattan( const PointN< T, 4 >& left, const PointN< T, 4 >& right ) {
+T manhattan( const Point< T, 4 >& left, const Point< T, 4 >& right ) {
     return abs( right.x - left.x ) +
            abs( right.y - left.y ) +
            abs( right.z - left.z ) +
@@ -257,7 +257,7 @@ T manhattan( const PointN< T, 4 >& left, const PointN< T, 4 >& right ) {
 
 //Typedefs
 template< typename T >
-using Point4 = PointN< T, 4 >;
+using Point4 = Point< T, 4 >;
 typedef Point4< int32  > Point4i;
 typedef Point4< float  > Point4f;
 typedef Point4< double > Point4d;
