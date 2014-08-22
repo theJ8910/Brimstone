@@ -166,6 +166,7 @@
     <ClInclude Include="..\..\include\brimstone\Bounds.hpp" />
     <ClInclude Include="..\..\include\brimstone\bounds\Bounds2.hpp" />
     <ClInclude Include="..\..\include\brimstone\bounds\Bounds3.hpp" />
+    <ClInclude Include="..\..\include\brimstone\bounds\Bounds4.hpp" />
     <ClInclude Include="..\..\include\brimstone\bounds\BoundsN.hpp" />
     <ClInclude Include="..\..\include\brimstone\Exception.hpp" />
     <ClInclude Include="..\..\include\brimstone\factory\BasicFactory.hpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="..\..\include\brimstone\Point.hpp" />
     <ClInclude Include="..\..\include\brimstone\point\Point2.hpp" />
     <ClInclude Include="..\..\include\brimstone\point\Point3.hpp" />
+    <ClInclude Include="..\..\include\brimstone\point\Point4.hpp" />
     <ClInclude Include="..\..\include\brimstone\point\PointN.hpp" />
     <ClInclude Include="..\..\include\brimstone\signals\Delegate.hpp" />
     <ClInclude Include="..\..\include\brimstone\signals\Signal.hpp" />
@@ -198,6 +200,7 @@
     <ClInclude Include="..\..\include\brimstone\Vector.hpp" />
     <ClInclude Include="..\..\include\brimstone\vector\Vector2.hpp" />
     <ClInclude Include="..\..\include\brimstone\vector\Vector3.hpp" />
+    <ClInclude Include="..\..\include\brimstone\vector\Vector4.hpp" />
     <ClInclude Include="..\..\include\brimstone\vector\VectorN.hpp" />
     <ClInclude Include="..\..\include\brimstone\Window.hpp" />
     <ClInclude Include="..\..\include\brimstone\WindowEvents.hpp" />

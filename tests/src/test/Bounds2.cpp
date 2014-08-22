@@ -250,6 +250,19 @@ UT_TEST_BEGIN( Bounds2_setMinMax )
     return allEqual( o.data, cv_valuesAlt );
 UT_TEST_END()
 
+UT_TEST_BEGIN( Bounds2_getValues )
+    Bounds2i o( cv_values );
+
+    int data[2*cv_size];
+
+    o.get(
+        data[0], data[1],
+        data[2], data[3]
+    );
+
+    return allEqual( data, cv_values );
+UT_TEST_END()
+
 UT_TEST_BEGIN( Bounds2_getMinMax )
     Point2i mins( cv_valuesMins );
     Point2i maxs( cv_valuesMaxs );

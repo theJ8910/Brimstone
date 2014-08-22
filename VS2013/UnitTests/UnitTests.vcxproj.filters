@@ -63,6 +63,15 @@
     <ClCompile Include="..\..\tests\src\test\BoundsN.cpp">
       <Filter>src\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Bounds4.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Point4.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tests\src\test\Vector4.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tests\src\MeasureXTime.hpp">

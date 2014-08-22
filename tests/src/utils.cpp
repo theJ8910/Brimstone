@@ -19,7 +19,7 @@ Description:
 namespace UnitTest {
 
 //Constants
-const float FAST_SQRT_ERROR = 0.0005f;
+const float FAST_SQRT_ERROR = 0.0017f;
 
 bool isWithin( const float value, const float ideal, const float err ) {
     return value >= ideal * ( 1 - err ) &&

@@ -127,6 +127,15 @@
     <ClInclude Include="..\..\include\brimstone\util\Range.hpp">
       <Filter>include\brimstone\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\point\Point4.hpp">
+      <Filter>include\brimstone\point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\bounds\Bounds4.hpp">
+      <Filter>include\brimstone\bounds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\vector\Vector4.hpp">
+      <Filter>include\brimstone\vector</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Exception.cpp">

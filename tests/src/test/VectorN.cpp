@@ -52,7 +52,7 @@ namespace {
     const char*  cv_output             = "< 1, 2, 3, 4, 5 >";
 
     const float cv_valuesAltF[5]       { 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
-    const float cv_lengthF            = 18.1659021f;
+    const float cv_lengthF             = 18.1659021f;
     const float cv_unitF[5] {
          6.0f / cv_lengthF,
          7.0f / cv_lengthF,

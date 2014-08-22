@@ -15,6 +15,7 @@ Description:
 #include <brimstone/point/PointN.hpp>
 #include <brimstone/point/Point2.hpp>
 #include <brimstone/point/Point3.hpp>
+#include <brimstone/point/Point4.hpp>
 
 //These macros aren't needed outside of the above files
 #undef BS_POINT_DECLARE_METHODS

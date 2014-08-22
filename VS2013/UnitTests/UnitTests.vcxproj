@@ -174,14 +174,17 @@
     <ClCompile Include="..\..\tests\src\test\Array.cpp" />
     <ClCompile Include="..\..\tests\src\test\Bounds2.cpp" />
     <ClCompile Include="..\..\tests\src\test\Bounds3.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Bounds4.cpp" />
     <ClCompile Include="..\..\tests\src\test\BoundsN.cpp" />
     <ClCompile Include="..\..\tests\src\test\Point2.cpp" />
     <ClCompile Include="..\..\tests\src\test\Point3.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Point4.cpp" />
     <ClCompile Include="..\..\tests\src\test\PointN.cpp" />
     <ClCompile Include="..\..\tests\src\test\Range.cpp" />
     <ClCompile Include="..\..\tests\src\test\types.cpp" />
     <ClCompile Include="..\..\tests\src\test\Vector2.cpp" />
     <ClCompile Include="..\..\tests\src\test\Vector3.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Vector4.cpp" />
     <ClCompile Include="..\..\tests\src\test\VectorN.cpp" />
     <ClCompile Include="..\..\tests\src\utils.cpp" />
   </ItemGroup>

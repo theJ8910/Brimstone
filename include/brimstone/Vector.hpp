@@ -15,6 +15,7 @@ Description:
 #include <brimstone/vector/VectorN.hpp>
 #include <brimstone/vector/Vector2.hpp>
 #include <brimstone/vector/Vector3.hpp>
+#include <brimstone/vector/Vector4.hpp>
 
 //These macros aren't needed outside of the above files
 #undef BS_VECTOR_UNIT_MAX_ERROR
