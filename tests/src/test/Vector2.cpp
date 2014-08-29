@@ -57,6 +57,7 @@ namespace {
          1.0f / cv_lengthF,
          2.0f / cv_lengthF
     };
+    const char*  cv_outputF = "< 1.00000, 2.00000 >";
 }
 
 
@@ -331,13 +332,22 @@ UT_TEST_BEGIN( Vector2_assignCopy )
     return allEqual( o2.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Vector2_output )
+UT_TEST_BEGIN( Vector2_output_int )
     Vector2i o( cv_values );
 
     std::stringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_output_float )
+    Vector2f o( cv_valuesF );
+
+    std::stringstream sout;
+    sout << o;
+
+    return sout.str() == cv_outputF;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_addAssign_vector )

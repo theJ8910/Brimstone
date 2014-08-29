@@ -36,6 +36,7 @@ namespace {
     const char*  cv_output       = "( 1, 2, 3, 4 )";
 
     const float  cv_valuesF[4]   { 1.0f, 2.0f, 3.0f, 4.0f };
+    const char*  cv_outputF      = "( 1.00000, 2.00000, 3.00000, 4.00000 )";
 }
 
 namespace UnitTest {
@@ -246,13 +247,22 @@ UT_TEST_BEGIN( Point4_notEquals )
            ( o1 != o3 ) == true;
 UT_TEST_END()
 
-UT_TEST_BEGIN( Point4_output )
+UT_TEST_BEGIN( Point4_output_int )
     Point4i o( cv_values );
 
     std::stringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point4_output_float )
+    Point4f o( cv_valuesF );
+
+    std::stringstream sout;
+    sout << o;
+
+    return sout.str() == cv_outputF;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Point4_distanceSq )

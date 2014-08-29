@@ -18,6 +18,9 @@ Description:
 #include <iostream>                         //std::ostream
 #include <initializer_list>                 //std::initializer_list
 #include <algorithm>                        //std::fill
+#include <iostream>                         //std::ostream
+
+#include <boost/format.hpp>                 //boost::format
 
 #include <brimstone/util/Array.hpp>         //BS_ARRAY_DECLARE_METHODS(), BS_ARRAY_DEFINE_METHODS()
 #include <brimstone/util/Macros.hpp>        //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
@@ -154,12 +157,10 @@ bool operator !=( const Point< T, N >& left, const Point< T, N >& right ) {
 
 template< typename T, size_t N >
 std::ostream& operator <<( std::ostream& left, const Point< T, N >& right ) {
-    left << "( ";
-
-    left << right.data[0];
-    for( size_t i = 1; i < N; ++i )
-        left << ", " << right.data[i];
-
+    left << "( "
+         << ( boost::format( "%|.5f|" ) % right.data[0] ).str();
+    for( int i = 1; i < N; ++i )
+        left << ", " << ( boost::format( "%|.5f|" ) % right.data[i] ).str();
     left << " )";
 
     return left;

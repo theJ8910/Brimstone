@@ -51,6 +51,7 @@ namespace {
     const int    cv_negateResult[5]    { -6, -10, -24, -9, -30 };
     const char*  cv_output             = "< 1, 2, 3, 4, 5 >";
 
+    const float cv_valuesF[5]          { 1.0f, 2.0f, 3.0f, 4.0f,  5.0f };
     const float cv_valuesAltF[5]       { 6.0f, 7.0f, 8.0f, 9.0f, 10.0f };
     const float cv_lengthF             = 18.1659021f;
     const float cv_unitF[5] {
@@ -60,6 +61,7 @@ namespace {
          9.0f / cv_lengthF,
         10.0f / cv_lengthF
     };
+    const char* cv_outputF = "< 1.00000, 2.00000, 3.00000, 4.00000, 5.00000 >";
 }
 
 namespace UnitTest {
@@ -309,13 +311,22 @@ UT_TEST_BEGIN( VectorN_assignCopy )
     return allEqual( o2.data, cv_valuesAlt );
 UT_TEST_END()
 
-UT_TEST_BEGIN( VectorN_output )
+UT_TEST_BEGIN( VectorN_output_int )
     Vector5i o( cv_values );
 
     std::stringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
+UT_TEST_END()
+
+UT_TEST_BEGIN( VectorN_output_float )
+    Vector5f o( cv_valuesF );
+
+    std::stringstream sout;
+    sout << o;
+
+    return sout.str() == cv_outputF;
 UT_TEST_END()
 
 UT_TEST_BEGIN( VectorN_addAssign_vector )

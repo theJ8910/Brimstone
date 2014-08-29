@@ -180,7 +180,10 @@ BS_POINT2_DEFINE_INHERITED_METHODS( Point, BS_TMPL_1( typename T ), BS_SPEC_2( T
 
 template< typename T >
 std::ostream& operator <<( std::ostream& left, const Point< T, 2 >& right ) {
-    return left << "( " << right.x << ", " << right.y << " )";
+    return left << "( "
+                << ( boost::format( "%|.5f|" ) % right.x ).str() << ", "
+                << ( boost::format( "%|.5f|" ) % right.y ).str()
+                << " )";
 }
 
 template< typename T >

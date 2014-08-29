@@ -52,6 +52,7 @@ namespace {
     const int    cv_crossResult[3]     { -40, 24,   0 };
     const char*  cv_output             = "< 1, 2, 3 >";
 
+    const float cv_valuesF[3]          { 1.0f, 2.0f, 3.0f };
     const float cv_valuesAltF[3]       { 4.0f, 5.0f, 6.0f };
     const float cv_lengthF             = 8.77496439f;
     const float cv_unitF[3] {
@@ -59,6 +60,7 @@ namespace {
          5.0f / cv_lengthF,
          6.0f / cv_lengthF
     };
+    const char* cv_outputF = "< 1.00000, 2.00000, 3.00000 >";
 }
 
 
@@ -334,13 +336,22 @@ UT_TEST_BEGIN( Vector3_assignCopy )
     return allEqual( o2.data, cv_valuesAlt );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Vector3_output )
+UT_TEST_BEGIN( Vector3_output_int )
     Vector3i o( cv_values );
 
     std::stringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_output_float )
+    Vector3f o( cv_valuesF );
+
+    std::stringstream sout;
+    sout << o;
+
+    return sout.str() == cv_outputF;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector3_addAssign_vector )

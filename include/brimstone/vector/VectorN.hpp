@@ -20,6 +20,7 @@ Description:
 
 #include <brimstone/Point.hpp>          //BasePoint
 #include <brimstone/util/Math.hpp>      //fastSqrt, fastInvSqrt
+#include <brimstone/util/MinMax.hpp>    //electMax
 
 
 
@@ -283,12 +284,9 @@ Vector< T, N >& Vector< T, N >::operator /=( const T right ) {
 
 template< typename T, size_t N >
 std::ostream& operator <<( std::ostream& left, const Vector< T, N >& right ) {
-    left << "< ";
-
-    left << right.data[0];
+    left << "< " << ( boost::format( "%|.5f|" ) % right.data[0] ).str();
     for( int i = 1; i < N; ++i )
-        left << ", " << right.data[i];
-
+        left << ", " << ( boost::format( "%|.5f|" ) % right.data[i] ).str();
     left << " >";
 
     return left;

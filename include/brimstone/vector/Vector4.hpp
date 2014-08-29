@@ -162,7 +162,12 @@ Vector< T, 4 >& Vector< T, 4 >::operator /=( const T right ) {
 
 template< typename T >
 std::ostream& operator <<( std::ostream& left, const Vector< T, 4 >& right ) {
-    return left << "< " << right.x << ", " << right.y << ", " << right.z << ", " << right.w << " >";
+    return left << "< "
+                << ( boost::format( "%|.5f|" ) % right.x ).str() << ", "
+                << ( boost::format( "%|.5f|" ) % right.y ).str() << ", "
+                << ( boost::format( "%|.5f|" ) % right.z ).str() << ", "
+                << ( boost::format( "%|.5f|" ) % right.w ).str()
+                << " >";
 }
 
 template< typename T >
