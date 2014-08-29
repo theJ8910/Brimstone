@@ -161,7 +161,8 @@ Bounds< T, 2 >::Bounds( const T minX, const T minY, const T maxX, const T maxY )
 
 template< typename T >
 Bounds< T, 2 >::Bounds( const Point< T, 2 >& mins, const T width, const T height ) :
-    mins( mins ),
+    minX( mins.x ),
+    minY( mins.y ),
     maxX( mins.x + width  ),
     maxY( mins.y + height ) {
 }

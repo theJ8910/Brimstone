@@ -177,7 +177,9 @@ Bounds< T, 3 >::Bounds( const T minX, const T minY, const T minZ, const T maxX, 
 
 template< typename T >
 Bounds< T, 3 >::Bounds( const Point< T, 3 >& mins, const T width, const T length, const T height ) :
-    mins( mins ),
+    minX( mins.x ),
+    minY( mins.y ),
+    minZ( mins.z ),
     maxX( mins.x + width  ),
     maxY( mins.y + length ),
     maxZ( mins.z + height ) {

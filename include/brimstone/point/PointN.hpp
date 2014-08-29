@@ -49,18 +49,18 @@ Description:
     className& operator =( const className spec2& right );
 #define BS_BASEPOINT_DEFINE_INHERITED_METHODS( className, N, tmpl, spec, spec2 )        \
     tmpl                                                                                \
-    className spec::className() : BasePoint() {}                                        \
+    className spec::className() : BaseClass() {}                                        \
                                                                                         \
     tmpl                                                                                \
     template< typename T2 >                                                             \
     className spec::className( const className spec2& toCopy ) :                        \
-        BasePoint( static_cast< const BasePoint spec2& >( toCopy ) ) {                  \
+        BaseClass( static_cast< const Private::BasePoint spec2& >( toCopy ) ) {         \
     }                                                                                   \
                                                                                         \
     tmpl                                                                                \
     template< typename T2 >                                                             \
     className spec& className spec::operator =( const className spec2& right ) {        \
-        BasePoint::operator =( right );                                                 \
+        BaseClass::operator =( right );                                                 \
         return *this;                                                                   \
     }
 
@@ -150,12 +150,14 @@ class Vector;
 
 template< typename T, size_t N >
 class Point : public Private::BasePoint< T, N > {
+private:
+    typedef Private::BasePoint< T, N > BaseClass;
 public:
     BS_ARRAY_DECLARE_INHERITED_METHODS( Point, T )
     BS_BASEPOINT_DECLARE_INHERITED_METHODS( Point, N, BS_SPEC_2( T2, N ) )
     BS_POINT_DECLARE_METHODS( N )
 };
-BS_ARRAY_DEFINE_INHERITED_METHODS( Point, T, BasePoint, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_INHERITED_METHODS( Point, T, BaseClass, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
 BS_BASEPOINT_DEFINE_INHERITED_METHODS( Point, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) )
 BS_POINT_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
 

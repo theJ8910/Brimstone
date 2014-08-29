@@ -37,13 +37,15 @@ void floatNormalize( Vector< T, 4 >& vecInOut );
 
 template< typename T >
 class Vector< T, 4 > : public Private::BasePoint< T, 4 > {
+private:
+    typedef Private::BasePoint< T, 4 > BaseClass;
 public:
     BS_ARRAY_DECLARE_INHERITED_METHODS( Vector, T )
     BS_BASEPOINT_DECLARE_INHERITED_METHODS( Vector, 4, BS_SPEC_2( T2, 4 ) )
     BS_BASEPOINT4_DECLARE_INHERITED_METHODS( Vector, BS_SPEC_2( T2, 4 ) )
     BS_VECTOR_DECLARE_METHODS( 4 )
 };
-BS_ARRAY_DEFINE_INHERITED_METHODS( Vector, T, BasePoint, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ) )
+BS_ARRAY_DEFINE_INHERITED_METHODS( Vector, T, BaseClass, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ) )
 BS_BASEPOINT_DEFINE_INHERITED_METHODS( Vector, 4, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ), BS_SPEC_2( T2, 4 ) )
 BS_BASEPOINT4_DEFINE_INHERITED_METHODS( Vector, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ), BS_SPEC_2( T2, 4 ) )
 BS_VECTOR_DEFINE_METHODS( 4, BS_TMPL_1( typename T ) )

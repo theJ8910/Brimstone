@@ -30,7 +30,7 @@ Description:
 #define BS_BASEPOINT2_DEFINE_INHERITED_METHODS( className, tmpl, spec, spec2 )  \
     tmpl                                                                        \
     className spec::className( const T x, const T y ) :                         \
-        BasePoint( x, y ) {                                                     \
+        BaseClass( x, y ) {                                                     \
     }
 namespace Brimstone {
 namespace Private {
@@ -170,6 +170,8 @@ void BasePoint< T, 2 >::get( T& xOut, T& yOut ) const {
 
 template< typename T >
 class Point< T, 2 > : public Private::BasePoint< T, 2 > {
+private:
+    typedef Private::BasePoint< T, 2 > BaseClass;
 public:
     //Specializations of generic methods
     BS_ARRAY_DECLARE_INHERITED_METHODS( Point, T )
@@ -177,7 +179,7 @@ public:
     BS_BASEPOINT2_DECLARE_INHERITED_METHODS( Point, BS_SPEC_2( T2, 2 ) )
     BS_POINT_DECLARE_METHODS( 2 )
 };
-BS_ARRAY_DEFINE_INHERITED_METHODS( Point, T, BasePoint, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ) )
+BS_ARRAY_DEFINE_INHERITED_METHODS( Point, T, BaseClass, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ) )
 BS_BASEPOINT_DEFINE_INHERITED_METHODS( Point, 2, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) )
 BS_BASEPOINT2_DEFINE_INHERITED_METHODS( Point, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) );
 BS_POINT_DEFINE_METHODS( 2, BS_TMPL_1( typename T ) )

@@ -194,12 +194,14 @@ bool floatIsUnitVec( const Vector< T, N >& vec );
 
 template< typename T, size_t N >
 class Vector : public Private::BasePoint< T, N > {
+private:
+    typedef Private::BasePoint< T, N > BaseClass;
 public:
     BS_ARRAY_DECLARE_INHERITED_METHODS( Vector, T )
     BS_BASEPOINT_DECLARE_INHERITED_METHODS( Vector, N, BS_SPEC_2( T2, N ) )
     BS_VECTOR_DECLARE_METHODS( N )
 };
-BS_ARRAY_DEFINE_INHERITED_METHODS( Vector, T, BasePoint, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_INHERITED_METHODS( Vector, T, BaseClass, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
 BS_BASEPOINT_DEFINE_INHERITED_METHODS( Vector, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) );
 BS_VECTOR_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
 

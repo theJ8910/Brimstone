@@ -192,7 +192,10 @@ Bounds< T, 4 >::Bounds( const T minX, const T minY, const T minZ, const T minW, 
 
 template< typename T >
 Bounds< T, 4 >::Bounds( const Point< T, 4 >& mins, const T width, const T length, const T height, const T wlength ) :
-    mins( mins ),
+    minX( mins.x ),
+    minY( mins.y ),
+    minZ( mins.z ),
+    minW( mins.w ),
     maxX( mins.x + width   ),
     maxY( mins.y + length  ),
     maxZ( mins.z + height  ),

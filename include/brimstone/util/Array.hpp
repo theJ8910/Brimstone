@@ -14,7 +14,7 @@ Description:
 
 //Includes
 #include <algorithm>                        //std::copy, std::fill
-#include <iterator>                         //std::begin, std::end, std::cbegin, std::cend
+#include <iterator>                         //std::begin, std::end
 #include <initializer_list>                 //std::initializer_list
 
 #include <brimstone/util/Macros.hpp>        //BS_ASSERT_SIZE, BS_ASSERT_INDEX, BS_TMPL_2, BS_SPEC_2
@@ -108,7 +108,7 @@ Description:
     }                                                                                           \
     tmpl                                                                                        \
     inline const memberType* className spec::cbegin() const {                                   \
-        return std::cbegin( memberName );                                                       \
+        return std::begin( memberName );                                                        \
     }                                                                                           \
     tmpl                                                                                        \
     inline memberType* className spec::end() {                                                  \
@@ -120,7 +120,7 @@ Description:
     }                                                                                           \
     tmpl                                                                                        \
     inline const memberType* className spec::cend() const {                                     \
-        return std::cend( memberName );                                                         \
+        return std::end( memberName );                                                          \
     }                                                                                           \
     tmpl                                                                                        \
     inline memberType& className spec::operator []( const size_t index ) {                      \
