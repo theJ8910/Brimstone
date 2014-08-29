@@ -17,6 +17,7 @@ Description:
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, FAST_SQRT_ERR
 
 #include <brimstone/Point.hpp>
+#include <brimstone/Vector.hpp> //Vector
 
 
 
@@ -24,6 +25,7 @@ Description:
 namespace {
     typedef ::Brimstone::Point< int, 5 >   Point5i;
     typedef ::Brimstone::Point< float, 5 > Point5f;
+    typedef ::Brimstone::Vector< int, 5 >  Vector5i;
     using   ::Brimstone::BoundsException;
 
     const size_t cv_size         = 5;
@@ -204,6 +206,24 @@ UT_TEST_BEGIN( PointN_assignCopy )
     o2 = o1;
 
     return allEqual( o2.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( PointN_typecastVector )
+    Point5i o( cv_values );
+    Vector5i v( cv_valuesAlt );
+
+    v = (Vector5i&)o;
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( PointN_typecastVector_const )
+    const Point5i o( cv_values );
+    Vector5i v( cv_valuesAlt );
+
+    v = (const Vector5i&)o;
+
+    return allEqual( o.data, cv_values );
 UT_TEST_END()
 
 UT_TEST_BEGIN( PointN_equals )

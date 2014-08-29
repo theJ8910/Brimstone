@@ -79,7 +79,9 @@ The upper bound is slightly higher than the lower bound, so we choose that for t
     Vector&    operator +=( const T right );                                        \
     Vector&    operator -=( const T right );                                        \
     Vector&    operator *=( const T right );                                        \
-    Vector&    operator /=( const T right );
+    Vector&    operator /=( const T right );                                        \
+    explicit   operator Point< T, N >&();                                           \
+    explicit   operator const Point< T, N >&() const;
 
 #define BS_VECTOR_DEFINE_METHODS( N, tmpl )                                         \
     tmpl                                                                            \
@@ -94,6 +96,14 @@ The upper bound is slightly higher than the lower bound, so we choose that for t
     bool Vector< T, N >::isUnitVec() const {                                        \
         return Private::isUnitVec( *this );                                         \
     }                                                                               \
+    tmpl                                                                            \
+    Vector< T, N >::operator Point< T, N >&() {                                     \
+        return reinterpret_cast< Point< T, N >& >( *this );                         \
+    }                                                                               \
+    tmpl                                                                            \
+    Vector< T, N >::operator const Point< T, N >&() const {                         \
+        return reinterpret_cast< const Point< T, N >& >( *this );                   \
+    }
 
 namespace Brimstone {
 
@@ -185,10 +195,12 @@ bool floatIsUnitVec( const Vector< T, N >& vec );
 template< typename T, size_t N >
 class Vector : public Private::BasePoint< T, N > {
 public:
-    BS_POINT_DECLARE_INHERITED_METHODS( Vector, N, BS_SPEC_2( T2, N ) )
+    BS_ARRAY_DECLARE_INHERITED_METHODS( Vector, T )
+    BS_BASEPOINT_DECLARE_INHERITED_METHODS( Vector, N, BS_SPEC_2( T2, N ) )
     BS_VECTOR_DECLARE_METHODS( N )
 };
-BS_POINT_DEFINE_INHERITED_METHODS( Vector, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) );
+BS_ARRAY_DEFINE_INHERITED_METHODS( Vector, T, BasePoint, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_BASEPOINT_DEFINE_INHERITED_METHODS( Vector, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) );
 BS_VECTOR_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
 
 template< typename T, size_t N >

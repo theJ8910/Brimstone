@@ -19,3 +19,4 @@ Description:
 
 //These macros aren't needed outside of the above files
 #undef BS_POINT_DECLARE_METHODS
+#undef BS_POINT_DEFINE_METHODS

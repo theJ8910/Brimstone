@@ -39,8 +39,7 @@ Description:
 //spec2 is the specialization that should be used for the parameter in the copy constructor
 //and assignment operator.
 //It is usually BS_SPEC_2( T2, N ) which translates to < T2, N >.
-#define BS_POINT_DECLARE_INHERITED_METHODS( className, N, spec2 )                       \
-    BS_ARRAY_DECLARE_INHERITED_METHODS( className, T )                                  \
+#define BS_BASEPOINT_DECLARE_INHERITED_METHODS( className, N, spec2 )                   \
     className();                                                                        \
                                                                                         \
     template< typename T2 >                                                             \
@@ -48,8 +47,7 @@ Description:
                                                                                         \
     template< typename T2 >                                                             \
     className& operator =( const className spec2& right );
-#define BS_POINT_DEFINE_INHERITED_METHODS( className, N, tmpl, spec, spec2 )            \
-    BS_ARRAY_DEFINE_INHERITED_METHODS( className, T, BasePoint, tmpl, spec )            \
+#define BS_BASEPOINT_DEFINE_INHERITED_METHODS( className, N, tmpl, spec, spec2 )        \
     tmpl                                                                                \
     className spec::className() : BasePoint() {}                                        \
                                                                                         \
@@ -67,12 +65,23 @@ Description:
     }
 
 //Variants of BasePoint use this to redeclare methods common to all specialiations.
-#define BS_POINT_DECLARE_METHODS( N )                                                   \
-    BS_ARRAY_DECLARE_METHODS( BasePoint, T )                                            \
+#define BS_BASEPOINT_DECLARE_METHODS( N )                                               \
     void zero();                                                                        \
     bool isZero() const;
 
+#define BS_POINT_DECLARE_METHODS( N )                                                   \
+    explicit   operator       Vector< T, N >&();                                        \
+    explicit   operator const Vector< T, N >&() const;
 
+#define BS_POINT_DEFINE_METHODS( N, tmpl )                                              \
+    tmpl                                                                                \
+    Point< T, N >::operator Vector< T, N >&() {                                         \
+        return reinterpret_cast< Vector< T, N >& >( *this );                            \
+    }                                                                                   \
+    tmpl                                                                                \
+    Point< T, N >::operator const Vector< T, N >&() const {                             \
+        return reinterpret_cast< const Vector< T, N >& >( *this );                      \
+    }
 
 
 namespace Brimstone {
@@ -84,8 +93,10 @@ public:
     T data[N];
 public:
     //Generic methods
-    BS_POINT_DECLARE_INHERITED_METHODS( BasePoint, N, BS_SPEC_2( T2, N ) )
-    BS_POINT_DECLARE_METHODS( N )
+    BS_ARRAY_DECLARE_INHERITED_METHODS( BasePoint, T )
+    BS_BASEPOINT_DECLARE_INHERITED_METHODS( BasePoint, N, BS_SPEC_2( T2, N ) )
+    BS_ARRAY_DECLARE_METHODS( BasePoint, T )
+    BS_BASEPOINT_DECLARE_METHODS( N )
 };
 
 BS_ARRAY_DEFINE_GENERIC_METHODS( BasePoint, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
@@ -131,13 +142,22 @@ bool BasePoint< T, N >::isZero() const {
 
 
 
+//Forward declarations
+template< typename T, size_t N >
+class Vector;
+
+
+
 template< typename T, size_t N >
 class Point : public Private::BasePoint< T, N > {
 public:
-    BS_POINT_DECLARE_INHERITED_METHODS( Point, N, BS_SPEC_2( T2, N ) )
+    BS_ARRAY_DECLARE_INHERITED_METHODS( Point, T )
+    BS_BASEPOINT_DECLARE_INHERITED_METHODS( Point, N, BS_SPEC_2( T2, N ) )
+    BS_POINT_DECLARE_METHODS( N )
 };
-
-BS_POINT_DEFINE_INHERITED_METHODS( Point, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) )
+BS_ARRAY_DEFINE_INHERITED_METHODS( Point, T, BasePoint, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_BASEPOINT_DEFINE_INHERITED_METHODS( Point, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) )
+BS_POINT_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
 
 template< typename T, size_t N >
 bool operator ==( const Point< T, N >& left, const Point< T, N >& right ) {

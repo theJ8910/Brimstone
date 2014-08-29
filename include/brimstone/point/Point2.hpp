@@ -25,14 +25,12 @@ Description:
 
 //Macros
 //Inherited methods from Point2 specializaton, Point, and Array
-#define BS_POINT2_DECLARE_INHERITED_METHODS( className, spec2 )             \
-    BS_POINT_DECLARE_INHERITED_METHODS( className, 2, spec2 )               \
+#define BS_BASEPOINT2_DECLARE_INHERITED_METHODS( className, spec2 )             \
     className( const T x, const T y );
-#define BS_POINT2_DEFINE_INHERITED_METHODS( className, tmpl, spec, spec2 )  \
-    BS_POINT_DEFINE_INHERITED_METHODS( className, 2, tmpl, spec, spec2 )    \
-    tmpl                                                                    \
-    className spec::className( const T x, const T y ) :                     \
-        BasePoint( x, y ) {                                                \
+#define BS_BASEPOINT2_DEFINE_INHERITED_METHODS( className, tmpl, spec, spec2 )  \
+    tmpl                                                                        \
+    className spec::className( const T x, const T y ) :                         \
+        BasePoint( x, y ) {                                                     \
     }
 namespace Brimstone {
 namespace Private {
@@ -52,10 +50,13 @@ public:
 
 #pragma warning( pop )
 public:
-    BS_POINT2_DECLARE_INHERITED_METHODS( BasePoint, BS_SPEC_2( T2, 2 ) )
+    BS_ARRAY_DECLARE_INHERITED_METHODS( BasePoint, T )
+    BS_BASEPOINT_DECLARE_INHERITED_METHODS( BasePoint, 2, BS_SPEC_2( T2, 2 ) )
+    BS_BASEPOINT2_DECLARE_INHERITED_METHODS( BasePoint, BS_SPEC_2( T2, 2 ) )
 
     //Generic methods
-    BS_POINT_DECLARE_METHODS( 2 )
+    BS_ARRAY_DECLARE_METHODS( BasePoint, T )
+    BS_BASEPOINT_DECLARE_METHODS( 2 )
 
     //Point2-specific methods
     void set( const T x, const T y );
@@ -171,10 +172,15 @@ template< typename T >
 class Point< T, 2 > : public Private::BasePoint< T, 2 > {
 public:
     //Specializations of generic methods
-    BS_POINT2_DECLARE_INHERITED_METHODS( Point, BS_SPEC_2( T2, 2 ) )
+    BS_ARRAY_DECLARE_INHERITED_METHODS( Point, T )
+    BS_BASEPOINT_DECLARE_INHERITED_METHODS( Point, 2, BS_SPEC_2( T2, 2 ) )
+    BS_BASEPOINT2_DECLARE_INHERITED_METHODS( Point, BS_SPEC_2( T2, 2 ) )
+    BS_POINT_DECLARE_METHODS( 2 )
 };
-BS_POINT2_DEFINE_INHERITED_METHODS( Point, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) );
-
+BS_ARRAY_DEFINE_INHERITED_METHODS( Point, T, BasePoint, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ) )
+BS_BASEPOINT_DEFINE_INHERITED_METHODS( Point, 2, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) )
+BS_BASEPOINT2_DEFINE_INHERITED_METHODS( Point, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) );
+BS_POINT_DEFINE_METHODS( 2, BS_TMPL_1( typename T ) )
 
 
 

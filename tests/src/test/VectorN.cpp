@@ -397,6 +397,24 @@ UT_TEST_BEGIN( VectorN_divAssign_scalar )
     return allEqual( o.data, cv_divScalarResult );
 UT_TEST_END()
 
+UT_TEST_BEGIN( VectorN_typecastPoint )
+    Vector5i o( cv_values );
+    Point5i p( cv_valuesAlt );
+
+    p = (Point5i&)o;
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( VectorN_typecastPoint_const )
+    const Vector5i o( cv_values );
+    Point5i p( cv_valuesAlt );
+
+    p = (const Point5i&)o;
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
 UT_TEST_BEGIN( VectorN_unaryPlus )
     Vector5i o1( cv_arithmetic1 );
     Vector5i o2( cv_arithmetic2 );

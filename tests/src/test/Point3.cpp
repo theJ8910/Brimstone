@@ -17,6 +17,7 @@ Description:
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll
 
 #include <brimstone/Point.hpp>
+#include <brimstone/Vector.hpp> //Vector
 
 
 
@@ -24,6 +25,7 @@ Description:
 namespace {
     using ::Brimstone::Point3i;
     using ::Brimstone::Point3f;
+    using ::Brimstone::Vector3i;
     using ::Brimstone::BoundsException;
 
     const size_t cv_size         = 3;
@@ -226,6 +228,24 @@ UT_TEST_BEGIN( Point3_assignCopy )
     o2 = o1;
 
     return allEqual( o2.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point3_typecastVector )
+    Point3i o( cv_values );
+    Vector3i v( cv_valuesAlt );
+
+    v = (Vector3i&)o;
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Point3_typecastVector_const )
+    const Point3i o( cv_values );
+    Vector3i v( cv_valuesAlt );
+
+    v = (const Vector3i&)o;
+
+    return allEqual( o.data, cv_values );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Point3_equals )

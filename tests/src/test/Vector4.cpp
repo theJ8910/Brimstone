@@ -423,6 +423,24 @@ UT_TEST_BEGIN( Vector4_divAssign_scalar )
     return allEqual( o.data, cv_divScalarResult );
 UT_TEST_END()
 
+UT_TEST_BEGIN( Vector4_typecastPoint )
+    Vector4i o( cv_values );
+    Point4i p( cv_valuesAlt );
+
+    p = (Point4i&)o;
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_typecastPoint_const )
+    const Vector4i o( cv_values );
+    Point4i p( cv_valuesAlt );
+
+    p = (const Point4i&)o;
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
 UT_TEST_BEGIN( Vector4_unaryPlus )
     Vector4i o1( cv_arithmetic1 );
     Vector4i o2( cv_arithmetic2 );
