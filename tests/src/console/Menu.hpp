@@ -4,7 +4,7 @@ console/Menu.hpp
 Copyright (c) 2014, theJ89
 
 Description:
-	Declares functions for working with console-based menus.
+    Declares functions for working with console-based menus.
 */
 
 #ifndef UT_MENU_HPP

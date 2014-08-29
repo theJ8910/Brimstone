@@ -66,10 +66,10 @@ void measure() {
 template< typename FirstTest, typename SecondTest, typename... RemainingTests >
 void measure() {
     //Run the first test
-    timings< FirstTest >();
+    measure< FirstTest >();
 
     //Run the second test and any other remaining tests
-    timings< SecondTest, RemainingTests... >();
+    measure< SecondTest, RemainingTests... >();
 }
 
 class BaseRuntimeTest {

@@ -34,10 +34,10 @@ Description:
 //Gives the class two overloaded indexing operators that return mutable (or the object is
 //const, immutable) elements from the array member.
 #define BS_ARRAY_DECLARE_INHERITED_METHODS( className, memberType )                             \
-    inline className( const memberType& fill );                                                 \
+    inline explicit className( const memberType& fill );                                        \
     template< typename T2 >                                                                     \
-    inline className( const T2& cppRange );                                                     \
-    inline className( std::initializer_list< memberType > il );
+    inline explicit className( const T2& cppRange );                                            \
+    inline explicit className( std::initializer_list< memberType > il );
 #define BS_ARRAY_DECLARE_METHODS( className, memberType )                                       \
     template< typename T2 >                                                                     \
     inline void set( const T2& cppRange );                                                      \

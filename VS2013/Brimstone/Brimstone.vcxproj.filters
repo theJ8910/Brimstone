@@ -136,6 +136,24 @@
     <ClInclude Include="..\..\include\brimstone\vector\Vector4.hpp">
       <Filter>include\brimstone\vector</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Matrix.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\matrix\Matrix4x4.hpp">
+      <Filter>include\brimstone\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\matrix\Matrix3x3.hpp">
+      <Filter>include\brimstone\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\matrix\Matrix2x2.hpp">
+      <Filter>include\brimstone\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\matrix\MatrixRxC.hpp">
+      <Filter>include\brimstone\matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\matrix\MatrixNxN.hpp">
+      <Filter>include\brimstone\matrix</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Exception.cpp">
@@ -211,6 +229,9 @@
     </Filter>
     <Filter Include="include\brimstone\vector">
       <UniqueIdentifier>{997561cd-dd8d-44c3-8363-6c14ab4e5328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\matrix">
+      <UniqueIdentifier>{0d045d51-2889-416f-aa6f-03ae488de5f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

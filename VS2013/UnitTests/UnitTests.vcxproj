@@ -93,7 +93,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;UT_BUILD_WINDOWS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\boost_1_55_0</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
     </ClCompile>
@@ -111,7 +111,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_64BIT;UT_BUILD_WINDOWS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\boost_1_55_0</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
     </ClCompile>
@@ -131,7 +131,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;UT_BUILD_WINDOWS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\boost_1_55_0</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
     </ClCompile>
@@ -153,7 +153,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_64BIT;UT_BUILD_WINDOWS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\boost_1_55_0</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
     </ClCompile>
@@ -176,6 +176,11 @@
     <ClCompile Include="..\..\tests\src\test\Bounds3.cpp" />
     <ClCompile Include="..\..\tests\src\test\Bounds4.cpp" />
     <ClCompile Include="..\..\tests\src\test\BoundsN.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Matrix2x2.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Matrix3x3.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Matrix4x4.cpp" />
+    <ClCompile Include="..\..\tests\src\test\MatrixNxN.cpp" />
+    <ClCompile Include="..\..\tests\src\test\MatrixRxC.cpp" />
     <ClCompile Include="..\..\tests\src\test\Point2.cpp" />
     <ClCompile Include="..\..\tests\src\test\Point3.cpp" />
     <ClCompile Include="..\..\tests\src\test\Point4.cpp" />

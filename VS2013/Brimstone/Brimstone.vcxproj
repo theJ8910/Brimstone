@@ -176,6 +176,12 @@
     <ClInclude Include="..\..\include\brimstone\Logger.hpp" />
     <ClInclude Include="..\..\include\brimstone\Lua.hpp" />
     <ClInclude Include="..\..\include\brimstone\LuaInstance.hpp" />
+    <ClInclude Include="..\..\include\brimstone\Matrix.hpp" />
+    <ClInclude Include="..\..\include\brimstone\matrix\Matrix2x2.hpp" />
+    <ClInclude Include="..\..\include\brimstone\matrix\Matrix3x3.hpp" />
+    <ClInclude Include="..\..\include\brimstone\matrix\Matrix4x4.hpp" />
+    <ClInclude Include="..\..\include\brimstone\matrix\MatrixNxN.hpp" />
+    <ClInclude Include="..\..\include\brimstone\matrix\MatrixRxC.hpp" />
     <ClInclude Include="..\..\include\brimstone\Point.hpp" />
     <ClInclude Include="..\..\include\brimstone\point\Point2.hpp" />
     <ClInclude Include="..\..\include\brimstone\point\Point3.hpp" />

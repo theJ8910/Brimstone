@@ -32,10 +32,12 @@ void doTests() {
     int fail  = 0;
     int total = 0;
     bool status;
+    bool exception;
     for( auto test : getTests() ) {
         try {
             status = test->run();
-        } catch( ... ) { status = false; }
+            exception = false;
+        } catch( ... ) { status = false; exception = true; }
 
         if( status ) {
             setTextColor( TextColors::GREEN );
@@ -44,8 +46,13 @@ void doTests() {
             std::cout << ": ";
             ++pass;
         } else {
-            setTextColor( TextColors::RED );
-            std::cout << "FAIL";
+            if( exception ) {
+                setTextColor( TextColors::PURPLE );
+                std::cout << "XCPT";
+            } else {
+                setTextColor( TextColors::RED );
+                std::cout << "FAIL";
+            }
             setTextColor();
             std::cout << ": ";
             ++fail;
