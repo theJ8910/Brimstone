@@ -53,6 +53,8 @@ public:
 
 #pragma warning( pop )
 public:
+    BS_ARRAY_DECLARE_INHERITED_METHODS( Bounds, T )
+    BS_ARRAY_DECLARE_METHODS( Bounds, T )
     BS_BOUNDS_DECLARE_METHODS( 4 )
 
     //Constructors
@@ -82,7 +84,7 @@ public:
     //Miscellaneous utility methods
     T       getVolume() const;
 };
-
+BS_ARRAY_DEFINE_METHODS( Bounds, T, data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ) )
 BS_BOUNDS_DEFINE_METHODS( 4, BS_TMPL_1( typename T ) )
 
 template< typename T >

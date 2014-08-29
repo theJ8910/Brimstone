@@ -62,8 +62,6 @@ Description:
 
 //Macros
 #define BS_BOUNDS_DECLARE_METHODS( N )                                                                  \
-    BS_ARRAY_DECLARE_INHERITED_METHODS( Bounds, T )                                                     \
-    BS_ARRAY_DECLARE_METHODS( Bounds, T )                                                               \
     Bounds();                                                                                           \
     Bounds( const Point< T, N >& mins, const Point< T, N >& maxs );                                     \
     template< typename T2 >                                                                             \
@@ -82,7 +80,6 @@ Description:
     Bounds< T, N >& operator =( const Bounds< T2, N >& toCopy );
 
 #define BS_BOUNDS_DEFINE_METHODS( N, tmpl )                                                             \
-    BS_ARRAY_DEFINE_METHODS( Bounds, T, data, tmpl, BS_SPEC_2( T, N ) )                                 \
     tmpl                                                                                                \
     Bounds< T, N >::Bounds( const Point< T, N >& mins, const Point< T, N >& maxs ) :                    \
         mins( mins ),                                                                                   \
@@ -130,10 +127,12 @@ public:
 
 #pragma warning( pop )
 public:
+    BS_ARRAY_DECLARE_INHERITED_METHODS( Bounds, T )
+    BS_ARRAY_DECLARE_METHODS( Bounds, T )
     BS_BOUNDS_DECLARE_METHODS( N )
 };
-
 BS_ARRAY_DEFINE_GENERIC_METHODS( Bounds, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_METHODS( Bounds, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
 BS_BOUNDS_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
 
 template< typename T, size_t N >
