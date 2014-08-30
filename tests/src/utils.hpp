@@ -122,7 +122,7 @@ void copyAll( InPtr from, T (&to)[NT] ) {
         std::is_pointer< InPtr >::value &&
         std::is_same<
             const T,
-            std::remove_pointer< InPtr >::type
+            typename std::remove_pointer< InPtr >::type
         >::value,
         "First parameter to copyAll is an invalid type"
     );
@@ -142,7 +142,7 @@ void copyAll( const T (&from)[NF], OutPtr to ) {
         std::is_pointer< OutPtr >::value &&
         std::is_same<
             T,
-            std::remove_pointer< OutPtr >::type
+            typename std::remove_pointer< OutPtr >::type
         >::value,
         "Second parameter to copyAll is an invalid type"
     );

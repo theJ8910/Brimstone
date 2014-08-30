@@ -36,24 +36,52 @@ void floatNormalize( Vector< T, 2 >& vecInOut );
 }
 
 template< typename T >
-class Vector< T, 2 > : public Private::BasePoint< T, 2 > {
-private:
-    typedef Private::BasePoint< T, 2 > BaseClass;
+class Vector< T, 2 > {
 public:
-    BS_ARRAY_DECLARE_INHERITED_METHODS( Vector, T )
-    BS_BASEPOINT_DECLARE_INHERITED_METHODS( Vector, 2, BS_SPEC_2( T2, 2 ) )
-    BS_BASEPOINT2_DECLARE_INHERITED_METHODS( Vector, BS_SPEC_2( T2, 2 ) )
-    BS_VECTOR_DECLARE_METHODS( 2 )
+//C4201: nonstandard extension used : nameless struct/union
+//It's a non-standard feature, but VC++, G++, and LLVM support it so it shouldn't be too much of an issue
+#pragma warning( push )
+#pragma warning( disable: 4201 )
+
+    union {
+        T data[2];
+        struct { T x, y; };
+    };
+
+#pragma warning( pop )
+public:
+    BS_ARRAY_DECLARE_INHERITED_METHODS( Vector, T    )
+    BS_ARRAY_DECLARE_METHODS(           Vector, T    )
+    BS_BASEPOINT_DECLARE_METHODS(       Vector,    2 )
+    BS_BASEPOINT2_DECLARE_METHODS(      Vector       )
+    BS_VECTOR_DECLARE_METHODS(                     2 )
 };
-BS_ARRAY_DEFINE_INHERITED_METHODS( Vector, T, BaseClass, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ) )
-BS_BASEPOINT_DEFINE_INHERITED_METHODS( Vector, 2, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) )
-BS_BASEPOINT2_DEFINE_INHERITED_METHODS( Vector, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ), BS_SPEC_2( T2, 2 ) )
-BS_VECTOR_DEFINE_METHODS( 2, BS_TMPL_1( typename T ) )
+BS_ARRAY_DEFINE_METHODS(         Vector, T,    data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ) )
+BS_BASEPOINT2_DEFINE_METHODS(    Vector                                                         )
+BS_VECTOR_DEFINE_METHODS(                   2,       BS_TMPL_1( typename T )                    )
+
+
+
+
+//Forward declarations
+template< typename T >
+T dot( const Vector< T, 2 >& left, const Vector< T, 2 >& right );
+
+
+
+
+template< typename T >
+Vector< T, 2 >::Vector()
+#ifdef BS_ZERO
+    : x( 0 ), y( 0 )
+#endif //BS_ZERO
+{
+}
 
 template< typename T >
 template< typename T2 >
 Vector< T, 2 >::Vector( const Point< T2, 2 >& to ) :
-    BasePoint(
+    Vector(
         static_cast< T >( to.x ),
         static_cast< T >( to.y )
     ) {
@@ -61,7 +89,7 @@ Vector< T, 2 >::Vector( const Point< T2, 2 >& to ) :
 
 template< typename T >
 Vector< T, 2 >::Vector( const Point< T, 2 >& from, const Point< T, 2 >& to ) :
-    BasePoint(
+    Vector(
         ( to.x - from.x ),
         ( to.y - from.y )
     ) {

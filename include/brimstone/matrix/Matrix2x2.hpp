@@ -76,6 +76,18 @@ BS_ARRAY_DEFINE_METHODS( Matrix, T, data, BS_TMPL_1( typename T ), BS_SPEC_3( T,
 BS_MATRIX_DEFINE_METHODS( 2, 2, BS_TMPL_1( typename T ), BS_SPEC_3( T, 2, 2 ) )
 BS_MATRIX_SQUARE_DEFINE_METHODS( 2, BS_TMPL_1( typename T ), BS_SPEC_3( T, 2, 2 ) )
 
+
+
+
+//Forward declarations
+template< typename T >
+Matrix< T, 4, 4 > invert( const Matrix< T, 4, 4 >& matrix );
+template< typename T >
+Matrix< T, 4, 4 > transpose( const Matrix< T, 4, 4 >& matrix );
+
+
+
+
 template< typename T >
 const Matrix< T, 2, 2 > Matrix< T, 2, 2 >::m_identity = Matrix< T, 2, 2 >(
     static_cast< T >( 1 ),  static_cast< T >( 0 ),

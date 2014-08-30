@@ -257,7 +257,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( MatrixRxC_cbegin )
     Matrix5x4i o( cv_values );
 
-    return o.cbegin() == std::cbegin( o.data );
+    return o.cbegin() == std::begin( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( MatrixRxC_end )
@@ -275,7 +275,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( MatrixRxC_cend )
     Matrix5x4i o( cv_values );
 
-    return o.cend() == std::cend( o.data );
+    return o.cend() == std::end( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( MatrixRxC_rangedFor )

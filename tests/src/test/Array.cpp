@@ -96,7 +96,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Array_cbegin )
     const Array5i o( cv_values );
 
-    return o.cbegin() == std::cbegin( o.m_data );
+    return o.cbegin() == std::begin( o.m_data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Array_end )
@@ -114,7 +114,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Array_cend )
     const Array5i o( cv_values );
 
-    return o.cend() == std::cend( o.m_data );
+    return o.cend() == std::end( o.m_data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Array_rangedFor )

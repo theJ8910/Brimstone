@@ -32,7 +32,7 @@ HANDLE console = 0;
 
 //Forward Declarations
 #ifdef UT_BUILD_LINUX
-uint8 getXTIndex( unsigned char red, unsigned char green, unsigned char blue );
+unsigned char getXTIndex( unsigned char red, unsigned char green, unsigned char blue );
 #endif //UT_BUILD_LINUX
 
 
@@ -195,7 +195,7 @@ Arguments:
     blue:           The blue component of the color, between 0 and 255.
 
 Returns:
-    uint8:          The xterm256 color index.
+    unsigned char:  The xterm256 color index.
 */
 unsigned char getXTIndex( const unsigned char red, const unsigned char green, const unsigned char blue ) {
     unsigned char colorIndex;
@@ -228,9 +228,9 @@ unsigned char getXTIndex( const unsigned char red, const unsigned char green, co
         //The index can be thought of as 16 + a base-6 number in the form rgb, where r is the most significant digit and b is the least significant digit.
         //So, forming the index is basically just computing the base-6 number from it's digits, and then adding 16, which is what we do here:
         colorIndex =       16u                              +
-                     36u * unsigned char( scaling * red   ) +
-                      6u * unsigned char( scaling * green ) +
-                           unsigned char( scaling * blue  );
+                     36u * (unsigned char)( scaling * red   ) +
+                      6u * (unsigned char)( scaling * green ) +
+                           (unsigned char)( scaling * blue  );
     }
 
     return colorIndex;

@@ -193,17 +193,36 @@ bool floatIsUnitVec( const Vector< T, N >& vec );
 }
 
 template< typename T, size_t N >
-class Vector : public Private::BasePoint< T, N > {
-private:
-    typedef Private::BasePoint< T, N > BaseClass;
+class Vector {
 public:
-    BS_ARRAY_DECLARE_INHERITED_METHODS( Vector, T )
-    BS_BASEPOINT_DECLARE_INHERITED_METHODS( Vector, N, BS_SPEC_2( T2, N ) )
+    T data[N];
+public:
+    BS_ARRAY_DECLARE_INHERITED_METHODS( Vector, T    )
+    BS_ARRAY_DECLARE_METHODS(           Vector, T    )
+    BS_BASEPOINT_DECLARE_METHODS(       Vector,    N )
     BS_VECTOR_DECLARE_METHODS( N )
 };
-BS_ARRAY_DEFINE_INHERITED_METHODS( Vector, T, BaseClass, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-BS_BASEPOINT_DEFINE_INHERITED_METHODS( Vector, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) );
-BS_VECTOR_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
+BS_ARRAY_DEFINE_GENERIC_METHODS( Vector, T,    data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_METHODS(         Vector, T,    data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_BASEPOINTN_DEFINE_METHODS(    Vector                                                                   )
+BS_VECTOR_DEFINE_METHODS(                   N,       BS_TMPL_2( typename T, size_t N )                    )
+
+
+
+
+//Forward declarations
+template< typename T, size_t N >
+T dot( const Vector< T, N >& left, const Vector< T, N >& right );
+
+
+
+
+template< typename T, size_t N >
+Vector< T, N >::Vector() {
+#ifdef BS_ZERO
+    std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
+#endif //BS_ZERO
+}
 
 template< typename T, size_t N >
 template< typename T2 >

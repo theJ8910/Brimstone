@@ -82,6 +82,7 @@ Description:
 #else  //BS_CHECK_INDEX
 
 #define BS_ASSERT_INDEX( index, maxIndex )
+#define BS_ASSERT_BOUNDS( min, max )
 
 #endif //BS_CHECK_INDEX
 

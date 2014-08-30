@@ -53,6 +53,9 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 template< typename T, size_t N >
 class Matrix< T, N, N > {
 public:
@@ -86,6 +89,16 @@ BS_ARRAY_DEFINE_GENERIC_METHODS( Matrix, T, data, BS_TMPL_2( typename T, size_t 
 BS_ARRAY_DEFINE_METHODS( Matrix, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_3( T, N, N ) )
 BS_MATRIX_DEFINE_METHODS( N, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_3( T, N, N ) )
 BS_MATRIX_SQUARE_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_3( T, N, N ) )
+
+
+
+
+//Forward declarations
+template< typename T, size_t N >
+Matrix< T, N, N > invert( const Matrix< T, N, N >& matrix );
+
+
+
 
 template< typename T, size_t N >
 const Matrix< T, N, N > Matrix< T, N, N >::m_identity = Matrix< T, N, N >( ConstructIdentity() );

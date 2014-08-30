@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include <strstream>            //std::ostringstream
+#include <sstream>              //std::ostringstream
 
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, FAST_SQRT_ERR
@@ -113,7 +113,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( PointN_cbegin )
     Point5i o( cv_values );
 
-    return o.cbegin() == std::cbegin( o.data );
+    return o.cbegin() == std::begin( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( PointN_end )
@@ -131,7 +131,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( PointN_cend )
     Point5i o( cv_values );
 
-    return o.cend() == std::cend( o.data );
+    return o.cend() == std::end( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( PointN_rangedFor )

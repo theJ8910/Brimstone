@@ -131,7 +131,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Bounds3_cbegin )
     Bounds3i o( cv_values );
 
-    return o.cbegin() == std::cbegin( o.data );
+    return o.cbegin() == std::begin( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_end )
@@ -149,7 +149,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Bounds3_cend )
     Bounds3i o( cv_values );
 
-    return o.cend() == std::cend( o.data );
+    return o.cend() == std::end( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_rangedFor )

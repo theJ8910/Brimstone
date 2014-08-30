@@ -212,7 +212,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix2x2_cbegin )
     Matrix2x2i o( cv_values );
 
-    return o.cbegin() == std::cbegin( o.data );
+    return o.cbegin() == std::begin( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix2x2_end )
@@ -230,7 +230,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix2x2_cend )
     Matrix2x2i o( cv_values );
 
-    return o.cend() == std::cend( o.data );
+    return o.cend() == std::end( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix2x2_rangedFor )

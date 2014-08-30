@@ -124,6 +124,16 @@ BS_ARRAY_DEFINE_GENERIC_METHODS( Matrix, T, data, BS_TMPL_3( typename T, size_t 
 BS_ARRAY_DEFINE_METHODS( Matrix, T, data, BS_TMPL_3( typename T, size_t R, size_t C ), BS_SPEC_3( T, R, C ) )
 BS_MATRIX_DEFINE_METHODS( R, C, BS_TMPL_3( typename T, size_t R, size_t C ), BS_SPEC_3( T, R, C ) )
 
+
+
+
+//Forward declarations
+template< typename T, size_t R, size_t C >
+Matrix< T, C, R > transpose( const Matrix< T, R, C >& matrix );
+
+
+
+
 //Note: We have a private constructor specifically for constructing
 //m_identity. To differentiate it from other constructors,
 //we pass an unused argument of type "ConstructIdentity",

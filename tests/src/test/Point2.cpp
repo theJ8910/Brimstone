@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include <strstream>            //std::ostringstream
+#include <sstream>              //std::ostringstream
 
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll
@@ -110,7 +110,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point2_cbegin )
     Point2i o( cv_values );
 
-    return o.cbegin() == std::cbegin( o.data );
+    return o.cbegin() == std::begin( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Point2_end )
@@ -128,7 +128,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point2_cend )
     Point2i o( cv_values );
 
-    return o.cend() == std::cend( o.data );
+    return o.cend() == std::end( o.data );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Point2_rangedFor )

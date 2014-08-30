@@ -11,9 +11,11 @@ Description:
 
 
 //Includes
-#include <iostream>
-#include "Menu.hpp"
-#include "TextColor.hpp"
+#include <iostream>         //std::cout, std::cin
+#include <limits>           //std::numeric_limits
+
+#include "Menu.hpp"         //Header file
+#include "TextColor.hpp"    //setTextColor
 
 
 
@@ -61,7 +63,7 @@ int menu( const char* const* const choices, const int numChoices )
         //If we didn't do this, besides staying in the "fail" state, the invalid input would remain on the stream.
         if( std::cin.fail() ) {
             std::cin.clear();
-            std::cin.ignore( INT_MAX, '\n' );
+            std::cin.ignore( std::numeric_limits<int>::max(), '\n' );
             choice = -1;
         }
 

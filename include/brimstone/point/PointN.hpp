@@ -39,105 +39,66 @@ Description:
 //spec2 is the specialization that should be used for the parameter in the copy constructor
 //and assignment operator.
 //It is usually BS_SPEC_2( T2, N ) which translates to < T2, N >.
-#define BS_BASEPOINT_DECLARE_INHERITED_METHODS( className, N, spec2 )                   \
-    className();                                                                        \
-                                                                                        \
-    template< typename T2 >                                                             \
-    className( const className spec2& toCopy );                                         \
-                                                                                        \
-    template< typename T2 >                                                             \
-    className& operator =( const className spec2& right );
-#define BS_BASEPOINT_DEFINE_INHERITED_METHODS( className, N, tmpl, spec, spec2 )        \
-    tmpl                                                                                \
-    className spec::className() : BaseClass() {}                                        \
-                                                                                        \
-    tmpl                                                                                \
-    template< typename T2 >                                                             \
-    className spec::className( const className spec2& toCopy ) :                        \
-        BaseClass( static_cast< const Private::BasePoint spec2& >( toCopy ) ) {         \
-    }                                                                                   \
-                                                                                        \
-    tmpl                                                                                \
-    template< typename T2 >                                                             \
-    className spec& className spec::operator =( const className spec2& right ) {        \
-        BaseClass::operator =( right );                                                 \
-        return *this;                                                                   \
+    
+
+//Classes that base themself off of points define these methods
+#define BS_BASEPOINT_DECLARE_METHODS( className, N )                                        \
+    className();                                                                            \
+                                                                                            \
+    template< typename T2 >                                                                 \
+    className( const className< T2, N >& toCopy );                                          \
+                                                                                            \
+    template< typename T2 >                                                                 \
+    className& operator =( const className< T2, N >& right );                               \
+                                                                                            \
+    void zero();                                                                            \
+    bool isZero() const;    
+
+//Methods for generic case of classes that base themselves off of points
+#define BS_BASEPOINTN_DEFINE_METHODS( className )                                           \
+    template< typename T, size_t N >                                                        \
+    template< typename T2 >                                                                 \
+    className< T, N >::className( const className< T2, N >& toCopy ) {                      \
+        (*this) = toCopy;                                                                   \
+    }                                                                                       \
+    template< typename T, size_t N >                                                        \
+    template< typename T2 >                                                                 \
+    className< T, N >& className< T, N >::operator =( const className< T2, N >& right ) {   \
+        for( size_t i = 0; i < N; ++i )                                                     \
+            data[i] = static_cast<T>( right.data[i] );                                      \
+                                                                                            \
+        return (*this);                                                                     \
+    }                                                                                       \
+                                                                                            \
+    template< typename T, size_t N >                                                        \
+    void className< T, N >::zero() {                                                        \
+        std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );           \
+    }                                                                                       \
+    template< typename T, size_t N >                                                        \
+    bool className< T, N >::isZero() const {                                                \
+        for( size_t i = 0; i < N; ++i )                                                     \
+            if( data[i] != 0 )                                                              \
+                return false;                                                               \
+        return true;                                                                        \
     }
 
-//Variants of BasePoint use this to redeclare methods common to all specialiations.
-#define BS_BASEPOINT_DECLARE_METHODS( N )                                               \
-    void zero();                                                                        \
-    bool isZero() const;
-
-#define BS_POINT_DECLARE_METHODS( N )                                                   \
-    explicit   operator       Vector< T, N >&();                                        \
+#define BS_POINT_DECLARE_METHODS( N )                                                       \
+    explicit   operator       Vector< T, N >&();                                            \
     explicit   operator const Vector< T, N >&() const;
 
-#define BS_POINT_DEFINE_METHODS( N, tmpl )                                              \
-    tmpl                                                                                \
-    Point< T, N >::operator Vector< T, N >&() {                                         \
-        return reinterpret_cast< Vector< T, N >& >( *this );                            \
-    }                                                                                   \
-    tmpl                                                                                \
-    Point< T, N >::operator const Vector< T, N >&() const {                             \
-        return reinterpret_cast< const Vector< T, N >& >( *this );                      \
+#define BS_POINT_DEFINE_METHODS( N, tmpl )                                                  \
+    tmpl                                                                                    \
+    Point< T, N >::operator Vector< T, N >&() {                                             \
+        return reinterpret_cast< Vector< T, N >& >( *this );                                \
+    }                                                                                       \
+    tmpl                                                                                    \
+    Point< T, N >::operator const Vector< T, N >&() const {                                 \
+        return reinterpret_cast< const Vector< T, N >& >( *this );                          \
     }
+
 
 
 namespace Brimstone {
-namespace Private {
-
-template< typename T, size_t N >
-class BasePoint {
-public:
-    T data[N];
-public:
-    //Generic methods
-    BS_ARRAY_DECLARE_INHERITED_METHODS( BasePoint, T )
-    BS_BASEPOINT_DECLARE_INHERITED_METHODS( BasePoint, N, BS_SPEC_2( T2, N ) )
-    BS_ARRAY_DECLARE_METHODS( BasePoint, T )
-    BS_BASEPOINT_DECLARE_METHODS( N )
-};
-
-BS_ARRAY_DEFINE_GENERIC_METHODS( BasePoint, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-BS_ARRAY_DEFINE_METHODS( BasePoint, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-
-template< typename T, size_t N >
-BasePoint< T, N >::BasePoint() {
-#ifdef BS_ZERO
-    std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
-#endif //BS_ZERO
-}
-
-template< typename T, size_t N >
-template< typename T2 >
-BasePoint< T, N >::BasePoint( const BasePoint< T2, N >& toCopy ) {
-    (*this) = toCopy;
-}
-
-template< typename T, size_t N >
-template< typename T2 >
-BasePoint< T, N >& BasePoint< T, N >::operator =( const BasePoint< T2, N >& right ) {
-    for( size_t i = 0; i < N; ++i )
-        data[i] = static_cast<T>( right.data[i] );
-
-    return (*this);
-}
-
-template< typename T, size_t N >
-void BasePoint< T, N >::zero() {
-    std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
-}
-
-template< typename T, size_t N >
-bool BasePoint< T, N >::isZero() const {
-    for( size_t i = 0; i < N; ++i )
-        if( data[i] != 0 )
-            return false;
-    return true;
-}
-
-}
 
 
 
@@ -149,17 +110,40 @@ class Vector;
 
 
 template< typename T, size_t N >
-class Point : public Private::BasePoint< T, N > {
-private:
-    typedef Private::BasePoint< T, N > BaseClass;
+class Point {
 public:
-    BS_ARRAY_DECLARE_INHERITED_METHODS( Point, T )
-    BS_BASEPOINT_DECLARE_INHERITED_METHODS( Point, N, BS_SPEC_2( T2, N ) )
-    BS_POINT_DECLARE_METHODS( N )
+    T data[N];
+public:
+    BS_ARRAY_DECLARE_INHERITED_METHODS( Point, T    )
+    BS_ARRAY_DECLARE_METHODS(           Point, T    )
+    BS_BASEPOINT_DECLARE_METHODS(       Point,    N )
+    BS_POINT_DECLARE_METHODS(                     N )
 };
-BS_ARRAY_DEFINE_INHERITED_METHODS( Point, T, BaseClass, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-BS_BASEPOINT_DEFINE_INHERITED_METHODS( Point, N, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ), BS_SPEC_2( T2, N ) )
-BS_POINT_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
+BS_ARRAY_DEFINE_GENERIC_METHODS( Point, T,    data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_METHODS(         Point, T,    data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_BASEPOINTN_DEFINE_METHODS(    Point                                                                   )
+BS_POINT_DEFINE_METHODS(                   N,       BS_TMPL_2( typename T, size_t N )                    )
+
+
+
+
+//Forward declarations
+template< typename T, size_t N >
+T distanceSq( const Point< T, N >& left, const Point< T, N >& right );
+template< typename T, size_t N >
+T distance( const Point< T, N >& left, const Point< T, N >& right );
+template< typename T, size_t N >
+T manhattan( const Point< T, N >& left, const Point< T, N >& right );
+
+
+
+
+template< typename T, size_t N >
+Point< T, N >::Point() {
+#ifdef BS_ZERO
+    std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
+#endif //BS_ZERO
+}
 
 template< typename T, size_t N >
 bool operator ==( const Point< T, N >& left, const Point< T, N >& right ) {
