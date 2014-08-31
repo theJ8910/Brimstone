@@ -461,6 +461,46 @@ Vector< T, N > operator /( const Vector< T, N >& left, const T right ) {
 }
 
 template< typename T, size_t N >
+Vector< T, N > operator -( const Point< T, N >& left, const Point< T, N >& right ) {
+    Vector< T, N > out;
+
+    for( int i = 0; i < N; ++i )
+        out.data[i] = left.data[i] - right.data[i];
+
+    return out;
+}
+
+template< typename T, size_t N >
+Point< T, N > operator +( const Point< T, N >& left, const Vector< T, N >& right ) {
+    Point< T, N > out;
+
+    for( int i = 0; i < N; ++i )
+        out.data[i] = left.data[i] + right.data[i];
+
+    return out;
+}
+
+template< typename T, size_t N >
+Point< T, N > operator +( const Vector< T, N >& left, const Point< T, N >& right ) {
+    Point< T, N > out;
+
+    for( int i = 0; i < N; ++i )
+        out.data[i] = left.data[i] + right.data[i];
+
+    return out;
+}
+
+template< typename T, size_t N >
+Point< T, N > operator -( const Point< T, N >& left, const Vector< T, N >& right ) {
+    Point< T, N > out;
+
+    for( int i = 0; i < N; ++i )
+        out.data[i] = left.data[i] - right.data[i];
+
+    return out;
+}
+
+template< typename T, size_t N >
 T dot( const Vector< T, N >& left, const Vector< T, N >& right ) {
     T dp = 0;
 

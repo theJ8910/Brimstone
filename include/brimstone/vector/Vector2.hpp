@@ -272,6 +272,38 @@ Vector< T, 2 > operator /( const Vector< T, 2 >& left, const T right ) {
 }
 
 template< typename T >
+Vector< T, 2 > operator -( const Point< T, 2 >& left, const Point< T, 2 >& right ) {
+    return Vector< T, 2 >(
+        left.x - right.x,
+        left.y - right.y
+    );
+}
+
+template< typename T >
+Point< T, 2 > operator +( const Point< T, 2 >& left, const Vector< T, 2 >& right ) {
+    return Point< T, 2 >(
+        left.x + right.x,
+        left.y + right.y
+    );
+}
+
+template< typename T >
+Point< T, 2 > operator +( const Vector< T, 2 >& left, const Point< T, 2 >& right ) {
+    return Point< T, 2 >(
+        left.x + right.x,
+        left.y + right.y
+    );
+}
+
+template< typename T >
+Point< T, 2 > operator -( const Point< T, 2 >& left, const Vector< T, 2 >& right ) {
+    return Point< T, 2 >(
+        left.x - right.x,
+        left.y - right.y
+    );
+}
+
+template< typename T >
 T dot( const Vector< T, 2 >& left, const Vector< T, 2 >& right ) {
     return left.x * right.x +
            left.y * right.y;

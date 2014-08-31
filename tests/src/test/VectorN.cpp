@@ -527,6 +527,46 @@ UT_TEST_BEGIN( VectorN_div_scalar )
     return allEqual( o2.data, cv_divScalarResult );
 UT_TEST_END()
 
+UT_TEST_BEGIN( VectorN_point_sub_point )
+    Point5i  pt1( cv_arithmetic1 );
+    Point5i  pt2( cv_arithmetic2 );
+    Vector5i o(  cv_values      );
+
+    o = pt1 - pt2;
+
+    return allEqual( o.data, cv_subResult );
+UT_TEST_END()
+
+UT_TEST_BEGIN( VectorN_point_add_vec )
+    Point5i  pt1( cv_arithmetic1 );
+    Vector5i o(   cv_arithmetic2 );
+    Point5i  pt2( cv_values );
+
+    pt2 = pt1 + o;
+
+    return allEqual( pt2.data, cv_addResult );
+UT_TEST_END()
+
+UT_TEST_BEGIN( VectorN_vec_add_point )
+    Vector5i o(   cv_arithmetic1 );
+    Point5i  pt1( cv_arithmetic2 );
+    Point5i  pt2( cv_values );
+
+    pt2 = o + pt1;
+
+    return allEqual( pt2.data, cv_addResult );
+UT_TEST_END()
+
+UT_TEST_BEGIN( VectorN_point_sub_vec )
+    Point5i  pt1( cv_arithmetic1 );
+    Vector5i o(   cv_arithmetic2 );
+    Point5i  pt2( cv_values );
+
+    pt2 = pt1 - o;
+
+    return allEqual( pt2.data, cv_subResult );
+UT_TEST_END()
+
 UT_TEST_BEGIN( VectorN_dot )
     Vector5i o1( cv_values    );
     Vector5i o2( cv_valuesAlt );
