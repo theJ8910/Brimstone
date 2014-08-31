@@ -48,7 +48,9 @@ solution( "Brimstone" )
 
         --Debug builds enable a bunch of safeguards
         configuration( "debug" )
+            flags( { "Symbols" } )
             defines( {
+                "BS_BUILD_DEBUG",
                 "BS_ZERO",
                 "BS_CHECK_NULLPTR",
                 "BS_CHECK_SIZE",
@@ -101,7 +103,9 @@ solution( "Brimstone" )
             defines( { "BS_BUILD_64BIT" } )
 
         configuration( "debug" )
+            flags( { "Symbols" } )
             defines( {
+                "BS_BUILD_DEBUG",
                 "BS_ZERO",
                 "BS_CHECK_NULLPTR",
                 "BS_CHECK_SIZE",

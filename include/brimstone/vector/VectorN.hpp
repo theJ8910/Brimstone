@@ -252,13 +252,41 @@ T Vector< T, N >::getLengthSq() const {
     return lengthSq;
 }
 
+#if defined( BS_BUILD_LINUX ) && !defined( BS_BUILD_64BIT ) && !defined( BS_BUILD_DEBUG )
+
+namespace Private {
+
+//Meant to fix a G++ optimization problem (bug?) that only occurs on the 32-bit release (-O3) build
+//It only seems to affect this particular method, in this particular class (specializations aren't affected)
+//Having the operation performed on a volatile vector seems to work around the problem.
+//The only real way this differs from any other similar function is that it does "data[i] = static_cast< T > / data[i];"
+//Maybe it's got something to do with that?
+template< typename T, size_t N >
+void invertImpl( volatile Vector< T, N >& v ) {
+    const T one = static_cast< T >( 1 );
+    for( size_t i = 0; i < N; ++i ) {
+        BS_ASSERT_NONZERO_DIVISOR( v.data[i] );
+        v.data[i] = one / v.data[i];
+    }
+}
+
+}
+
+#endif
+
 template< typename T, size_t N >
 void Vector< T, N >::invert() {
+    #if defined( BS_BUILD_LINUX ) && !defined( BS_BUILD_64BIT ) && !defined( BS_BUILD_DEBUG )
+    Private::invertImpl( *this );
+    #else
+
     const T one = static_cast< T >( 1 );
     for( size_t i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( data[i] );
         data[i] = one / data[i];
     }
+
+    #endif
 }
 
 template< typename T, size_t N >
