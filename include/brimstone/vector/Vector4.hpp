@@ -108,6 +108,28 @@ T Vector< T, 4 >::getLengthSq() const {
 }
 
 template< typename T >
+void Vector< T, 4 >::invert() {
+    BS_ASSERT_NONZERO_DIVISOR( x );
+    BS_ASSERT_NONZERO_DIVISOR( y );
+    BS_ASSERT_NONZERO_DIVISOR( z );
+    BS_ASSERT_NONZERO_DIVISOR( w );
+
+    const T one = static_cast< T >( 1 );
+    x = one / x;
+    y = one / y;
+    z = one / z;
+    w = one / w;
+}
+
+template< typename T >
+void Vector< T, 4 >::negate() {
+    x = -x;
+    y = -y;
+    z = -z;
+    w = -w;
+}
+
+template< typename T >
 Vector< T, 4 >& Vector< T, 4 >::operator +=( const Vector& right ) {
     x += right.x;
     y += right.y;
@@ -348,6 +370,22 @@ Point< T, 4 > operator -( const Point< T, 4 >& left, const Vector< T, 4 >& right
         left.y - right.y,
         left.z - right.z,
         left.w - right.w
+    );
+}
+
+template< typename T >
+Vector< T, 4 > invert( const Vector< T, 4 >& vector ) {
+    BS_ASSERT_NONZERO_DIVISOR( vector.x );
+    BS_ASSERT_NONZERO_DIVISOR( vector.y );
+    BS_ASSERT_NONZERO_DIVISOR( vector.z );
+    BS_ASSERT_NONZERO_DIVISOR( vector.w );
+
+    const T one = static_cast< T >( 1 );
+    return Vector< T, 4 >(
+        one / vector.x,
+        one / vector.y,
+        one / vector.z,
+        one / vector.w
     );
 }
 

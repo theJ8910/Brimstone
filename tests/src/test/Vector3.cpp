@@ -4,7 +4,7 @@ test/Vector3.cpp
 Copyright (c) 2014, theJ89
 
 Description:
-    Unit tests for VectorN<T,3> specialization
+    Unit tests for Vector<T,3> specialization
 */
 
 
@@ -26,6 +26,7 @@ namespace {
     using ::Brimstone::Point3i;
     using ::Brimstone::Vector3f;
     using ::Brimstone::BoundsException;
+    using ::Brimstone::DivideByZeroException;
 
     const size_t cv_size               = 3;
     const int    cv_zero[3]            {  0,  0,   0 };
@@ -52,6 +53,7 @@ namespace {
     const int    cv_crossResult[3]     { -40, 24,   0 };
     const char*  cv_output             = "< 1, 2, 3 >";
 
+    const float cv_zeroF[3]            { 0.0f, 0.0f, 0.0f };
     const float cv_valuesF[3]          { 1.0f, 2.0f, 3.0f };
     const float cv_valuesAltF[3]       { 4.0f, 5.0f, 6.0f };
     const float cv_lengthF             = 8.77496439f;
@@ -59,6 +61,11 @@ namespace {
          4.0f / cv_lengthF,
          5.0f / cv_lengthF,
          6.0f / cv_lengthF
+    };
+    const float cv_inverseF[3] {
+         1.0f / 1.0f,
+         1.0f / 2.0f,
+         1.0f / 3.0f
     };
     const char* cv_outputF = "< 1.00000, 2.00000, 3.00000 >";
 }
@@ -307,6 +314,22 @@ UT_TEST_BEGIN( Vector3_isUnitVec_float )
 
     return  v1.isUnitVec() &&
            !v2.isUnitVec();
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_invert )
+    Vector3f o( cv_valuesF );
+
+    o.invert();
+
+    return allEqual( o.data, cv_inverseF );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_negate )
+    Vector3i o( cv_arithmetic1 );
+
+    o.negate();
+
+    return allEqual( o.data, cv_negateResult );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector3_equals )
@@ -592,6 +615,15 @@ UT_TEST_BEGIN( Vector3_point_sub_vec )
     return allEqual( pt2.data, cv_subResult );
 UT_TEST_END()
 
+UT_TEST_BEGIN( Vector3_invert_free )
+    Vector3f o( cv_valuesF );
+    Vector3f o2( cv_valuesAltF );
+
+    o2 = invert( o );
+
+    return allEqual( o2.data, cv_inverseF );
+UT_TEST_END()
+
 UT_TEST_BEGIN( Vector3_dot )
     Vector3i o1( cv_values    );
     Vector3i o2( cv_valuesAlt );
@@ -617,6 +649,100 @@ UT_TEST_BEGIN( Vector3_constructorZero )
 UT_TEST_END()
 
 #endif //BS_ZERO
+
+
+
+
+#ifdef BS_CHECK_DIVBYZERO
+
+UT_TEST_BEGIN( Vector3_normalize_divByZero )
+    Vector3i o1( cv_zero );
+    try {
+        o1.normalize();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    Vector3f o2( cv_zeroF );
+    try {
+        o2.normalize();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_divAssign_vector_divByZero )
+    Vector3i o1( cv_values );
+    Vector3i o2( cv_zero );
+
+    try {
+        o1 /= o2;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_divAssign_scalar_divByZero )
+    Vector3i o( cv_values );
+
+    try {
+        o /= 0;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_div_vector_divByZero )
+    Vector3i o1( cv_values );
+    Vector3i o2( cv_zero );
+    Vector3i o3;
+
+    try {
+        o3 = o1 / o2;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_div_scalar_divByZero )
+    Vector3i o1( cv_values );
+    Vector3i o2;
+
+    try {
+        o2 = o1 / 0;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_invert_divByZero )
+    Vector3f o( cv_zeroF );
+
+    try {
+        o.invert();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector3_invert_free_divByZero )
+    Vector3f o1( cv_zeroF );
+    Vector3f o2;
+
+    try {
+        o2 = invert( o1 );
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+#endif //BS_CHECK_DIVBYZERO
 
 
 

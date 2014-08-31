@@ -4,7 +4,7 @@ test/Vector4.cpp
 Copyright (c) 2014, theJ89
 
 Description:
-    Unit tests for VectorN<T,4> specialization
+    Unit tests for Vector<T,4> specialization
 */
 
 
@@ -26,6 +26,7 @@ namespace {
     using ::Brimstone::Point4i;
     using ::Brimstone::Vector4f;
     using ::Brimstone::BoundsException;
+    using ::Brimstone::DivideByZeroException;
 
     const size_t cv_size               = 4;
     const int    cv_zero[4]            {  0,  0,   0,  0 };
@@ -51,6 +52,7 @@ namespace {
     const int    cv_negateResult[4]    { -6, -10, -24, -9 };
     const char*  cv_output             = "< 1, 2, 3, 4 >";
 
+    const float cv_zeroF[4]            { 0.0f, 0.0f, 0.0f, 0.0f };
     const float cv_valuesF[4]          { 1.0f, 2.0f, 3.0f, 4.0f };
     const float cv_valuesAltF[4]       { 5.0f, 6.0f, 7.0f, 8.0f };
     const float cv_lengthF             = 13.190905958272919170936807732722f;
@@ -59,6 +61,12 @@ namespace {
          6.0f / cv_lengthF,
          7.0f / cv_lengthF,
          8.0f / cv_lengthF
+    };
+    const float cv_inverseF[4] {
+         1.0f / 1.0f,
+         1.0f / 2.0f,
+         1.0f / 3.0f,
+         1.0f / 4.0f
     };
     const char* cv_outputF = "< 1.00000, 2.00000, 3.00000, 4.00000 >";
 }
@@ -308,6 +316,22 @@ UT_TEST_BEGIN( Vector4_isUnitVec_float )
 
     return  v1.isUnitVec() &&
            !v2.isUnitVec();
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_invert )
+    Vector4f o( cv_valuesF );
+
+    o.invert();
+
+    return allEqual( o.data, cv_inverseF );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_negate )
+    Vector4i o( cv_arithmetic1 );
+
+    o.negate();
+
+    return allEqual( o.data, cv_negateResult );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector4_equals )
@@ -593,6 +617,15 @@ UT_TEST_BEGIN( Vector4_point_sub_vec )
     return allEqual( pt2.data, cv_subResult );
 UT_TEST_END()
 
+UT_TEST_BEGIN( Vector4_invert_free )
+    Vector4f o( cv_valuesF );
+    Vector4f o2( cv_valuesAltF );
+
+    o2 = invert( o );
+
+    return allEqual( o2.data, cv_inverseF );
+UT_TEST_END()
+
 UT_TEST_BEGIN( Vector4_dot )
     Vector4i o1( cv_values    );
     Vector4i o2( cv_valuesAlt );
@@ -611,6 +644,100 @@ UT_TEST_BEGIN( Vector4_constructorZero )
 UT_TEST_END()
 
 #endif //BS_ZERO
+
+
+
+
+#ifdef BS_CHECK_DIVBYZERO
+
+UT_TEST_BEGIN( Vector4_normalize_divByZero )
+    Vector4i o1( cv_zero );
+    try {
+        o1.normalize();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    Vector4f o2( cv_zeroF );
+    try {
+        o2.normalize();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_divAssign_vector_divByZero )
+    Vector4i o1( cv_values );
+    Vector4i o2( cv_zero );
+
+    try {
+        o1 /= o2;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_divAssign_scalar_divByZero )
+    Vector4i o( cv_values );
+
+    try {
+        o /= 0;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_div_vector_divByZero )
+    Vector4i o1( cv_values );
+    Vector4i o2( cv_zero );
+    Vector4i o3;
+
+    try {
+        o3 = o1 / o2;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_div_scalar_divByZero )
+    Vector4i o1( cv_values );
+    Vector4i o2;
+
+    try {
+        o2 = o1 / 0;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_invert_divByZero )
+    Vector4f o( cv_zeroF );
+
+    try {
+        o.invert();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector4_invert_free_divByZero )
+    Vector4f o1( cv_zeroF );
+    Vector4f o2;
+
+    try {
+        o2 = invert( o1 );
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+#endif //BS_CHECK_DIVBYZERO
 
 
 

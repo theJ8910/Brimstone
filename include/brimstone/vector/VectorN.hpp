@@ -72,6 +72,9 @@ The upper bound is slightly higher than the lower bound, so we choose that for t
     void normalize();                                                               \
     bool isUnitVec() const;                                                         \
                                                                                     \
+    void invert();                                                                  \
+    void negate();                                                                  \
+                                                                                    \
     Vector&    operator +=( const Vector& right );                                  \
     Vector&    operator -=( const Vector& right );                                  \
     Vector&    operator *=( const Vector& right );                                  \
@@ -213,6 +216,8 @@ BS_VECTOR_DEFINE_METHODS(                   N,       BS_TMPL_2( typename T, size
 //Forward declarations
 template< typename T, size_t N >
 T dot( const Vector< T, N >& left, const Vector< T, N >& right );
+template< typename T, size_t N >
+Vector< T, N > invert( const Vector< T, N >& vector );
 
 
 
@@ -233,7 +238,7 @@ Vector< T, N >::Vector( const Point< T2, N >& to ) {
 
 template< typename T, size_t N >
 Vector< T, N >::Vector( const Point< T, N >& from, const Point< T, N >& to ) {
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         data[i] = to.data[i] - from.data[i];
 }
 
@@ -241,15 +246,30 @@ template< typename T, size_t N >
 T Vector< T, N >::getLengthSq() const {
     T lengthSq = 0;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         lengthSq += data[i] * data[i];
 
     return lengthSq;
 }
 
 template< typename T, size_t N >
+void Vector< T, N >::invert() {
+    const T one = static_cast< T >( 1 );
+    for( size_t i = 0; i < N; ++i ) {
+        BS_ASSERT_NONZERO_DIVISOR( data[i] );
+        data[i] = one / data[i];
+    }
+}
+
+template< typename T, size_t N >
+void Vector< T, N >::negate() {
+    for( size_t i = 0; i < N; ++i )
+        data[i] = -data[i];
+}
+
+template< typename T, size_t N >
 Vector< T, N >& Vector< T, N >::operator +=( const Vector& right ) {
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         data[i] += right.data[i];
 
     return ( *this );
@@ -257,7 +277,7 @@ Vector< T, N >& Vector< T, N >::operator +=( const Vector& right ) {
 
 template< typename T, size_t N >
 Vector< T, N >& Vector< T, N >::operator -=( const Vector& right ) {
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         data[i] -= right.data[i];
 
     return ( *this );
@@ -265,7 +285,7 @@ Vector< T, N >& Vector< T, N >::operator -=( const Vector& right ) {
 
 template< typename T, size_t N >
 Vector< T, N >& Vector< T, N >::operator *=( const Vector& right ) {
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         data[i] *= right.data[i];
 
     return ( *this );
@@ -273,7 +293,7 @@ Vector< T, N >& Vector< T, N >::operator *=( const Vector& right ) {
 
 template< typename T, size_t N >
 Vector< T, N >& Vector< T, N >::operator /=( const Vector& right ) {
-    for( int i = 0; i < N; ++i ) {
+    for( size_t i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( right.data[i] );
         data[i] /= right.data[i];
     }
@@ -283,7 +303,7 @@ Vector< T, N >& Vector< T, N >::operator /=( const Vector& right ) {
 
 template< typename T, size_t N >
 Vector< T, N >& Vector< T, N >::operator +=( const T right ) {
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         data[i] += right;
 
     return ( *this );
@@ -291,7 +311,7 @@ Vector< T, N >& Vector< T, N >::operator +=( const T right ) {
 
 template< typename T, size_t N >
 Vector< T, N >& Vector< T, N >::operator -=( const T right ) {
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         data[i] -= right;
 
     return ( *this );
@@ -299,7 +319,7 @@ Vector< T, N >& Vector< T, N >::operator -=( const T right ) {
 
 template< typename T, size_t N >
 Vector< T, N >& Vector< T, N >::operator *=( const T right ) {
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         data[i] *= right;
 
     return ( *this );
@@ -309,7 +329,7 @@ template< typename T, size_t N >
 Vector< T, N >& Vector< T, N >::operator /=( const T right ) {
     BS_ASSERT_NONZERO_DIVISOR( right );
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         data[i] /= right;
 
     return ( *this );
@@ -317,8 +337,9 @@ Vector< T, N >& Vector< T, N >::operator /=( const T right ) {
 
 template< typename T, size_t N >
 std::ostream& operator <<( std::ostream& left, const Vector< T, N >& right ) {
-    left << "< " << ( boost::format( "%|.5f|" ) % right.data[0] ).str();
-    for( int i = 1; i < N; ++i )
+    left << "< "
+         << ( boost::format( "%|.5f|" ) % right.data[0] ).str();
+    for( size_t i = 1; i < N; ++i )
         left << ", " << ( boost::format( "%|.5f|" ) % right.data[i] ).str();
     left << " >";
 
@@ -350,7 +371,7 @@ template< typename T, size_t N >
 Vector< T, N > operator -( const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out.data[i] = -right.data[i];
 
     return out;
@@ -360,7 +381,7 @@ template< typename T, size_t N >
 Vector< T, N > operator +( const Vector< T, N >& left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] + right.data[i];
 
     return out;
@@ -370,7 +391,7 @@ template< typename T, size_t N >
 Vector< T, N > operator -( const Vector< T, N >& left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] - right.data[i];
 
     return out;
@@ -380,7 +401,7 @@ template< typename T, size_t N >
 Vector< T, N > operator *( const Vector< T, N >& left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] * right.data[i];
 
     return out;
@@ -390,7 +411,7 @@ template< typename T, size_t N >
 Vector< T, N > operator /( const Vector< T, N >& left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i ) {
+    for( size_t i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( right.data[i] );
         out.data[i] = left.data[i] / right.data[i];
     }
@@ -402,7 +423,7 @@ template< typename T, size_t N >
 Vector< T, N > operator +( const T left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out[i] = left + right[i];
 
     return out;
@@ -412,7 +433,7 @@ template< typename T, size_t N >
 Vector< T, N > operator +( const Vector< T, N >& left, const T right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out[i] = left[i] + right;
 
     return out;
@@ -422,7 +443,7 @@ template< typename T, size_t N >
 Vector< T, N > operator -( const Vector< T, N >& left, const T right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out[i] = left[i] - right;
 
     return out;
@@ -432,7 +453,7 @@ template< typename T, size_t N >
 Vector< T, N > operator *( const T left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out[i] = left * right[i];
 
     return out;
@@ -442,7 +463,7 @@ template< typename T, size_t N >
 Vector< T, N > operator *( const Vector< T, N >& left, const T right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out[i] = left[i] * right;
 
     return out;
@@ -454,7 +475,7 @@ Vector< T, N > operator /( const Vector< T, N >& left, const T right ) {
 
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out[i] = left[i] / right;
 
     return out;
@@ -464,7 +485,7 @@ template< typename T, size_t N >
 Vector< T, N > operator -( const Point< T, N >& left, const Point< T, N >& right ) {
     Vector< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] - right.data[i];
 
     return out;
@@ -474,7 +495,7 @@ template< typename T, size_t N >
 Point< T, N > operator +( const Point< T, N >& left, const Vector< T, N >& right ) {
     Point< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] + right.data[i];
 
     return out;
@@ -484,7 +505,7 @@ template< typename T, size_t N >
 Point< T, N > operator +( const Vector< T, N >& left, const Point< T, N >& right ) {
     Point< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] + right.data[i];
 
     return out;
@@ -494,8 +515,21 @@ template< typename T, size_t N >
 Point< T, N > operator -( const Point< T, N >& left, const Vector< T, N >& right ) {
     Point< T, N > out;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] - right.data[i];
+
+    return out;
+}
+
+template< typename T, size_t N >
+Vector< T, N > invert( const Vector< T, N >& vector ) {
+    Vector< T, N > out;
+
+    const T one = static_cast< T >( 1 );
+    for( size_t i = 0; i < N; ++i ) {
+        BS_ASSERT_NONZERO_DIVISOR( vector.data[i] );
+        out.data[i] = one / vector.data[i];
+    }
 
     return out;
 }
@@ -504,7 +538,7 @@ template< typename T, size_t N >
 T dot( const Vector< T, N >& left, const Vector< T, N >& right ) {
     T dp = 0;
 
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         dp += left.data[i] * right.data[i];
 
     return dp;
@@ -577,7 +611,7 @@ void floatNormalize( Vector< T, N >& vecInOut ) {
     BS_ASSERT_CAN_NORMALIZE( vecInOut );
 
     T invLen = fastInvSqrt( vecInOut.getLengthSq() );
-    for( int i = 0; i < N; ++i )
+    for( size_t i = 0; i < N; ++i )
         vecInOut.data[i] *= invLen;
 }
 

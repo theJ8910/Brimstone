@@ -39,7 +39,6 @@ Description:
 //spec2 is the specialization that should be used for the parameter in the copy constructor
 //and assignment operator.
 //It is usually BS_SPEC_2( T2, N ) which translates to < T2, N >.
-    
 
 //Classes that base themself off of points define these methods
 #define BS_BASEPOINT_DECLARE_METHODS( className, N )                                        \
@@ -52,7 +51,7 @@ Description:
     className& operator =( const className< T2, N >& right );                               \
                                                                                             \
     void zero();                                                                            \
-    bool isZero() const;    
+    bool isZero() const;
 
 //Methods for generic case of classes that base themselves off of points
 #define BS_BASEPOINTN_DEFINE_METHODS( className )                                           \
@@ -165,7 +164,7 @@ template< typename T, size_t N >
 std::ostream& operator <<( std::ostream& left, const Point< T, N >& right ) {
     left << "( "
          << ( boost::format( "%|.5f|" ) % right.data[0] ).str();
-    for( int i = 1; i < N; ++i )
+    for( size_t i = 1; i < N; ++i )
         left << ", " << ( boost::format( "%|.5f|" ) % right.data[i] ).str();
     left << " )";
 

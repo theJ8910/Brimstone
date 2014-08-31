@@ -4,7 +4,7 @@ test/Vector2.cpp
 Copyright (c) 2014, theJ89
 
 Description:
-    Unit tests for VectorN<T,2> specialization
+    Unit tests for Vector<T,2> specialization
 */
 
 
@@ -26,6 +26,7 @@ namespace {
     using ::Brimstone::Point2i;
     using ::Brimstone::Vector2f;
     using ::Brimstone::BoundsException;
+    using ::Brimstone::DivideByZeroException;
 
     const size_t cv_size               = 2;
     const int    cv_zero[2]            {  0,  0 };
@@ -51,11 +52,17 @@ namespace {
     const int    cv_negateResult[2]    { -6, -10 };
     const char*  cv_output             = "< 1, 2 >";
 
+    const float cv_zeroF[2]            { 0.0f, 0.0f };
     const float cv_valuesF[2]          { 1.0f, 2.0f };
+    const float cv_valuesAltF[2]       { 3.0f, 4.0f };
     const float cv_lengthF             = 2.23606798f;
     const float cv_unitF[2] {
          1.0f / cv_lengthF,
          2.0f / cv_lengthF
+    };
+    const float cv_inverseF[2] {
+         1.0f / 1.0f,
+         1.0f / 2.0f
     };
     const char*  cv_outputF = "< 1.00000, 2.00000 >";
 }
@@ -303,6 +310,22 @@ UT_TEST_BEGIN( Vector2_isUnitVec_float )
 
     return  v1.isUnitVec() &&
            !v2.isUnitVec();
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_invert )
+    Vector2f o( cv_valuesF );
+
+    o.invert();
+
+    return allEqual( o.data, cv_inverseF );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_negate )
+    Vector2i o( cv_arithmetic1 );
+
+    o.negate();
+
+    return allEqual( o.data, cv_negateResult );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_equals )
@@ -588,6 +611,15 @@ UT_TEST_BEGIN( Vector2_point_sub_vec )
     return allEqual( pt2.data, cv_subResult );
 UT_TEST_END()
 
+UT_TEST_BEGIN( Vector2_invert_free )
+    Vector2f o( cv_valuesF );
+    Vector2f o2( cv_valuesAltF );
+
+    o2 = invert( o );
+
+    return allEqual( o2.data, cv_inverseF );
+UT_TEST_END()
+
 UT_TEST_BEGIN( Vector2_dot )
     Vector2i o1( cv_values    );
     Vector2i o2( cv_valuesAlt );
@@ -606,6 +638,100 @@ UT_TEST_BEGIN( Vector2_constructorZero )
 UT_TEST_END()
 
 #endif //BS_ZERO
+
+
+
+
+#ifdef BS_CHECK_DIVBYZERO
+
+UT_TEST_BEGIN( Vector2_normalize_divByZero )
+    Vector2i o1( cv_zero );
+    try {
+        o1.normalize();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    Vector2f o2( cv_zeroF );
+    try {
+        o2.normalize();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_divAssign_vector_divByZero )
+    Vector2i o1( cv_values );
+    Vector2i o2( cv_zero );
+
+    try {
+        o1 /= o2;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_divAssign_scalar_divByZero )
+    Vector2i o( cv_values );
+
+    try {
+        o /= 0;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_div_vector_divByZero )
+    Vector2i o1( cv_values );
+    Vector2i o2( cv_zero );
+    Vector2i o3;
+
+    try {
+        o3 = o1 / o2;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_div_scalar_divByZero )
+    Vector2i o1( cv_values );
+    Vector2i o2;
+
+    try {
+        o2 = o1 / 0;
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_invert_divByZero )
+    Vector2f o( cv_zeroF );
+
+    try {
+        o.invert();
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_invert_free_divByZero )
+    Vector2f o1( cv_zeroF );
+    Vector2f o2;
+
+    try {
+        o2 = invert( o1 );
+        return false;
+    } catch( const DivideByZeroException& ) {}
+
+    return true;
+UT_TEST_END()
+
+#endif //BS_CHECK_DIVBYZERO
 
 
 
