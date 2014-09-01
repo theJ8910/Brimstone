@@ -142,7 +142,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Array_index )
     Array5i o( cv_values );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.m_data, cv_valuesAlt );
@@ -152,7 +152,7 @@ UT_TEST_BEGIN( Array_indexConst )
     int data[cv_size];
     const Array5i o( cv_values );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );

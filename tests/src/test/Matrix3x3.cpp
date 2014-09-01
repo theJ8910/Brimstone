@@ -804,15 +804,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix3x3_index_OOB )
     Matrix3x3i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[25];
+        o[25];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -821,15 +820,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix3x3_constIndex_OOB )
     const Matrix3x3i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[25];
+        o[25];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -872,25 +870,24 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix3x3_elem_OOB )
     Matrix3x3i o;
-    int i;
 
     try {
-        i = o( (size_t)-1, 0 );
+        o( (size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 0, (size_t)-1 );
+        o( 0, (size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 5, 0 );
+        o( 5, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 0, 5 );
+        o( 0, 5 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -899,25 +896,24 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix3x3_elemConst_OOB )
     const Matrix3x3i o;
-    int i;
 
     try {
-        i = o( (size_t)-1, 0 );
+        o( (size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 0, (size_t)-1 );
+        o( 0, (size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 5, 0 );
+        o( 5, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 0, 5 );
+        o( 0, 5 );
         return false;
     } catch( const BoundsException& ) {}
 

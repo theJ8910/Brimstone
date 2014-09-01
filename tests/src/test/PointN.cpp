@@ -159,7 +159,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( PointN_index )
     Point5i o( cv_values );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -169,7 +169,7 @@ UT_TEST_BEGIN( PointN_indexConst )
     int data[cv_size];
     const Point5i o( cv_values );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -309,15 +309,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( PointN_index_OOB )
     Point5i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[5];
+        o[5];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -326,15 +325,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( PointN_constIndex_OOB )
     const Point5i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[5];
+        o[5];
         return false;
     } catch( const BoundsException& ) {}
 

@@ -156,7 +156,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point3_index )
     Point3i o( cv_values );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -166,7 +166,7 @@ UT_TEST_BEGIN( Point3_indexConst )
     int data[ cv_size ];
     const Point3i o( cv_values );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -317,15 +317,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Point3_index_OOB )
     Point3i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[3];
+        o[3];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -334,15 +333,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Point3_constIndex_OOB )
     const Point3i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[3];
+        o[3];
         return false;
     } catch( const BoundsException& ) {}
 

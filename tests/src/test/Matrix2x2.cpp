@@ -774,15 +774,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix2x2_index_OOB )
     Matrix2x2i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[25];
+        o[25];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -791,15 +790,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix2x2_constIndex_OOB )
     const Matrix2x2i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[25];
+        o[25];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -842,15 +840,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix2x2_getRow_OOB )
     const Matrix2x2i o;
-    Vector2i v;
 
     try {
-        v = o.getRow( (size_t)-1 );
+        o.getRow( (size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        v = o.getRow( 2 );
+        o.getRow( 2 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -859,15 +856,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix2x2_getColumn_OOB )
     const Matrix2x2i o;
-    Vector2i v;
 
     try {
-        v = o.getColumn( (size_t)-1 );
+        o.getColumn( (size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        v = o.getColumn( 2 );
+        o.getColumn( 2 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -876,25 +872,24 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix2x2_elem_OOB )
     Matrix2x2i o;
-    int i;
 
     try {
-        i = o( (size_t)-1, 0 );
+        o( (size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 0, (size_t)-1 );
+        o( 0, (size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 5, 0 );
+        o( 5, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 0, 5 );
+        o( 0, 5 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -903,25 +898,24 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Matrix2x2_elemConst_OOB )
     const Matrix2x2i o;
-    int i;
 
     try {
-        i = o( (size_t)-1, 0 );
+        o( (size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 0, (size_t)-1 );
+        o( 0, (size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 5, 0 );
+        o( 5, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o( 0, 5 );
+        o( 0, 5 );
         return false;
     } catch( const BoundsException& ) {}
 

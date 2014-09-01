@@ -243,7 +243,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( BoundsN_setDimension )
     Bounds5i o( cv_values );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         o.setDimension( i, 10 + i );
 
     return allEqual( o.data, cv_dimTest );
@@ -345,15 +345,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( BoundsN_index_OOB )
     Bounds5i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[10];
+        o[10];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -362,15 +361,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( BoundsN_constIndex_OOB )
     const Bounds5i o;
-    int i;
 
     try {
-        i = o[(size_t)-1];
+        o[(size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o[10];
+        o[10];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -395,15 +393,14 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( BoundsN_getDimension_OOB )
     Bounds5i o;
-    int i;
 
     try {
-        i = o.getDimension( (size_t)(-1) );
+        o.getDimension( (size_t)(-1) );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        i = o.getDimension( 5 );
+        o.getDimension( 5 );
         return false;
     } catch( const BoundsException& ) {}
 

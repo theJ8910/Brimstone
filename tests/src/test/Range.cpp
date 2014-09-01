@@ -162,7 +162,7 @@ UT_TEST_BEGIN( Range_index )
     copyAll( cv_values, data );
     RangeI r( data );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         r[i] = cv_valuesAlt[i];
 
     return allEqual( data, cv_valuesAlt );
@@ -175,7 +175,7 @@ UT_TEST_BEGIN( Range_indexConst )
     int data2[ cv_size ];
     copyAll( cv_valuesAlt, data2 );
 
-    for( int i = 0; i < cv_size; ++i )
+    for( size_t i = 0; i < cv_size; ++i )
         data2[i] = r[i];
 
     return allEqual( data2, cv_values );
