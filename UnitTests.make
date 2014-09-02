@@ -23,10 +23,10 @@ ifeq ($(config),debug32)
   OBJDIR     = obj/x32/debug/UnitTests
   TARGETDIR  = tests/bin
   TARGET     = $(TARGETDIR)/UnitTests_x86d
-  DEFINES   += -DBS_BUILD_LINUX -DUT_BUILD_LINUX -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN
+  DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -g -m32 -std=c++11
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -m32 -L/usr/lib32 -Llib
   LIBS      += -lBrimstone_x86d
@@ -48,7 +48,7 @@ ifeq ($(config),release32)
   DEFINES   += -DBS_BUILD_LINUX -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -O3 -m32 -std=c++11
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -s -m32 -L/usr/lib32 -Llib
   LIBS      += -lBrimstone_x86
@@ -67,10 +67,10 @@ ifeq ($(config),debug64)
   OBJDIR     = obj/x64/debug/UnitTests
   TARGETDIR  = tests/bin
   TARGET     = $(TARGETDIR)/UnitTests_x64d
-  DEFINES   += -DBS_BUILD_LINUX -DUT_BUILD_LINUX -DBS_BUILD_64BIT -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN
+  DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -g -m64 -std=c++11
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -m64 -L/usr/lib64 -Llib
   LIBS      += -lBrimstone_x64d
@@ -89,10 +89,10 @@ ifeq ($(config),release64)
   OBJDIR     = obj/x64/release/UnitTests
   TARGETDIR  = tests/bin
   TARGET     = $(TARGETDIR)/UnitTests_x64
-  DEFINES   += -DBS_BUILD_LINUX -DUT_BUILD_LINUX -DBS_BUILD_64BIT
+  DEFINES   += -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -O3 -m64 -std=c++11
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -s -m64 -L/usr/lib64 -Llib
   LIBS      += -lBrimstone_x64
