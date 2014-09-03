@@ -34,6 +34,8 @@ namespace {
     const int    cv_valuesAlt[2]       {  3,  4 };
 
     const int    cv_unit[2]            {  0,  1 };
+    const int    cv_left[2]            { -2,  1 };
+    const int    cv_right[2]           {  2, -1 };
     const int    cv_lengthSq           = 5;
     const int    cv_length             = 2;  //Rounded down from 2.23606798f
     const int    cv_dot                = 11;
@@ -328,6 +330,22 @@ UT_TEST_BEGIN( Vector2_negate )
     return allEqual( o.data, cv_negateResult );
 UT_TEST_END()
 
+UT_TEST_BEGIN( Vector2_left )
+    Vector2i o( cv_values );
+
+    o.left();
+
+    return allEqual( o.data, cv_left );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_right )
+    Vector2i o( cv_values );
+
+    o.right();
+
+    return allEqual( o.data, cv_right );
+UT_TEST_END()
+
 UT_TEST_BEGIN( Vector2_equals )
     Vector2i o1( cv_values );
     Vector2i o2( cv_values );
@@ -618,6 +636,22 @@ UT_TEST_BEGIN( Vector2_invert_free )
     o2 = invert( o );
 
     return allEqual( o2.data, cv_inverseF );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_left_free )
+    Vector2i o1( cv_values );
+
+    Vector2i o2 = left( o1 );
+
+    return allEqual( o2.data, cv_left );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_right_free )
+    Vector2i o1( cv_values );
+
+    Vector2i o2 = right( o1 );
+
+    return allEqual( o2.data, cv_right );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_dot )

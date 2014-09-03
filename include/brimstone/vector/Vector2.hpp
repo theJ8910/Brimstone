@@ -55,6 +55,9 @@ public:
     BS_BASEPOINT_DECLARE_METHODS(       Vector,    2 )
     BS_BASEPOINT2_DECLARE_METHODS(      Vector       )
     BS_VECTOR_DECLARE_METHODS(                     2 )
+
+    void left();
+    void right();
 };
 BS_ARRAY_DEFINE_METHODS(         Vector, T,    data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ) )
 BS_BASEPOINT2_DEFINE_METHODS(    Vector                                                         )
@@ -115,6 +118,20 @@ template< typename T >
 void Vector< T, 2 >::negate() {
     x = -x;
     y = -y;
+}
+
+template< typename T >
+void Vector< T, 2 >::left() {
+    const T oldX = x;
+    x = -y;
+    y =  oldX;
+}
+
+template< typename T >
+void Vector< T, 2 >::right() {
+    const T oldX = x;
+    x =  y;
+    y = -oldX;
 }
 
 template< typename T >
@@ -329,6 +346,16 @@ Vector< T, 2 > invert( const Vector< T, 2 >& vector ) {
         one / vector.x,
         one / vector.y
     );
+}
+
+template< typename T >
+Vector< T, 2 > left( const Vector< T, 2 >& vector ) {
+    return Vector< T, 2 >( -vector.y, vector.x );
+}
+
+template< typename T >
+Vector< T, 2 > right( const Vector< T, 2 >& vector ) {
+    return Vector< T, 2 >( vector.y, -vector.x );
 }
 
 template< typename T >

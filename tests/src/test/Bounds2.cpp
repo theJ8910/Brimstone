@@ -302,7 +302,7 @@ UT_TEST_BEGIN( Bounds2_setDimension )
     Bounds2i o( cv_values );
 
     for( size_t i = 0; i < cv_size; ++i )
-        o.setDimension( i, 10 + i );
+        o.setDimension( i, (int)(10 + i) );
 
     return allEqual( o.data, cv_dimTest );
 UT_TEST_END()
