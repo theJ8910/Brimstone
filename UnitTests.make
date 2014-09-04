@@ -26,9 +26,9 @@ ifeq ($(config),debug32)
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -std=c++11 -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -std=c++11 -pthread -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m32 -L/usr/lib32 -Llib
+  LDFLAGS   += -m32 -L/usr/lib32 -pthread -Llib
   LIBS      += -lBrimstone_x86d
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -48,9 +48,9 @@ ifeq ($(config),release32)
   DEFINES   += -DBS_BUILD_LINUX -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -std=c++11 -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -std=c++11 -pthread -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m32 -L/usr/lib32 -Llib
+  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread -Llib
   LIBS      += -lBrimstone_x86
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -70,9 +70,9 @@ ifeq ($(config),debug64)
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -std=c++11 -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -std=c++11 -pthread -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m64 -L/usr/lib64 -Llib
+  LDFLAGS   += -m64 -L/usr/lib64 -pthread -Llib
   LIBS      += -lBrimstone_x64d
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -92,9 +92,9 @@ ifeq ($(config),release64)
   DEFINES   += -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -std=c++11 -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -std=c++11 -pthread -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m64 -L/usr/lib64 -Llib
+  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread -Llib
   LIBS      += -lBrimstone_x64
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
