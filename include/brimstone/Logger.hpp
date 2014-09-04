@@ -29,6 +29,7 @@ Description:
 #include <fstream>              //std::ofstream
 #include <vector>               //std::vector
 #include <initializer_list>     //std::initializer_list
+#include <mutex>                //std::mutex
 
 #include <brimstone/types.hpp>  //uchar
 
@@ -76,6 +77,7 @@ public:
     static void add( ILogger& logger );
     static void remove( ILogger& logger );
 private:
+    static std::mutex              m_loggersMutex;
     static std::vector< ILogger* > m_loggers;
 };
 

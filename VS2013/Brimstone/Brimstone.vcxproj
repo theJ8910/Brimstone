@@ -88,7 +88,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;BS_BUILD_WINDOWS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;BS_BUILD_WINDOWS;BS_BUILD_DEBUG;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\luajit-2.0\include;E:\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -106,7 +106,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;BS_BUILD_WINDOWS;BS_BUILD_64BIT;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;BS_BUILD_WINDOWS;BS_BUILD_DEBUG;BS_BUILD_64BIT;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\luajit-2.0\include;E:\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -173,6 +173,8 @@
     <ClInclude Include="..\..\include\brimstone\factory\FactoryManager.hpp" />
     <ClInclude Include="..\..\include\brimstone\factory\IFactory.hpp" />
     <ClInclude Include="..\..\include\brimstone\factory\ThrowFactory.hpp" />
+    <ClInclude Include="..\..\include\brimstone\Graphics.hpp" />
+    <ClInclude Include="..\..\include\brimstone\Input.hpp" />
     <ClInclude Include="..\..\include\brimstone\Logger.hpp" />
     <ClInclude Include="..\..\include\brimstone\Lua.hpp" />
     <ClInclude Include="..\..\include\brimstone\LuaInstance.hpp" />
@@ -187,9 +189,11 @@
     <ClInclude Include="..\..\include\brimstone\point\Point3.hpp" />
     <ClInclude Include="..\..\include\brimstone\point\Point4.hpp" />
     <ClInclude Include="..\..\include\brimstone\point\PointN.hpp" />
+    <ClInclude Include="..\..\include\brimstone\Scheduler.hpp" />
     <ClInclude Include="..\..\include\brimstone\signals\Delegate.hpp" />
     <ClInclude Include="..\..\include\brimstone\signals\Signal.hpp" />
     <ClInclude Include="..\..\include\brimstone\signals\ScopedConnection.hpp" />
+    <ClInclude Include="..\..\include\brimstone\Audio.hpp" />
     <ClInclude Include="..\..\include\brimstone\Systems.hpp" />
     <ClInclude Include="..\..\include\brimstone\types.hpp" />
     <ClInclude Include="..\..\include\brimstone\util\Array.hpp" />
@@ -217,9 +221,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Exception.cpp" />
+    <ClCompile Include="..\..\src\Graphics.cpp" />
+    <ClCompile Include="..\..\src\Input.cpp" />
     <ClCompile Include="..\..\src\Logger.cpp" />
     <ClCompile Include="..\..\src\Lua.cpp" />
     <ClCompile Include="..\..\src\LuaInstance.cpp" />
+    <ClCompile Include="..\..\src\Scheduler.cpp" />
+    <ClCompile Include="..\..\src\Audio.cpp" />
     <ClCompile Include="..\..\src\Systems.cpp" />
     <ClCompile Include="..\..\src\util\Math.cpp" />
     <ClCompile Include="..\..\src\util\Unicode.cpp" />

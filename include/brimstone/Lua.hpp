@@ -33,9 +33,18 @@ public:
     virtual void start();
     virtual void stop();
 
+    virtual void preframe();
+    virtual void frame();
+    virtual void postframe();
+
     std::weak_ptr< LuaInstance > newInstance();
 private:
+    bool                                          m_up;
     std::vector< std::shared_ptr< LuaInstance > > m_instances;
+public:
+    static Lua* get();
+private:
+    static Lua* m_singleton;
 };
 
 }

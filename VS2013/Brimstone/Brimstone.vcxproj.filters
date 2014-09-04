@@ -154,6 +154,18 @@
     <ClInclude Include="..\..\include\brimstone\matrix\MatrixNxN.hpp">
       <Filter>include\brimstone\matrix</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Graphics.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Input.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Scheduler.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Audio.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Exception.cpp">
@@ -191,6 +203,18 @@
     </ClCompile>
     <ClCompile Include="..\..\src\util\Math.cpp">
       <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Graphics.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Input.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Scheduler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Audio.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +256,9 @@
     </Filter>
     <Filter Include="include\brimstone\matrix">
       <UniqueIdentifier>{0d045d51-2889-416f-aa6f-03ae488de5f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\affine">
+      <UniqueIdentifier>{674065d1-8d7a-4da8-b6b8-e18238f2e0df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

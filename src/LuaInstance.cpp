@@ -47,13 +47,37 @@ void LuaInstance::stop() {
     callVoid();
 }
 
+void LuaInstance::preframe() {
+    try {
+        pushFunction( "preframe" );
+    } catch( LuaException& ) { return; }
+
+    callVoid();
+}
+
+void LuaInstance::frame() {
+    try {
+        pushFunction( "frame" );
+    } catch( LuaException& ) { return; }
+
+    callVoid();
+}
+
+void LuaInstance::postframe() {
+    try {
+        pushFunction( "postframe" );
+    } catch( LuaException& ) { return; }
+
+    callVoid();
+}
+
 /*
 Load and run a script
 */
 void LuaInstance::load( const uchar* filepath ) {
     if( luaL_dofile( m_state, filepath ) ) {
         LuaException e( lua_tostring( m_state, -1 ) );
-        lua_pop( m_state, -1 );
+        lua_pop( m_state, 1 );
         throw e;
     }
 }
@@ -66,7 +90,7 @@ void LuaInstance::pushFunction( const uchar* functionName ) {
     lua_getglobal( m_state, functionName );
     if( !lua_isfunction( m_state, -1 ) ) {
         LuaException e( ( boost::format( "\"%1%\" is not a global function" ) % functionName ).str() );
-        lua_pop( m_state, -1 );
+        lua_pop( m_state, 1 );
         throw e;
     }
 }
@@ -87,8 +111,12 @@ void LuaInstance::pushStack( const double value ) {
     lua_pushnumber( m_state, value );
 }
 
-void LuaInstance::pushStack( const uchar* value ) {
+void LuaInstance::pushStack( const uchar* const value ) {
     lua_pushstring( m_state, value );
+}
+
+void LuaInstance::pushStack( const ustring& value ) {
+    pushStack( value.c_str() );
 }
 
 void LuaInstance::pushStack() {
@@ -98,28 +126,28 @@ void LuaInstance::pushStack() {
 void LuaInstance::popStack( bool& valueOut ) {
     //lua_isboolean( m_pcState, -1 );
     valueOut = ( lua_toboolean( m_state, -1 ) > 0 );
-    lua_pop( m_state, -1 );
+    lua_pop( m_state, 1 );
 }
 
 void LuaInstance::popStack( intN& valueOut ) {
     //lua_isinteger( m_pcState, -1 )
     valueOut = lua_tointeger( m_state, -1 );
-    lua_pop( m_state, -1 );
+    lua_pop( m_state, 1 );
 }
 
 void LuaInstance::popStack( float& valueOut ) {
     valueOut = (float)lua_tonumber( m_state, -1 );
-    lua_pop( m_state, -1 );
+    lua_pop( m_state, 1 );
 }
 
 void LuaInstance::popStack( double& valueOut ) {
     valueOut = lua_tonumber( m_state, -1 );
-    lua_pop( m_state, -1 );
+    lua_pop( m_state, 1 );
 }
 
-void LuaInstance::popStack( const uchar*& valueOut ) {
+void LuaInstance::popStack( ustring& valueOut ) {
     valueOut = lua_tostring( m_state, -1 );
-    lua_pop( m_state, -1 );
+    lua_pop( m_state, 1 );
 }
 
 void LuaInstance::popStack() {
@@ -151,11 +179,14 @@ void LuaInstance::openLibraries() {
 }
 
 void LuaInstance::callFunction( const int32 args, const int32 returnValues ) {
+    //lua_pcall pops the function and arguments that were previously pushed to the stack
     if( lua_pcall( m_state, args, returnValues, 0 ) != 0 ) {
         LuaException e( lua_tostring( m_state, -1 ) );
-        lua_pop( m_state, -1 );
+        lua_pop( m_state, 1 );  //pop error message
         throw e;
     }
+    //If lua_pcall completes successfully, then the stack now contains
+    //the return values for that function (with the last value at the top of the stack)
 }
 
 }

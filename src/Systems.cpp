@@ -31,12 +31,15 @@ void AbstractSystem::addDependency( SystemType type ) {
     m_dependencies.insert( type );
 }
 
-void Systems::add( SystemType type ) {
-    SystemTypeSet dependencyChain;
-    add( type, dependencyChain );
+void AbstractSystem::wait() {
+    //If the system is in use by another thread, the system's mutex will be acquired by that thread
+    //Wait to acquire the system's mutex then immediately release it
+    std::lock_guard< std::mutex > l( m_mutex );
 }
 
-void Systems::add( SystemType type, SystemTypeSet& dependencyChain ) {
+std::recursive_mutex Systems::m_systemsMutex;
+void Systems::add( SystemType type ) {
+    LockGuard l( m_systemsMutex );
     //System already added
     if( m_systemsByType.count( type ) > 0 )
         return;
@@ -47,38 +50,59 @@ void Systems::add( SystemType type, SystemTypeSet& dependencyChain ) {
         throw NullPointerException();
 
     //Load any dependencies that haven't loaded yet
-    for( auto dependencyType : system->getDependencies() ) {
-        if( dependencyChain.count( dependencyType ) > 0 )
-            throw CircularDependencyException();
-
-        dependencyChain.emplace( type );
-        add( dependencyType, dependencyChain );
-        dependencyChain.erase( type );
-    }
+    for( auto dependencyType : system->getDependencies() )
+        add( dependencyType );
 
     //Map the created system to it's type, record the load order
     m_systemsByType.emplace( type, system );
     m_systemsByLoadOrder.push_back( system );
 }
 
-void Systems::startAll() {
-    for( auto it : m_systemsByType ) {
-        it.second->start();
+void Systems::start() {
+    LockGuard l( m_systemsMutex );
+    for( auto it : m_systemsByLoadOrder )
+        it->start();
+    join();
+}
+
+void Systems::stop() {
+    LockGuard l( m_systemsMutex );
+    while( !m_systemsByLoadOrder.empty() ) {
+        auto system = m_systemsByLoadOrder.back();
+        m_systemsByLoadOrder.pop_back();
+
+        system->stop();
     }
 }
 
-void Systems::stopAll() {
-    while( !m_systemsByLoadOrder.empty() ) {
-        auto pcSystem = m_systemsByLoadOrder.back();
-        m_systemsByLoadOrder.pop_back();
+void Systems::frame() {
+    LockGuard l( m_systemsMutex );
 
-        pcSystem->stop();
-    }
+    //Run every system's pre-frame operations
+    for( auto it : m_systemsByLoadOrder )
+        it->preframe();
+    join();
+
+    //Run every system's frame operations
+    for( auto it : m_systemsByLoadOrder )
+        it->frame();
+    join();
+
+    //Run every system's post-frame operations
+    for( auto it : m_systemsByLoadOrder )
+        it->postframe();
+    join();
+}
+
+void Systems::join() {
+    LockGuard l( m_systemsMutex );
+    for( auto it : m_systemsByLoadOrder )
+        it->wait();
 }
 
 FactoryManager< SystemType, ISystem* >& Systems::getFactoryManager() {
-    static FactoryManager< SystemType, ISystem*> cSystemFactoryManager;
-    return cSystemFactoryManager;
+    static FactoryManager< SystemType, ISystem*> systemFactoryManager;
+    return systemFactoryManager;
 }
 
 }

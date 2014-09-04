@@ -12,11 +12,11 @@ Description:
         * NullPointerException
         * SizeException
         * BoundsException
+        * SingletonException
         * NoSuchElementException
         * UnexpectedResultException
         * FormatException
         * IOException
-        * CircularDependencyException
         * NotImplementedException
         * MalformedStringException
         * LuaException
@@ -126,6 +126,13 @@ or when a pair of bounds, is specified in the wrong order (i.e. min > max)
 BS_DECLARE_BASIC_EXCEPTION( BoundsException );
 
 /*
+SingletonException
+
+Thrown when two instances of a singleton class are instantiated at the same time.
+*/
+BS_DECLARE_BASIC_EXCEPTION( SingletonException );
+
+/*
 NoSuchElementException
 
 Thrown when trying to retrieve something that doesn't exist.
@@ -153,13 +160,6 @@ IOException
 Thrown when I/O fails; e.g. when opening, closing, reading from, or writing to a file.
 */
 BS_DECLARE_BASIC_EXCEPTION( IOException );
-
-/*
-CircularDependencyException
-
-Thrown when adding a system and a circular dependency (A->B->C->...->A) is detected.
-*/
-BS_DECLARE_BASIC_EXCEPTION( CircularDependencyException );
 
 /*
 NotImplementedException

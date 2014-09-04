@@ -21,6 +21,7 @@ Description:
 
 namespace Brimstone {
 
+std::mutex              Loggers::m_loggersMutex;
 std::vector< ILogger* > Loggers::m_loggers;
 
 const uchar* logMessageTypeToString( LogMessageType type ) {
@@ -71,15 +72,18 @@ void FileLogger::write( const uchar* pszString, LogMessageType eType ) {
 }
 
 void Loggers::write( const uchar* str, LogMessageType type ) {
+    std::lock_guard< std::mutex > l( m_loggersMutex );
     for( ILogger* p : m_loggers )
         p->write( str, type );
 }
 
 void Loggers::add( ILogger& logger ) {
+    std::lock_guard< std::mutex > l( m_loggersMutex );
     m_loggers.push_back( &logger );
 }
 
 void Loggers::remove( ILogger& logger ) {
+    std::lock_guard< std::mutex > l( m_loggersMutex );
     auto it = std::find( m_loggers.begin(), m_loggers.end(), &logger );
 
     if( it == m_loggers.end() )

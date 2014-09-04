@@ -38,6 +38,9 @@ public:
 
     void start();
     void stop();
+    void preframe();
+    void frame();
+    void postframe();
 
     template< typename... Args >
     void callVoid( Args&&... args );
@@ -61,7 +64,8 @@ public:
     void pushStack( const intN value );
     void pushStack( const float value );
     void pushStack( const double value );
-    void pushStack( const uchar* value );
+    void pushStack( const uchar* const value );
+    void pushStack( const ustring& value );
 
     //Push zero values to the stack
     void pushStack();
@@ -78,7 +82,7 @@ public:
     void popStack( intN& valueOut );
     void popStack( float& valueOut );
     void popStack( double& valueOut );
-    void popStack( const uchar*& valueOut );
+    void popStack( ustring& valueOut );
 
     //Pop zero values from the stack
     void popStack();

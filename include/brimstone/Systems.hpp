@@ -18,6 +18,7 @@ Description:
 #include <unordered_map>                        //std::unordered_map
 #include <unordered_set>                        //std::unordered_set
 #include <vector>                               //std::vector
+#include <mutex>                                //std::recursive_mutex, std::lock_guard
 
 #include <brimstone/factory/FactoryManager.hpp> //FactoryManager
 #include <brimstone/factory/BasicFactory.hpp>   //BasicFactory
@@ -53,7 +54,7 @@ Arguments:
 namespace Brimstone {
 
 enum class SystemType {
-    GAME, EVENTS, LUA
+    SCHEDULER, GAME, INPUT, GRAPHICS, AUDIO, PHYSICS, LUA
 };
 
 }
@@ -66,17 +67,28 @@ class ISystem {
 protected:
     typedef std::unordered_set< SystemType > DependencySet;
 public:
-    virtual void start() = 0;
-    virtual void stop() = 0;
+    virtual void start()                           = 0;
+    virtual void stop()                            = 0;
+
+    virtual void preframe()                        = 0;
+    virtual void frame()                           = 0;
+    virtual void postframe()                       = 0;
+
+    virtual void wait()                            = 0;
 
     virtual const DependencySet& getDependencies() = 0;
+protected:
+
 };
 
 class AbstractSystem : public ISystem {
 public:
     virtual const DependencySet& getDependencies();
+    void wait();
 protected:
     void addDependency( SystemType type );
+protected:
+    std::mutex m_mutex;
 private:
     DependencySet m_dependencies;
 };
@@ -86,28 +98,22 @@ private:
     typedef std::unordered_map< SystemType, ISystem* >  SystemsMap;
     typedef std::vector< ISystem* >                     SystemsStack;
     typedef std::unordered_set< SystemType >            SystemTypeSet;
+    typedef std::lock_guard< std::recursive_mutex >     LockGuard;
 public:
     static void add( SystemType type );
 
-    template< typename T >
-    static T* get( SystemType type );
+    static void start();
+    static void stop();
 
-    static void startAll();
-    static void stopAll();
+    static void frame();
+    static void join();
 private:
-    static void add( SystemType type, SystemTypeSet& dependencyChain );
-
-    static SystemsMap     m_systemsByType;
-    static SystemsStack   m_systemsByLoadOrder;
+    static std::recursive_mutex m_systemsMutex;
+    static SystemsMap           m_systemsByType;
+    static SystemsStack         m_systemsByLoadOrder;
 public:
     static FactoryManager< SystemType, ISystem* >& getFactoryManager();
 };
-
-template< typename T >
-T* Systems::get( SystemType type ) {
-    auto it = m_systemsByType.find( type );
-    return it != m_systemsByType.end() ? static_cast< T* >( it->second ) : nullptr;
-}
 
 }
 
