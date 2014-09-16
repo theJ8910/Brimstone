@@ -19,6 +19,7 @@ Description:
         * IOException
         * NotImplementedException
         * MalformedStringException
+        * GraphicsException
         * LuaException
 */
 
@@ -29,7 +30,7 @@ Description:
 
 
 //Includes
-#include <brimstone/types.hpp>    //uchar, ustring
+#include <brimstone/types.hpp>  //uchar, ustring
 
 
 
@@ -177,11 +178,50 @@ the string is malformed.
 BS_DECLARE_BASIC_EXCEPTION( MalformedStringException );
 
 /*
+GraphicsException
+
+Thrown when an error related to Graphics occurs (e.g. compiling a shader or linking a shader program fails).
+*/
+BS_DECLARE_MESSAGE_EXCEPTION( GraphicsException );
+
+/*
 LuaException
 
 Thrown when an error related to Lua occurs (e.g. loading a script or calling a function fails).
 */
 BS_DECLARE_MESSAGE_EXCEPTION( LuaException );
+
+template< typename Signature >
+class Delegate;
+
+typedef Delegate<void( const IException& )> UncaughtExceptionHandler;
+
+/*
+uncaughtException
+
+Call this function to handle an exception that cannot be
+caught by the user. By default, calling this function logs the exception as an error.
+
+Typically you'll want to catch an exception thrown in a destructor,
+and pass the thrown exception to uncaughtException.
+For example:
+
+MyClass::~MyClass() {
+    try {
+        //Some method that can throw exceptions
+        close();
+    } catch( const IException& ex ) {
+        uncaughtException( ex );
+    }
+}
+
+You can set/get the uncaught exception handler with
+setUncaughtExceptionHandler and getUncaughtExceptionHandler.
+*/
+void uncaughtException( const IException& exception );
+
+void setUncaughtExceptionHandler( UncaughtExceptionHandler handler );
+UncaughtExceptionHandler getUncaughtExceptionHandler();
 
 }
 

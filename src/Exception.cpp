@@ -12,6 +12,9 @@ Description:
 
 //Includes
 #include <brimstone/Exception.hpp>
+#include <brimstone/signals/Delegate.hpp>
+#include <brimstone/Logger.hpp>
+#include <boost/format.hpp>
 
 
 
@@ -71,7 +74,27 @@ BS_DEFINE_BASIC_EXCEPTION( FormatException );
 BS_DEFINE_BASIC_EXCEPTION( IOException );
 BS_DEFINE_BASIC_EXCEPTION( NotImplementedException );
 BS_DEFINE_BASIC_EXCEPTION( MalformedStringException );
+BS_DEFINE_MESSAGE_EXCEPTION( GraphicsException );
 BS_DEFINE_MESSAGE_EXCEPTION( LuaException );
+
+namespace Private {
+    void defaultUncaughtExceptionHandler( const IException& exception ) {
+        logError( ( boost::format( "Uncaught exception: %s" ) % exception.getDescription() ).str().c_str() );
+    }
+    UncaughtExceptionHandler uncaughtExceptionHandler( defaultUncaughtExceptionHandler );
+}
+
+void uncaughtException( const IException& exception ) {
+    Private::uncaughtExceptionHandler( exception );
+}
+
+void setUncaughtExceptionHandler( UncaughtExceptionHandler handler ) {
+    Private::uncaughtExceptionHandler = handler;
+}
+
+UncaughtExceptionHandler getUncaughtExceptionHandler() {
+    return Private::uncaughtExceptionHandler;
+}
 
 }
 
