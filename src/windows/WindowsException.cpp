@@ -50,8 +50,8 @@ ustring WindowsException::getDescription() const {
     //We use a unique_ptr here to let RAII handle cleanup
     //it uses the Windows function LocalFree() to clean up the message,
     //since we requested that FormatMessage() allocate the buffer for us.
-    //If pszMessage is null, LocalFree() is never called
-    std::unique_ptr< WCHAR, HLOCAL (__stdcall*)( HLOCAL ) >( message, &LocalFree );
+    //If message is nullptr, LocalFree() is never called
+    std::unique_ptr< WCHAR, HLOCAL (__stdcall*)( HLOCAL ) > uptr( message, &LocalFree );
 
     return utf16to8( message, messageSize + 1 );
 }
