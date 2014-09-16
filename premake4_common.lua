@@ -5,10 +5,15 @@ function doFlags()
     
     --We need to specify that we want to use the C++11 standard when compiling with G++
     --Additionally we ignore pragmas used by MSVC which are unknown to G++.
+    --The -pthread option enables threading, which Brimstone makes use of
     configuration( "gmake" )
         buildoptions( {
             "-std=c++11",
+            "-pthread",
             "-Wno-unknown-pragmas"
+        } )
+        linkoptions( {
+            "-pthread",
         } )
 
     --Debug builds add symbols to generated libraries / executables to enable debugging

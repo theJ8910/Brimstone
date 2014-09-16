@@ -26,9 +26,9 @@ ifeq ($(config),debug32)
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -std=c++11 -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -std=c++11 -pthread -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m32 -L/usr/lib32
+  LDFLAGS   += -m32 -L/usr/lib32 -pthread
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -48,9 +48,9 @@ ifeq ($(config),release32)
   DEFINES   += -DBS_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -std=c++11 -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -std=c++11 -pthread -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m32 -L/usr/lib32
+  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -70,9 +70,9 @@ ifeq ($(config),debug64)
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -std=c++11 -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -std=c++11 -pthread -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m64 -L/usr/lib64
+  LDFLAGS   += -m64 -L/usr/lib64 -pthread
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -92,9 +92,9 @@ ifeq ($(config),release64)
   DEFINES   += -DBS_BUILD_LINUX -DBS_BUILD_64BIT
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -std=c++11 -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -std=c++11 -pthread -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m64 -L/usr/lib64
+  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -109,8 +109,12 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/Exception.o \
+	$(OBJDIR)/Input.o \
+	$(OBJDIR)/Audio.o \
+	$(OBJDIR)/Scheduler.o \
 	$(OBJDIR)/Lua.o \
 	$(OBJDIR)/Logger.o \
+	$(OBJDIR)/Graphics.o \
 	$(OBJDIR)/LuaInstance.o \
 	$(OBJDIR)/WindowEvents.o \
 	$(OBJDIR)/Systems.o \
@@ -181,10 +185,22 @@ endif
 $(OBJDIR)/Exception.o: src/Exception.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Input.o: src/Input.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Audio.o: src/Audio.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Scheduler.o: src/Scheduler.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Lua.o: src/Lua.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Logger.o: src/Logger.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Graphics.o: src/Graphics.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/LuaInstance.o: src/LuaInstance.cpp
