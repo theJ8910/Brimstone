@@ -21,8 +21,9 @@ Description:
 
 namespace Brimstone {
 
-std::mutex              Loggers::m_loggersMutex;
-std::vector< ILogger* > Loggers::m_loggers;
+std::mutex                          Loggers::m_loggersMutex;
+std::vector< Loggers::LoggerPair >  Loggers::m_loggers;
+size_t                              Loggers::m_nextLoggerID = (size_t)-1;
 
 const uchar* logMessageTypeToString( LogMessageType type ) {
     static const uchar* lmtToString[] = {
@@ -71,25 +72,30 @@ void FileLogger::write( const uchar* pszString, LogMessageType eType ) {
     m_fout << "[" << logMessageTypeToString( eType ) << "] " << pszString << std::endl;
 }
 
-void Loggers::write( const uchar* str, LogMessageType type ) {
+void Loggers::write( const ustring& str, LogMessageType type ) {
     std::lock_guard< std::mutex > l( m_loggersMutex );
-    for( ILogger* p : m_loggers )
-        p->write( str, type );
+    for( LoggerPair& pair : m_loggers )
+        pair.first->write( str.c_str(), type );
 }
 
-void Loggers::add( ILogger& logger ) {
+size_t Loggers::add( std::unique_ptr< ILogger >&& logger ) {
     std::lock_guard< std::mutex > l( m_loggersMutex );
-    m_loggers.push_back( &logger );
+    m_loggers.push_back( LoggerPair( std::move( logger ), ++m_nextLoggerID ) );
+
+    return m_nextLoggerID;
 }
 
-void Loggers::remove( ILogger& logger ) {
+void Loggers::remove( const size_t id ) {
     std::lock_guard< std::mutex > l( m_loggersMutex );
-    auto it = std::find( m_loggers.begin(), m_loggers.end(), &logger );
 
-    if( it == m_loggers.end() )
-        throw NoSuchElementException();
+    for( auto it = std::begin( m_loggers ); it != std::end( m_loggers ); ++it ) {
+        if( it->second == id ) {
+            m_loggers.erase( it );
+            return;
+        }
+    }
 
-    m_loggers.erase( it );
+    throw NoSuchElementException();
 }
 
 }

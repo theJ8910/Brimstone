@@ -30,6 +30,7 @@ Description:
 #include <vector>               //std::vector
 #include <initializer_list>     //std::initializer_list
 #include <mutex>                //std::mutex
+#include <memory>               //std::unique_ptr
 
 #include <brimstone/types.hpp>  //uchar
 
@@ -72,29 +73,32 @@ private:
 };
 
 class Loggers {
-public:
-    static void write( const uchar* str, LogMessageType type = LogMessageType::INFO );
-    static void add( ILogger& logger );
-    static void remove( ILogger& logger );
 private:
-    static std::mutex              m_loggersMutex;
-    static std::vector< ILogger* > m_loggers;
+    typedef std::pair< std::unique_ptr< ILogger >, size_t > LoggerPair;
+public:
+    static void   write( const ustring& str, LogMessageType type = LogMessageType::INFO );
+    static size_t add( std::unique_ptr< ILogger >&& logger );
+    static void   remove( const size_t id );
+private:
+    static std::mutex                   m_loggersMutex;
+    static std::vector< LoggerPair >    m_loggers;
+    static size_t                       m_nextLoggerID;
 };
 
 //Convenience functions
-inline void logDetail( const uchar* str ) {
+inline void logDetail( const ustring& str ) {
     Loggers::write( str, LogMessageType::DETAIL );
 }
 
-inline void logInfo( const uchar* str ) {
+inline void logInfo( const ustring& str ) {
     Loggers::write( str, LogMessageType::INFO );
 }
 
-inline void logWarning( const uchar* str ) {
+inline void logWarning( const ustring& str ) {
     Loggers::write( str, LogMessageType::WARNING );
 }
 
-inline void logError( const uchar* str ) {
+inline void logError( const ustring& str ) {
     Loggers::write( str, LogMessageType::ERR );
 }
 

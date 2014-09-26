@@ -471,6 +471,10 @@ void LinuxWindow::setPopup( const bool popup ) {
 void LinuxWindow::setBounds( const Bounds2i& bounds ) {
 }
 
+WindowHandle LinuxWindow::getHandle() const {
+    return m_window;
+}
+
 LinuxWindow::LinuxWindow( const LinuxWindow& ) : m_parent( nullptr ) {
 }
 

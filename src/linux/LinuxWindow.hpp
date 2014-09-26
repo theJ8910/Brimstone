@@ -33,6 +33,9 @@ enum class Key;
 
 namespace Private {
 
+typedef class LinuxWindow WindowImpl;
+typedef       ::Window    WindowHandle;
+
 class LinuxWindow {
 private:
     typedef std::unordered_map< ::Window, LinuxWindow& > XWinToWindowMap;
@@ -43,6 +46,7 @@ public:
     void                    setTitle( const ustring& title );
     void                    setPopup( const bool popup );
     void                    setBounds( const Bounds2i& bounds );
+    WindowHandle            getHandle() const;
 
 private:
     LinuxWindow( const LinuxWindow& );
@@ -73,8 +77,6 @@ private:
     static int              m_screen;
     static XWinToWindowMap  m_windowMap;
 };
-
-typedef LinuxWindow WindowImpl;
 
 }
 }

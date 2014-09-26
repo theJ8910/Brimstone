@@ -14,7 +14,7 @@ Description:
 #include <memory>                                       //std::unique_ptr<>
 #include <windowsx.h>                                   //GET_X_LPARAM, GET_Y_LPARAM
 
-#include <brimstone/windows/WindowsWindow.hpp>          //Class header
+#include "WindowsWindow.hpp"                            //Class header
 #include <brimstone/windows/WindowsUtil.hpp>            //utf8to16
 #include <brimstone/windows/WindowsException.hpp>       //throwWindowsException
 #include <brimstone/WindowEvents.hpp>                   //MouseClickEvent, MouseMoveEvent, KeyPressEvent
@@ -30,7 +30,7 @@ Description:
 namespace {
     static const wchar_t* windowClass = L"BrimstoneWindow";
     static const int standard = ( WS_CAPTION | WS_MINIMIZEBOX );   //Characteristics only standard windows have
-    static const int common   = ( WS_SYSMENU | WS_VISIBLE );       //Characteristics both standard and popup windows share
+    static const int common   = ( WS_SYSMENU );                    //Characteristics both standard and popup windows share
 
     static const int normalWindow = standard | common;
     static const int popupWindow  = WS_POPUP | common;
@@ -44,25 +44,36 @@ namespace Private {
 WindowsWindow::HWNDToWindowMap WindowsWindow::m_windowMap;
 bool                           WindowsWindow::m_classRegistered = false;
 
-WindowsWindow::WindowsWindow( Window& parent ) : m_parent( &parent ) {
-    m_leadSurrogate = 0;
+WindowsWindow::WindowsWindow( Window& parent ) :
+    m_wnd( nullptr ),
+    m_parent( &parent ),
+    m_leadSurrogate( 0 ) {
+}
 
+WindowsWindow::~WindowsWindow() {
+    try {
+        close();
+    } catch( const IException& e ) {
+        uncaughtException( e );
+    }
+}
+
+void WindowsWindow::open() {
     HINSTANCE instance = GetModuleHandle( nullptr );
 
     if( m_classRegistered == false )
         registerWindowClass( instance );
 
     //Get title
-    ustring title;
-    parent.getTitle( title );
+    ustring title = m_parent->getTitle();
 
     //Determine style based on whether the window is a popup or not.
-    DWORD style = ( parent.getPopup() ? popupWindow : normalWindow );
+    DWORD style = getWindowStyle( m_parent->isPopup(), m_parent->isVisible(), m_parent->isResizable() );
 
     //Get bounds
-    Bounds2i bounds;
-    parent.getBounds( bounds );
-    AdjustWindowRect( reinterpret_cast< RECT* >( &bounds ), style, false );
+    Bounds2i bounds = m_parent->getBounds();
+    if( AdjustWindowRect( reinterpret_cast< RECT* >( &bounds ), style, false ) == FALSE )
+        throwWindowsException();
     long width  = bounds.getWidth();
     long height = bounds.getHeight();
 
@@ -71,8 +82,8 @@ WindowsWindow::WindowsWindow( Window& parent ) : m_parent( &parent ) {
         windowClass,                                    //Name of Window Class
         utf8to16( title ).c_str(),                      //Title of Window
         style,                                          //Style of window (flags)
-        bounds.mins.x,                                  //x
-        bounds.mins.y,                                  //y
+        bounds.minX,                                    //x
+        bounds.minY,                                    //y
         width,                                          //w
         height,                                         //h
         nullptr,                                        //parent window
@@ -87,22 +98,110 @@ WindowsWindow::WindowsWindow( Window& parent ) : m_parent( &parent ) {
     m_windowMap.emplace( m_wnd, *this );
 }
 
-WindowsWindow::~WindowsWindow() {
-    DestroyWindow( m_wnd );
+void WindowsWindow::close() {
+    if( m_wnd == nullptr )
+        return;
+
+    if( DestroyWindow( m_wnd ) == FALSE )
+        throwWindowsException();
+
     m_windowMap.erase( m_wnd );
+    m_wnd = nullptr;
 
     if( m_windowMap.empty() )
         PostQuitMessage( 0 );
 }
 
-void WindowsWindow::processEvents() {
-    MSG msg;
+bool WindowsWindow::isOpen() const {
+    return m_wnd != nullptr;
+}
 
-    while( GetMessage( &msg, nullptr, 0, 0 ) )
-    {
-        TranslateMessage( &msg );
-        DispatchMessage( &msg );
+void WindowsWindow::setResizable( const bool resizable ) {
+    if( m_wnd == nullptr )
+        return;
+
+    if( SetWindowLongPtr( m_wnd, GWL_STYLE, getWindowStyle( m_parent->isPopup(), m_parent->isVisible(), resizable ) ) == FALSE )
+        throwWindowsException();
+}
+
+void WindowsWindow::setVisible( const bool visible ) {
+    if( m_wnd == nullptr )
+        return;
+
+    ShowWindow( m_wnd, visible ? SW_SHOW : SW_HIDE );
+}
+
+void WindowsWindow::setTitle( const ustring& title ) {
+    if( m_wnd == nullptr )
+        return;
+
+    if( SetWindowTextW( m_wnd, utf8to16( title ).c_str() ) == false )
+        throwWindowsException();
+}
+
+void WindowsWindow::setPopup( const bool popup ) {
+    if( m_wnd == nullptr )
+        return;
+
+    Bounds2i bounds = m_parent->getBounds();
+
+    if( SetWindowLongPtr( m_wnd, GWL_STYLE, getWindowStyle( popup, m_parent->isVisible(), m_parent->isResizable() ) ) == FALSE )
+        throwWindowsException();
+
+    setBounds( bounds );
+}
+
+void WindowsWindow::setBounds( const Bounds2i& bounds ) {
+    if( m_wnd == nullptr )
+        return;
+
+    Bounds2i boundsAdj = bounds;
+    if( AdjustWindowRect( reinterpret_cast< LPRECT >( &boundsAdj ), getWindowStyle( m_parent->isPopup(), m_parent->isVisible(), m_parent->isResizable() ), false ) == FALSE )
+        throwWindowsException();
+
+    if( MoveWindow( m_wnd, boundsAdj.minX, boundsAdj.minY, boundsAdj.getWidth(), boundsAdj.getHeight(), TRUE ) == FALSE )
+        throwWindowsException();
+}
+
+void WindowsWindow::setMouseCapture( const bool capture ) {
+    if( capture ) {
+        SetCapture( m_wnd );
+    } else {
+        if( ReleaseCapture() == FALSE )
+            throwWindowsException();
     }
+}
+
+Point2i WindowsWindow::screenToWindow( const Point2i& screenCoords ) const {
+    Point2i windowCoords = screenCoords;
+
+    if( ScreenToClient( m_wnd, reinterpret_cast< LPPOINT >( &windowCoords ) ) == FALSE )
+        throwWindowsException();
+
+    return windowCoords;
+}
+
+Point2i WindowsWindow::windowToScreen( const Point2i& windowCoords ) const {
+    Point2i screenCoords = windowCoords;
+
+    if( ClientToScreen( m_wnd, reinterpret_cast< LPPOINT >( &screenCoords ) ) == FALSE )
+        throwWindowsException();
+
+    return screenCoords;
+}
+
+HWND WindowsWindow::getHandle() {
+    return m_wnd;
+}
+
+DWORD WindowsWindow::getWindowStyle( const bool popup, const bool visible, const bool resizable ) {
+    DWORD style = ( popup ? popupWindow : normalWindow );
+    if( visible )
+        style |= WS_VISIBLE;
+    if( !popup && resizable )
+        style |= WS_THICKFRAME;
+
+    return style;
 }
 
 Key vkToKeyMap[] = {
@@ -485,16 +584,53 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
     } break;
     case WM_ACTIVATEAPP: {
     } break;
+    case WM_ACTIVATE: {
+        WORD lw = LOWORD( wParam );
+        //Focus
+        if( lw == WA_ACTIVE || lw == WA_CLICKACTIVE ) {
+            WindowFocusEvent eventObj( *m_parent );
+            m_parent->m_signalWindowFocus( eventObj );
+        //Blur
+        } else if( lw == WA_INACTIVE ) {
+            WindowBlurEvent eventObj( *m_parent );
+            m_parent->m_signalWindowBlur( eventObj );
+        } else {
+            throw UnexpectedResultException();
+        }
+    } break;
+    case WM_MOVE: {
+        Point2i pos( (short)LOWORD( lParam ), (short)HIWORD( lParam ) );
+
+        //Update parent's position
+        m_parent->m_bounds.setPosition( pos );
+
+        WindowMoveEvent eventObj( *m_parent, pos );
+        m_parent->m_signalWindowMove( eventObj );
+    } break;
     case WM_MOVING: {
+    } break;
+    case WM_SIZE: {
+        Point2i size( LOWORD( lParam ), HIWORD( lParam ) );
+
+        //Update parent's size
+        m_parent->m_bounds.setDimensions( size.x, size.y );
+
+        WindowResizeEvent eventObj( *m_parent, size );
+        m_parent->m_signalWindowResize( eventObj );
     } break;
     case WM_SIZING: {
     } break;
     case WM_CLOSE: {
         WindowCloseEvent eventObj( *m_parent );
         m_parent->m_signalWindowClose( eventObj );
+
+        //If auto-close is enabled, clicking the close button will automatically result in the window being closed.
+        //Otherwise, the programmer will need to close the window by some other means.
+        if( m_parent->getAutoClose() )
+            close();
     } break;
     default:
-        return DefWindowProc( getHandle(), message, wParam, lParam );
+        return DefWindowProc( m_wnd, message, wParam, lParam );
     }
 
     return 0;
@@ -504,13 +640,40 @@ Point2i WindowsWindow::getCursorPos( LPARAM lParam ) {
     //The coordinates provided in lParam are relative to the upper-left corner of the window's client area.
     //However, we need to clamp values here because the window will return coordinates outside of the client
     //area as well (borders, etc)! Raw coordinates could even be negative.
-    Bounds2i bounds;
-    m_parent->getBounds( bounds );
+    Bounds2i bounds = m_parent->getBounds();
 
     return Point2i(
         clampedValue( (long)GET_X_LPARAM( lParam ), 0L, bounds.getWidth()  - 1L ),
         clampedValue( (long)GET_Y_LPARAM( lParam ), 0L, bounds.getHeight() - 1L )
     );
+}
+
+/*
+WindowsWindow::processEvents
+-----------------------
+
+Description:
+    Contains the Windows message pump.
+
+    This function continually fetches and processes messages that Windows
+    provides to Windows of this application until a quit message is posted to the application.
+
+    If a message is not available, this function will block until a message is available.
+    Therefore, running this function from a thread dedicated specifically for this function is recommended.
+
+Arguments:
+    N/A
+
+Returns:
+    void:   N/A
+*/
+void WindowsWindow::processEvents() {
+    MSG msg;
+
+    while( GetMessage( &msg, nullptr, 0, 0 ) ) {
+        TranslateMessage( &msg );
+        DispatchMessage( &msg );
+    }
 }
 
 /*
@@ -575,32 +738,6 @@ LRESULT CALLBACK WindowsWindow::mainProc( HWND hWnd, UINT message, WPARAM wParam
     return it->second.windowProc( message, wParam, lParam );
 }
 
-void WindowsWindow::setTitle( const ustring& title ) {
-    if( SetWindowTextW( m_wnd, utf8to16( title ).c_str() ) == false )
-        throwWindowsException();
-}
-
-void WindowsWindow::getTitle( ustring& titleOut ) const {
-    int len;
-
-    //Retrieve the length of the title, measured in wchar_t, not including the terminating null character.
-    //This function can potentially overestimate the amount of wchar_t necessary to store the title.
-    if( ( len = GetWindowTextLengthW( m_wnd ) ) == 0 )
-        throwWindowsException();
-
-    //Allocate a temporary buffer to hold the string, plus a terminating null character.
-    ++len;
-    std::unique_ptr< wchar[] > pszTitle( new wchar[ len ] );
-
-    //Copy the string into the buffer. Measure how many characters were output, not including the null character.
-    //Unlike GetWindowTextLength, the returned value is the actual number of wchar_t that were written to the buffer.
-    if( ( len = GetWindowTextW( m_wnd, pszTitle.get(), len ) ) == 0 )
-        throwWindowsException();
-
-    //Convert to UTF-8 and return
-    titleOut = utf16to8( pszTitle.get(), len + 1 );
-}
-
 Key WindowsWindow::vkToKey( WPARAM wParam, LPARAM lParam ) {
     //Virtual keys are in the range 0-254
     if( wParam > 254 )
@@ -648,37 +785,13 @@ Key WindowsWindow::vkToKey( WPARAM wParam, LPARAM lParam ) {
     }
 
     if( vkToKeyMap[ wParam ] == Key::INVALID )
-        logError( ( boost::format( "Invalid key: 0x%|04x|") % wParam ).str().c_str() );
+        logError( ( boost::format( "Invalid key: 0x%|04x|") % wParam ).str() );
 
     return vkToKeyMap[ wParam ];
 }
 
-void WindowsWindow::setPopup( const bool popup ) {
-    SetWindowLongPtr( m_wnd, GWL_STYLE, ( popup ? popupWindow : normalWindow ) );
-}
 
-void WindowsWindow::setBounds( const Bounds2i& bounds ) {
-    if( MoveWindow( m_wnd, bounds.mins.x, bounds.mins.y, bounds.getWidth(), bounds.getHeight(), TRUE ) == FALSE )
-        throwWindowsException();
-}
 
-void WindowsWindow::getBounds( Bounds2i& boundsOut ) const {
-    if( GetWindowRect( m_wnd, (LPRECT)(&boundsOut) ) == FALSE )
-        throwWindowsException();
-}
-
-HWND WindowsWindow::getHandle() {
-    return m_wnd;
-}
-
-//No copying allowed
-WindowsWindow::WindowsWindow( const WindowsWindow& ) {
-}
-
-//No copying allowed
-WindowsWindow&  WindowsWindow::operator =( const WindowsWindow& ) {
-    throw NotImplementedException();
-}
 
 }
 }

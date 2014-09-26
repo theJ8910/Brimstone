@@ -20,22 +20,13 @@ Description:
 #include <brimstone/signals/Signal.hpp>         //Signal
 #include <brimstone/types.hpp>                  //ustring
 #include <brimstone/WindowEvents.hpp>           //MouseDownEvent, MouseUpEvent, etc
-
-#if defined( BS_BUILD_WINDOWS )
-
-#include <brimstone/windows/WindowsWindow.hpp>  //WindowImpl (WindowsWindow)
-
-#elif defined( BS_BUILD_LINUX )
-
-#include <brimstone/linux/LinuxWindow.hpp>      //WindowImpl (LinuxWindow)
-
-#endif
-
+#include <brimstone/WindowImpl.hpp>             //Private::WindowImpl
 
 
 
 //Macros
-#define BS_WINDOW_EVENT( name ) Signal< void( name##Event& ) > m_signal##name
+#define BS_WINDOW_EVENT( name )                     \
+    Signal< void( name##Event& ) > m_signal##name;
 
 
 
@@ -43,24 +34,42 @@ Description:
 namespace Brimstone {
 
 class Window {
+    friend class Graphics;
+    friend Private::WindowImpl;
 public:
     Window();
     ~Window();
 
+    void        open();
+    void        close();
+    bool        isOpen() const;
+
     void        setTitle( const ustring& title );
-    void        getTitle( ustring& titleOut ) const;
+    ustring     getTitle() const;
 
     void        setPopup( const bool popup );
-    bool        getPopup() const;
+    bool        isPopup() const;
+
+    void        setResizable( const bool resizable );
+    bool        isResizable() const;
 
     void        setVisible( const bool visible );
-    bool        getVisible() const;
+    bool        isVisible() const;
 
     void        setBounds( const Bounds2i& bounds );
-    void        getBounds( Bounds2i& boundsOut ) const;
+    Bounds2i    getBounds() const;
 
     void        setKeyRepeat( const bool keyRepeat );
     bool        getKeyRepeat() const;
+
+    void        setAutoClose( const bool autoClose );
+    bool        getAutoClose() const;
+
+    void        setMouseCapture( const bool capture );
+    bool        getMouseCapture() const;
+
+    Point2i     screenToWindow( const Point2i& screenCoords ) const;
+    Point2i     windowToScreen( const Point2i& windowCoords ) const;
 
     BS_WINDOW_EVENT( MouseDown      );
     BS_WINDOW_EVENT( MouseUp        );
@@ -70,10 +79,17 @@ public:
     BS_WINDOW_EVENT( KeyDown        );
     BS_WINDOW_EVENT( KeyUp          );
     BS_WINDOW_EVENT( CharacterTyped );
+    BS_WINDOW_EVENT( WindowFocus    );
+    BS_WINDOW_EVENT( WindowBlur     );
+    BS_WINDOW_EVENT( WindowMove     );
+    BS_WINDOW_EVENT( WindowResize   );
     BS_WINDOW_EVENT( WindowClose    );
-
 private:
     ustring                 m_title;
+    bool                    m_visible;
+    bool                    m_resizable;
+    bool                    m_autoClose;
+    bool                    m_mouseCapture;
     bool                    m_popup;
     bool                    m_keyRepeat;
     Bounds2i                m_bounds;

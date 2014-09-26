@@ -178,12 +178,43 @@ private:
     uchar m_key[5];
 };
 
-class WindowCloseEvent {
+class WindowEvent {
 public:
-    WindowCloseEvent( Window& window );
+    WindowEvent( Window& window );
     Window* getWindow() const;
 private:
     Window* m_window;
+};
+
+class WindowFocusEvent : public WindowEvent {
+public:
+    WindowFocusEvent( Window& window );
+};
+
+class WindowBlurEvent : public WindowEvent {
+public:
+    WindowBlurEvent( Window& window );
+};
+
+class WindowMoveEvent : public WindowEvent {
+public:
+    WindowMoveEvent( Window& window, const Point2i& pos );
+    Point2i getPos() const;
+private:
+    Point2i m_pos;
+};
+
+class WindowResizeEvent : public WindowEvent {
+public:
+    WindowResizeEvent( Window& window, const Point2i& size );
+    Point2i getSize() const;
+private:
+    Point2i  m_size;
+};
+
+class WindowCloseEvent : public WindowEvent {
+public:
+    WindowCloseEvent( Window& window );
 };
 
 }

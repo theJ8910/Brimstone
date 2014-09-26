@@ -151,11 +151,39 @@ const uchar* CharacterTypedEvent::getCharacter() const {
     return m_key;
 }
 
-WindowCloseEvent::WindowCloseEvent( Window& window ) : m_window( &window ) {
+WindowEvent::WindowEvent( Window& window ) :
+    m_window( &window ) {
+}
+Window* WindowEvent::getWindow() const {
+    return m_window;
 }
 
-Window* WindowCloseEvent::getWindow() const {
-    return m_window;
+WindowFocusEvent::WindowFocusEvent( Window& window ) :
+    WindowEvent( window ) {
+}
+WindowBlurEvent::WindowBlurEvent( Window& window ) :
+    WindowEvent( window ) {
+}
+
+WindowMoveEvent::WindowMoveEvent( Window& window, const Point2i& pos ) :
+    WindowEvent( window ),
+    m_pos( pos ) {
+}
+
+Point2i WindowMoveEvent::getPos() const {
+    return m_pos;
+}
+
+WindowResizeEvent::WindowResizeEvent( Window& window, const Point2i& size ) :
+    WindowEvent( window ),
+    m_size( size ) {
+}
+Point2i WindowResizeEvent::getSize() const {
+    return m_size;
+}
+
+WindowCloseEvent::WindowCloseEvent( Window& window ) :
+    WindowEvent( window ) {
 }
 
 }
