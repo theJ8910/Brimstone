@@ -33,6 +33,10 @@ namespace {
     const int    cv_valuesAlt[6]     {  7,  8,  9,   10, 11, 12 };
     const int    cv_valuesAltMins[3] {  7,  8,  9 };
     const int    cv_valuesAltMaxs[3] { 10, 11, 12 };
+    const int    cv_abnormal[6]      {  4,  5,  6,    1,  2,  3 };
+    const int    cv_includeTest[6]   { -14, -11, -12,   4,  12,  6 };
+    const int    cv_includePt1[3]    { -14,  12,   2 };
+    const int    cv_includePt2[3]    {  2,  -11, -12 };
     const int    cv_widthTest[6]     {  1,  2,  3,   11,  5,  6 };
     const int    cv_lengthTest[6]    {  1,  2,  3,   4,  13,  6 };
     const int    cv_heightTest[6]    {  1,  2,  3,   4,   5, 15 };
@@ -279,6 +283,42 @@ UT_TEST_BEGIN( Bounds3_getMinMax )
            allEqual( maxs.data, cv_valuesAltMaxs );
 UT_TEST_END()
 
+UT_TEST_BEGIN( Bounds3_setPosition )
+    Bounds3i o( cv_values );
+    Point3i  mins( cv_valuesAltMins );
+
+    o.setPosition( mins );
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_getPosition )
+    Bounds3i o( cv_values );
+    Point3i mins( cv_valuesAltMins );
+
+    o.getPosition( mins );
+
+    return allEqual( mins.data, cv_valuesMins );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_setPositionValues )
+    Bounds3i o( cv_values );
+
+    o.setPosition( cv_valuesAltMins[0], cv_valuesAltMins[1], cv_valuesAltMins[2] );
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_getPositionValues )
+    Bounds3i o( cv_values );
+    int data[cv_size];
+    copyAll( cv_valuesAltMins, data );
+
+    o.getPosition( data[0], data[1], data[2] );
+
+    return allEqual( data, cv_values );
+UT_TEST_END()
+
 UT_TEST_BEGIN( Bounds3_setDimensions )
     Bounds3i o( cv_values );
 
@@ -394,6 +434,42 @@ UT_TEST_BEGIN( Bounds3_isZero )
 
     return o1.isZero() == true &&
            o2.isZero() == false;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_normalize )
+    Bounds3i o( cv_abnormal );
+
+    o.normalize();
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_isNormal )
+    Bounds3i o1( cv_values );
+    Bounds3i o2( cv_abnormal );
+
+    return o1.isNormal() == true &&
+           o2.isNormal() == false;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_include )
+    Bounds3i o( cv_values );
+    Point3i point1( cv_includePt1 );
+    Point3i point2( cv_includePt2 );
+
+    o.include( point1 );
+    o.include( point2 );
+
+    return allEqual( o.data, cv_includeTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_contains )
+    Bounds3i o( cv_values );
+    Point3i  point1( cv_valuesMaxs );
+    Point3i  point2( cv_valuesAltMaxs );
+
+    return o.contains( point1 ) == true &&
+           o.contains( point2 ) == false;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_equals )

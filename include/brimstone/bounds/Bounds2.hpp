@@ -61,6 +61,10 @@ public:
     void    set( const T minX, const T minY, const T maxX, const T maxY );
     void    get( T& minXOut, T& minYOut, T& maxXOut, T& maxYOut ) const;
 
+    //Set / get the position of the bounds, preserving width/length/height/wlength.
+    void    setPosition( const T minX, const T minY );
+    void    getPosition( T& minXOut, T& minYOut ) const;
+
     //Set / get the width / height, treating (minX, minY) as an anchor
     void    setDimensions( const T width, const T height );
     void    getDimensions( T& widthOut, T& heightOut );
@@ -184,6 +188,30 @@ void Bounds< T, 2 >::get( T& minXOut, T& minYOut, T& maxXOut, T& maxYOut ) const
 }
 
 template< typename T >
+void Bounds< T, 2 >::setPosition( const Point< T, 2 >& mins ) {
+    maxX = mins.x + ( maxX - minX );
+    maxY = mins.y + ( maxY - minY );
+
+    minX = mins.x;
+    minY = mins.y;
+}
+
+template< typename T >
+void Bounds< T, 2 >::setPosition( const T minX, const T minY ) {
+    maxX = minX + ( maxX - Bounds::minX );
+    maxY = minY + ( maxY - Bounds::minY );
+
+    Bounds::minX = minX;
+    Bounds::minY = minY;
+}
+
+template< typename T >
+void Bounds< T, 2 >::getPosition( T& minXOut, T& minYOut ) const {
+    minXOut = minX;
+    minYOut = minY;
+}
+
+template< typename T >
 void Bounds< T, 2 >::setDimensions( const T width, const T height ) {
     maxX = minX + width;
     maxY = minY + height;
@@ -235,6 +263,30 @@ bool Bounds< T, 2 >::isZero() const {
            minY == 0 &&
            maxX == 0 &&
            maxY == 0;
+}
+
+template< typename T >
+void Bounds< T, 2 >::normalize() {
+    minMax( minX, maxX );
+    minMax( minY, maxY );
+}
+
+template< typename T >
+bool Bounds< T, 2 >::isNormal() const {
+    return minX <= maxX &&
+           minY <= maxY;
+}
+
+template< typename T >
+bool Bounds< T, 2 >::contains( const Point< T, 2 >& point ) const {
+    return point.x >= minX && point.x <= maxX &&
+           point.y >= minY && point.y <= maxY;
+}
+
+template< typename T >
+void Bounds< T, 2 >::include( const Point< T, 2 >& point ) {
+    electMinMax( minX, maxX, point.x );
+    electMinMax( minY, maxY, point.y );
 }
 
 template< typename T >

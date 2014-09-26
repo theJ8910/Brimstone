@@ -54,8 +54,9 @@ Description:
 
 #include <brimstone/types.hpp>          //int32
 #include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
-#include <brimstone/Point.hpp>          //Point
 #include <brimstone/util/Clamp.hpp>     //clamp
+#include <brimstone/util/MinMax.hpp>    //min
+#include <brimstone/Point.hpp>          //Point
 
 
 
@@ -70,11 +71,20 @@ Description:
     void set( const Point< T, N >& mins, const Point< T, N >& maxs );                                   \
     void get( Point< T, N >& minsOut, Point< T, N >& maxsOut ) const;                                   \
                                                                                                         \
+    void setPosition( const Point< T, N >& mins );                                                      \
+    void getPosition( Point< T, N >& minsOut ) const;                                                   \
+                                                                                                        \
     void setDimension( const size_t component, const T difference );                                    \
     T    getDimension( const size_t component ) const;                                                  \
                                                                                                         \
     void zero();                                                                                        \
     bool isZero() const;                                                                                \
+                                                                                                        \
+    void normalize();                                                                                   \
+    bool isNormal() const;                                                                              \
+                                                                                                        \
+    void include( const Point< T, N >& point );                                                         \
+    bool contains( const Point< T, N >& point ) const;                                                  \
                                                                                                         \
     template< typename T2 >                                                                             \
     Bounds< T, N >& operator =( const Bounds< T2, N >& toCopy );
@@ -94,6 +104,10 @@ Description:
     void Bounds< T, N >::get( Point< T, N >& minsOut, Point< T, N >& maxsOut ) const {                  \
         minsOut = mins;                                                                                 \
         maxsOut = maxs;                                                                                 \
+    }                                                                                                   \
+    tmpl                                                                                                \
+    void Bounds< T, N >::getPosition( Point< T, N >& minsOut ) const {                                  \
+        minsOut = mins;                                                                                 \
     }                                                                                                   \
     tmpl                                                                                                \
     void Bounds< T, N >::setDimension( const size_t component, const T difference ) {                   \
@@ -150,6 +164,13 @@ Bounds< T, N >::Bounds( const Bounds< T2, N >& toCopy ) {
 }
 
 template< typename T, size_t N >
+void Bounds< T, N >::setPosition( const Point< T, N >& mins ) {
+    for( size_t i = 0; i < N; ++i )
+        maxs.data[i] = mins.data[i] + ( maxs.data[i] - Bounds::mins.data[i] );
+    Bounds::mins = mins;
+}
+
+template< typename T, size_t N >
 void Bounds< T, N >::zero() {
     std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
 }
@@ -160,6 +181,99 @@ bool Bounds< T, N >::isZero() const {
         if( data[i] != 0 )
             return false;
     return true;
+}
+
+/*
+Bounds::normalize
+-----------------------
+
+Description:
+    Makes this Bounds normal.
+
+    For each dimension "i" where mins[i] <= maxs[i],
+    mins[i] and maxs[i] are swapped.
+
+Arguments:
+    N/A
+
+Returns:
+    void:   N/A
+*/
+template< typename T, size_t N >
+void Bounds< T, N >::normalize() {
+    for( size_t i = 0; i < N; ++i )
+        minMax( mins.data[i], maxs.data[i] );
+}
+
+/*
+Bounds::isNormal
+-----------------------
+
+Description:
+    Checks if the bounds is normal.
+
+    A bounds is considered "normal" if, for each dimension "i",
+    mins[i] <= maxs[i].
+
+Arguments:
+    N/A
+
+Returns:
+    bool:   true if the Bounds is normal, false otherwise.
+*/
+template< typename T, size_t N >
+bool Bounds< T, N >::isNormal() const {
+    for( size_t i = 0; i < N; ++i )
+        if( mins.data[i] > maxs.data[i] )
+            return false;
+    return true;
+}
+
+/*
+Bounds::contains
+-----------------------
+
+Description:
+    Checks if the given point is contained within this Bounds.
+
+    The bounds checks are inclusive; that is, the point is considered inside the Bounds
+    if it is on a corner, edge, face, etc. of the Bounds.
+
+Arguments:
+    point:  The point to check.
+
+Returns:
+    bool:   true if the point is contained within the Bounds, false otherwise.
+*/
+template< typename T, size_t N >
+bool Bounds< T, N >::contains( const Point< T, N >& point ) const {
+    for( size_t i = 0; i < N; ++i )
+        if( point.data[i] < mins.data[i] || point.data[i] > maxs.data[i] )
+            return false;
+
+    return true;
+}
+
+/*
+Bounds::include
+-----------------------
+
+Description:
+    Expands this Bounds to include the given point if it doesn't already.
+
+    If the point is not in this Bounds, the Bounds is resized such that
+    afterwards the point will be on the extremeties (a corner, edge, face, etc.) of the Bounds.
+
+Arguments:
+    point:      The point to include in the Bounds.
+
+Returns:
+    void:       N/A
+*/
+template< typename T, size_t N >
+void Bounds< T, N >::include( const Point< T, N >& point ) {
+    for( size_t i = 0; i < N; ++i )
+        electMinMax( mins.data[i], maxs.data[i], point.data[i] );
 }
 
 template< typename T, size_t N >

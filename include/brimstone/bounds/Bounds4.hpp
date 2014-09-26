@@ -65,7 +65,11 @@ public:
     void set( const T minX, const T minY, const T minZ, const T minW, const T maxX, const T maxY, const T maxZ, const T maxW );
     void get( T& minXOut, T& minYOut, T& minZOut, T& minWOut, T& maxXOut, T& maxYOut, T& maxZOut, T& maxWOut ) const;
 
-    //Set / get the width / length / height, treating (minX, minY, minZ) as an anchor
+    //Set / get the position of the bounds, preserving width/length/height/wlength.
+    void    setPosition( const T minX, const T minY, const T minZ, const T minW );
+    void    getPosition( T& minXOut, T& minYOut, T& minZOut, T& minWOut ) const;
+
+    //Set / get the width / length / height / wlength, treating (minX, minY, minZ, minW) as an anchor
     void    setDimensions( const T width, const T length, const T height, const T wlength );
     void    getDimensions( T& widthOut, T& lengthOut, T& heightOut, T& wlengthOut ) const;
 
@@ -229,6 +233,40 @@ void Bounds< T, 4 >::get( T& minXOut, T& minYOut, T& minZOut, T& minWOut, T& max
 }
 
 template< typename T >
+void Bounds< T, 4 >::setPosition( const Point< T, 4 >& mins ) {
+    maxX = mins.x + ( maxX - minX );
+    maxY = mins.y + ( maxY - minY );
+    maxZ = mins.z + ( maxZ - minZ );
+    maxW = mins.w + ( maxW - minW );
+
+    minX = mins.x;
+    minY = mins.y;
+    minZ = mins.z;
+    minW = mins.w;
+}
+
+template< typename T >
+void Bounds< T, 4 >::setPosition( const T minX, const T minY, const T minZ, const T minW ) {
+    maxX = minX + ( maxX - Bounds::minX );
+    maxY = minY + ( maxY - Bounds::minY );
+    maxZ = minZ + ( maxZ - Bounds::minZ );
+    maxW = minW + ( maxW - Bounds::minW );
+
+    Bounds::minX = minX;
+    Bounds::minY = minY;
+    Bounds::minZ = minZ;
+    Bounds::minW = minW;
+}
+
+template< typename T >
+void Bounds< T, 4 >::getPosition( T& minXOut, T& minYOut, T& minZOut, T& minWOut ) const {
+    minXOut = minX;
+    minYOut = minY;
+    minZOut = minZ;
+    minWOut = minW;
+}
+
+template< typename T >
 void Bounds< T, 4 >::setDimensions( const T width, const T length, const T height, const T wlength ) {
     maxX = minX + width;
     maxY = minY + length;
@@ -312,6 +350,38 @@ bool Bounds< T, 4 >::isZero() const {
            maxY == 0 &&
            maxZ == 0 &&
            maxW == 0;
+}
+
+template< typename T >
+void Bounds< T, 4 >::normalize() {
+    minMax( minX, maxX );
+    minMax( minY, maxY );
+    minMax( minZ, maxZ );
+    minMax( minW, maxW );
+}
+
+template< typename T >
+bool Bounds< T, 4 >::isNormal() const {
+    return minX <= maxX &&
+           minY <= maxY &&
+           minZ <= maxZ &&
+           minW <= maxW;
+}
+
+template< typename T >
+bool Bounds< T, 4 >::contains( const Point< T, 4 >& point ) const {
+    return point.x >= minX && point.x <= maxX &&
+           point.y >= minY && point.y <= maxY &&
+           point.z >= minZ && point.z <= maxZ &&
+           point.w >= minW && point.w <= maxW;
+}
+
+template< typename T >
+void Bounds< T, 4 >::include( const Point< T, 4 >& point ) {
+    electMinMax( minX, maxX, point.x );
+    electMinMax( minY, maxY, point.y );
+    electMinMax( minZ, maxZ, point.z );
+    electMinMax( minW, maxW, point.w );
 }
 
 template< typename T >

@@ -33,6 +33,10 @@ namespace {
     const int    cv_valuesAlt[10]    { 11, 12, 13, 14, 15,   16, 17, 18, 19, 20 };
     const int    cv_valuesAltMins[5] { 11, 12, 13, 14, 15 };
     const int    cv_valuesAltMaxs[5] { 16, 17, 18, 19, 20 };
+    const int    cv_abnormal[10]     {  6,  7,  8,  9, 10,    1,  2,  3,  4,  5 };
+    const int    cv_includeTest[10]  { -14, -11, -12, -4, -5,   6,  12,  8,  13, 14 };
+    const int    cv_includePt1[5]    { -14,  12,   2, -4, -5 };
+    const int    cv_includePt2[5]    {  2,  -11, -12, 13, 14 };
     const int    cv_dimTest[10]      {  1,  2,  3,  4,  5,   11, 13, 15, 17, 19 };
     const int    cv_outsideMins[5]   {  0,  1,  2,  3,  4 };
     const int    cv_outsideMaxs[5]   {  7,  8,  9, 10, 11 };
@@ -240,6 +244,24 @@ UT_TEST_BEGIN( BoundsN_getMinMax )
            allEqual( maxs.data, cv_valuesAltMaxs );
 UT_TEST_END()
 
+UT_TEST_BEGIN( BoundsN_setPosition )
+    Bounds5i o( cv_values );
+    Point5i  mins( cv_valuesAltMins );
+
+    o.setPosition( mins );
+
+    return allEqual( o.data, cv_valuesAlt );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_getPosition )
+    Bounds5i o( cv_values );
+    Point5i mins( cv_valuesAltMins );
+
+    o.getPosition( mins );
+
+    return allEqual( mins.data, cv_valuesMins );
+UT_TEST_END()
+
 UT_TEST_BEGIN( BoundsN_setDimension )
     Bounds5i o( cv_values );
 
@@ -282,6 +304,42 @@ UT_TEST_BEGIN( BoundsN_isZero )
 
     return o1.isZero() == true &&
            o2.isZero() == false;
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_normalize )
+    Bounds5i o( cv_abnormal );
+
+    o.normalize();
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_isNormal )
+    Bounds5i o1( cv_values );
+    Bounds5i o2( cv_abnormal );
+
+    return o1.isNormal() == true &&
+           o2.isNormal() == false;
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_include )
+    Bounds5i o( cv_values );
+    Point5i point1( cv_includePt1 );
+    Point5i point2( cv_includePt2 );
+
+    o.include( point1 );
+    o.include( point2 );
+
+    return allEqual( o.data, cv_includeTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_contains )
+    Bounds5i o( cv_values );
+    Point5i  point1( cv_valuesMaxs );
+    Point5i  point2( cv_valuesAltMaxs );
+
+    return o.contains( point1 ) == true &&
+           o.contains( point2 ) == false;
 UT_TEST_END()
 
 UT_TEST_BEGIN( BoundsN_equals )
