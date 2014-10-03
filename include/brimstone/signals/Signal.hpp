@@ -9,19 +9,15 @@ Description:
 
     Signals are callable objects (i.e. functors) that maintain a list of
     zero or more callbacks functions (known as slots).
-    When a signal is called, it calls each registered slot, passing the values given to the call.
+    When a signal is called, it calls each registered slot, passing the arguments given to the call
+    exactly as they were passed to the signal.
 
-    To ensure that one cannot register a slot that takes a different set of parameters than those given to a call to a Signal object,
-    Signal is a template class that takes a function signature as a parameter.
-    This signature defines the return value and set of parameters the slots must possess,
-    as well as the set of parameters the call operator takes.
-
-    Furthermore, slots are implemented as Delegates, allowing both static functions and bound methods to be utilized as callbacks.
-
-    For situations where the lifetime of a bound object is shorter than the signal it's registered with,
-    a slot can optionally be registered with a ScopedConnection object, which will automatically break associated connections when
-    the ScopedConnection is destroyed. The reverse is also true; if the Signal is destroyed, the ScopedConnection object stops tracking
-    any registered Signals.
+    Signal is a template class that takes the slot type as a parameter.
+    All registered slots on a signal must be of this type.
+    Attempting to call the signal with a different set of arguments than those supported by Slot
+    will cause a compile-time error.
+    Note that if the underlying Slot can be called in several different fashions (e.g. slot(int),
+    slot(bool), slot(int, int), etc.), then the Signal may be called in each of these fashions as well.
 */
 #ifndef BS_SIGNALS_SIGNAL_HPP
 #define BS_SIGNALS_SIGNAL_HPP
@@ -35,92 +31,108 @@ Description:
 #include <algorithm>                                //std::find
 
 #include <brimstone/signals/Delegate.hpp>           //Delegate
-#include <brimstone/signals/ScopedConnection.hpp>   //ScopedConnection
 
 
 
 
 namespace Brimstone {
+namespace Private {
+    //If a function signature is provided as the slot type,
+    //we need to rewrite it as a function pointer, otherwise
+    //C++ will give you tons of warnings and fail to compile
+    //(can't allocate a function type, but can allocate a function pointer).
+    template< typename T >
+    struct ToFunctionPointer {
+        typedef T type;
+    };
+    template< typename R, typename... Args >
+    struct ToFunctionPointer< R( Args... ) > {
+        typedef R(*type)(Args...);
+    };
+}
 
-template< typename Signature >
-class ScopedConnection;
-
-template< typename Signature >
-class Signal;
-
-template< typename Return, typename... Args >
-class Signal< Return ( Args... ) > {
-    friend class ScopedConnection< Return ( Args... ) >;
-private:
-    typedef Return Signature( Args... );              //Signature;
-    typedef Delegate< Signature >                       Slot;
-    typedef Signal< Signature >                         My;
-    typedef ScopedConnection< Signature >               MyScopedConnection;
-    typedef std::pair< Slot, MyScopedConnection* >        Connection;
-
-    typedef std::vector< Connection >                   SlotCollection;
-
+template< typename Slot >
+class Signal {
 public:
-    Signal();
+    typedef typename Private::ToFunctionPointer< Slot >::type   MySlot;
+    typedef Signal< Slot >                                      MyType;
+private:
+    typedef std::vector< MySlot >                               SlotCollection;
+public:
+    Signal() = default;
     Signal( const Signal& toCopy );
-    ~Signal();
+    Signal( Signal&& toMove );
+    Signal& operator =( Signal&& toMove );
 
-    void connect( const Slot& slot );
-    void connect( const Slot& slot, MyScopedConnection& scopedConnection );
-    void disconnect( const Slot& slot );
+    void connect( const MySlot& slot );
+    void connect( MySlot&& slot );
+    void operator +=( const MySlot& slot );
+    void operator +=( MySlot&& slot );
+
+    void disconnect( const MySlot& slot );
+    void operator -=( const MySlot& slot );
     void disconnectAll();
 
-    void emit( Args... args ) const;
-    void operator()( Args... args ) const;
+    template< typename... Args >
+    void emit( Args&&... args ) const;
 
+    template< typename... Args >
+    void operator ()( Args&&... args ) const;
+
+    bool isEmpty() const;
+    size_t size() const;
 private:
-    void disconnect( const MyScopedConnection& scopedConnection );
-    void release( const MyScopedConnection& scopedConnection );
-    void disconnectAllFromSC();
     Signal& operator =( const Signal& toCopy );
-
 private:
     SlotCollection      m_slots;
 };
 
-//Do-nothing default constructor (needed because we have a copy constructor)
-template< typename Return, typename... Args >
-Signal< Return ( Args... ) >::Signal() {}
-
 //Do-nothing copy constructor (needed because we want Signal to be copyable, but not its connections)
-template< typename Return, typename... Args >
-Signal< Return ( Args... ) >::Signal( const Signal& toCopy ) {}
+template< typename Slot >
+Signal< Slot >::Signal( const Signal& toCopy ) {}
 
-//Unregisters itself with any remaining scoped connections
-template< typename Return, typename... Args >
-Signal< Return ( Args... ) >::~Signal() {
-    disconnectAllFromSC();
+//Move constructor; transfers slots
+template< typename Slot >
+Signal< Slot >::Signal( Signal&& toMove ) :
+    m_slots( std::move( toMove.m_slots ) ) {
+}
+//Move assignment operator; transfers slots
+template< typename Slot >
+Signal< Slot >& Signal< Slot >::operator =( Signal&& toMove ) {
+    m_slots = std::move( toMove.m_slots );
 }
 
-//Connect signal to a slot (not managed by a scoped connection)
-template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::connect( const Slot& slot ) {
-    m_slots.emplace_back( slot, nullptr );
+//Connect a slot (method form)
+//...by copying slot
+template< typename Slot >
+void Signal< Slot >::connect( const MySlot& slot ) {
+    m_slots.emplace_back( slot );
+}
+//...by moving slot
+template< typename Slot >
+void Signal< Slot >::connect( MySlot&& slot ) {
+    m_slots.emplace_back( std::move( slot ) );
 }
 
-//Connect signal to a slot (managed by a scoped connection)
-template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::connect( const Slot& slot, MyScopedConnection& scopedConnection ) {
-    m_slots.emplace_back( slot, &scopedConnection );
-    scopedConnection.connected( *this );
+//Connect a slot (operator form)
+//...by copying slot
+template< typename Slot >
+inline void Signal< Slot >::operator +=( const MySlot& slot ) {
+    connect( slot );
+}
+//...by moving slot
+template< typename Slot >
+inline void Signal< Slot >::operator +=( MySlot&& slot ) {
+    connect( slot );
 }
 
-//Disconnect a slot, inform scoped connection (if any)
-template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::disconnect( const Slot& slot ) {
+//Disconnect a slot (method form)
+template< typename Slot >
+void Signal< Slot >::disconnect( const MySlot& slot ) {
     for( auto it = m_slots.begin(); it != m_slots.end(); ++it ) {
-        if( it->first != slot )
+        //Note: to be removed, a != operator between two Slot should be defined.
+        if( *it != slot )
             continue;
-
-        //Inform associated scoped connection we're no longer connected
-        MyScopedConnection* scope = it->second;
-        if( scope != nullptr )
-            scope->disconnected( *this );
 
         //Erase the slot
         m_slots.erase( it );
@@ -128,68 +140,54 @@ void Signal< Return ( Args... ) >::disconnect( const Slot& slot ) {
     }
 }
 
-//Disconnect all connected slots, inform their scoped connections
-template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::disconnectAll() {
-    disconnectAllFromSC();
+//Disconnect a slot (operator form)
+template< typename Slot >
+inline void Signal< Slot >::operator -=( const MySlot& slot ) {
+    disconnect( slot );
+}
+
+//Disconnect all slots
+template< typename Slot >
+void Signal< Slot >::disconnectAll() {
     m_slots.clear();
 }
 
 //Invoke connected slots (method form)
-template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::emit( Args... args ) const {
-    for( auto it = m_slots.begin(); it != m_slots.end(); ++it )
-        (*it).first( std::forward< Args >( args )... );
+template< typename Slot >
+template< typename... Args >
+void Signal< Slot >::emit( Args&&... args ) const {
+    for( auto& slot : m_slots )
+        slot( std::forward< Args >( args )... );
 }
 
 //Invoke connected slots (call operator form)
-template< typename Return, typename... Args >
-inline void Signal< Return ( Args... ) >::operator ()( Args... args ) const {
+template< typename Slot >
+template< typename... Args >
+inline void Signal< Slot >::operator ()( Args&&... args ) const {
     emit( std::forward< Args >( args )... );
 }
 
-//Disconnect all slots managed by the given scoped connection
-template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::disconnect( const MyScopedConnection& scopedConnection ) {
-    //HACK: We don't bother to inform scopedConnection about individual slots being disconnected()
-    //because it's assumed that this method will only be called when the scopedConnection is being destroyed.
-    for( auto it = m_slots.begin(); it != m_slots.end(); /* N/A */ ) {
-        //Skip this slot if it isn't managed by the given scoped connection.
-        if( it->second != &scopedConnection )
-            ++it;
-        //Otherwise, erase the slot
-        else
-            it = m_slots.erase( it );
-
-    }
-}
-
-//All slots managed by the given scoped connection will no longer be managed by it
-template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::release( const MyScopedConnection& scopedConnection ) {
-    for( auto it = m_slots.begin(); it != m_slots.end(); ++it ) {
-        if( it->second != &scopedConnection )
-            continue;
-
-        it->second = nullptr;
-    }
-}
-
 //Do-nothing assignment operator
-template< typename Return, typename... Args >
-Signal< Return ( Args... ) >& Signal< Return ( Args... ) >::operator =( const Signal& toCopy ) {
+template< typename Slot >
+Signal< Slot >& Signal< Slot >::operator =( const Signal& toCopy ) {
     return *this;
 }
 
-template< typename Return, typename... Args >
-void Signal< Return ( Args... ) >::disconnectAllFromSC() {
-    for( auto it = m_slots.begin(); it != m_slots.end(); ++it ) {
-        //Inform associated scoped connection we're no longer connected
-        MyScopedConnection* scope = it->second;
-        if( scope != nullptr )
-            scope->disconnected( *this );
-    }
+//Returns true if no slots are connected, false otherwise
+template< typename Slot >
+bool Signal< Slot >::isEmpty() const {
+    return m_slots.empty();
 }
+
+//Returns the number of slots connected
+template< typename Slot >
+size_t Signal< Slot >::size() const {
+    return m_slots.size();
+}
+
+//Typedefs
+template< typename Signature >
+using SignalD = Signal< typename Delegate< Signature > >;
 
 }
 

@@ -88,14 +88,7 @@ namespace Private {
         GenericClassPtr     getSelf() const;
         Method              getMethod() const;
         StaticMethod        getStaticMethod() const;
-
-        template< typename, typename >
-        friend bool operator ==( const Closure< Method, StaticMethod >& left, const Closure< Method, StaticMethod >& right );
-
-        template< typename, typename >
-        friend bool operator !=( const Closure< Method, StaticMethod >& left, const Closure< Method, StaticMethod >& right );
-
-    private:
+    public:
         GenericClassPtr     m_self;
         GenericMethodPtr    m_method;
 #ifndef BS_DELEGATE_POINTER_HACK
