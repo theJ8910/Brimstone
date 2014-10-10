@@ -57,6 +57,7 @@ Description:
 #include <brimstone/util/Clamp.hpp>     //clamp
 #include <brimstone/util/MinMax.hpp>    //min
 #include <brimstone/Point.hpp>          //Point
+#include <brimstone/Size.hpp>           //Size
 
 
 
@@ -65,14 +66,20 @@ Description:
 #define BS_BOUNDS_DECLARE_METHODS( N )                                                                  \
     Bounds();                                                                                           \
     Bounds( const Point< T, N >& mins, const Point< T, N >& maxs );                                     \
+    Bounds( const Point< T, N >& mins, const Size< T, N >& sizes );                                     \
     template< typename T2 >                                                                             \
     Bounds( const Bounds< T2, N >& toCopy );                                                            \
                                                                                                         \
     void set( const Point< T, N >& mins, const Point< T, N >& maxs );                                   \
+    void set( const Point< T, N >& mins, const Size< T, N >& sizes );                                   \
     void get( Point< T, N >& minsOut, Point< T, N >& maxsOut ) const;                                   \
+    void get( Point< T, N >& minsOut, Size< T, N >& sizesOut ) const;                                   \
                                                                                                         \
     void setPosition( const Point< T, N >& mins );                                                      \
-    void getPosition( Point< T, N >& minsOut ) const;                                                   \
+    Point< T, N > getPosition() const;                                                                  \
+                                                                                                        \
+    void setSize( const Size< T, N >& sizes );                                                          \
+    Size< T, N > getSize() const;                                                                       \
                                                                                                         \
     void setDimension( const size_t component, const T difference );                                    \
     T    getDimension( const size_t component ) const;                                                  \
@@ -85,6 +92,7 @@ Description:
                                                                                                         \
     void include( const Point< T, N >& point );                                                         \
     bool contains( const Point< T, N >& point ) const;                                                  \
+    bool contains_mIME( const Point< T, N >& point ) const;                                             \
                                                                                                         \
     template< typename T2 >                                                                             \
     Bounds< T, N >& operator =( const Bounds< T2, N >& toCopy );
@@ -106,8 +114,8 @@ Description:
         maxsOut = maxs;                                                                                 \
     }                                                                                                   \
     tmpl                                                                                                \
-    void Bounds< T, N >::getPosition( Point< T, N >& minsOut ) const {                                  \
-        minsOut = mins;                                                                                 \
+    Point< T, N > Bounds< T, N >::getPosition() const {                                                 \
+        return mins;                                                                                    \
     }                                                                                                   \
     tmpl                                                                                                \
     void Bounds< T, N >::setDimension( const size_t component, const T difference ) {                   \
@@ -158,9 +166,32 @@ for( size_t i = 0; i < 2*N; ++i )
 }
 
 template< typename T, size_t N >
+Bounds< T, N >::Bounds( const Point< T, N >& mins, const Size< T, N >& sizes ) :
+    mins( mins ) {
+    for( size_t i = 0; i < N; ++i )
+        Bounds::maxs[i] = mins.data[i] + sizes.data[i];
+}
+
+template< typename T, size_t N >
 template< typename T2 >
 Bounds< T, N >::Bounds( const Bounds< T2, N >& toCopy ) {
     (*this) = toCopy;
+}
+
+template< typename T, size_t N >
+void Bounds< T, N >::set( const Point< T, N >& mins, const Size< T, N >& sizes ) {
+    for( size_t i = 0; i < N; ++i ) {
+        Bounds::mins[i] = mins.data[i];
+        Bounds::maxs[i] = mins.data[i] + sizes.data[i];
+    }
+}
+
+template< typename T, size_t N >
+void Bounds< T, N >::get( Point< T, N >& minsOut, Size< T, N >& sizesOut ) const {
+    for( size_t i = 0; i < N; ++i ) {
+        minsOut[i]  = mins.data[i];
+        sizesOut[i] = maxs.data[i] - mins.data[i];
+    }
 }
 
 template< typename T, size_t N >
@@ -168,6 +199,22 @@ void Bounds< T, N >::setPosition( const Point< T, N >& mins ) {
     for( size_t i = 0; i < N; ++i )
         maxs.data[i] = mins.data[i] + ( maxs.data[i] - Bounds::mins.data[i] );
     Bounds::mins = mins;
+}
+
+template< typename T, size_t N >
+void Bounds< T, N >::setSize( const Size< T, N >& sizes ) {
+    for( size_t i = 0; i < N; ++i )
+        maxs.data[i] = mins.data[i] + sizes.data[i];
+}
+
+template< typename T, size_t N >
+Size< T, N > Bounds< T, N >::getSize() const {
+    Size< T, N > sizesOut;
+
+    for( size_t i = 0; i < N; ++i )
+        sizesOut.data[i] = maxs.data[i] - mins.data[i];
+
+    return sizesOut;
 }
 
 template< typename T, size_t N >
@@ -236,8 +283,11 @@ Bounds::contains
 Description:
     Checks if the given point is contained within this Bounds.
 
-    The bounds checks are inclusive; that is, the point is considered inside the Bounds
-    if it is on a corner, edge, face, etc. of the Bounds.
+    The given point is considered to be within the bounds if
+    for every axis "i", point[i] is within the range [ mins[i], maxs[i] ].
+
+    Note that the range is inclusive; if the point is on a corner, edge, face, etc.
+    of the Bounds, it is considered to be within the bounds.
 
 Arguments:
     point:  The point to check.
@@ -249,6 +299,35 @@ template< typename T, size_t N >
 bool Bounds< T, N >::contains( const Point< T, N >& point ) const {
     for( size_t i = 0; i < N; ++i )
         if( point.data[i] < mins.data[i] || point.data[i] > maxs.data[i] )
+            return false;
+
+    return true;
+}
+
+/*
+Bounds::contains_mIME
+-----------------------
+
+Description:
+    Checks if the given point is contained within this Bounds.
+
+    The given point is considered to be within the bounds if
+    for every axis "i", point[i] is within the range [ mins[i], maxs[i] ).
+
+    Note that unlike Bounds::contains, Bounds::contains_mIME is "(m)inimum (I)nclusive, (M)aximum (E)xclusive";
+    this means that if a point resides on a corner / edge / face / etc. shared with mins, it is within the Bounds;
+    a point residing on a corner / edge/ face / etc. shared with maxs, however, is NOT.
+
+Arguments:
+    point:  The point to check.
+
+Returns:
+    bool:   true if the point is contained within the Bounds, false otherwise.
+*/
+template< typename T, size_t N >
+bool Bounds< T, N >::contains_mIME( const Point< T, N >& point ) const {
+    for( size_t i = 0; i < N; ++i )
+        if( point.data[i] < mins.data[i] || point.data[i] >= maxs.data[i] )
             return false;
 
     return true;

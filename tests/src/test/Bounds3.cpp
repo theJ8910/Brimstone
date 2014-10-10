@@ -22,6 +22,7 @@ Description:
 namespace {
     using ::Brimstone::Bounds3i;
     using ::Brimstone::Point3i;
+    using ::Brimstone::Size3i;
     using ::Brimstone::Bounds3f;
     using ::Brimstone::BoundsException;
 
@@ -40,11 +41,11 @@ namespace {
     const int    cv_widthTest[6]     {  1,  2,  3,   11,  5,  6 };
     const int    cv_lengthTest[6]    {  1,  2,  3,   4,  13,  6 };
     const int    cv_heightTest[6]    {  1,  2,  3,   4,   5, 15 };
+    const int    cv_sizes[3]         { 10, 11, 12 };
     const int    cv_width            = 10;
     const int    cv_length           = 11;
     const int    cv_height           = 12;
     const int    cv_dimTest[6]       {  1,  2,  3,   11, 13, 15 };
-    const int    cv_volume           = cv_width * cv_length * cv_height;
     const int    cv_outsideMins[3]   {  0,  1,  2 };
     const int    cv_outsideMaxs[3]   {  5,  6,  7 };
     const char*  cv_output           = "[ ( 1, 2, 3 ), ( 4, 5, 6 ) ]";
@@ -223,13 +224,6 @@ UT_TEST_BEGIN( Bounds3_constructorValues )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds3_constructorPointDims )
-    Point3i p( cv_values[0], cv_values[1], cv_values[2] );
-    Bounds3i o( p, cv_width, cv_length, cv_height );
-
-    return allEqual( o.data, cv_dimTest );
-UT_TEST_END()
-
 UT_TEST_BEGIN( Bounds3_constructorMinMax )
     Point3i mins( cv_valuesMins );
     Point3i maxs( cv_valuesMaxs );
@@ -238,7 +232,58 @@ UT_TEST_BEGIN( Bounds3_constructorMinMax )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds3_setValues )
+UT_TEST_BEGIN( Bounds3_constructorPosSize )
+    Point3i mins( cv_valuesMins );
+    Size3i  sizes( cv_sizes );
+
+    Bounds3i o( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_set_minMax )
+    Bounds3i o( cv_valuesAlt );
+    Point3i mins( cv_valuesMins );
+    Point3i maxs( cv_valuesMaxs );
+
+    o.set( mins, maxs );
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_get_minMax )
+    Point3i mins( cv_valuesMins );
+    Point3i maxs( cv_valuesMaxs );
+
+    Bounds3i o( cv_valuesAlt );
+    o.get( mins, maxs );
+
+    return allEqual( mins.data, cv_valuesAltMins ) &&
+           allEqual( maxs.data, cv_valuesAltMaxs );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_set_posSize )
+    Bounds3i o( cv_valuesAlt );
+    Point3i mins( cv_valuesMins );
+    Size3i  sizes( cv_sizes );
+
+    o.set( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_get_posSize )
+    Point3i mins( cv_valuesAltMins );
+    Size3i  sizes( cv_valuesAltMaxs );
+
+    Bounds3i o( cv_dimTest );
+    o.get( mins, sizes );
+
+    return allEqual( mins.data,  cv_valuesMins ) &&
+           allEqual( sizes.data, cv_sizes      );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_set_values )
     Bounds3i o( cv_values );
 
     o.set(
@@ -249,17 +294,7 @@ UT_TEST_BEGIN( Bounds3_setValues )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds3_setMinMax )
-    Bounds3i o( cv_values );
-    Point3i mins( cv_valuesAltMins );
-    Point3i maxs( cv_valuesAltMaxs );
-
-    o.set( mins, maxs );
-
-    return allEqual( o.data, cv_valuesAlt );
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds3_getValues )
+UT_TEST_BEGIN( Bounds3_get_values )
     Bounds3i o( cv_values );
 
     int data[2*cv_size];
@@ -270,17 +305,6 @@ UT_TEST_BEGIN( Bounds3_getValues )
     );
 
     return allEqual( data, cv_values );
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds3_getMinMax )
-    Point3i mins( cv_values );
-    Point3i maxs( cv_values );
-
-    Bounds3i o( cv_valuesAlt );
-    o.get( mins, maxs );
-
-    return allEqual( mins.data, cv_valuesAltMins ) &&
-           allEqual( maxs.data, cv_valuesAltMaxs );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_setPosition )
@@ -296,12 +320,12 @@ UT_TEST_BEGIN( Bounds3_getPosition )
     Bounds3i o( cv_values );
     Point3i mins( cv_valuesAltMins );
 
-    o.getPosition( mins );
+    mins = o.getPosition();
 
     return allEqual( mins.data, cv_valuesMins );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds3_setPositionValues )
+UT_TEST_BEGIN( Bounds3_setPosition_values )
     Bounds3i o( cv_values );
 
     o.setPosition( cv_valuesAltMins[0], cv_valuesAltMins[1], cv_valuesAltMins[2] );
@@ -309,7 +333,7 @@ UT_TEST_BEGIN( Bounds3_setPositionValues )
     return allEqual( o.data, cv_valuesAlt );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds3_getPositionValues )
+UT_TEST_BEGIN( Bounds3_getPosition_values )
     Bounds3i o( cv_values );
     int data[cv_size];
     copyAll( cv_valuesAltMins, data );
@@ -319,12 +343,41 @@ UT_TEST_BEGIN( Bounds3_getPositionValues )
     return allEqual( data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds3_setDimensions )
+UT_TEST_BEGIN( Bounds3_setSize )
     Bounds3i o( cv_values );
+    Size3i sizes( cv_sizes );
 
-    o.setDimensions( cv_width, cv_length, cv_height );
+    o.setSize( sizes );
 
     return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_getSize )
+    Bounds3i o( cv_dimTest );
+    Size3i sizes( cv_valuesAltMaxs );
+
+    sizes = o.getSize();
+
+    return allEqual( sizes.data, cv_sizes );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_setSize_values )
+    Bounds3i o( cv_values );
+
+    o.setSize( cv_width, cv_length, cv_height );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds3_getSize_values )
+    Bounds3i o( cv_dimTest );
+    int width, length, height;
+
+    o.getSize( width, length, height );
+
+    return width  == cv_width  &&
+           length == cv_length &&
+           height == cv_height;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_setWidth )
@@ -360,17 +413,6 @@ UT_TEST_BEGIN( Bounds3_setDimension )
     return allEqual( o.data, cv_dimTest );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds3_getDimensions )
-    Bounds3i o( cv_dimTest );
-    int width, length, height;
-
-    o.getDimensions( width, length, height );
-
-    return width  == cv_width  &&
-           length == cv_length &&
-           height == cv_height;
-UT_TEST_END()
-
 UT_TEST_BEGIN( Bounds3_getWidth )
     Bounds3i o( cv_widthTest );
 
@@ -403,12 +445,6 @@ UT_TEST_BEGIN( Bounds3_getDimension )
             return false;
 
     return true;
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds3_getVolume )
-    Bounds3i b( cv_dimTest );
-
-    return b.getVolume() == cv_volume;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds3_output )

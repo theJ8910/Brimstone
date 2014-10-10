@@ -59,19 +59,18 @@ public:
 
     //Constructors
     Bounds( const T minX, const T minY, const T minZ, const T minW, const T maxX, const T maxY, const T maxZ, const T maxW );
-    Bounds( const Point< T, 4 >& mins, const T width, const T length, const T height, const T wlength );
 
     //Set / get the bounds individually
     void set( const T minX, const T minY, const T minZ, const T minW, const T maxX, const T maxY, const T maxZ, const T maxW );
     void get( T& minXOut, T& minYOut, T& minZOut, T& minWOut, T& maxXOut, T& maxYOut, T& maxZOut, T& maxWOut ) const;
 
-    //Set / get the position of the bounds, preserving width/length/height/wlength.
+    //Set / get the position of the bounds, preserving width/length/height/depth.
     void    setPosition( const T minX, const T minY, const T minZ, const T minW );
     void    getPosition( T& minXOut, T& minYOut, T& minZOut, T& minWOut ) const;
 
-    //Set / get the width / length / height / wlength, treating (minX, minY, minZ, minW) as an anchor
-    void    setDimensions( const T width, const T length, const T height, const T wlength );
-    void    getDimensions( T& widthOut, T& lengthOut, T& heightOut, T& wlengthOut ) const;
+    //Set / get the width / length / height / depth, treating (minX, minY, minZ, minW) as an anchor
+    void    setSize( const T width, const T length, const T height, const T depth );
+    void    getSize( T& widthOut, T& lengthOut, T& heightOut, T& depthOut ) const;
 
     void    setWidth( const T width );
     T       getWidth() const;
@@ -82,11 +81,8 @@ public:
     void    setHeight( const T height );
     T       getHeight() const;
 
-    void    setWLength( const T wlength );
-    T       getWLength() const;
-
-    //Miscellaneous utility methods
-    T       getVolume() const;
+    void    setDepth( const T depth );
+    T       getDepth() const;
 };
 BS_ARRAY_DEFINE_METHODS( Bounds, T, data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 4 ) )
 BS_BOUNDS_DEFINE_METHODS( 4, BS_TMPL_1( typename T ) )
@@ -182,6 +178,12 @@ Bounds< T, 4 >::Bounds()
 }
 
 template< typename T >
+Bounds< T, 4 >::Bounds( const Point< T, 4 >& mins, const Size< T, 4 >& sizes ) :
+    minX( mins.x ),               minY( mins.y ),                minZ( mins.z ),                minW( mins.w ),
+    maxX( mins.x + sizes.width ), maxY( mins.y + sizes.length ), maxZ( mins.z + sizes.height ), maxW( mins.w + sizes.depth ) {
+}
+
+template< typename T >
 template< typename T2 >
 Bounds< T, 4 >::Bounds( const Bounds< T2, 4 >& toCopy ) :
     minX( static_cast< T >( toCopy.minX ) ), minY( static_cast< T >( toCopy.minY ) ), minZ( static_cast< T >( toCopy.minZ ) ), minW( static_cast< T >( toCopy.minW ) ),
@@ -189,21 +191,35 @@ Bounds< T, 4 >::Bounds( const Bounds< T2, 4 >& toCopy ) :
 }
 
 template< typename T >
-Bounds< T, 4 >::Bounds( const T minX, const T minY, const T minZ, const T minW, const T maxX, const T maxY, const T maxZ, const T maxW ) :
-    minX( minX ), minY( minY ), minZ( minZ ), minW( minW ),
-    maxX( maxX ), maxY( maxY ), maxZ( maxZ ), maxW( maxW ) {
+void Bounds< T, 4 >::set( const Point< T, 4 >& mins, const Size< T, 4 >& sizes ) {
+    minX = mins.x;
+    minY = mins.y;
+    minZ = mins.z;
+    minW = mins.w;
+
+    maxX = mins.x + sizes.width;
+    maxY = mins.y + sizes.length;
+    maxZ = mins.z + sizes.height;
+    maxW = mins.w + sizes.depth;
 }
 
 template< typename T >
-Bounds< T, 4 >::Bounds( const Point< T, 4 >& mins, const T width, const T length, const T height, const T wlength ) :
-    minX( mins.x ),
-    minY( mins.y ),
-    minZ( mins.z ),
-    minW( mins.w ),
-    maxX( mins.x + width   ),
-    maxY( mins.y + length  ),
-    maxZ( mins.z + height  ),
-    maxW( mins.w + wlength ) {
+void Bounds< T, 4 >::get( Point< T, 4 >& minsOut, Size< T, 4 >& sizesOut ) const {
+    minsOut.x = minX;
+    minsOut.y = minY;
+    minsOut.z = minZ;
+    minsOut.w = minW;
+
+    sizesOut.width  = maxX - minX;
+    sizesOut.length = maxY - minY;
+    sizesOut.height = maxZ - minZ;
+    sizesOut.depth  = maxW - minW;
+}
+
+template< typename T >
+Bounds< T, 4 >::Bounds( const T minX, const T minY, const T minZ, const T minW, const T maxX, const T maxY, const T maxZ, const T maxW ) :
+    minX( minX ), minY( minY ), minZ( minZ ), minW( minW ),
+    maxX( maxX ), maxY( maxY ), maxZ( maxZ ), maxW( maxW ) {
 }
 
 template< typename T >
@@ -267,19 +283,37 @@ void Bounds< T, 4 >::getPosition( T& minXOut, T& minYOut, T& minZOut, T& minWOut
 }
 
 template< typename T >
-void Bounds< T, 4 >::setDimensions( const T width, const T length, const T height, const T wlength ) {
-    maxX = minX + width;
-    maxY = minY + length;
-    maxZ = minZ + height;
-    maxW = minW + wlength;
+void Bounds< T, 4 >::setSize( const Size< T, 4 >& sizes ) {
+    maxs.x = mins.x + sizes.width;
+    maxs.y = mins.y + sizes.length;
+    maxs.z = mins.z + sizes.height;
+    maxs.w = mins.w + sizes.depth;
 }
 
 template< typename T >
-void Bounds< T, 4 >::getDimensions( T& widthOut, T& lengthOut, T& heightOut, T& wlengthOut ) const {
-    widthOut   = maxX - minX;
-    lengthOut  = maxY - minY;
-    heightOut  = maxZ - minZ;
-    wlengthOut = maxW - minW;
+Size< T, 4 > Bounds< T, 4 >::getSize() const {
+    return Size< T, 4 >(
+        maxs.x - mins.x,
+        maxs.y - mins.y,
+        maxs.z - mins.z,
+        maxs.w - mins.w
+    );
+}
+
+template< typename T >
+void Bounds< T, 4 >::setSize( const T width, const T length, const T height, const T depth ) {
+    maxX = minX + width;
+    maxY = minY + length;
+    maxZ = minZ + height;
+    maxW = minW + depth;
+}
+
+template< typename T >
+void Bounds< T, 4 >::getSize( T& widthOut, T& lengthOut, T& heightOut, T& depthOut ) const {
+    widthOut  = maxX - minX;
+    lengthOut = maxY - minY;
+    heightOut = maxZ - minZ;
+    depthOut  = maxW - minW;
 }
 
 template< typename T >
@@ -313,18 +347,13 @@ T Bounds< T, 4 >::getHeight() const {
 }
 
 template< typename T >
-void Bounds< T, 4 >::setWLength( const T wlength ) {
-    maxW = minW + wlength;
+void Bounds< T, 4 >::setDepth( const T depth ) {
+    maxW = minW + depth;
 }
 
 template< typename T >
-T Bounds< T, 4 >::getWLength() const {
+T Bounds< T, 4 >::getDepth() const {
     return maxW - minW;
-}
-
-template< typename T >
-T Bounds< T, 4 >::getVolume() const {
-    return getWidth() * getLength() * getHeight() * getWLength();
 }
 
 template< typename T >
@@ -374,6 +403,14 @@ bool Bounds< T, 4 >::contains( const Point< T, 4 >& point ) const {
            point.y >= minY && point.y <= maxY &&
            point.z >= minZ && point.z <= maxZ &&
            point.w >= minW && point.w <= maxW;
+}
+
+template< typename T >
+bool Bounds< T, 4 >::contains_mIME( const Point< T, 4 >& point ) const {
+    return point.x >= minX && point.x < maxX &&
+           point.y >= minY && point.y < maxY &&
+           point.z >= minZ && point.z < maxZ &&
+           point.w >= minW && point.w < maxW;
 }
 
 template< typename T >

@@ -22,6 +22,7 @@ Description:
 namespace {
     using ::Brimstone::Bounds2i;
     using ::Brimstone::Point2i;
+    using ::Brimstone::Size2i;
     using ::Brimstone::Bounds2f;
     using ::Brimstone::BoundsException;
 
@@ -39,10 +40,10 @@ namespace {
     const int    cv_includePt2[3]    {  2,  -11 };
     const int    cv_widthTest[4]     {  1,  2,   11,  4 };
     const int    cv_heightTest[4]    {  1,  2,    3, 13 };
+    const int    cv_sizes[2]         { 10, 11 };
     const int    cv_width            = 10;
     const int    cv_height           = 11;
     const int    cv_dimTest[4]       {  1,  2,   11, 13 };
-    const int    cv_area             = cv_width * cv_height;
     const int    cv_outsideMins[2]   {  0,  1 };
     const int    cv_outsideMaxs[2]   {  4,  5 };
     const char*  cv_output           = "[ ( 1, 2 ), ( 3, 4 ) ]";
@@ -218,13 +219,6 @@ UT_TEST_BEGIN( Bounds2_constructorValues )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds2_constructorPointDims )
-    Point2i p( cv_values[0], cv_values[1] );
-    Bounds2i o( p, 10, 11 );
-
-    return allEqual( o.data, cv_dimTest );
-UT_TEST_END()
-
 UT_TEST_BEGIN( Bounds2_constructorMinMax )
     Point2i mins( cv_valuesMins );
     Point2i maxs( cv_valuesMaxs );
@@ -233,7 +227,58 @@ UT_TEST_BEGIN( Bounds2_constructorMinMax )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds2_setValues )
+UT_TEST_BEGIN( Bounds2_constructorPosSize )
+    Point2i mins( cv_valuesMins );
+    Size2i  sizes( cv_sizes );
+
+    Bounds2i o( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_set_minMax )
+    Bounds2i o( cv_valuesAlt );
+    Point2i mins( cv_valuesMins );
+    Point2i maxs( cv_valuesMaxs );
+
+    o.set( mins, maxs );
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_get_minMax )
+    Point2i mins( cv_valuesMins );
+    Point2i maxs( cv_valuesMaxs );
+
+    Bounds2i o( cv_valuesAlt );
+    o.get( mins, maxs );
+
+    return allEqual( mins.data, cv_valuesAltMins ) &&
+           allEqual( maxs.data, cv_valuesAltMaxs );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_set_posSize )
+    Bounds2i o( cv_valuesAlt );
+    Point2i mins( cv_valuesMins );
+    Size2i  sizes( cv_sizes );
+
+    o.set( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_get_posSize )
+    Point2i mins( cv_valuesAltMins );
+    Size2i  sizes( cv_valuesAltMaxs );
+
+    Bounds2i o( cv_dimTest );
+    o.get( mins, sizes );
+
+    return allEqual( mins.data,  cv_valuesMins ) &&
+           allEqual( sizes.data, cv_sizes      );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_set_values )
     Bounds2i o( cv_values );
 
     o.set(
@@ -244,17 +289,7 @@ UT_TEST_BEGIN( Bounds2_setValues )
     return allEqual( o.data, cv_valuesAlt );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds2_setMinMax )
-    Bounds2i o( cv_values );
-    Point2i mins( cv_valuesAltMins );
-    Point2i maxs( cv_valuesAltMaxs );
-
-    o.set( mins, maxs );
-
-    return allEqual( o.data, cv_valuesAlt );
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds2_getValues )
+UT_TEST_BEGIN( Bounds2_get_values )
     Bounds2i o( cv_values );
 
     int data[2*cv_size];
@@ -265,17 +300,6 @@ UT_TEST_BEGIN( Bounds2_getValues )
     );
 
     return allEqual( data, cv_values );
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds2_getMinMax )
-    Point2i mins( cv_valuesMins );
-    Point2i maxs( cv_valuesMaxs );
-
-    Bounds2i o( cv_valuesAlt );
-    o.get( mins, maxs );
-
-    return allEqual( mins.data, cv_valuesAltMins ) &&
-           allEqual( maxs.data, cv_valuesAltMaxs );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds2_setPosition )
@@ -291,12 +315,12 @@ UT_TEST_BEGIN( Bounds2_getPosition )
     Bounds2i o( cv_values );
     Point2i mins( cv_valuesAltMins );
 
-    o.getPosition( mins );
+    mins = o.getPosition();
 
     return allEqual( mins.data, cv_valuesMins );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds2_setPositionValues )
+UT_TEST_BEGIN( Bounds2_setPosition_values )
     Bounds2i o( cv_values );
 
     o.setPosition( cv_valuesAltMins[0], cv_valuesAltMins[1] );
@@ -304,7 +328,7 @@ UT_TEST_BEGIN( Bounds2_setPositionValues )
     return allEqual( o.data, cv_valuesAlt );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds2_getPositionValues )
+UT_TEST_BEGIN( Bounds2_getPosition_values )
     Bounds2i o( cv_values );
     int data[cv_size];
     copyAll( cv_valuesAltMins, data );
@@ -314,12 +338,40 @@ UT_TEST_BEGIN( Bounds2_getPositionValues )
     return allEqual( data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds2_setDimensions )
+UT_TEST_BEGIN( Bounds2_setSize )
     Bounds2i o( cv_values );
+    Size2i sizes( cv_sizes );
 
-    o.setDimensions( cv_width, cv_height );
+    o.setSize( sizes );
 
     return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getSize )
+    Bounds2i o( cv_dimTest );
+    Size2i sizes( cv_valuesAltMaxs );
+
+    sizes = o.getSize();
+
+    return allEqual( sizes.data, cv_sizes );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_setSize_values )
+    Bounds2i o( cv_values );
+
+    o.setSize( cv_width, cv_height );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getSize_values )
+    Bounds2i o( cv_dimTest );
+    int width, height;
+
+    o.getSize( width, height );
+
+    return width  == cv_width &&
+           height == cv_height;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds2_setWidth )
@@ -347,16 +399,6 @@ UT_TEST_BEGIN( Bounds2_setDimension )
     return allEqual( o.data, cv_dimTest );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds2_getDimensions )
-    Bounds2i o( cv_dimTest );
-    int width, height;
-
-    o.getDimensions( width, height );
-
-    return width  == cv_width &&
-           height == cv_height;
-UT_TEST_END()
-
 UT_TEST_BEGIN( Bounds2_getWidth )
     Bounds2i o( cv_widthTest );
 
@@ -381,12 +423,6 @@ UT_TEST_BEGIN( Bounds2_getDimension )
             return false;
 
     return true;
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds2_getArea )
-    Bounds2i o( cv_dimTest );
-
-    return o.getArea() == cv_area;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds2_output )

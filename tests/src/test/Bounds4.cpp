@@ -22,6 +22,7 @@ Description:
 namespace {
     using ::Brimstone::Bounds4i;
     using ::Brimstone::Point4i;
+    using ::Brimstone::Size4i;
     using ::Brimstone::Bounds4f;
     using ::Brimstone::BoundsException;
 
@@ -40,13 +41,13 @@ namespace {
     const int    cv_widthTest[8]     {  1,  2,  3,  4,  11,  6,  7,  8 };
     const int    cv_lengthTest[8]    {  1,  2,  3,  4,   5, 13,  7,  8 };
     const int    cv_heightTest[8]    {  1,  2,  3,  4,   5,  6, 15,  8 };
-    const int    cv_wlengthTest[8]   {  1,  2,  3,  4,   5,  6,  7, 17 };
+    const int    cv_depthTest[8]     {  1,  2,  3,  4,   5,  6,  7, 17 };
+    const int    cv_sizes[4]         { 10, 11, 12, 13 };
     const int    cv_width            = 10;
     const int    cv_length           = 11;
     const int    cv_height           = 12;
-    const int    cv_wlength          = 13;
+    const int    cv_depth            = 13;
     const int    cv_dimTest[8]       {  1,  2,  3,  4,  11, 13, 15, 17 };
-    const int    cv_volume           = cv_width * cv_length * cv_height * cv_wlength;
     const int    cv_outsideMins[4]   {  0,  1,  2,  3 };
     const int    cv_outsideMaxs[4]   {  6,  7,  8,  9 };
     const char*  cv_output           = "[ ( 1, 2, 3, 4 ), ( 5, 6, 7, 8 ) ]";
@@ -229,13 +230,6 @@ UT_TEST_BEGIN( Bounds4_constructorValues )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds4_constructorPointDims )
-    Point4i p( cv_values[0], cv_values[1], cv_values[2], cv_values[3] );
-    Bounds4i o( p, cv_width, cv_length, cv_height, cv_wlength );
-
-    return allEqual( o.data, cv_dimTest );
-UT_TEST_END()
-
 UT_TEST_BEGIN( Bounds4_constructorMinMax )
     Point4i mins( cv_valuesMins );
     Point4i maxs( cv_valuesMaxs );
@@ -244,7 +238,58 @@ UT_TEST_BEGIN( Bounds4_constructorMinMax )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds4_setValues )
+UT_TEST_BEGIN( Bounds4_constructorPosSize )
+    Point4i mins( cv_valuesMins );
+    Size4i  sizes( cv_sizes );
+
+    Bounds4i o( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_set_minMax )
+    Bounds4i o( cv_valuesAlt );
+    Point4i mins( cv_valuesMins );
+    Point4i maxs( cv_valuesMaxs );
+
+    o.set( mins, maxs );
+
+    return allEqual( o.data, cv_values );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_get_minMax )
+    Point4i mins( cv_valuesMins );
+    Point4i maxs( cv_valuesMaxs );
+
+    Bounds4i o( cv_valuesAlt );
+    o.get( mins, maxs );
+
+    return allEqual( mins.data, cv_valuesAltMins ) &&
+           allEqual( maxs.data, cv_valuesAltMaxs );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_set_posSize )
+    Bounds4i o( cv_valuesAlt );
+    Point4i mins( cv_valuesMins );
+    Size4i  sizes( cv_sizes );
+
+    o.set( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_get_posSize )
+    Point4i mins( cv_valuesAltMins );
+    Size4i  sizes( cv_valuesAltMaxs );
+
+    Bounds4i o( cv_dimTest );
+    o.get( mins, sizes );
+
+    return allEqual( mins.data,  cv_valuesMins ) &&
+           allEqual( sizes.data, cv_sizes      );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_set_values )
     Bounds4i o( cv_values );
 
     o.set(
@@ -255,17 +300,7 @@ UT_TEST_BEGIN( Bounds4_setValues )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds4_setMinMax )
-    Bounds4i o( cv_values );
-    Point4i mins( cv_valuesAltMins );
-    Point4i maxs( cv_valuesAltMaxs );
-
-    o.set( mins, maxs );
-
-    return allEqual( o.data, cv_valuesAlt );
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds4_getValues )
+UT_TEST_BEGIN( Bounds4_get_values )
     Bounds4i o( cv_values );
 
     int data[2*cv_size];
@@ -276,17 +311,6 @@ UT_TEST_BEGIN( Bounds4_getValues )
     );
 
     return allEqual( data, cv_values );
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds4_getMinMax )
-    Point4i mins( cv_values );
-    Point4i maxs( cv_values );
-
-    Bounds4i o( cv_valuesAlt );
-    o.get( mins, maxs );
-
-    return allEqual( mins.data, cv_valuesAltMins ) &&
-           allEqual( maxs.data, cv_valuesAltMaxs );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_setPosition )
@@ -302,12 +326,12 @@ UT_TEST_BEGIN( Bounds4_getPosition )
     Bounds4i o( cv_values );
     Point4i mins( cv_valuesAltMins );
 
-    o.getPosition( mins );
+    mins = o.getPosition();
 
     return allEqual( mins.data, cv_valuesMins );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds4_setPositionValues )
+UT_TEST_BEGIN( Bounds4_setPosition_values )
     Bounds4i o( cv_values );
 
     o.setPosition( cv_valuesAltMins[0], cv_valuesAltMins[1], cv_valuesAltMins[2], cv_valuesAltMins[3] );
@@ -315,7 +339,7 @@ UT_TEST_BEGIN( Bounds4_setPositionValues )
     return allEqual( o.data, cv_valuesAlt );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds4_getPositionValues )
+UT_TEST_BEGIN( Bounds4_getPosition_values )
     Bounds4i o( cv_values );
     int data[cv_size];
     copyAll( cv_valuesAltMins, data );
@@ -325,12 +349,42 @@ UT_TEST_BEGIN( Bounds4_getPositionValues )
     return allEqual( data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds4_setDimensions )
+UT_TEST_BEGIN( Bounds4_setSize )
     Bounds4i o( cv_values );
+    Size4i sizes( cv_sizes );
 
-    o.setDimensions( cv_width, cv_length, cv_height, cv_wlength );
+    o.setSize( sizes );
 
     return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_getSize )
+    Bounds4i o( cv_dimTest );
+    Size4i sizes( cv_valuesAltMaxs );
+
+    sizes = o.getSize();
+
+    return allEqual( sizes.data, cv_sizes );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_setSize_values )
+    Bounds4i o( cv_values );
+
+    o.setSize( cv_width, cv_length, cv_height, cv_depth );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_getSize_values )
+    Bounds4i o( cv_dimTest );
+    int width, length, height, depth;
+
+    o.getSize( width, length, height, depth );
+
+    return width  == cv_width   &&
+           length == cv_length  &&
+           height == cv_height  &&
+           depth  == cv_depth;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_setWidth )
@@ -357,12 +411,12 @@ UT_TEST_BEGIN( Bounds4_setHeight )
     return allEqual( o.data, cv_heightTest );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds4_setWLength )
+UT_TEST_BEGIN( Bounds4_setDepth )
     Bounds4i o( cv_values );
 
-    o.setWLength( cv_wlength );
+    o.setDepth( cv_depth );
 
-    return allEqual( o.data, cv_wlengthTest );
+    return allEqual( o.data, cv_depthTest );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_setDimension )
@@ -372,18 +426,6 @@ UT_TEST_BEGIN( Bounds4_setDimension )
         o.setDimension( i, (int)(10 + i) );
 
     return allEqual( o.data, cv_dimTest );
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds4_getDimensions )
-    Bounds4i o( cv_dimTest );
-    int width, length, height, wlength;
-
-    o.getDimensions( width, length, height, wlength );
-
-    return width   == cv_width   &&
-           length  == cv_length  &&
-           height  == cv_height  &&
-           wlength == cv_wlength;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_getWidth )
@@ -410,12 +452,12 @@ UT_TEST_BEGIN( Bounds4_getHeight )
     return height == cv_height;
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds4_getWLength )
-    Bounds4i b( cv_wlengthTest );
+UT_TEST_BEGIN( Bounds4_getDepth )
+    Bounds4i b( cv_depthTest );
 
-    int wlength = b.getWLength();
+    int depth = b.getDepth();
 
-    return wlength == cv_wlength;
+    return depth == cv_depth;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_getDimension )
@@ -426,12 +468,6 @@ UT_TEST_BEGIN( Bounds4_getDimension )
             return false;
 
     return true;
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds4_getVolume )
-    Bounds4i b( cv_dimTest );
-
-    return b.getVolume() == cv_volume;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds4_output )

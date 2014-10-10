@@ -55,28 +55,24 @@ public:
 
     //Construtors
     Bounds( const T minX, const T minY, const T maxX, const T maxY );
-    Bounds( const Point< T, 2 >& mins, const T width, const T height );
 
     //Set / get the bounds individually
     void    set( const T minX, const T minY, const T maxX, const T maxY );
     void    get( T& minXOut, T& minYOut, T& maxXOut, T& maxYOut ) const;
 
-    //Set / get the position of the bounds, preserving width/length/height/wlength.
+    //Set / get the position of the bounds, preserving width/height.
     void    setPosition( const T minX, const T minY );
     void    getPosition( T& minXOut, T& minYOut ) const;
 
     //Set / get the width / height, treating (minX, minY) as an anchor
-    void    setDimensions( const T width, const T height );
-    void    getDimensions( T& widthOut, T& heightOut );
+    void    setSize( const T width, const T height );
+    void    getSize( T& widthOut, T& heightOut );
 
     void    setWidth( const T width );
     T       getWidth() const;
 
     void    setHeight( const T height );
     T       getHeight() const;
-
-    //Miscellaneous utility methods
-    T       getArea() const;
 };
 BS_ARRAY_DEFINE_METHODS( Bounds, T, data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 2 ) )
 BS_BOUNDS_DEFINE_METHODS( 2, BS_TMPL_1( typename T ) )
@@ -151,6 +147,12 @@ Bounds< T, 2 >::Bounds()
 }
 
 template< typename T >
+Bounds< T, 2 >::Bounds( const Point< T, 2 >& mins, const Size< T, 2 >& sizes ) :
+    minX( mins.x ),               minY( mins.y ),
+    maxX( mins.x + sizes.width ), maxY( mins.y + sizes.height ) {
+}
+
+template< typename T >
 template< typename T2 >
 Bounds< T, 2 >::Bounds( const Bounds< T2, 2 >& toCopy ) :
     minX( static_cast< T >( toCopy.minX ) ), minY( static_cast< T >( toCopy.minY ) ),
@@ -158,17 +160,27 @@ Bounds< T, 2 >::Bounds( const Bounds< T2, 2 >& toCopy ) :
 }
 
 template< typename T >
-Bounds< T, 2 >::Bounds( const T minX, const T minY, const T maxX, const T maxY ) :
-    minX( minX ), minY( minY ),
-    maxX( maxX ), maxY( maxY ) {
+void Bounds< T, 2 >::set( const Point< T, 2 >& mins, const Size< T, 2 >& sizes ) {
+    minX = mins.x;
+    minY = mins.y;
+
+    maxX = mins.x + sizes.width;
+    maxY = mins.y + sizes.height;
 }
 
 template< typename T >
-Bounds< T, 2 >::Bounds( const Point< T, 2 >& mins, const T width, const T height ) :
-    minX( mins.x ),
-    minY( mins.y ),
-    maxX( mins.x + width  ),
-    maxY( mins.y + height ) {
+void Bounds< T, 2 >::get( Point< T, 2 >& minsOut, Size< T, 2 >& sizesOut ) const {
+    minsOut.x = minX;
+    minsOut.y = minY;
+
+    sizesOut.width   = maxX - minX;
+    sizesOut.height  = maxY - minY;
+}
+
+template< typename T >
+Bounds< T, 2 >::Bounds( const T minX, const T minY, const T maxX, const T maxY ) :
+    minX( minX ), minY( minY ),
+    maxX( maxX ), maxY( maxY ) {
 }
 
 template< typename T >
@@ -212,13 +224,27 @@ void Bounds< T, 2 >::getPosition( T& minXOut, T& minYOut ) const {
 }
 
 template< typename T >
-void Bounds< T, 2 >::setDimensions( const T width, const T height ) {
+void Bounds< T, 2 >::setSize( const Size< T, 2 >& sizes ) {
+    maxs.x = mins.x + sizes.width;
+    maxs.y = mins.y + sizes.height;
+}
+
+template< typename T >
+Size< T, 2 > Bounds< T, 2 >::getSize() const {
+    return Size< T, 2 >(
+        maxs.x - mins.x,
+        maxs.y - mins.y
+    );
+}
+
+template< typename T >
+void Bounds< T, 2 >::setSize( const T width, const T height ) {
     maxX = minX + width;
     maxY = minY + height;
 }
 
 template< typename T >
-void Bounds< T, 2 >::getDimensions( T& widthOut, T& heightOut ) {
+void Bounds< T, 2 >::getSize( T& widthOut, T& heightOut ) {
     widthOut   = maxX - minX;
     heightOut  = maxY - minY;
 }
@@ -241,11 +267,6 @@ void Bounds< T, 2 >::setHeight( const T height ) {
 template< typename T >
 T Bounds< T, 2 >::getHeight() const {
     return maxY - minY;
-}
-
-template< typename T >
-T Bounds< T, 2 >::getArea() const {
-    return getWidth() * getHeight();
 }
 
 template< typename T >
@@ -281,6 +302,12 @@ template< typename T >
 bool Bounds< T, 2 >::contains( const Point< T, 2 >& point ) const {
     return point.x >= minX && point.x <= maxX &&
            point.y >= minY && point.y <= maxY;
+}
+
+template< typename T >
+bool Bounds< T, 2 >::contains_mIME( const Point< T, 2 >& point ) const {
+    return point.x >= minX && point.x < maxX &&
+           point.y >= minY && point.y < maxY;
 }
 
 template< typename T >

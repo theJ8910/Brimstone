@@ -22,6 +22,7 @@ Description:
 namespace {
     typedef ::Brimstone::Bounds< int, 5 >   Bounds5i;
     typedef ::Brimstone::Point< int, 5 >    Point5i;
+    typedef ::Brimstone::Size< int, 5 >     Size5i;
     typedef ::Brimstone::Bounds< float, 5 > Bounds5f;
     using   ::Brimstone::BoundsException;
 
@@ -37,6 +38,7 @@ namespace {
     const int    cv_includeTest[10]  { -14, -11, -12, -4, -5,   6,  12,  8,  13, 14 };
     const int    cv_includePt1[5]    { -14,  12,   2, -4, -5 };
     const int    cv_includePt2[5]    {  2,  -11, -12, 13, 14 };
+    const int    cv_sizes[5]         { 10, 11, 12, 13, 14 };
     const int    cv_dimTest[10]      {  1,  2,  3,  4,  5,   11, 13, 15, 17, 19 };
     const int    cv_outsideMins[5]   {  0,  1,  2,  3,  4 };
     const int    cv_outsideMaxs[5]   {  7,  8,  9, 10, 11 };
@@ -223,8 +225,17 @@ UT_TEST_BEGIN( BoundsN_constructorMinMax )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( BoundsN_setMinMax )
-    Bounds5i o( cv_values );
+UT_TEST_BEGIN( BoundsN_constructorPosSize )
+    Point5i mins( cv_valuesMins );
+    Size5i  sizes( cv_sizes );
+
+    Bounds5i o( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_set_minMax )
+    Bounds5i o( cv_valuesAlt );
     Point5i mins( cv_valuesMins );
     Point5i maxs( cv_valuesMaxs );
 
@@ -233,7 +244,7 @@ UT_TEST_BEGIN( BoundsN_setMinMax )
     return allEqual( o.data, cv_values );
 UT_TEST_END()
 
-UT_TEST_BEGIN( BoundsN_getMinMax )
+UT_TEST_BEGIN( BoundsN_get_minMax )
     Point5i mins( cv_valuesMins );
     Point5i maxs( cv_valuesMaxs );
 
@@ -242,6 +253,27 @@ UT_TEST_BEGIN( BoundsN_getMinMax )
 
     return allEqual( mins.data, cv_valuesAltMins ) &&
            allEqual( maxs.data, cv_valuesAltMaxs );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_set_posSize )
+    Bounds5i o( cv_valuesAlt );
+    Point5i mins( cv_valuesMins );
+    Size5i  sizes( cv_sizes );
+
+    o.set( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_get_posSize )
+    Point5i mins( cv_valuesAltMins );
+    Size5i  sizes( cv_valuesAltMaxs );
+
+    Bounds5i o( cv_dimTest );
+    o.get( mins, sizes );
+
+    return allEqual( mins.data,  cv_valuesMins ) &&
+           allEqual( sizes.data, cv_sizes      );
 UT_TEST_END()
 
 UT_TEST_BEGIN( BoundsN_setPosition )
@@ -257,9 +289,27 @@ UT_TEST_BEGIN( BoundsN_getPosition )
     Bounds5i o( cv_values );
     Point5i mins( cv_valuesAltMins );
 
-    o.getPosition( mins );
+    mins = o.getPosition();
 
     return allEqual( mins.data, cv_valuesMins );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_setSize )
+    Bounds5i o( cv_values );
+    Size5i sizes( cv_sizes );
+
+    o.setSize( sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_getSize )
+    Bounds5i o( cv_dimTest );
+    Size5i sizes( cv_valuesAltMaxs );
+
+    sizes = o.getSize();
+
+    return allEqual( sizes.data, cv_sizes );
 UT_TEST_END()
 
 UT_TEST_BEGIN( BoundsN_setDimension )
