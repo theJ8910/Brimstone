@@ -1,4 +1,4 @@
-﻿/*
+/*
 point/Point2.hpp
 -----------------------
 Copyright (c) 2014, theJ89

@@ -1,4 +1,4 @@
-﻿/*
+/*
 Exception.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -79,7 +79,7 @@ BS_DEFINE_MESSAGE_EXCEPTION( LuaException );
 
 namespace Private {
     void defaultUncaughtExceptionHandler( const IException& exception ) {
-        logError( ( boost::format( "Uncaught exception: %s" ) % exception.getDescription() ).str().c_str() );
+        logError( ( boost::format( "Uncaught exception: %s" ) % exception.getDescription() ).str() );
     }
     UncaughtExceptionHandler uncaughtExceptionHandler( defaultUncaughtExceptionHandler );
 }

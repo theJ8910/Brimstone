@@ -1,4 +1,4 @@
-﻿/*
+/*
 factory/BasicFactory.hpp
 -----------------------
 Copyright (c) 2014, theJ89

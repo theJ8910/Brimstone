@@ -422,6 +422,30 @@ void Bounds< T, 4 >::include( const Point< T, 4 >& point ) {
 }
 
 template< typename T >
+bool Bounds< T, 4 >::intersects( const Bounds< T, 4 >& bounds ) const {
+    return minX <= bounds.maxX &&
+           minY <= bounds.maxY &&
+           minZ <= bounds.maxZ &&
+           minW <= bounds.maxW &&
+           maxX >= bounds.minX &&
+           maxY >= bounds.minY &&
+           maxZ >= bounds.minZ &&
+           maxW >= bounds.minW;
+}
+
+template< typename T >
+bool Bounds< T, 4 >::intersects_EE( const Bounds< T, 4 >& bounds ) const {
+    return minX < bounds.maxX &&
+           minY < bounds.maxY &&
+           minZ < bounds.maxZ &&
+           minW < bounds.maxW &&
+           maxX > bounds.minX &&
+           maxY > bounds.minY &&
+           maxZ > bounds.minZ &&
+           maxW > bounds.minW;
+}
+
+template< typename T >
 template< typename T2 >
 Bounds< T, 4 >& Bounds< T, 4 >::operator =( const Bounds< T2, 4 >& right ) {
     minX = static_cast< T >( right.minX );
@@ -476,6 +500,20 @@ Point< T, 4 > clampedPoint( const Point< T, 4 >& point, const Bounds< T, 4 >& bo
         clampedValue( point.y, bounds.minY, bounds.maxY ),
         clampedValue( point.z, bounds.minZ, bounds.maxZ ),
         clampedValue( point.w, bounds.minW, bounds.maxW )
+    );
+}
+
+template< typename T >
+Bounds< T, 4 > intersect( const Bounds< T, 4 >& a, const Bounds< T, 4 >& b ) {
+    return Bounds< T, 4 >(
+        max( a.minX, b.minX ),
+        max( a.minY, b.minY ),
+        max( a.minZ, b.minZ ),
+        max( a.minW, b.minW ),
+        min( a.maxX, b.maxX ),
+        min( a.maxY, b.maxY ),
+        min( a.maxZ, b.maxZ ),
+        min( a.maxW, b.maxW )
     );
 }
 

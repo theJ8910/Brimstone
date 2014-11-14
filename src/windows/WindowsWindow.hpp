@@ -1,4 +1,4 @@
-﻿/*
+/*
 windows/WindowsWindow.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -19,62 +19,61 @@ Description:
 #include <mutex>                                //std::mutex
 
 #include <brimstone/windows/WindowsHeader.hpp>  //HWND, HINSTANCE, ATOM, LRESULT, CALLBACK, WPARAM, LPARAM, etc
-#include <brimstone/Bounds.hpp>                 //Bounds2i
-#include <brimstone/util/NonCopyable.hpp>       //NonCopyable
+#include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 
+#include "../window/BaseWindowImpl.hpp"         //Brimstone::Private::BaseWindowImpl
 
 
 
 namespace Brimstone {
 
-class Window;
 enum class Key;
 
 namespace Private {
 
-class WindowsWindow : public NonCopyable {
+class WindowsWindow : public BaseWindowImpl {
 private:
     typedef std::unordered_map< HWND, WindowsWindow& > HWNDToWindowMap;
 
 public:
-    WindowsWindow( Window& parent );
+    WindowsWindow();
     ~WindowsWindow();
 
     void            open();
     void            close();
     bool            isOpen() const;
 
+    bool            peekEvent( WindowEvent& eventOut );
+    bool            getEvent( WindowEvent& eventOut );
+
     void            setTitle( const ustring& title );
     void            setPopup( const bool popup );
     void            setResizable( const bool sizable );
     void            setVisible( const bool visible );
-    void            setBounds( const Bounds2i& bounds );
+    void            setBounds( const Bounds2i bounds );
     void            setMouseCapture( const bool capture );
 
-    Point2i         screenToWindow( const Point2i& screenCoords ) const;
-    Point2i         windowToScreen( const Point2i& windowCoords ) const;
+    Point2i         screenToWindow( Point2i screenCoords ) const;
+    Point2i         windowToScreen( Point2i windowCoords ) const;
 
-    HWND            getHandle();
+    HWND            getHandle() const;
 
 private:
     LRESULT         windowProc( UINT message, WPARAM wParam, LPARAM lParam );
-    Point2i         getCursorPos( LPARAM lParam );
+    Point2i         getCursorPos( LPARAM lParam ) const;
+    DWORD           getWindowStyle() const;
+    void            readjustWindow();
 
 private:
     HWND            m_wnd;
-    Window*         m_parent;
     wchar           m_leadSurrogate;
-    std::mutex      m_contextMutex;
-
-public:
-    static void             processEvents();
 
 private:
-    static ATOM             registerWindowClass( HINSTANCE instance );
+    static void             registerWindowClass( HINSTANCE instance );
     static LRESULT CALLBACK mainProc( HWND wnd, UINT message, WPARAM wParam, LPARAM lParam );
     static Key              vkToKey( WPARAM wParam, LPARAM lParam );
-    static DWORD            getWindowStyle( const bool popup, const bool visible, const bool resizable );
 private:
+    static std::mutex      m_windowsMutex;
     static bool            m_classRegistered;
     static HWNDToWindowMap m_windowMap;
 };

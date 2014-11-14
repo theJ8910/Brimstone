@@ -38,6 +38,12 @@ namespace {
     const int    cv_includeTest[8]   { -14, -11, -12, -4,   5,  12,  7,  13 };
     const int    cv_includePt1[4]    { -14,  12,   2, -4 };
     const int    cv_includePt2[4]    {  2,  -11, -12, 13 };
+    const int    cv_isTest1[8]       { -1,  0,  1,  2,    3,   4,   5,   6 };
+    const int    cv_isTest2[8]       {  3,  4,  5,  6,    7,   8,   9,  10 };
+    const int    cv_isTest3[8]       {  6,  7,  8,  9,   10,  11,  12,  13 };
+    const int    cv_isTestCorner[8]  {  5,  6,  7,  8,    9,  10,  11,  12 };
+    const int    cv_intersect1[8]    {  1,  2,  3,  4,    3,   4,   5,   6 };
+    const int    cv_intersect2[8]    {  3,  4,  5,  6,    5,   6,   7,   8 };
     const int    cv_widthTest[8]     {  1,  2,  3,  4,  11,  6,  7,  8 };
     const int    cv_lengthTest[8]    {  1,  2,  3,  4,   5, 13,  7,  8 };
     const int    cv_heightTest[8]    {  1,  2,  3,  4,   5,  6, 15,  8 };
@@ -531,6 +537,35 @@ UT_TEST_BEGIN( Bounds4_contains )
            o.contains( point2 ) == false;
 UT_TEST_END()
 
+UT_TEST_BEGIN( Bounds4_contains_mIME )
+    Bounds4i o( cv_values );
+    Point4i  point1( cv_valuesMins );
+    Point4i  point2( cv_valuesMaxs );
+
+    return o.contains_mIME( point1 ) == true &&
+           o.contains_mIME( point2 ) == false;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_intersects )
+    Bounds4i o( cv_values );
+    Bounds4i bounds1( cv_isTest1 );
+    Bounds4i bounds2( cv_isTest2 );
+    Bounds4i bounds3( cv_isTest3 );
+
+    return o.intersects( bounds1 ) == true &&
+           o.intersects( bounds2 ) == true &&
+           o.intersects( bounds3 ) == false;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_intersects_EE )
+    Bounds4i o( cv_values );
+    Bounds4i bounds1( cv_isTest1 );
+    Bounds4i bounds2( cv_isTestCorner );
+
+    return o.intersects_EE( bounds1 ) == true &&
+           o.intersects_EE( bounds2 ) == false;
+UT_TEST_END()
+
 UT_TEST_BEGIN( Bounds4_equals )
     Bounds4i o1( cv_values );
     Bounds4i o2( cv_values );
@@ -571,6 +606,18 @@ UT_TEST_BEGIN( Bounds4_clampedPoint )
 
     return allEqual( p1.data, cv_valuesMins ) &&
            allEqual( p2.data, cv_valuesMaxs );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds4_intersect )
+    Bounds4i o( cv_values );
+    Bounds4i bounds1( cv_isTest1 );
+    Bounds4i bounds2( cv_isTest2 );
+
+    Bounds4i intersect1 = intersect( o, bounds1 );
+    Bounds4i intersect2 = intersect( o, bounds2 );
+
+    return allEqual( intersect1.data, cv_intersect1 ) &&
+           allEqual( intersect2.data, cv_intersect2 );
 UT_TEST_END()
 
 

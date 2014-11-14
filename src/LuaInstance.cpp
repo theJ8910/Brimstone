@@ -1,4 +1,4 @@
-﻿/*
+/*
 LuaInstance.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -32,43 +32,51 @@ LuaInstance::~LuaInstance() {
 }
 
 void LuaInstance::start() {
-    try {
-        pushFunction( "start" );
-    } catch( LuaException& ) { return; }
+    if( !isFunction( "start" ) )
+        return;
 
+    pushFunction( "start" );
     callVoid();
 }
 
 void LuaInstance::stop() {
-    try {
-        pushFunction( "stop" );
-    } catch( LuaException& ) { return; }
+    if( !isFunction( "stop" ) )
+        return;
 
+    pushFunction( "stop" );
     callVoid();
 }
 
 void LuaInstance::preframe() {
-    try {
-        pushFunction( "preframe" );
-    } catch( LuaException& ) { return; }
+    if( !isFunction( "preframe" ) )
+        return;
 
+    pushFunction( "preframe" );
     callVoid();
 }
 
 void LuaInstance::frame() {
-    try {
-        pushFunction( "frame" );
-    } catch( LuaException& ) { return; }
+    if( !isFunction( "frame" ) )
+        return;
 
+    pushFunction( "frame" );
     callVoid();
 }
 
 void LuaInstance::postframe() {
-    try {
-        pushFunction( "postframe" );
-    } catch( LuaException& ) { return; }
+    if( !isFunction( "postframe" ) )
+        return;
 
+    pushFunction( "postframe" );
     callVoid();
+}
+
+bool LuaInstance::isFunction( const uchar* functionName ) const {
+    lua_getglobal( m_state, functionName );
+    bool result = lua_isfunction( m_state, -1 );
+    lua_pop( m_state, 1 );
+
+    return result;
 }
 
 /*

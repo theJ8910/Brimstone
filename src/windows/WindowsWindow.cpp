@@ -1,4 +1,4 @@
-﻿/*
+/*
 windows/WindowsWindow.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -17,10 +17,9 @@ Description:
 #include "WindowsWindow.hpp"                            //Class header
 #include <brimstone/windows/WindowsUtil.hpp>            //utf8to16
 #include <brimstone/windows/WindowsException.hpp>       //throwWindowsException
-#include <brimstone/WindowEvents.hpp>                   //MouseClickEvent, MouseMoveEvent, KeyPressEvent
+#include <brimstone/window/WindowEvent.hpp>             //MouseClickEvent, MouseMoveEvent, KeyPressEvent
 #include <brimstone/util/Clamp.hpp>                     //clampedValue
 #include <brimstone/Logger.hpp>                         //logError
-#include <brimstone/Window.hpp>                         //Really stupid circular dependency hack
 
 #include <boost/format.hpp>                             //boost::format
 
@@ -29,11 +28,11 @@ Description:
 
 namespace {
     static const wchar_t* windowClass = L"BrimstoneWindow";
-    static const int standard = ( WS_CAPTION | WS_MINIMIZEBOX );   //Characteristics only standard windows have
-    static const int common   = ( WS_SYSMENU );                    //Characteristics both standard and popup windows share
+    static const DWORD standard = ( WS_CAPTION | WS_MINIMIZEBOX );   //Characteristics only standard windows have
+    static const DWORD common   = ( WS_SYSMENU );                    //Characteristics both standard and popup windows share
 
-    static const int normalWindow = standard | common;
-    static const int popupWindow  = WS_POPUP | common;
+    static const DWORD normalWindow = standard | common;
+    static const DWORD popupWindow  = WS_POPUP | common;
 }
 
 
@@ -41,12 +40,12 @@ namespace {
 namespace Brimstone {
 namespace Private {
 
+std::mutex                     WindowsWindow::m_windowsMutex;
 WindowsWindow::HWNDToWindowMap WindowsWindow::m_windowMap;
 bool                           WindowsWindow::m_classRegistered = false;
 
-WindowsWindow::WindowsWindow( Window& parent ) :
+WindowsWindow::WindowsWindow() :
     m_wnd( nullptr ),
-    m_parent( &parent ),
     m_leadSurrogate( 0 ) {
 }
 
@@ -61,41 +60,42 @@ WindowsWindow::~WindowsWindow() {
 void WindowsWindow::open() {
     HINSTANCE instance = GetModuleHandle( nullptr );
 
-    if( m_classRegistered == false )
-        registerWindowClass( instance );
+    //Register the window class
+    {
+        std::lock_guard< std::mutex > l( m_windowsMutex );
+        if( m_classRegistered == false )
+            registerWindowClass( instance );
+    }
 
-    //Get title
-    ustring title = m_parent->getTitle();
-
-    //Determine style based on whether the window is a popup or not.
-    DWORD style = getWindowStyle( m_parent->isPopup(), m_parent->isVisible(), m_parent->isResizable() );
-
-    //Get bounds
-    Bounds2i bounds = m_parent->getBounds();
+    //Get window style and bounds
+    DWORD style = getWindowStyle();
+    Bounds2i bounds = m_bounds;
     if( AdjustWindowRect( reinterpret_cast< RECT* >( &bounds ), style, false ) == FALSE )
         throwWindowsException();
-    long width  = bounds.getWidth();
-    long height = bounds.getHeight();
 
     //Create the window
     m_wnd = CreateWindow(
-        windowClass,                                    //Name of Window Class
-        utf8to16( title ).c_str(),                      //Title of Window
-        style,                                          //Style of window (flags)
-        bounds.minX,                                    //x
-        bounds.minY,                                    //y
-        width,                                          //w
-        height,                                         //h
-        nullptr,                                        //parent window
-        nullptr,                                        //parent menu (which is... for submenues?)
-        instance,                                       //this window belongs to this instance of our program
-        nullptr                                         //Window creation data (which is?)
+        windowClass,                    //Name of Window Class
+        utf8to16( m_title ).c_str(),    //Title of Window
+        style,                          //Style of window (flags)
+        bounds.minX,                    //x
+        bounds.minY,                    //y
+        bounds.getWidth(),              //w
+        bounds.getHeight(),             //h
+        nullptr,                        //parent window
+        nullptr,                        //parent menu (which is... for submenues?)
+        instance,                       //this window belongs to this instance of our program
+        nullptr                         //Window creation data (which is?)
     );
 
     if( !m_wnd )
         throwWindowsException();
 
-    m_windowMap.emplace( m_wnd, *this );
+    //Add the window to the map
+    {
+        std::lock_guard< std::mutex > l( m_windowsMutex );
+        m_windowMap.emplace( m_wnd, *this );
+    }
 }
 
 void WindowsWindow::close() {
@@ -105,7 +105,12 @@ void WindowsWindow::close() {
     if( DestroyWindow( m_wnd ) == FALSE )
         throwWindowsException();
 
-    m_windowMap.erase( m_wnd );
+    //Remove the window from the map
+    {
+        std::lock_guard< std::mutex > l( m_windowsMutex );
+        m_windowMap.erase( m_wnd );
+    }
+
     m_wnd = nullptr;
 
     if( m_windowMap.empty() )
@@ -116,15 +121,103 @@ bool WindowsWindow::isOpen() const {
     return m_wnd != nullptr;
 }
 
+/*
+WindowsWindow::peekEvent
+-----------------------
+
+Description:
+    This function processes all messages that are currently in the message queue
+    for the thread that called this function, returning when the message queue is empty.
+
+    NOTE:
+    Windows assigns each thread its own message queue.
+    A window can only receive messages on the same thread it was created on.
+Arguments:
+    N/A
+
+Returns:
+    bool:   N/A
+*/
+bool WindowsWindow::peekEvent( WindowEvent& eventOut ) {
+    //Nothing in event queue
+    if( m_eventQueue.empty() ) {
+        //Process all messages currently in the application's message queue
+        MSG msg;
+        while( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) ) {
+            TranslateMessage( &msg );
+            DispatchMessage( &msg );
+        }
+
+        //Even after processing the messages in the queue, it's possible that:
+        //1.) The message queue was empty
+        //2.) No messages for this window were processed
+        //So we need to check for these situations here.
+        if( m_eventQueue.empty() )
+            return false;
+    }
+
+    //Pop a message from the queue
+    eventOut = m_eventQueue.front();
+    m_eventQueue.pop();
+    return true;
+}
+
+/*
+WindowsWindow::getEvent
+-----------------------
+
+Description:
+    This function will process a single message from the message queue for the thread
+    that called this function.
+
+    If the message queue is empty, this function will block until a message is available,
+    or until a quit message is posted to the application. Therefore, running this function
+    from a thread dedicated specifically to handling Window messages is recommended.
+
+    NOTE:
+    Windows assigns each thread its own message queue.
+    A window can only receive messages on the same thread it was created on.
+
+Arguments:
+    N/A
+
+Returns:
+    bool:   true if an event was processed.
+            false if a quit message was posted.
+*/
+bool WindowsWindow::getEvent( WindowEvent& eventOut ) {
+    //Wait for an event to arrive in the window's event queue if it's currently empty.
+    //Process messages from the application's message queue, blocking until a message arrives if necessary.
+    //The WindowImpl::getEvent() call returns true if a message was processed, or false if the application is shutting down.
+    while( m_eventQueue.empty() ) {
+        MSG msg;
+        if( GetMessage( &msg, nullptr, 0, 0 ) ) {
+            TranslateMessage( &msg );
+            DispatchMessage( &msg );
+        } else {
+            return false;
+        }
+    }
+
+    //Pop a message from the queue
+    eventOut = m_eventQueue.front();
+    m_eventQueue.pop();
+    return true;
+}
+
 void WindowsWindow::setResizable( const bool resizable ) {
+    BaseWindowImpl::setResizable( resizable );
+
     if( m_wnd == nullptr )
         return;
 
-    if( SetWindowLongPtr( m_wnd, GWL_STYLE, getWindowStyle( m_parent->isPopup(), m_parent->isVisible(), resizable ) ) == FALSE )
+    if( SetWindowLongPtr( m_wnd, GWL_STYLE, getWindowStyle() ) == FALSE )
         throwWindowsException();
 }
 
 void WindowsWindow::setVisible( const bool visible ) {
+    BaseWindowImpl::setVisible( visible );
+
     if( m_wnd == nullptr )
         return;
 
@@ -132,6 +225,8 @@ void WindowsWindow::setVisible( const bool visible ) {
 }
 
 void WindowsWindow::setTitle( const ustring& title ) {
+    BaseWindowImpl::setTitle( title );
+
     if( m_wnd == nullptr )
         return;
 
@@ -140,30 +235,29 @@ void WindowsWindow::setTitle( const ustring& title ) {
 }
 
 void WindowsWindow::setPopup( const bool popup ) {
+    BaseWindowImpl::setPopup( popup );
+
     if( m_wnd == nullptr )
         return;
 
-    Bounds2i bounds = m_parent->getBounds();
-
-    if( SetWindowLongPtr( m_wnd, GWL_STYLE, getWindowStyle( popup, m_parent->isVisible(), m_parent->isResizable() ) ) == FALSE )
+    if( SetWindowLongPtr( m_wnd, GWL_STYLE, getWindowStyle() ) == FALSE )
         throwWindowsException();
 
-    setBounds( bounds );
+    readjustWindow();
 }
 
-void WindowsWindow::setBounds( const Bounds2i& bounds ) {
+void WindowsWindow::setBounds( const Bounds2i bounds ) {
+    BaseWindowImpl::setBounds( bounds );
+
     if( m_wnd == nullptr )
         return;
 
-    Bounds2i boundsAdj = bounds;
-    if( AdjustWindowRect( reinterpret_cast< LPRECT >( &boundsAdj ), getWindowStyle( m_parent->isPopup(), m_parent->isVisible(), m_parent->isResizable() ), false ) == FALSE )
-        throwWindowsException();
-
-    if( MoveWindow( m_wnd, boundsAdj.minX, boundsAdj.minY, boundsAdj.getWidth(), boundsAdj.getHeight(), TRUE ) == FALSE )
-        throwWindowsException();
+    readjustWindow();
 }
 
 void WindowsWindow::setMouseCapture( const bool capture ) {
+    BaseWindowImpl::setMouseCapture( capture );
+
     if( capture ) {
         SetCapture( m_wnd );
     } else {
@@ -172,36 +266,22 @@ void WindowsWindow::setMouseCapture( const bool capture ) {
     }
 }
 
-Point2i WindowsWindow::screenToWindow( const Point2i& screenCoords ) const {
-    Point2i windowCoords = screenCoords;
-
-    if( ScreenToClient( m_wnd, reinterpret_cast< LPPOINT >( &windowCoords ) ) == FALSE )
-        throwWindowsException();
-
-    return windowCoords;
-}
-
-Point2i WindowsWindow::windowToScreen( const Point2i& windowCoords ) const {
-    Point2i screenCoords = windowCoords;
-
-    if( ClientToScreen( m_wnd, reinterpret_cast< LPPOINT >( &screenCoords ) ) == FALSE )
+Point2i WindowsWindow::screenToWindow( Point2i screenCoords ) const {
+    if( ScreenToClient( m_wnd, reinterpret_cast< LPPOINT >( &screenCoords ) ) == FALSE )
         throwWindowsException();
 
     return screenCoords;
 }
 
-HWND WindowsWindow::getHandle() {
-    return m_wnd;
+Point2i WindowsWindow::windowToScreen( Point2i windowCoords ) const {
+    if( ClientToScreen( m_wnd, reinterpret_cast< LPPOINT >( &windowCoords ) ) == FALSE )
+        throwWindowsException();
+
+    return windowCoords;
 }
 
-DWORD WindowsWindow::getWindowStyle( const bool popup, const bool visible, const bool resizable ) {
-    DWORD style = ( popup ? popupWindow : normalWindow );
-    if( visible )
-        style |= WS_VISIBLE;
-    if( !popup && resizable )
-        style |= WS_THICKFRAME;
-
-    return style;
+HWND WindowsWindow::getHandle() const {
+    return m_wnd;
 }
 
 Key vkToKeyMap[] = {
@@ -464,75 +544,154 @@ Key vkToKeyMap[] = {
 
 LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) {
     switch( message ) {
+    case WM_ERASEBKGND: {
+        //Do nothing here to avoid screen flickering
+    } break;
     case WM_MOUSEMOVE: {
-        MouseMoveEvent eventObj( getCursorPos( lParam ) );
-        m_parent->m_signalMouseMove( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type        = WindowEventType::MouseMove;
+        e.mouseMove.x = p.x;
+        e.mouseMove.y = p.y;
+
+        pushEvent( e );
     } break;
     case WM_LBUTTONDOWN: {
-        MouseDownEvent eventObj( MouseButton::LEFT, getCursorPos( lParam ) );
-        m_parent->m_signalMouseDown( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type         = WindowEventType::MouseDown;
+        e.mouse.button = MouseButton::LEFT;
+        e.mouse.x      = p.x;
+        e.mouse.y      = p.y;
+
+        pushEvent( e );
     } break;
     case WM_LBUTTONUP: {
-        MouseUpEvent eventObj( MouseButton::LEFT, getCursorPos( lParam ) );
-        m_parent->m_signalMouseUp( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type         = WindowEventType::MouseUp;
+        e.mouse.button = MouseButton::LEFT;
+        e.mouse.x      = p.x;
+        e.mouse.y      = p.y;
+
+        pushEvent( e );
     } break;
     case WM_RBUTTONDOWN: {
-        MouseDownEvent eventObj( MouseButton::RIGHT, getCursorPos( lParam ) );
-        m_parent->m_signalMouseDown( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type         = WindowEventType::MouseDown;
+        e.mouse.button = MouseButton::RIGHT;
+        e.mouse.x      = p.x;
+        e.mouse.y      = p.y;
+
+        pushEvent( e );
     } break;
     case WM_RBUTTONUP: {
-        MouseUpEvent eventObj( MouseButton::RIGHT, getCursorPos( lParam ) );
-        m_parent->m_signalMouseUp( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type         = WindowEventType::MouseUp;
+        e.mouse.button = MouseButton::RIGHT;
+        e.mouse.x      = p.x;
+        e.mouse.y      = p.y;
+
+        pushEvent( e );
     } break;
     case WM_MBUTTONDOWN: {
-        MouseDownEvent eventObj( MouseButton::MIDDLE, getCursorPos( lParam ) );
-        m_parent->m_signalMouseDown( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type         = WindowEventType::MouseDown;
+        e.mouse.button = MouseButton::MIDDLE;
+        e.mouse.x      = p.x;
+        e.mouse.y      = p.y;
+
+        pushEvent( e );
     } break;
     case WM_MBUTTONUP: {
-        MouseUpEvent eventObj( MouseButton::MIDDLE, getCursorPos( lParam ) );
-        m_parent->m_signalMouseUp( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type         = WindowEventType::MouseUp;
+        e.mouse.button = MouseButton::MIDDLE;
+        e.mouse.x      = p.x;
+        e.mouse.y      = p.y;
+
+        pushEvent( e );
     } break;
     case WM_XBUTTONDOWN: {
-        MouseDownEvent eventObj(
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type         = WindowEventType::MouseDown;
+        e.mouse.button =
             GET_XBUTTON_WPARAM( wParam ) == XBUTTON1 ?
                 MouseButton::X1 :
-                MouseButton::X2,
-            getCursorPos( lParam )
-        );
+                MouseButton::X2;
+        e.mouse.x      = p.x;
+        e.mouse.y      = p.y;
 
-        m_parent->m_signalMouseDown( eventObj );
+        pushEvent( e );
     } break;
     case WM_XBUTTONUP: {
-        MouseUpEvent eventObj(
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type         = WindowEventType::MouseUp;
+        e.mouse.button =
             GET_XBUTTON_WPARAM( wParam ) == XBUTTON1 ?
                 MouseButton::X1 :
-                MouseButton::X2,
-            getCursorPos( lParam )
-        );
+                MouseButton::X2;
+        e.mouse.x      = p.x;
+        e.mouse.y      = p.y;
 
-        m_parent->m_signalMouseUp( eventObj );
+        pushEvent( e );
     } break;
     case WM_MOUSEWHEEL: {
-        MouseVScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, getCursorPos( lParam ) );
-        m_parent->m_signalMouseVScroll( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type               = WindowEventType::MouseVScroll;
+        e.mouseScroll.scroll = (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA;
+        e.mouseScroll.x      = p.x;
+        e.mouseScroll.y      = p.y;
+
+        pushEvent( e );
     } break;
     case WM_MOUSEHWHEEL: {
-        MouseHScrollEvent eventObj( (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA, getCursorPos( lParam ) );
-        m_parent->m_signalMouseHScroll( eventObj );
+        auto p = getCursorPos( lParam );
+
+        WindowEvent e;
+        e.type               = WindowEventType::MouseHScroll;
+        e.mouseScroll.scroll = (float)GET_WHEEL_DELTA_WPARAM( wParam ) / (float)WHEEL_DELTA;
+        e.mouseScroll.x      = p.x;
+        e.mouseScroll.y      = p.y;
+
+        pushEvent( e );
     } break;
     case WM_SYSKEYDOWN:
     case WM_KEYDOWN: {
         bool isRepeating = ( ( lParam & ( 1 << 30 ) ) != 0 );
-        if( isRepeating && !m_parent->getKeyRepeat() )
+        if( isRepeating && !m_keyRepeat )
             break;
 
-        KeyDownEvent eventObj( vkToKey( wParam, lParam ) );
-        m_parent->m_signalKeyDown( eventObj );
+        WindowEvent e;
+        e.type               = WindowEventType::KeyDown;
+        e.key.key            = vkToKey( wParam, lParam );
+
+        pushEvent( e );
     } break;
     case WM_SYSKEYUP:
     case WM_KEYUP: {
-        KeyUpEvent eventObj( vkToKey( wParam, lParam ) );
-        m_parent->m_signalKeyUp( eventObj );
+        WindowEvent e;
+        e.type               = WindowEventType::KeyUp;
+        e.key.key            = vkToKey( wParam, lParam );
+
+        pushEvent( e );
     } break;
     case WM_SYSCHAR:
     case WM_CHAR: {
@@ -540,18 +699,18 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
         //to the window. By default, repeating characters are ignored.
         //This can be changed in the Window with setKeyRepeat().
         bool isRepeating = ( ( lParam & ( 1 << 30 ) ) != 0 );
-        if( isRepeating && !m_parent->getKeyRepeat() )
+        if( isRepeating && !m_keyRepeat )
             break;
 
         //A leading surrogate of a surrogate pair was provided
-        //A CharacterTypedEvent will not be dispatched until the trail surrogate arrives.
+        //A WindowEvent will not be dispatched until the trail surrogate arrives.
         if( wParam >= 0xDB00 && wParam <= 0xDBFF ) {
             m_leadSurrogate = (wchar)wParam;
 
         //Some other type of character was provided.
         } else {
-            CharacterTypedEvent eventObj;
-            uchar* utf8 = const_cast< uchar* >( eventObj.getCharacter() );
+            WindowEvent e;
+            e.type = WindowEventType::Text;
             int32 utf8Count;
 
             //A trail surrogate was provided
@@ -560,12 +719,12 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
                 wchar utf16[2] = { m_leadSurrogate, (wchar)wParam };
 
                 //Translate the pair to its equivalent UTF-8
-                utf8Count = utf16to8( utf16, 2, utf8, 5 );
+                utf8Count = utf16to8( utf16, 2, e.text.utf8, 5 );
 
             //A non-surrogate was provided
             } else {
                 //Translate the UTF-16 character to its equivalent UTF-8
-                utf8Count = utf16to8( reinterpret_cast<wchar*>( &wParam ), 1, utf8, 5 );
+                utf8Count = utf16to8( reinterpret_cast<wchar*>( &wParam ), 1, e.text.utf8, 5 );
             }
 
             //A UTF-8 encoding of a single code point should never exceed 4 bytes in length
@@ -573,9 +732,9 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
                 throw UnexpectedResultException();
 
             //Null terminate the string
-            utf8[utf8Count] = 0;
+            e.text.utf8[utf8Count] = 0;
 
-            m_parent->m_signalCharacterTyped( eventObj );
+            pushEvent( e );
         }
     } break;
     case WM_UNICHAR: {
@@ -586,48 +745,49 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
     } break;
     case WM_ACTIVATE: {
         WORD lw = LOWORD( wParam );
-        //Focus
-        if( lw == WA_ACTIVE || lw == WA_CLICKACTIVE ) {
-            WindowFocusEvent eventObj( *m_parent );
-            m_parent->m_signalWindowFocus( eventObj );
-        //Blur
-        } else if( lw == WA_INACTIVE ) {
-            WindowBlurEvent eventObj( *m_parent );
-            m_parent->m_signalWindowBlur( eventObj );
-        } else {
-            throw UnexpectedResultException();
-        }
+
+        WindowEvent e;
+        e.type = ( lw == WA_ACTIVE || lw == WA_CLICKACTIVE ) ? WindowEventType::Focus : WindowEventType::Blur;
+
+        pushEvent( e );
     } break;
     case WM_MOVE: {
+        //Note: LOWORD and HIWORD return values between 0 and 65535 (unsigned short range),
+        //so we need to cast to signed short here so that coordinates will
+        //range between -32768 and 32767 (signed short range).
         Point2i pos( (short)LOWORD( lParam ), (short)HIWORD( lParam ) );
 
-        //Update parent's position
-        m_parent->m_bounds.setPosition( pos );
+        //Update position
+        m_bounds.setPosition( pos );
 
-        WindowMoveEvent eventObj( *m_parent, pos );
-        m_parent->m_signalWindowMove( eventObj );
+        WindowEvent e;
+        e.type = WindowEventType::Move;
+        e.move.x = pos.x;
+        e.move.y = pos.y;
+
+        pushEvent( e );
     } break;
     case WM_MOVING: {
     } break;
     case WM_SIZE: {
-        Point2i size( LOWORD( lParam ), HIWORD( lParam ) );
+        Size2i size( LOWORD( lParam ), HIWORD( lParam ) );
 
-        //Update parent's size
-        m_parent->m_bounds.setDimensions( size.x, size.y );
+        //Update size
+        m_bounds.setSize( size );
 
-        WindowResizeEvent eventObj( *m_parent, size );
-        m_parent->m_signalWindowResize( eventObj );
+        WindowEvent e;
+        e.type = WindowEventType::Resize;
+        e.resize.w = size.w;
+        e.resize.h = size.h;
+
+        pushEvent( e );
     } break;
     case WM_SIZING: {
     } break;
     case WM_CLOSE: {
-        WindowCloseEvent eventObj( *m_parent );
-        m_parent->m_signalWindowClose( eventObj );
-
-        //If auto-close is enabled, clicking the close button will automatically result in the window being closed.
-        //Otherwise, the programmer will need to close the window by some other means.
-        if( m_parent->getAutoClose() )
-            close();
+        WindowEvent e;
+        e.type = WindowEventType::Close;
+        pushEvent( e );
     } break;
     default:
         return DefWindowProc( m_wnd, message, wParam, lParam );
@@ -636,44 +796,39 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
     return 0;
 }
 
-Point2i WindowsWindow::getCursorPos( LPARAM lParam ) {
+Point2i WindowsWindow::getCursorPos( LPARAM lParam ) const {
     //The coordinates provided in lParam are relative to the upper-left corner of the window's client area.
     //However, we need to clamp values here because the window will return coordinates outside of the client
     //area as well (borders, etc)! Raw coordinates could even be negative.
-    Bounds2i bounds = m_parent->getBounds();
-
     return Point2i(
-        clampedValue( (long)GET_X_LPARAM( lParam ), 0L, bounds.getWidth()  - 1L ),
-        clampedValue( (long)GET_Y_LPARAM( lParam ), 0L, bounds.getHeight() - 1L )
+        clampedValue( (long)GET_X_LPARAM( lParam ), 0L, m_bounds.getWidth()  - 1L ),
+        clampedValue( (long)GET_Y_LPARAM( lParam ), 0L, m_bounds.getHeight() - 1L )
     );
 }
 
-/*
-WindowsWindow::processEvents
------------------------
-
-Description:
-    Contains the Windows message pump.
-
-    This function continually fetches and processes messages that Windows
-    provides to Windows of this application until a quit message is posted to the application.
-
-    If a message is not available, this function will block until a message is available.
-    Therefore, running this function from a thread dedicated specifically for this function is recommended.
-
-Arguments:
-    N/A
-
-Returns:
-    void:   N/A
-*/
-void WindowsWindow::processEvents() {
-    MSG msg;
-
-    while( GetMessage( &msg, nullptr, 0, 0 ) ) {
-        TranslateMessage( &msg );
-        DispatchMessage( &msg );
+DWORD WindowsWindow::getWindowStyle() const {
+    DWORD style;
+    if( m_popup ) {
+        style = popupWindow;
+    } else {
+        style = normalWindow;
+        if( m_resizable )
+            style |= WS_THICKFRAME;
     }
+
+    if( m_visible )
+        style |= WS_VISIBLE;
+
+    return style;
+}
+
+void WindowsWindow::readjustWindow() {
+    Bounds2i boundsAdj = m_bounds;
+    if( AdjustWindowRect( reinterpret_cast< LPRECT >( &boundsAdj ), getWindowStyle(), false ) == FALSE )
+        throwWindowsException();
+
+    if( MoveWindow( m_wnd, boundsAdj.minX, boundsAdj.minY, boundsAdj.getWidth(), boundsAdj.getHeight(), TRUE ) == FALSE )
+        throwWindowsException();
 }
 
 /*
@@ -687,11 +842,9 @@ Arguments:
     N/A
 
 Returns:
-    ATOM:   The value returned from RegisterClassEx - assuming this can be used to determine if registration successful?
+    N/A
 */
-ATOM WindowsWindow::registerWindowClass( HINSTANCE instance ) {
-    m_classRegistered = true;
-
+void WindowsWindow::registerWindowClass( HINSTANCE instance ) {
     WNDCLASSEXW wcex;
     wcex.cbSize         =   sizeof( wcex );
     wcex.style          =   CS_HREDRAW | CS_VREDRAW;
@@ -699,14 +852,17 @@ ATOM WindowsWindow::registerWindowClass( HINSTANCE instance ) {
     wcex.cbClsExtra     =   0;
     wcex.cbWndExtra     =   0;
     wcex.hInstance      =   instance;
-    wcex.hbrBackground  =   (HBRUSH)GetStockObject( WHITE_BRUSH );
+    wcex.hbrBackground  =   (HBRUSH)GetStockObject( BLACK_BRUSH );
     wcex.lpszMenuName   =   nullptr;
     wcex.lpszClassName  =   windowClass;
     wcex.hIcon          =   LoadIcon(   nullptr, IDI_APPLICATION );
     wcex.hIconSm        =   LoadIcon(   nullptr, IDI_APPLICATION );
     wcex.hCursor        =   LoadCursor( nullptr, IDC_ARROW       );
 
-    return RegisterClassExW( &wcex );
+    if( RegisterClassExW( &wcex ) == 0 )
+        throwWindowsException();
+
+    m_classRegistered = true;
 }
 
 /*

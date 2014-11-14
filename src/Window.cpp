@@ -1,4 +1,4 @@
-﻿/*
+/*
 Window.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -13,6 +13,7 @@ Description:
 //Includes
 #include <brimstone/Window.hpp>         //Class header
 
+//Brimstone::WindowImpl
 #if defined( BS_BUILD_WINDOWS )
 #include "windows/WindowsWindow.hpp"    //WindowImpl (WindowsWindow)
 #elif defined( BS_BUILD_LINUX )
@@ -21,19 +22,13 @@ Description:
 
 
 
+
 namespace Brimstone {
 
 Window::Window() :
-    m_title( "Default Window Title" ),
-    m_visible( true ),
-    m_resizable( false ),
-    m_autoClose( true ),
-    m_mouseCapture( false ),
-    m_popup( false ),
-    m_keyRepeat( false ),
-    m_bounds( Point2i( 32, 32 ), 1024, 768 ),
     m_impl( nullptr ) {
-    m_impl = new Private::WindowImpl( *this );
+
+    m_impl = new Private::WindowImpl();
 }
 
 Window::~Window() {
@@ -43,8 +38,16 @@ Window::~Window() {
     }
 }
 
-void Window::processEvents() {
-    Private::WindowImpl::processEvents();
+Window::Window( Window&& toMove ) :
+    m_impl( toMove.m_impl ) {
+
+    toMove.m_impl = nullptr;
+}
+Window& Window::operator =( Window&& toMove ) {
+    m_impl        = toMove.m_impl;
+    toMove.m_impl = nullptr;
+
+    return *this;
 }
 
 void Window::open() {
@@ -59,82 +62,84 @@ bool Window::isOpen() const {
     return m_impl->isOpen();
 }
 
+bool Window::peekEvent( WindowEvent& eventOut ) {
+    return m_impl->peekEvent( eventOut );
+}
+
+bool Window::getEvent( WindowEvent& eventOut ) {
+    return m_impl->getEvent( eventOut );
+}
+
+void Window::pushEvent( const WindowEvent& eventIn ) {
+    m_impl->pushEvent( eventIn );
+}
+
 void Window::setTitle( const ustring& title ) {
-    m_title = title;
     m_impl->setTitle( title );
 }
 
 ustring Window::getTitle() const {
-    return m_title;
+    return m_impl->getTitle();
 }
 
 void Window::setPopup( const bool popup ) {
-    m_popup = popup;
     m_impl->setPopup( popup );
 }
 
 bool Window::isPopup() const {
-    return m_popup;
+    return m_impl->isPopup();
 }
 
 void Window::setResizable( const bool resizable ) {
-    m_resizable = resizable;
     m_impl->setResizable( resizable );
 }
 
 bool Window::isResizable() const {
-    return m_resizable;
-}
-
-void Window::setKeyRepeat( const bool keyRepeat ) {
-    m_keyRepeat = keyRepeat;
-}
-
-bool Window::getKeyRepeat() const {
-    return m_keyRepeat;
+    return m_impl->isResizable();
 }
 
 void Window::setVisible( const bool visible ) {
-    m_visible = visible;
     m_impl->setVisible( visible );
 }
 
 bool Window::isVisible() const {
-    return m_visible;
+    return m_impl->isVisible();
 }
 
-void Window::setBounds( const Bounds2i& bounds ) {
-    m_bounds = bounds;
+void Window::setBounds( const Bounds2i bounds ) {
     m_impl->setBounds( bounds );
 }
 
 Bounds2i Window::getBounds() const {
-    return m_bounds;
+    return m_impl->getBounds();
 }
 
-void Window::setAutoClose( const bool autoClose ) {
-    m_autoClose = autoClose;
+void Window::setKeyRepeat( const bool keyRepeat ) {
+    m_impl->setKeyRepeat( keyRepeat );
 }
 
-bool Window::getAutoClose() const {
-    return m_autoClose;
+bool Window::getKeyRepeat() const {
+    return m_impl->getKeyRepeat();
 }
 
 void Window::setMouseCapture( const bool capture ) {
-    m_mouseCapture = capture;
     m_impl->setMouseCapture( capture );
 }
 
 bool Window::getMouseCapture() const {
-    return m_mouseCapture;
+    return m_impl->getMouseCapture();
 }
 
-Point2i Window::screenToWindow( const Point2i& screenCoords ) const {
+Point2i Window::screenToWindow( Point2i screenCoords ) const {
     return m_impl->screenToWindow( screenCoords );
 }
 
-Point2i Window::windowToScreen( const Point2i& windowCoords ) const {
+Point2i Window::windowToScreen( Point2i windowCoords ) const {
     return m_impl->windowToScreen( windowCoords );
+}
+
+WindowHandle Window::getHandle() const {
+    return m_impl->getHandle();
 }
 
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
 util/Misc.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -13,8 +13,9 @@ Description:
 
 
 //Includes
-#include <tuple>            //std::tuple
-#include <type_traits>      //std::integral_constant, std::underlying_type
+#include <brimstone/types.hpp>  //Brimstone::int32
+#include <tuple>                //std::tuple
+#include <type_traits>          //std::integral_constant, std::underlying_type
 
 
 

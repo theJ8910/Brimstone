@@ -1,4 +1,4 @@
-﻿/*
+/*
 LuaInstance.cpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -41,6 +41,8 @@ public:
     void preframe();
     void frame();
     void postframe();
+
+    bool isFunction( const uchar* functionName ) const;
 
     template< typename... Args >
     void callVoid( Args&&... args );

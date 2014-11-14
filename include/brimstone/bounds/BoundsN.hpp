@@ -93,6 +93,8 @@ Description:
     void include( const Point< T, N >& point );                                                         \
     bool contains( const Point< T, N >& point ) const;                                                  \
     bool contains_mIME( const Point< T, N >& point ) const;                                             \
+    bool intersects( const Bounds< T, N >& bounds ) const;                                              \
+    bool intersects_EE( const Bounds< T, N >& bounds ) const;                                           \
                                                                                                         \
     template< typename T2 >                                                                             \
     Bounds< T, N >& operator =( const Bounds< T2, N >& toCopy );
@@ -355,6 +357,57 @@ void Bounds< T, N >::include( const Point< T, N >& point ) {
         electMinMax( mins.data[i], maxs.data[i], point.data[i] );
 }
 
+/*
+Bounds::intersects
+-----------------------
+
+Description:
+    Checks whether or not this Bounds and the given Bounds are intersecting.
+
+Arguments:
+    bounds:     The Bounds to check for intersection with this Bounds.
+
+Returns:
+    bool:       true if the two bounds intersect, false otherwise.
+*/
+template< typename T, size_t N >
+bool Bounds< T, N >::intersects( const Bounds< T, N >& bounds ) const {
+    for( size_t i = 0; i < N; ++i )
+        if( mins.data[i] > bounds.maxs.data[i] ||
+            maxs.data[i] < bounds.mins.data[i] )
+            return false;
+
+    return true;
+}
+
+/*
+Bounds::intersects_EE
+-----------------------
+
+Description:
+    Checks whether or not this Bounds and the given Bounds are intersecting.
+
+    Unlike .intersects(), .intersects_EE() excludes the extremes (edges/faces/corners/etc) from the checks.
+    So, if two bounds are intersecting on a face / edge / corner,
+    i.e. maxs[i] == bounds.mins[i] || mins[i] == bounds.maxs[i],
+    the two bounds are NOT considered to be intersecting by this function.
+
+Arguments:
+    bounds:     The Bounds to check for intersection with this Bounds.
+
+Returns:
+    bool:       true if the two bounds intersect, false otherwise.
+*/
+template< typename T, size_t N >
+bool Bounds< T, N >::intersects_EE( const Bounds< T, N >& bounds ) const {
+    for( size_t i = 0; i < N; ++i )
+        if( mins.data[i] >= bounds.maxs.data[i] ||
+            maxs.data[i] <= bounds.mins.data[i] )
+            return false;
+
+    return true;
+}
+
 template< typename T, size_t N >
 template< typename T2 >
 Bounds< T, N >& Bounds< T, N >::operator =( const Bounds< T2, N >& right ) {
@@ -399,6 +452,45 @@ Point< T, N > clampedPoint( const Point< T, N >& point, const Bounds< T, N >& bo
         pointOut[i] = clampedValue( point[i], bounds.mins[i], bounds.maxs[i] );
 
     return pointOut;
+}
+
+/*
+intersect
+-----------------------
+
+Description:
+    Returns the intersecting Bounds between the two given Bounds.
+
+    NOTE:
+    If the given bounds are not intersecting, this function returns an undefined result.
+    If you're not sure if two bounds are intersecting, you should check with one of the following methods:
+    a.intersects(b)
+    a.intersects_EE(b)
+
+    Example:
+    If the given Bounds are a and b, this function returns the Bounds in the middle, c:
+    +------+
+    |a     |
+    |  +---+--+
+    |  | c |  |
+    +--+---+  |
+       |    b |
+       +------+
+Arguments:
+    a:      One of the bounds to get the intersect of.
+    b:      Another bounds.
+
+Returns:
+    Bounds: The intersection between a and b, or a zero bounds if a and b are not intersecting.
+*/
+template< typename T, size_t N >
+Bounds< T, N > intersect( const Bounds< T, N >& a, const Bounds< T, N >& b ) {
+    Bounds< T, N > intersect;
+    for( size_t i = 0; i < N; ++i ) {
+        intersect.mins.data[i] = max( a.mins.data[i], b.mins.data[i] );
+        intersect.maxs.data[i] = min( a.maxs.data[i], b.maxs.data[i] );
+    }
+    return intersect;
 }
 
 }

@@ -38,6 +38,12 @@ namespace {
     const int    cv_includeTest[10]  { -14, -11, -12, -4, -5,   6,  12,  8,  13, 14 };
     const int    cv_includePt1[5]    { -14,  12,   2, -4, -5 };
     const int    cv_includePt2[5]    {  2,  -11, -12, 13, 14 };
+    const int    cv_isTest1[10]      { -1,  0,  1,  2,  3,    3,   4,   5,   6,   7 };
+    const int    cv_isTest2[10]      {  4,  5,  6,  7,  8,    8,   9,  10,  11,  12 };
+    const int    cv_isTest3[10]      {  7,  8,  9, 10, 11,   12,  13,  14,  15,  16 };
+    const int    cv_isTestCorner[10] {  6,  7,  8,  9, 10,   11,  12,  13,  14,  15 };
+    const int    cv_intersect1[10]   {  1,  2,  3,  4,  5,    3,   4,   5,   6,  7  };
+    const int    cv_intersect2[10]   {  4,  5,  6,  7,  8,    6,   7,   8,   9,  10 };
     const int    cv_sizes[5]         { 10, 11, 12, 13, 14 };
     const int    cv_dimTest[10]      {  1,  2,  3,  4,  5,   11, 13, 15, 17, 19 };
     const int    cv_outsideMins[5]   {  0,  1,  2,  3,  4 };
@@ -392,6 +398,35 @@ UT_TEST_BEGIN( BoundsN_contains )
            o.contains( point2 ) == false;
 UT_TEST_END()
 
+UT_TEST_BEGIN( BoundsN_contains_mIME )
+    Bounds5i o( cv_values );
+    Point5i  point1( cv_valuesMins );
+    Point5i  point2( cv_valuesMaxs );
+
+    return o.contains_mIME( point1 ) == true &&
+           o.contains_mIME( point2 ) == false;
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_intersects )
+    Bounds5i o( cv_values );
+    Bounds5i bounds1( cv_isTest1 );
+    Bounds5i bounds2( cv_isTest2 );
+    Bounds5i bounds3( cv_isTest3 );
+
+    return o.intersects( bounds1 ) == true &&
+           o.intersects( bounds2 ) == true &&
+           o.intersects( bounds3 ) == false;
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_intersects_EE )
+    Bounds5i o( cv_values );
+    Bounds5i bounds1( cv_isTest1 );
+    Bounds5i bounds2( cv_isTestCorner );
+
+    return o.intersects_EE( bounds1 ) == true &&
+           o.intersects_EE( bounds2 ) == false;
+UT_TEST_END()
+
 UT_TEST_BEGIN( BoundsN_equals )
     Bounds5i o1( cv_values );
     Bounds5i o2( cv_values );
@@ -432,6 +467,18 @@ UT_TEST_BEGIN( BoundsN_clampedPoint )
 
     return allEqual( p1.data, cv_valuesMins ) &&
            allEqual( p2.data, cv_valuesMaxs );
+UT_TEST_END()
+
+UT_TEST_BEGIN( BoundsN_intersect )
+    Bounds5i o( cv_values );
+    Bounds5i bounds1( cv_isTest1 );
+    Bounds5i bounds2( cv_isTest2 );
+
+    Bounds5i intersect1 = intersect( o, bounds1 );
+    Bounds5i intersect2 = intersect( o, bounds2 );
+
+    return allEqual( intersect1.data, cv_intersect1 ) &&
+           allEqual( intersect2.data, cv_intersect2 );
 UT_TEST_END()
 
 

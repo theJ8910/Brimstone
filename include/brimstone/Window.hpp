@@ -1,4 +1,4 @@
-﻿/*
+/*
 Window.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -16,88 +16,62 @@ Description:
 
 
 //Includes
-#include <brimstone/Bounds.hpp>                 //Bounds2i
-#include <brimstone/signals/Signal.hpp>         //Signal
-#include <brimstone/types.hpp>                  //ustring
-#include <brimstone/WindowEvents.hpp>           //MouseDownEvent, MouseUpEvent, etc
-#include <brimstone/WindowImpl.hpp>             //Private::WindowImpl
-
-
-
-//Macros
-#define BS_WINDOW_EVENT( name )                     \
-    Signal< void( name##Event& ) > m_signal##name;
+#include <brimstone/util/NonCopyable.hpp>       //Brimstone::NonCopyable
+#include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
+#include <brimstone/types.hpp>                  //Brimstone::ustring
+#include <brimstone/window/WindowEvent.hpp>     //Brimstone::WindowEvent
+#include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle
+#include <brimstone/window/WindowImpl.hpp>      //Brimstone::Private::WindowImpl
 
 
 
 
 namespace Brimstone {
 
-class Window {
-    friend class Graphics;
-    friend Private::WindowImpl;
+class Window : public NonCopyable {
+private:
+    typedef std::vector< Window* >  WindowList;
 public:
     Window();
+    Window( Window&& toMove );
+    Window& operator =( Window&& toMove );
     ~Window();
 
-    void        open();
-    void        close();
-    bool        isOpen() const;
+    void            open();
+    void            close();
+    bool            isOpen() const;
 
-    void        setTitle( const ustring& title );
-    ustring     getTitle() const;
+    bool            peekEvent( WindowEvent& eventOut );
+    bool            getEvent( WindowEvent& eventOut );
+    void            pushEvent( const WindowEvent& eventIn );
 
-    void        setPopup( const bool popup );
-    bool        isPopup() const;
+    void            setTitle( const ustring& title );
+    ustring         getTitle() const;
 
-    void        setResizable( const bool resizable );
-    bool        isResizable() const;
+    void            setPopup( const bool popup );
+    bool            isPopup() const;
 
-    void        setVisible( const bool visible );
-    bool        isVisible() const;
+    void            setResizable( const bool resizable );
+    bool            isResizable() const;
 
-    void        setBounds( const Bounds2i& bounds );
-    Bounds2i    getBounds() const;
+    void            setVisible( const bool visible );
+    bool            isVisible() const;
 
-    void        setKeyRepeat( const bool keyRepeat );
-    bool        getKeyRepeat() const;
+    void            setBounds( const Bounds2i bounds );
+    Bounds2i        getBounds() const;
 
-    void        setAutoClose( const bool autoClose );
-    bool        getAutoClose() const;
+    void            setKeyRepeat( const bool keyRepeat );
+    bool            getKeyRepeat() const;
 
-    void        setMouseCapture( const bool capture );
-    bool        getMouseCapture() const;
+    void            setMouseCapture( const bool capture );
+    bool            getMouseCapture() const;
 
-    Point2i     screenToWindow( const Point2i& screenCoords ) const;
-    Point2i     windowToScreen( const Point2i& windowCoords ) const;
+    Point2i         screenToWindow( Point2i screenCoords ) const;
+    Point2i         windowToScreen( Point2i windowCoords ) const;
 
-    BS_WINDOW_EVENT( MouseDown      );
-    BS_WINDOW_EVENT( MouseUp        );
-    BS_WINDOW_EVENT( MouseMove      );
-    BS_WINDOW_EVENT( MouseVScroll   );
-    BS_WINDOW_EVENT( MouseHScroll   );
-    BS_WINDOW_EVENT( KeyDown        );
-    BS_WINDOW_EVENT( KeyUp          );
-    BS_WINDOW_EVENT( CharacterTyped );
-    BS_WINDOW_EVENT( WindowFocus    );
-    BS_WINDOW_EVENT( WindowBlur     );
-    BS_WINDOW_EVENT( WindowMove     );
-    BS_WINDOW_EVENT( WindowResize   );
-    BS_WINDOW_EVENT( WindowClose    );
+    WindowHandle    getHandle() const;
 private:
-    ustring                 m_title;
-    bool                    m_visible;
-    bool                    m_resizable;
-    bool                    m_autoClose;
-    bool                    m_mouseCapture;
-    bool                    m_popup;
-    bool                    m_keyRepeat;
-    Bounds2i                m_bounds;
-
-    Private::WindowImpl*    m_impl;
-
-public:
-    static void processEvents();
+    Private::WindowImpl*        m_impl;
 };
 
 #undef BS_WINDOW_EVENT

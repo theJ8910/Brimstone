@@ -1,4 +1,4 @@
-﻿/*
+/*
 bounds/Bounds2.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -317,6 +317,22 @@ void Bounds< T, 2 >::include( const Point< T, 2 >& point ) {
 }
 
 template< typename T >
+bool Bounds< T, 2 >::intersects( const Bounds< T, 2 >& bounds ) const {
+    return minX <= bounds.maxX &&
+           minY <= bounds.maxY &&
+           maxX >= bounds.minX &&
+           maxY >= bounds.minY;
+}
+
+template< typename T >
+bool Bounds< T, 2 >::intersects_EE( const Bounds< T, 2 >& bounds ) const {
+    return minX < bounds.maxX &&
+           minY < bounds.maxY &&
+           maxX > bounds.minX &&
+           maxY > bounds.minY;
+}
+
+template< typename T >
 template< typename T2 >
 Bounds< T, 2 >& Bounds< T, 2 >::operator =( const Bounds< T2, 2 >& right ) {
     minX = static_cast< T >( right.minX );
@@ -355,6 +371,16 @@ Point< T, 2 > clampedPoint( const Point< T, 2 >& point, const Bounds< T, 2 >& bo
     return Point< T, 2 >(
         clampedValue( point.x, bounds.minX, bounds.maxX ),
         clampedValue( point.y, bounds.minY, bounds.maxY )
+    );
+}
+
+template< typename T >
+Bounds< T, 2 > intersect( const Bounds< T, 2 >& a, const Bounds< T, 2 >& b ) {
+    return Bounds< T, 2 >(
+        max( a.minX, b.minX ),
+        max( a.minY, b.minY ),
+        min( a.maxX, b.maxX ),
+        min( a.maxY, b.maxY )
     );
 }
 

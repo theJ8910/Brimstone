@@ -92,8 +92,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_DEBUG;UT_BUILD_WINDOWS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\boost_1_55_0</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_OPENGL;BS_BUILD_DEBUG;UT_BUILD_WINDOWS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\lib\boost_1_55_0</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
     </ClCompile>
@@ -110,8 +110,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_DEBUG;BS_BUILD_64BIT;UT_BUILD_WINDOWS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\boost_1_55_0</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_OPENGL;BS_BUILD_DEBUG;BS_BUILD_64BIT;UT_BUILD_WINDOWS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\lib\boost_1_55_0</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
     </ClCompile>
@@ -130,8 +130,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;UT_BUILD_WINDOWS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\boost_1_55_0</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_OPENGL;UT_BUILD_WINDOWS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\lib\boost_1_55_0</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
     </ClCompile>
@@ -152,8 +152,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_64BIT;UT_BUILD_WINDOWS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\boost_1_55_0</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BS_UT;BS_ZERO;BS_CHECK_NULLPTR;BS_CHECK_SIZE;BS_CHECK_INDEX;BS_CHECK_DIVBYZERO;BS_CHECK_DOMAIN;_SCL_SECURE_NO_WARNINGS;BS_BUILD_WINDOWS;BS_BUILD_OPENGL;BS_BUILD_64BIT;UT_BUILD_WINDOWS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include;E:\lib\boost_1_55_0</AdditionalIncludeDirectories>
       <SDLCheck>
       </SDLCheck>
     </ClCompile>
@@ -186,6 +186,10 @@
     <ClCompile Include="..\..\tests\src\test\Point4.cpp" />
     <ClCompile Include="..\..\tests\src\test\PointN.cpp" />
     <ClCompile Include="..\..\tests\src\test\Range.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Size2.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Size3.cpp" />
+    <ClCompile Include="..\..\tests\src\test\Size4.cpp" />
+    <ClCompile Include="..\..\tests\src\test\SizeN.cpp" />
     <ClCompile Include="..\..\tests\src\test\types.cpp" />
     <ClCompile Include="..\..\tests\src\test\Vector2.cpp" />
     <ClCompile Include="..\..\tests\src\test\Vector3.cpp" />

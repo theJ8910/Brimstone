@@ -1,4 +1,4 @@
-﻿/*
+/*
 factory/IFactory.hpp
 -----------------------
 Copyright (c) 2014, theJ89
@@ -15,11 +15,15 @@ Description:
 
 
 //Factory interface template
+namespace Brimstone {
+
 template< typename Abstract >
 class IFactory {
 public:
     virtual Abstract create() const = 0;
 };
+
+}
 
 
 

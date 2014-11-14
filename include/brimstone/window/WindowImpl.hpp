@@ -1,13 +1,13 @@
 /*
-WindowImpl.hpp
+window/WindowImpl.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
 Description:
     Forward declares either WindowsWindow or LinuxWindow as WindowImpl, depending on build settings.
 */
-#ifndef BS_WINDOWIMPL_HPP
-#define BS_WINDOWIMPL_HPP
+#ifndef BS_WINDOW_WINDOWIMPL_HPP
+#define BS_WINDOW_WINDOWIMPL_HPP
 
 namespace Brimstone {
 namespace Private {
@@ -19,4 +19,4 @@ typedef class LinuxWindow   WindowImpl;
 }
 }
 
-#endif //BS_WINDOWIMPL_HPP
+#endif //BS_WINDOW_WINDOWIMPL_HPP
