@@ -15,11 +15,13 @@ Description:
 
 
 //Includes
+#include <brimstone/windows/WindowsHeader.hpp>  //HWND, HINSTANCE, ATOM, LRESULT, CALLBACK, WPARAM, LPARAM, etc
+#include <brimstone/types.hpp>                  //Brimstone::ustring
+#include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
+#include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle
+
 #include <unordered_map>                        //std::unordered_map
 #include <mutex>                                //std::mutex
-
-#include <brimstone/windows/WindowsHeader.hpp>  //HWND, HINSTANCE, ATOM, LRESULT, CALLBACK, WPARAM, LPARAM, etc
-#include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 
 #include "../window/BaseWindowImpl.hpp"         //Brimstone::Private::BaseWindowImpl
 
@@ -56,7 +58,7 @@ public:
     Point2i         screenToWindow( Point2i screenCoords ) const;
     Point2i         windowToScreen( Point2i windowCoords ) const;
 
-    HWND            getHandle() const;
+    WindowHandle    getHandle() const;
 
 private:
     LRESULT         windowProc( UINT message, WPARAM wParam, LPARAM lParam );

@@ -12,15 +12,13 @@ Description:
 
 
 //Includes
-#include <brimstone/linux/LinuxWindow.hpp>      //Class header
-#include <brimstone/util/Range.hpp>             //ClampedValue
-#include <brimstone/WindowEvents.hpp>           //MouseClickEvent, MouseMoveEvent, KeyPressEvent
-#include <brimstone/Exception.hpp>              //NullPointerException
-#include <brimstone/Logger.hpp>                 //logError
+#include "LinuxWindow.hpp"                      //Class header
 
-#include <boost/format.hpp>                     //TEMP
+#include <brimstone/util/Range.hpp>             //Brimstone::clampedValue
+#include <brimstone/Exception.hpp>              //Brimstone::NullPointerException
+#include <brimstone/Logger.hpp>                 //Brimstone::logError
 
-#include <brimstone/Window.hpp>                 //Really stupid circular dependency hack
+#include <boost/format.hpp>                     //boost::format
 
 
 
@@ -28,49 +26,57 @@ Description:
 namespace Brimstone {
 namespace Private {
 
+std::mutex                      LinuxWindow::m_windowsMutex;
+bool                            LinuxWindow::m_xInitialized = false;
+
+Display*                        LinuxWindow::m_display      = nullptr;
+int                             LinuxWindow::m_screen       = 0;
+unsigned long                   LinuxWindow::m_black        = 0;
+unsigned long                   LinuxWindow::m_white        = 0;
 LinuxWindow::XWinToWindowMap    LinuxWindow::m_windowMap;
-Display*                        LinuxWindow::m_display  = nullptr;
-int                             LinuxWindow::m_screen   = 0;
 
-LinuxWindow::LinuxWindow( Window& parent ) : m_parent( &parent ) {
-    if( m_windowMap.empty() ) {
-        m_display = XOpenDisplay( nullptr );
-        if( m_display == nullptr )
-            throw NullPointerException();
-        m_screen = DefaultScreen( m_display );
+
+
+LinuxWindow::LinuxWindow() :
+    m_window( 0 ),
+    m_inputMethod( 0 ),
+    m_inputContext( 0 ),
+    m_closeAtom( 0 ) {
+}
+
+LinuxWindow::~LinuxWindow() {
+    try {
+        close();
+    } catch( const IException& e ) {
+        uncaughtException( e );
     }
+}
 
-    unsigned long black, white;
-    black       = BlackPixel( m_display, m_screen );
-    white       = WhitePixel( m_display, m_screen );
+void LinuxWindow::open() {
+    std::lock_guard< std::mutex > l( m_windowsMutex );
 
-    //Get title
-    ustring title;
-    parent.getTitle( title );
+    //Initialize X11 if we haven't already
+    if( !m_xInitialized )
+        initX();
 
-    //Get bounds
-    Bounds2i bounds;
-    parent.getBounds( bounds );
-    long width  = bounds.getWidth();
-    long height = bounds.getHeight();
-
+    //Create the window.
     m_window = XCreateSimpleWindow(
         m_display,
         DefaultRootWindow( m_display ),
-        bounds.mins.x,
-        bounds.mins.y,
-        width,
-        height,
+        m_bounds.mins.x,
+        m_bounds.mins.y,
+        m_bounds.getWidth(),
+        m_bounds.getHeight(),
         5,
-        white,
-        black
+        m_white,
+        m_black
     );
 
     if( !m_window )
-        throw NullPointerException();  
+        throw NullPointerException();
 
     //Set title
-    XSetStandardProperties( m_display, m_window, title.c_str(), title.c_str(), None, nullptr, 0, nullptr );
+    XSetStandardProperties( m_display, m_window, m_title.c_str(), m_title.c_str(), None, nullptr, 0, nullptr );
 
     //Tell X what kinds of events we're interested in
     XSelectInput(
@@ -111,42 +117,98 @@ LinuxWindow::LinuxWindow( Window& parent ) : m_parent( &parent ) {
     m_closeAtom = XInternAtom( m_display, "WM_DELETE_WINDOW", false );
     XSetWMProtocols( m_display, m_window, &m_closeAtom, 1 );
 
+    //Add the window to the map
     m_windowMap.emplace( m_window, *this );
 
+    //Display the window to the user
     //XClearWindow( m_display, m_window );
     //XMapRaised( m_display, m_window );
     XMapWindow( m_display, m_window );
 }
 
-LinuxWindow::~LinuxWindow() {
-    if( m_inputContext != nullptr )
+void LinuxWindow::close() {
+    std::lock_guard< std::mutex > l( m_windowsMutex );
+
+    //Destroy the input context and method
+    if( m_inputContext != 0 ) {
         XDestroyIC( m_inputContext );
-
-    if( m_inputMethod != nullptr )
+        m_inputContext = 0;
+    }
+    if( m_inputMethod != 0 ) {
         XCloseIM( m_inputMethod );
+        m_inputMethod = 0;
+    }
 
+    //Destroy the window
     //XFreeGC( m_pcDisplay, m_cGraphicsContext );
-    XDestroyWindow( m_display, m_window );
-    
-    m_windowMap.erase( m_window );
+    if( m_window != 0 ) {
+        XDestroyWindow( m_display, m_window );
 
-    if( m_windowMap.empty() ) {
-        XCloseDisplay( m_display );
-        m_display = nullptr;
+        //Remove the window from the map
+        m_windowMap.erase( m_window );
+
+        //If this is the last window being closed, clean up shared X11 resources (display, etc)
+        if( m_xInitialized && m_windowMap.empty() )
+            destroyX();
+
+        m_window = 0;
     }
 }
 
-void LinuxWindow::processEvents() {
+bool LinuxWindow::isOpen() const {
+    return m_window != 0;
+}
+
+bool LinuxWindow::peekEvent( WindowEvent& eventOut ) {
+    //Window not open
+    if( m_window == 0 )
+        return false;
+
+    //Nothing in event queue
     XEvent xEvent;
-    //int iEventsQueued = XEventsQueued( m_pcDisplay, QueuedAlready );
-    while( m_display != nullptr ) {
+    if( m_eventQueue.empty() ) {
+        //Process all messages currently in the application's message queue
+        for( size_t i = XPending( m_display ); i > 0; --i ) {
+            XNextEvent( m_display, &xEvent );
+            mainProc( xEvent );
+        }
+
+        //Even after processing the messages in the queue, it's possible that:
+        //1.) The message queue was empty
+        //2.) No messages for this window were processed
+        //So we need to check for these situations here.
+        if( m_eventQueue.empty() )
+            return false;
+    }
+
+    //Pop a message from the queue
+    eventOut = m_eventQueue.front();
+    m_eventQueue.pop();
+    return true;
+}
+
+bool LinuxWindow::getEvent( WindowEvent& eventOut ) {
+    //Window not open
+    if( m_window == 0 )
+        return false;
+
+    //Wait for an event to arrive in the window's event queue if it's currently empty.
+    //Process messages from the application's message queue, blocking until a message arrives if necessary.
+    //The WindowImpl::getEvent() call returns true if a message was processed, or false if the application is shutting down.
+    XEvent xEvent;
+    while( m_eventQueue.empty() ) {
         XNextEvent( m_display, &xEvent );
         mainProc( xEvent );
     }
+
+    //Pop a message from the queue
+    eventOut = m_eventQueue.front();
+    m_eventQueue.pop();
+    return true;
 }
 
 void LinuxWindow::mainProc( XEvent& xEvent ) {
-    //Locate what Window this belongs to
+    //Locate what LinuxWindow this belongs to
     auto it = m_windowMap.find( xEvent.xany.window );
     if( it == m_windowMap.end() )
         return;
@@ -162,38 +224,47 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
     switch( xEvent.type ) {
         //Mouse move
         case MotionNotify: {
-            MouseMoveEvent eventObj( getCursorPos( xEvent ) );
-            m_parent->m_signalMouseMove( eventObj );
+            auto p = getCursorPos( xEvent );
+
+            WindowEvent e;
+            e.type        = WindowEventType::MouseMove;
+            e.mouseMove.x = p.x;
+            e.mouseMove.y = p.y;
+
+            pushEvent( e );
         } break;
         //Button down
         case ButtonPress: {
             int button = xEvent.xbutton.button;
+            auto p = getCursorPos( xEvent );
+
             //Vertical scrolling
             if( button == Button4 || button == Button5 ) {
-                MouseVScrollEvent eventObj(
-                    xEvent.xbutton.button == Button4 ? 1.0f : -1.0f,
-                    getCursorPos( xEvent )
-                );
+                WindowEvent e;
+                e.type               = WindowEventType::MouseVScroll;
+                e.mouseScroll.scroll = xEvent.xbutton.button == Button4 ? 1.0f : -1.0f;
+                e.mouseScroll.x      = p.x;
+                e.mouseScroll.y      = p.y;
 
-                m_parent->m_signalMouseVScroll( eventObj );
-
+                pushEvent( e );
             //Horizontal scrolling (note: direction is assumed and needs to be tested somehow)
             } else if( button == 6 || button == 7 ) {
-                MouseHScrollEvent eventObj(
-                    xEvent.xbutton.button == 6 ? -1.0f : 1.0f,
-                    getCursorPos( xEvent )
-                );
+                WindowEvent e;
+                e.type               = WindowEventType::MouseHScroll;
+                e.mouseScroll.scroll = xEvent.xbutton.button == 6 ? -1.0f : 1.0f;
+                e.mouseScroll.x      = p.x;
+                e.mouseScroll.y      = p.y;
 
-                m_parent->m_signalMouseHScroll( eventObj );
-
+                pushEvent( e );
             //Actual buttons
             } else {
-                MouseDownEvent eventObj(
-                    xButtonToMouseButton( button ),
-                    getCursorPos( xEvent )
-                );
+                WindowEvent e;
+                e.type         = WindowEventType::MouseDown;
+                e.mouse.button = xButtonToMouseButton( button );
+                e.mouse.x      = p.x;
+                e.mouse.y      = p.y;
 
-                m_parent->m_signalMouseDown( eventObj );
+                pushEvent( e );
             }
         } break;
         //Button up
@@ -204,19 +275,25 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             if( button == Button4 || button == Button5 || button == 6 || button == 7 )
                 break;
 
-            MouseUpEvent eventObj(
-                xButtonToMouseButton( button ),
-                getCursorPos( xEvent )
-            );
-            m_parent->m_signalMouseUp( eventObj );
+            auto p = getCursorPos( xEvent );
+
+            WindowEvent e;
+            e.type         = WindowEventType::MouseUp;
+            e.mouse.button = xButtonToMouseButton( button );
+            e.mouse.x      = p.x;
+            e.mouse.y      = p.y;
+
+            pushEvent( e );
         } break;
         //Key down / Character typed
         case KeyPress: {
             //The docs aren't too clear on the string returned by XLookupString.
             //I assumed it returns 1 encoding plus a null character, but this doesn't
             //seem to be the case for all keys.
-            CharacterTypedEvent typedEvent;
-            uchar* translatedCharacter = const_cast< uchar* >( typedEvent.getCharacter() );
+            WindowEvent e2;
+            e2.type = WindowEventType::Text;
+            uchar* translatedCharacter = e2.text.utf8;
+
             KeySym keySym;
 
             //Note: we're only interested in the KeySym at this point.
@@ -224,8 +301,11 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             XLookupString( &xEvent.xkey, translatedCharacter, 4, &keySym, nullptr );
 
             //Dispatch a keydown event
-            KeyDownEvent keydownEvent( xKeySymToKey( keySym ) );
-            m_parent->m_signalKeyDown( keydownEvent );
+            WindowEvent e;
+            e.type               = WindowEventType::KeyDown;
+            e.key.key            = xKeySymToKey( keySym );
+
+            pushEvent( e );
 
             //Why do I need to do this...?
             if( XFilterEvent( &xEvent, None ) ) {
@@ -235,7 +315,7 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
 
             int count;
 #ifdef X_HAVE_UTF8_STRING
-            
+
             if( m_inputContext != nullptr ) {
                 count = Xutf8LookupString( m_inputContext, &xEvent.xkey, translatedCharacter, 4, nullptr, nullptr );
             } else
@@ -243,7 +323,7 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             {
                 count = XLookupString( &xEvent.xkey, translatedCharacter, 4, nullptr, nullptr );
             }
-            
+
             //NOTE: Xutf8LookupString and XLookupString return a count of 0 when
             //trying to get the character for a non-character keycode (SHIFT, for instance).
             if( count == 0 )
@@ -255,21 +335,55 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
 
             //Null terminate the string (this is a problem with the strings for some keys, such as Numpad /)
             translatedCharacter[count] = 0;
-            
-            m_parent->m_signalCharacterTyped( typedEvent );
+
+            pushEvent( e2 );
         } break;
         //Key up
         case KeyRelease: {
             char translatedCharacter[5];
             KeySym keySym;
-            XLookupString( &xEvent.xkey, translatedCharacter, sizeof( translatedCharacter ), &keySym, nullptr );
+            XLookupString( &xEvent.xkey, translatedCharacter, 4, &keySym, nullptr );
 
             //Dispatch a KeyUp event
-            KeyUpEvent eventObj( xKeySymToKey( keySym ) );
-            m_parent->m_signalKeyUp( eventObj );
+            WindowEvent e;
+            e.type               = WindowEventType::KeyUp;
+            e.key.key            = xKeySymToKey( keySym );
+
+            pushEvent( e );
         } break;
-        //Window moved or resized
+        //Window moved and/or resized
         case ConfigureNotify: {
+            //New position and size of the window
+            Point2i pos( xEvent.xconfigure.x, xEvent.xconfigure.y );
+            Size2i  size( xEvent.xconfigure.width, xEvent.xconfigure.height );
+
+            //Moved
+            if( pos != m_bounds.getPosition() ) {
+                //Update position
+                m_bounds.setPosition( pos );
+
+                //Push event
+                WindowEvent e;
+                e.type = WindowEventType::Move;
+                e.move.x = pos.x;
+                e.move.y = pos.y;
+
+                pushEvent( e );
+            }
+
+            //Resized
+            if( size != m_bounds.getSize() ) {
+                //Update size
+                m_bounds.setSize( size );
+
+                //Push event
+                WindowEvent e;
+                e.type = WindowEventType::Resize;
+                e.resize.w = size.w;
+                e.resize.h = size.h;
+
+                pushEvent( e );
+            }
         } break;
         //Window close request
         case ClientMessage: {
@@ -280,13 +394,15 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             //Atoms are 32-bit unsigned ints, so we're expecting the message to contain 32-bit values.
             //This is good to check because another message could have a different size, but the same data in l[0].
             if( xEvent.xclient.format == 32 && (Atom)( xEvent.xclient.data.l[0] ) == m_closeAtom ) {
-                WindowCloseEvent eventObj( *m_parent );
-                m_parent->m_signalWindowClose( eventObj );
+                WindowEvent e;
+                e.type = WindowEventType::Close;
+
+                pushEvent( e );
             }
         } break;
         //Unhandled event
         default: {
-            logError( ( boost::format( "Unhandled event: %1%" ) % xEvent.type ).str().c_str() );
+            logError( ( boost::format( "Unhandled event: %1%" ) % xEvent.type ).str() );
         } break;
     }
 }
@@ -305,10 +421,10 @@ MouseButton LinuxWindow::xButtonToMouseButton( const int button ) {
         return MouseButton::X1;
     case 9:
         return MouseButton::X2;
-    
+
     //The invalid button is returned if an unrecognized button is provided.
     default:
-        logError( ( boost::format( "Unrecognized button: 0x%|04x|" ) % button ).str().c_str() );
+        logError( ( boost::format( "Unrecognized button: 0x%|04x|" ) % button ).str() );
         return MouseButton::INVALID;
     }
 }
@@ -316,7 +432,7 @@ MouseButton LinuxWindow::xButtonToMouseButton( const int button ) {
 Key LinuxWindow::xKeySymToKey( const KeySym& keySym ) {
     KeySym lower, upper;
     XConvertCase( keySym, &lower, &upper );
-    
+
     switch( lower ) {
     case XK_Escape:         return Key::ESCAPE;             //0xff1b
     case XK_F1:             return Key::F1;                 //0xffbe
@@ -457,29 +573,80 @@ Key LinuxWindow::xKeySymToKey( const KeySym& keySym ) {
 
     //The invalid key is returned if an unrecognized keycode is provided.
     default:
-        logError( ( boost::format( "Unrecognized keycode: 0x%|04x|" ) % lower ).str().c_str() );
+        logError( ( boost::format( "Unrecognized keycode: 0x%|04x|" ) % lower ).str() );
         return Key::INVALID;
     }
 }
 
 void LinuxWindow::setTitle( const ustring& title ) {
+    BaseWindowImpl::setTitle( title );
+    //TODO
 }
 
 void LinuxWindow::setPopup( const bool popup ) {
+    BaseWindowImpl::setPopup( popup );
+    //TODO
 }
 
-void LinuxWindow::setBounds( const Bounds2i& bounds ) {
+void LinuxWindow::setResizable( const bool resizeable ) {
+    BaseWindowImpl::setResizable( resizeable );
+    //TODO
+}
+
+void LinuxWindow::setVisible( const bool visible ) {
+    BaseWindowImpl::setVisible( visible );
+    //TODO
+}
+
+void LinuxWindow::setBounds( const Bounds2i bounds ) {
+    BaseWindowImpl::setBounds( bounds );
+    //TODO
+}
+
+void LinuxWindow::setMouseCapture( const bool capture ) {
+    BaseWindowImpl::setMouseCapture( capture );
+    //TODO
+}
+
+Point2i LinuxWindow::screenToWindow( Point2i screenCoords ) const {
+    //TODO
+    return screenCoords;
+}
+
+Point2i LinuxWindow::windowToScreen( Point2i windowCoords ) const {
+    //TODO
+    return windowCoords;
 }
 
 WindowHandle LinuxWindow::getHandle() const {
     return m_window;
 }
 
-LinuxWindow::LinuxWindow( const LinuxWindow& ) : m_parent( nullptr ) {
+void LinuxWindow::initX() {
+    //Open a display
+    m_display = XOpenDisplay( nullptr );
+    if( m_display == nullptr )
+        throw NullPointerException();
+
+    //Pick a screen to use
+    m_screen = DefaultScreen( m_display );
+
+    //Get black and white colors for this display/screen combination
+    m_black  = BlackPixel( m_display, m_screen );
+    m_white  = WhitePixel( m_display, m_screen );
+
+    //Finished initializing
+    m_xInitialized = true;
 }
 
-LinuxWindow& LinuxWindow::operator =( const LinuxWindow& ) {
-    return *this;
+void LinuxWindow::destroyX() {
+    m_xInitialized = false;
+
+    XCloseDisplay( m_display );
+    m_display = nullptr;
+    m_screen  = 0;
+    m_black   = 0;
+    m_white   = 0;
 }
 
 }

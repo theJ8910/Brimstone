@@ -26,9 +26,9 @@ ifeq ($(config),debug32)
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -std=c++11 -pthread -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m32 -L/usr/lib32 -pthread
+  LDFLAGS   += -m32 -L/usr/lib32 -pthread --no-as-needed
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -48,9 +48,9 @@ ifeq ($(config),release32)
   DEFINES   += -DBS_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -std=c++11 -pthread -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread
+  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread --no-as-needed
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -70,9 +70,9 @@ ifeq ($(config),debug64)
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -std=c++11 -pthread -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m64 -L/usr/lib64 -pthread
+  LDFLAGS   += -m64 -L/usr/lib64 -pthread --no-as-needed
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -92,9 +92,9 @@ ifeq ($(config),release64)
   DEFINES   += -DBS_BUILD_LINUX -DBS_BUILD_64BIT
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -std=c++11 -pthread -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread
+  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread --no-as-needed
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -109,19 +109,18 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/Exception.o \
-	$(OBJDIR)/Input.o \
-	$(OBJDIR)/Audio.o \
-	$(OBJDIR)/Scheduler.o \
-	$(OBJDIR)/Lua.o \
+	$(OBJDIR)/Stopwatch.o \
 	$(OBJDIR)/Logger.o \
-	$(OBJDIR)/Graphics.o \
 	$(OBJDIR)/LuaInstance.o \
-	$(OBJDIR)/WindowEvents.o \
-	$(OBJDIR)/Systems.o \
 	$(OBJDIR)/Window.o \
+	$(OBJDIR)/Key.o \
+	$(OBJDIR)/MouseButton.o \
 	$(OBJDIR)/LinuxWindow.o \
+	$(OBJDIR)/LinuxThreadLocal.o \
+	$(OBJDIR)/ThreadLocal.o \
 	$(OBJDIR)/Unicode.o \
 	$(OBJDIR)/Math.o \
+	$(OBJDIR)/BaseWindowImpl.o \
 
 RESOURCES := \
 
@@ -185,43 +184,40 @@ endif
 $(OBJDIR)/Exception.o: src/Exception.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Input.o: src/Input.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Audio.o: src/Audio.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Scheduler.o: src/Scheduler.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Lua.o: src/Lua.cpp
+$(OBJDIR)/Stopwatch.o: src/Stopwatch.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Logger.o: src/Logger.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Graphics.o: src/Graphics.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/LuaInstance.o: src/LuaInstance.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/WindowEvents.o: src/WindowEvents.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Systems.o: src/Systems.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Window.o: src/Window.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Key.o: src/input/Key.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/MouseButton.o: src/input/MouseButton.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/LinuxWindow.o: src/linux/LinuxWindow.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/LinuxThreadLocal.o: src/linux/LinuxThreadLocal.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/ThreadLocal.o: src/util/ThreadLocal.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Unicode.o: src/util/Unicode.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Math.o: src/util/Math.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/BaseWindowImpl.o: src/window/BaseWindowImpl.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 

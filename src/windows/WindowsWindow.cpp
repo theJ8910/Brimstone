@@ -11,15 +11,14 @@ Description:
 
 
 //Includes
-#include <memory>                                       //std::unique_ptr<>
-#include <windowsx.h>                                   //GET_X_LPARAM, GET_Y_LPARAM
-
 #include "WindowsWindow.hpp"                            //Class header
-#include <brimstone/windows/WindowsUtil.hpp>            //utf8to16
-#include <brimstone/windows/WindowsException.hpp>       //throwWindowsException
-#include <brimstone/window/WindowEvent.hpp>             //MouseClickEvent, MouseMoveEvent, KeyPressEvent
-#include <brimstone/util/Clamp.hpp>                     //clampedValue
-#include <brimstone/Logger.hpp>                         //logError
+
+#include <brimstone/windows/WindowsUtil.hpp>            //Brimstone::Private::utf8to16
+#include <brimstone/windows/WindowsException.hpp>       //Brimstone::Private::throwWindowsException
+#include <brimstone/util/Clamp.hpp>                     //Brimstone::clampedValue
+#include <brimstone/Logger.hpp>                         //Brimstone::logError
+
+#include <windowsx.h>                                   //GET_X_LPARAM, GET_Y_LPARAM
 
 #include <boost/format.hpp>                             //boost::format
 
@@ -787,6 +786,7 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
     case WM_CLOSE: {
         WindowEvent e;
         e.type = WindowEventType::Close;
+
         pushEvent( e );
     } break;
     default:

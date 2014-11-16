@@ -18,12 +18,12 @@ namespace Private {
 
 BaseWindowImpl::BaseWindowImpl() :
     m_title( "Default Window Title" ),
+    m_bounds( Point2i( 32, 32 ), Size2i( 1024, 768 ) ),
     m_visible( true ),
-    m_resizable( false ),
-    m_mouseCapture( false ),
     m_popup( false ),
+    m_resizable( false ),
     m_keyRepeat( false ),
-    m_bounds( Point2i( 32, 32 ), Size2i( 1024, 768 ) )
+    m_mouseCapture( false )
 {
 }
 

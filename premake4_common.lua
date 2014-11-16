@@ -6,14 +6,18 @@ function doFlags()
     --We need to specify that we want to use the C++11 standard when compiling with G++
     --Additionally we ignore pragmas used by MSVC which are unknown to G++.
     --The -pthread option enables threading, which Brimstone makes use of
+    --NOTE: the "--no-as-needed" here is a workaround for a bug in G++4.8.1.
+    --Even though we enable multithreading with -pthread, the runtime complains that it isn't linked and the program exits.
+    --"--no-as-needed" disables this check.
     configuration( "gmake" )
         buildoptions( {
-            "-std=c++11",
             "-pthread",
+            "-std=c++11",
             "-Wno-unknown-pragmas"
         } )
         linkoptions( {
             "-pthread",
+            "-Wl,--no-as-needed"
         } )
 
     --Debug builds add symbols to generated libraries / executables to enable debugging

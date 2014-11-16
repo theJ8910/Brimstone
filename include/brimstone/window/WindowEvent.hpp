@@ -1,5 +1,5 @@
 /*
-WindowEvent.hpp
+window/WindowEvent.hpp
 -----------------------
 Copyright (c) 2014, theJ89
 
@@ -48,37 +48,51 @@ enum class WindowEventType {
     Close           //N/A
 };
 
+struct WindowEventMouse {
+    int x;
+    int y;
+    MouseButton button;
+};
+
+struct WindowEventMouseMove {
+    int x;
+    int y;
+};
+
+struct WindowEventMouseScroll {
+    int x;
+    int y;
+    float scroll;
+};
+
+struct WindowEventKey {
+    Key key;
+};
+
+struct WindowEventText {
+    uchar utf8[5];
+};
+
+struct WindowEventMove {
+    int x;
+    int y;
+};
+
+struct WindowEventResize {
+    int w;
+    int h;
+};
+
 struct WindowEvent {
     WindowEventType type;
     union {
-        struct Mouse {
-            int x;
-            int y;
-            MouseButton button;
-        } mouse;
-        struct MouseMove {
-            int x;
-            int y;
-        } mouseMove;
-        struct MouseScroll {
-            int x;
-            int y;
-            float scroll;
-        } mouseScroll;
-        struct KeyMessage {
-            Key key;
-        } key;
-        struct TextMessage {
-            uchar utf8[5];
-        } text;
-        struct MoveMessage {
-            int x;
-            int y;
-        } move;
-        struct ResizeMessage {
-            int w;
-            int h;
-        } resize;
+        WindowEventMouse        mouse;
+        WindowEventMouseMove    mouseMove;
+        WindowEventMouseScroll  mouseScroll;
+        WindowEventKey          key;
+        WindowEventText         text;
+        WindowEventMove         move;
+        WindowEventResize       resize;
     };
 };
 

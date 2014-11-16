@@ -26,9 +26,9 @@ ifeq ($(config),debug32)
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -std=c++11 -pthread -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m32 -L/usr/lib32 -pthread -Llib
+  LDFLAGS   += -m32 -L/usr/lib32 -pthread --no-as-needed -Llib
   LIBS      += -lBrimstone_x86d
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -48,9 +48,9 @@ ifeq ($(config),release32)
   DEFINES   += -DBS_BUILD_LINUX -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -std=c++11 -pthread -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread -Llib
+  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread --no-as-needed -Llib
   LIBS      += -lBrimstone_x86
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -70,9 +70,9 @@ ifeq ($(config),debug64)
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -std=c++11 -pthread -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m64 -L/usr/lib64 -pthread -Llib
+  LDFLAGS   += -m64 -L/usr/lib64 -pthread --no-as-needed -Llib
   LIBS      += -lBrimstone_x64d
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -92,9 +92,9 @@ ifeq ($(config),release64)
   DEFINES   += -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -std=c++11 -pthread -Wno-unknown-pragmas
+  CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread -Llib
+  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread --no-as-needed -Llib
   LIBS      += -lBrimstone_x64
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -114,20 +114,24 @@ OBJECTS := \
 	$(OBJDIR)/PointN.o \
 	$(OBJDIR)/Bounds2.o \
 	$(OBJDIR)/MatrixNxN.o \
+	$(OBJDIR)/Size2.o \
 	$(OBJDIR)/BoundsN.o \
 	$(OBJDIR)/Matrix3x3.o \
 	$(OBJDIR)/types.o \
 	$(OBJDIR)/Vector4.o \
 	$(OBJDIR)/Vector3.o \
 	$(OBJDIR)/Point4.o \
+	$(OBJDIR)/SizeN.o \
 	$(OBJDIR)/Point3.o \
 	$(OBJDIR)/Bounds3.o \
 	$(OBJDIR)/Bounds4.o \
+	$(OBJDIR)/Size3.o \
 	$(OBJDIR)/Array.o \
 	$(OBJDIR)/VectorN.o \
 	$(OBJDIR)/Matrix4x4.o \
 	$(OBJDIR)/Vector2.o \
 	$(OBJDIR)/Range.o \
+	$(OBJDIR)/Size4.o \
 	$(OBJDIR)/Matrix2x2.o \
 	$(OBJDIR)/MatrixRxC.o \
 	$(OBJDIR)/Point2.o \
@@ -211,6 +215,9 @@ $(OBJDIR)/Bounds2.o: tests/src/test/Bounds2.cpp
 $(OBJDIR)/MatrixNxN.o: tests/src/test/MatrixNxN.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Size2.o: tests/src/test/Size2.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/BoundsN.o: tests/src/test/BoundsN.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
@@ -229,6 +236,9 @@ $(OBJDIR)/Vector3.o: tests/src/test/Vector3.cpp
 $(OBJDIR)/Point4.o: tests/src/test/Point4.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/SizeN.o: tests/src/test/SizeN.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Point3.o: tests/src/test/Point3.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
@@ -236,6 +246,9 @@ $(OBJDIR)/Bounds3.o: tests/src/test/Bounds3.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Bounds4.o: tests/src/test/Bounds4.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Size3.o: tests/src/test/Size3.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Array.o: tests/src/test/Array.cpp
@@ -251,6 +264,9 @@ $(OBJDIR)/Vector2.o: tests/src/test/Vector2.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Range.o: tests/src/test/Range.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Size4.o: tests/src/test/Size4.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Matrix2x2.o: tests/src/test/Matrix2x2.cpp
