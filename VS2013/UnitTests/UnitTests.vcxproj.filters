@@ -4,117 +4,120 @@
     <Filter Include="src">
       <UniqueIdentifier>{c194f247-c759-43e4-a4bc-4c4a9610f3be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\console">
+    <Filter Include="src\tests">
+      <UniqueIdentifier>{cc1f853a-6fd1-492a-9b79-8f98413be166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tests\console">
       <UniqueIdentifier>{cc044dc3-ca65-4591-b579-61b5ff1f2bf7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\test">
+    <Filter Include="src\tests\test">
       <UniqueIdentifier>{712bb813-08d0-4f2d-a4f8-a3a47dc3a991}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\tests\src\console\Menu.cpp">
-      <Filter>src\console</Filter>
+    <ClCompile Include="..\..\src\tests\main.cpp">
+      <Filter>src\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\console\TextColor.cpp">
-      <Filter>src\console</Filter>
+    <ClCompile Include="..\..\src\tests\Test.cpp">
+      <Filter>src\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\main.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\tests\utils.cpp">
+      <Filter>src\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\Test.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\tests\console\Menu.cpp">
+      <Filter>src\tests\console</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\types.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\console\TextColor.cpp">
+      <Filter>src\tests\console</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\utils.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\tests\test\Array.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Array.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Bounds2.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Range.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Bounds3.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\PointN.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Bounds4.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Point2.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\BoundsN.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Point3.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Matrix2x2.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Vector2.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Matrix3x3.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Vector3.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Matrix4x4.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\VectorN.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\MatrixNxN.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Bounds2.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\MatrixRxC.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Bounds3.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Point2.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\BoundsN.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Point3.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Bounds4.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Point4.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Point4.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\PointN.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Vector4.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Range.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\MatrixRxC.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Size2.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\MatrixNxN.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Size3.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Matrix4x4.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Size4.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Matrix3x3.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\SizeN.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Matrix2x2.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\types.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\SizeN.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Vector2.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Size4.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Vector3.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Size3.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\Vector4.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\src\test\Size2.cpp">
-      <Filter>src\test</Filter>
+    <ClCompile Include="..\..\src\tests\test\VectorN.cpp">
+      <Filter>src\tests\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\tests\src\MeasureXTime.hpp">
-      <Filter>src</Filter>
+    <ClInclude Include="..\..\src\tests\MeasureXTime.hpp">
+      <Filter>src\tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tests\src\console\TextColor.hpp">
-      <Filter>src\console</Filter>
+    <ClInclude Include="..\..\src\tests\Test.hpp">
+      <Filter>src\tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tests\src\console\Menu.hpp">
-      <Filter>src\console</Filter>
+    <ClInclude Include="..\..\src\tests\utils.hpp">
+      <Filter>src\tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tests\src\Test.hpp">
-      <Filter>src</Filter>
+    <ClInclude Include="..\..\src\tests\console\Menu.hpp">
+      <Filter>src\tests\console</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tests\src\utils.hpp">
-      <Filter>src</Filter>
+    <ClInclude Include="..\..\src\tests\console\TextColor.hpp">
+      <Filter>src\tests\console</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

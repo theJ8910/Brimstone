@@ -68,22 +68,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\tests\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
     <TargetName>$(ProjectName)_x86d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\tests\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
     <TargetName>$(ProjectName)_x64d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\tests\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
     <TargetName>$(ProjectName)_x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\tests\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
     <TargetName>$(ProjectName)_x64</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -167,42 +167,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\tests\src\console\Menu.cpp" />
-    <ClCompile Include="..\..\tests\src\console\TextColor.cpp" />
-    <ClCompile Include="..\..\tests\src\main.cpp" />
-    <ClCompile Include="..\..\tests\src\Test.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Array.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Bounds2.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Bounds3.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Bounds4.cpp" />
-    <ClCompile Include="..\..\tests\src\test\BoundsN.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Matrix2x2.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Matrix3x3.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Matrix4x4.cpp" />
-    <ClCompile Include="..\..\tests\src\test\MatrixNxN.cpp" />
-    <ClCompile Include="..\..\tests\src\test\MatrixRxC.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Point2.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Point3.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Point4.cpp" />
-    <ClCompile Include="..\..\tests\src\test\PointN.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Range.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Size2.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Size3.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Size4.cpp" />
-    <ClCompile Include="..\..\tests\src\test\SizeN.cpp" />
-    <ClCompile Include="..\..\tests\src\test\types.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Vector2.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Vector3.cpp" />
-    <ClCompile Include="..\..\tests\src\test\Vector4.cpp" />
-    <ClCompile Include="..\..\tests\src\test\VectorN.cpp" />
-    <ClCompile Include="..\..\tests\src\utils.cpp" />
+    <ClCompile Include="..\..\src\tests\console\Menu.cpp" />
+    <ClCompile Include="..\..\src\tests\console\TextColor.cpp" />
+    <ClCompile Include="..\..\src\tests\main.cpp" />
+    <ClCompile Include="..\..\src\tests\Test.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Array.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Bounds2.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Bounds3.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Bounds4.cpp" />
+    <ClCompile Include="..\..\src\tests\test\BoundsN.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Matrix2x2.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Matrix3x3.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Matrix4x4.cpp" />
+    <ClCompile Include="..\..\src\tests\test\MatrixNxN.cpp" />
+    <ClCompile Include="..\..\src\tests\test\MatrixRxC.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Point2.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Point3.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Point4.cpp" />
+    <ClCompile Include="..\..\src\tests\test\PointN.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Range.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Size2.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Size3.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Size4.cpp" />
+    <ClCompile Include="..\..\src\tests\test\SizeN.cpp" />
+    <ClCompile Include="..\..\src\tests\test\types.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Vector2.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Vector3.cpp" />
+    <ClCompile Include="..\..\src\tests\test\Vector4.cpp" />
+    <ClCompile Include="..\..\src\tests\test\VectorN.cpp" />
+    <ClCompile Include="..\..\src\tests\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\tests\src\console\Menu.hpp" />
-    <ClInclude Include="..\..\tests\src\console\TextColor.hpp" />
-    <ClInclude Include="..\..\tests\src\MeasureXTime.hpp" />
-    <ClInclude Include="..\..\tests\src\Test.hpp" />
-    <ClInclude Include="..\..\tests\src\utils.hpp" />
+    <ClInclude Include="..\..\src\tests\console\Menu.hpp" />
+    <ClInclude Include="..\..\src\tests\console\TextColor.hpp" />
+    <ClInclude Include="..\..\src\tests\MeasureXTime.hpp" />
+    <ClInclude Include="..\..\src\tests\Test.hpp" />
+    <ClInclude Include="..\..\src\tests\utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

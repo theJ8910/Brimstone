@@ -1,6 +1,5 @@
+/bin/
 /lib/
 /obj/
-/tests/bin/
-/tests/obj/
 /unused/
-todo.txt
+/notes/

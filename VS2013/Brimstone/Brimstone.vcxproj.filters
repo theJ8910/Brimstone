@@ -142,9 +142,6 @@
     <ClInclude Include="..\..\include\brimstone\util\NonCopyable.hpp">
       <Filter>include\brimstone\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\windows\WindowsWindow.hpp">
-      <Filter>src\windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\brimstone\window\WindowHandle.hpp">
       <Filter>include\brimstone\window</Filter>
     </ClInclude>
@@ -162,9 +159,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\brimstone\Stopwatch.hpp">
       <Filter>include\brimstone</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\window\BaseWindowImpl.hpp">
-      <Filter>src\window</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\brimstone\size\SizeN.hpp">
       <Filter>include\brimstone\size</Filter>
@@ -184,61 +178,67 @@
     <ClInclude Include="..\..\include\brimstone\util\ThreadLocal.hpp">
       <Filter>include\brimstone\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\windows\WindowsThreadLocal.hpp">
-      <Filter>src\windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\brimstone\matrix\MatrixStack.hpp">
       <Filter>include\brimstone\matrix</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\brimstone\bounds\BoundsStack.hpp">
       <Filter>include\brimstone\bounds</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\window\BaseWindowImpl.hpp">
+      <Filter>src\brimstone\window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\windows\WindowsThreadLocal.hpp">
+      <Filter>src\brimstone\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\windows\WindowsWindow.hpp">
+      <Filter>src\brimstone\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\Window.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\brimstone\input\Key.cpp">
+      <Filter>src\brimstone\input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\windows\WindowsUtil.cpp">
-      <Filter>src\windows</Filter>
+    <ClCompile Include="..\..\src\brimstone\input\MouseButton.cpp">
+      <Filter>src\brimstone\input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\windows\WindowsWindow.cpp">
-      <Filter>src\windows</Filter>
+    <ClCompile Include="..\..\src\brimstone\util\Math.cpp">
+      <Filter>src\brimstone\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\windows\WindowsException.cpp">
-      <Filter>src\windows</Filter>
+    <ClCompile Include="..\..\src\brimstone\util\ThreadLocal.cpp">
+      <Filter>src\brimstone\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\util\Unicode.cpp">
-      <Filter>src\util</Filter>
+    <ClCompile Include="..\..\src\brimstone\util\Unicode.cpp">
+      <Filter>src\brimstone\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\LuaInstance.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\brimstone\window\BaseWindowImpl.cpp">
+      <Filter>src\brimstone\window</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Logger.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\brimstone\windows\WindowsException.cpp">
+      <Filter>src\brimstone\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\util\Math.cpp">
-      <Filter>src\util</Filter>
+    <ClCompile Include="..\..\src\brimstone\windows\WindowsThreadLocal.cpp">
+      <Filter>src\brimstone\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Exception.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\brimstone\windows\WindowsUtil.cpp">
+      <Filter>src\brimstone\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\input\Key.cpp">
-      <Filter>src\input</Filter>
+    <ClCompile Include="..\..\src\brimstone\windows\WindowsWindow.cpp">
+      <Filter>src\brimstone\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\input\MouseButton.cpp">
-      <Filter>src\input</Filter>
+    <ClCompile Include="..\..\src\brimstone\Exception.cpp">
+      <Filter>src\brimstone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Stopwatch.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\src\brimstone\Logger.cpp">
+      <Filter>src\brimstone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\window\BaseWindowImpl.cpp">
-      <Filter>src\window</Filter>
+    <ClCompile Include="..\..\src\brimstone\LuaInstance.cpp">
+      <Filter>src\brimstone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\util\ThreadLocal.cpp">
-      <Filter>src\util</Filter>
+    <ClCompile Include="..\..\src\brimstone\Stopwatch.cpp">
+      <Filter>src\brimstone</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\windows\WindowsThreadLocal.cpp">
-      <Filter>src\windows</Filter>
+    <ClCompile Include="..\..\src\brimstone\Window.cpp">
+      <Filter>src\brimstone</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,9 +263,6 @@
     <Filter Include="include\brimstone\windows">
       <UniqueIdentifier>{fdc9015a-70ae-41a1-a935-f0779b2fba1d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\util">
-      <UniqueIdentifier>{a52c98cb-9b60-4856-a7c9-90c931719855}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include\brimstone\point">
       <UniqueIdentifier>{40df068d-98bf-4df8-a545-07eb1256e797}</UniqueIdentifier>
     </Filter>
@@ -278,26 +275,32 @@
     <Filter Include="include\brimstone\matrix">
       <UniqueIdentifier>{0d045d51-2889-416f-aa6f-03ae488de5f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\windows">
-      <UniqueIdentifier>{87b8cad6-3f95-4411-b116-190b43065fcd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include\brimstone\window">
       <UniqueIdentifier>{7c3c7ca6-b91c-4a2e-befb-147625052298}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\brimstone\input">
       <UniqueIdentifier>{8e397922-6f02-46b2-beee-60ee3a66192d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\input">
-      <UniqueIdentifier>{ec224e55-eed1-4d0a-9443-5eec5982acb1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\window">
-      <UniqueIdentifier>{29cdb87e-185b-4d58-8179-9666785fa7df}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include\brimstone\color">
       <UniqueIdentifier>{eae47e5b-0540-4c0f-9722-8855b3bf25c5}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\brimstone\size">
       <UniqueIdentifier>{3f84ed81-ee18-439e-a657-3e01ee8cb182}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\brimstone">
+      <UniqueIdentifier>{3d4e54ba-41f1-41e9-be8b-12c5408c95b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\brimstone\input">
+      <UniqueIdentifier>{ec224e55-eed1-4d0a-9443-5eec5982acb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\brimstone\util">
+      <UniqueIdentifier>{a52c98cb-9b60-4856-a7c9-90c931719855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\brimstone\window">
+      <UniqueIdentifier>{29cdb87e-185b-4d58-8179-9666785fa7df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\brimstone\windows">
+      <UniqueIdentifier>{87b8cad6-3f95-4411-b116-190b43065fcd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

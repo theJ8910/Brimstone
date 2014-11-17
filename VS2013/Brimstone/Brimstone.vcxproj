@@ -228,26 +228,26 @@
     <ClInclude Include="..\..\include\brimstone\window\WindowEvent.hpp" />
     <ClInclude Include="..\..\include\brimstone\window\WindowHandle.hpp" />
     <ClInclude Include="..\..\include\brimstone\window\WindowImpl.hpp" />
-    <ClInclude Include="..\..\src\windows\WindowsThreadLocal.hpp" />
-    <ClInclude Include="..\..\src\windows\WindowsWindow.hpp" />
-    <ClInclude Include="..\..\src\window\BaseWindowImpl.hpp" />
+    <ClInclude Include="..\..\src\brimstone\windows\WindowsThreadLocal.hpp" />
+    <ClInclude Include="..\..\src\brimstone\windows\WindowsWindow.hpp" />
+    <ClInclude Include="..\..\src\brimstone\window\BaseWindowImpl.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\Exception.cpp" />
-    <ClCompile Include="..\..\src\input\Key.cpp" />
-    <ClCompile Include="..\..\src\input\MouseButton.cpp" />
-    <ClCompile Include="..\..\src\Logger.cpp" />
-    <ClCompile Include="..\..\src\LuaInstance.cpp" />
-    <ClCompile Include="..\..\src\Stopwatch.cpp" />
-    <ClCompile Include="..\..\src\util\Math.cpp" />
-    <ClCompile Include="..\..\src\util\ThreadLocal.cpp" />
-    <ClCompile Include="..\..\src\util\Unicode.cpp" />
-    <ClCompile Include="..\..\src\Window.cpp" />
-    <ClCompile Include="..\..\src\windows\WindowsException.cpp" />
-    <ClCompile Include="..\..\src\windows\WindowsThreadLocal.cpp" />
-    <ClCompile Include="..\..\src\windows\WindowsUtil.cpp" />
-    <ClCompile Include="..\..\src\windows\WindowsWindow.cpp" />
-    <ClCompile Include="..\..\src\window\BaseWindowImpl.cpp" />
+    <ClCompile Include="..\..\src\brimstone\Exception.cpp" />
+    <ClCompile Include="..\..\src\brimstone\input\Key.cpp" />
+    <ClCompile Include="..\..\src\brimstone\input\MouseButton.cpp" />
+    <ClCompile Include="..\..\src\brimstone\Logger.cpp" />
+    <ClCompile Include="..\..\src\brimstone\LuaInstance.cpp" />
+    <ClCompile Include="..\..\src\brimstone\Stopwatch.cpp" />
+    <ClCompile Include="..\..\src\brimstone\util\Math.cpp" />
+    <ClCompile Include="..\..\src\brimstone\util\ThreadLocal.cpp" />
+    <ClCompile Include="..\..\src\brimstone\util\Unicode.cpp" />
+    <ClCompile Include="..\..\src\brimstone\Window.cpp" />
+    <ClCompile Include="..\..\src\brimstone\windows\WindowsException.cpp" />
+    <ClCompile Include="..\..\src\brimstone\windows\WindowsThreadLocal.cpp" />
+    <ClCompile Include="..\..\src\brimstone\windows\WindowsUtil.cpp" />
+    <ClCompile Include="..\..\src\brimstone\windows\WindowsWindow.cpp" />
+    <ClCompile Include="..\..\src\brimstone\window\BaseWindowImpl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
