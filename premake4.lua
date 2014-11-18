@@ -7,8 +7,8 @@ solution( "Brimstone" )
         kind( "StaticLib" )
         language( "C++" )
         files( {
-            "src/**.cpp",
-            "src/**.hpp",
+            "src/brimstone/**.cpp",
+            "src/brimstone/**.hpp",
             "include/brimstone/**.hpp"
         } )
 
@@ -18,14 +18,14 @@ solution( "Brimstone" )
         --Exclude Windows files when compiling for non-window OSes
         configuration( "not windows" )
             excludes( {
-                "src/windows/**.cpp",
+                "src/brimstone/windows/**.cpp",
                 "include/brimstone/windows/**.hpp"
             } )
 
         --Exclude Linux files when compiling for non-linux OSes
         configuration( "not linux" )
             excludes( {
-                "src/linux/**.cpp",
+                "src/brimstone/linux/**.cpp",
                 "include/brimstone/linux/**.hpp"
             } )
 
@@ -43,12 +43,12 @@ solution( "Brimstone" )
         kind( "ConsoleApp" )
         language( "C++" )
         files( {
-            "tests/src/**.cpp",
-            "tests/src/**.hpp"
+            "src/tests/**.cpp",
+            "src/tests/**.hpp"
         } )
 
         includedirs( "include" )
-        targetdir( "tests/bin" )
+        targetdir( "bin" )
         libdirs( "lib" )
 
         doFlags()

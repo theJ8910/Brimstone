@@ -28,7 +28,7 @@ ifeq ($(config),debug32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m32 -L/usr/lib32 -pthread --no-as-needed
+  LDFLAGS   += -m32 -L/usr/lib32 -pthread -Wl,--no-as-needed
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -50,7 +50,7 @@ ifeq ($(config),release32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread --no-as-needed
+  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread -Wl,--no-as-needed
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -72,7 +72,7 @@ ifeq ($(config),debug64)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m64 -L/usr/lib64 -pthread --no-as-needed
+  LDFLAGS   += -m64 -L/usr/lib64 -pthread -Wl,--no-as-needed
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -94,7 +94,7 @@ ifeq ($(config),release64)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread --no-as-needed
+  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread -Wl,--no-as-needed
   LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -181,43 +181,43 @@ $(GCH): $(PCH)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/Exception.o: src/Exception.cpp
+$(OBJDIR)/Exception.o: src/brimstone/Exception.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Stopwatch.o: src/Stopwatch.cpp
+$(OBJDIR)/Stopwatch.o: src/brimstone/Stopwatch.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Logger.o: src/Logger.cpp
+$(OBJDIR)/Logger.o: src/brimstone/Logger.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/LuaInstance.o: src/LuaInstance.cpp
+$(OBJDIR)/LuaInstance.o: src/brimstone/LuaInstance.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Window.o: src/Window.cpp
+$(OBJDIR)/Window.o: src/brimstone/Window.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Key.o: src/input/Key.cpp
+$(OBJDIR)/Key.o: src/brimstone/input/Key.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/MouseButton.o: src/input/MouseButton.cpp
+$(OBJDIR)/MouseButton.o: src/brimstone/input/MouseButton.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/LinuxWindow.o: src/linux/LinuxWindow.cpp
+$(OBJDIR)/LinuxWindow.o: src/brimstone/linux/LinuxWindow.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/LinuxThreadLocal.o: src/linux/LinuxThreadLocal.cpp
+$(OBJDIR)/LinuxThreadLocal.o: src/brimstone/linux/LinuxThreadLocal.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/ThreadLocal.o: src/util/ThreadLocal.cpp
+$(OBJDIR)/ThreadLocal.o: src/brimstone/util/ThreadLocal.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Unicode.o: src/util/Unicode.cpp
+$(OBJDIR)/Unicode.o: src/brimstone/util/Unicode.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Math.o: src/util/Math.cpp
+$(OBJDIR)/Math.o: src/brimstone/util/Math.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/BaseWindowImpl.o: src/window/BaseWindowImpl.cpp
+$(OBJDIR)/BaseWindowImpl.o: src/brimstone/window/BaseWindowImpl.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 

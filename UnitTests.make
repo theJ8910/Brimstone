@@ -21,14 +21,14 @@ endif
 
 ifeq ($(config),debug32)
   OBJDIR     = obj/x32/debug/UnitTests
-  TARGETDIR  = tests/bin
+  TARGETDIR  = bin
   TARGET     = $(TARGETDIR)/UnitTests_x86d
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m32 -L/usr/lib32 -pthread --no-as-needed -Llib
+  LDFLAGS   += -m32 -L/usr/lib32 -pthread -Wl,--no-as-needed -Llib
   LIBS      += -lBrimstone_x86d
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -43,14 +43,14 @@ endif
 
 ifeq ($(config),release32)
   OBJDIR     = obj/x32/release/UnitTests
-  TARGETDIR  = tests/bin
+  TARGETDIR  = bin
   TARGET     = $(TARGETDIR)/UnitTests_x86
   DEFINES   += -DBS_BUILD_LINUX -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread --no-as-needed -Llib
+  LDFLAGS   += -s -m32 -L/usr/lib32 -pthread -Wl,--no-as-needed -Llib
   LIBS      += -lBrimstone_x86
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -65,14 +65,14 @@ endif
 
 ifeq ($(config),debug64)
   OBJDIR     = obj/x64/debug/UnitTests
-  TARGETDIR  = tests/bin
+  TARGETDIR  = bin
   TARGET     = $(TARGETDIR)/UnitTests_x64d
   DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -m64 -L/usr/lib64 -pthread --no-as-needed -Llib
+  LDFLAGS   += -m64 -L/usr/lib64 -pthread -Wl,--no-as-needed -Llib
   LIBS      += -lBrimstone_x64d
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -87,14 +87,14 @@ endif
 
 ifeq ($(config),release64)
   OBJDIR     = obj/x64/release/UnitTests
-  TARGETDIR  = tests/bin
+  TARGETDIR  = bin
   TARGET     = $(TARGETDIR)/UnitTests_x64
   DEFINES   += -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -pthread -std=c++11 -Wno-unknown-pragmas
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread --no-as-needed -Llib
+  LDFLAGS   += -s -m64 -L/usr/lib64 -pthread -Wl,--no-as-needed -Llib
   LIBS      += -lBrimstone_x64
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
@@ -197,91 +197,91 @@ $(GCH): $(PCH)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/main.o: tests/src/main.cpp
+$(OBJDIR)/main.o: src/tests/main.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Test.o: tests/src/Test.cpp
+$(OBJDIR)/Test.o: src/tests/Test.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/utils.o: tests/src/utils.cpp
+$(OBJDIR)/utils.o: src/tests/utils.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/PointN.o: tests/src/test/PointN.cpp
+$(OBJDIR)/PointN.o: src/tests/test/PointN.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Bounds2.o: tests/src/test/Bounds2.cpp
+$(OBJDIR)/Bounds2.o: src/tests/test/Bounds2.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/MatrixNxN.o: tests/src/test/MatrixNxN.cpp
+$(OBJDIR)/MatrixNxN.o: src/tests/test/MatrixNxN.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Size2.o: tests/src/test/Size2.cpp
+$(OBJDIR)/Size2.o: src/tests/test/Size2.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/BoundsN.o: tests/src/test/BoundsN.cpp
+$(OBJDIR)/BoundsN.o: src/tests/test/BoundsN.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Matrix3x3.o: tests/src/test/Matrix3x3.cpp
+$(OBJDIR)/Matrix3x3.o: src/tests/test/Matrix3x3.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/types.o: tests/src/test/types.cpp
+$(OBJDIR)/types.o: src/tests/test/types.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Vector4.o: tests/src/test/Vector4.cpp
+$(OBJDIR)/Vector4.o: src/tests/test/Vector4.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Vector3.o: tests/src/test/Vector3.cpp
+$(OBJDIR)/Vector3.o: src/tests/test/Vector3.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Point4.o: tests/src/test/Point4.cpp
+$(OBJDIR)/Point4.o: src/tests/test/Point4.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/SizeN.o: tests/src/test/SizeN.cpp
+$(OBJDIR)/SizeN.o: src/tests/test/SizeN.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Point3.o: tests/src/test/Point3.cpp
+$(OBJDIR)/Point3.o: src/tests/test/Point3.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Bounds3.o: tests/src/test/Bounds3.cpp
+$(OBJDIR)/Bounds3.o: src/tests/test/Bounds3.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Bounds4.o: tests/src/test/Bounds4.cpp
+$(OBJDIR)/Bounds4.o: src/tests/test/Bounds4.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Size3.o: tests/src/test/Size3.cpp
+$(OBJDIR)/Size3.o: src/tests/test/Size3.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Array.o: tests/src/test/Array.cpp
+$(OBJDIR)/Array.o: src/tests/test/Array.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/VectorN.o: tests/src/test/VectorN.cpp
+$(OBJDIR)/VectorN.o: src/tests/test/VectorN.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Matrix4x4.o: tests/src/test/Matrix4x4.cpp
+$(OBJDIR)/Matrix4x4.o: src/tests/test/Matrix4x4.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Vector2.o: tests/src/test/Vector2.cpp
+$(OBJDIR)/Vector2.o: src/tests/test/Vector2.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Range.o: tests/src/test/Range.cpp
+$(OBJDIR)/Range.o: src/tests/test/Range.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Size4.o: tests/src/test/Size4.cpp
+$(OBJDIR)/Size4.o: src/tests/test/Size4.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Matrix2x2.o: tests/src/test/Matrix2x2.cpp
+$(OBJDIR)/Matrix2x2.o: src/tests/test/Matrix2x2.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/MatrixRxC.o: tests/src/test/MatrixRxC.cpp
+$(OBJDIR)/MatrixRxC.o: src/tests/test/MatrixRxC.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Point2.o: tests/src/test/Point2.cpp
+$(OBJDIR)/Point2.o: src/tests/test/Point2.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/TextColor.o: tests/src/console/TextColor.cpp
+$(OBJDIR)/TextColor.o: src/tests/console/TextColor.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/Menu.o: tests/src/console/Menu.cpp
+$(OBJDIR)/Menu.o: src/tests/console/Menu.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
