@@ -16,23 +16,25 @@ Description:
 
 
 //Includes
-#include <brimstone/util/NonCopyable.hpp>       //Brimstone::NonCopyable
+#include <brimstone/window/DWindowImpl.hpp>     //Brimstone::Private::WindowImpl
 #include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 #include <brimstone/types.hpp>                  //Brimstone::ustring
 #include <brimstone/window/WindowEvent.hpp>     //Brimstone::WindowEvent
 #include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle
-#include <brimstone/window/WindowImpl.hpp>      //Brimstone::Private::WindowImpl
+
 
 
 
 
 namespace Brimstone {
 
-class Window : public NonCopyable {
+class Window {
 private:
     typedef std::vector< Window* >  WindowList;
 public:
     Window();
+    Window( Window& toCopy ) = delete;
+    Window& operator =( Window& toCopy ) = delete;
     Window( Window&& toMove );
     Window& operator =( Window&& toMove );
     ~Window();

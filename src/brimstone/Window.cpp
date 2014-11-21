@@ -12,13 +12,7 @@ Description:
 
 //Includes
 #include <brimstone/Window.hpp>         //Class header
-
-//Brimstone::WindowImpl
-#if defined( BS_BUILD_WINDOWS )
-#include "windows/WindowsWindow.hpp"    //WindowImpl (WindowsWindow)
-#elif defined( BS_BUILD_LINUX )
-#include "linux/LinuxWindow.hpp"        //WindowImpl (LinuxWindow)
-#endif
+#include "window/WindowImpl.hpp"        //Brimstone::Private::WindowImpl
 
 
 

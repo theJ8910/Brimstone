@@ -13,7 +13,6 @@ Description:
 
 
 //Includes
-#include <brimstone/util/NonCopyable.hpp>       //Brimstone::NonCopyable
 #include <brimstone/window/WindowEvent.hpp>     //Brimstone::WindowEvent
 #include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 #include <brimstone/types.hpp>                  //Brimstone::ustring
@@ -26,7 +25,7 @@ Description:
 namespace Brimstone {
 namespace Private {
 
-class BaseWindowImpl : public NonCopyable {
+class BaseWindowImpl {
 public:
     BaseWindowImpl();
 

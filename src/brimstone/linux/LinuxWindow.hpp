@@ -43,6 +43,8 @@ private:
     typedef std::unordered_map< ::Window, LinuxWindow& > XWinToWindowMap;
 public:
     LinuxWindow();
+    LinuxWindow( LinuxWindow& toCopy ) = delete;
+    LinuxWindow& operator =( LinuxWindow& toCopy ) = delete;
     ~LinuxWindow();
 
     void            open();

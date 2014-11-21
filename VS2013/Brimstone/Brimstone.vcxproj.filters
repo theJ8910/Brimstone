@@ -145,9 +145,6 @@
     <ClInclude Include="..\..\include\brimstone\window\WindowHandle.hpp">
       <Filter>include\brimstone\window</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\brimstone\window\WindowImpl.hpp">
-      <Filter>include\brimstone\window</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\brimstone\input\MouseButton.hpp">
       <Filter>include\brimstone\input</Filter>
     </ClInclude>
@@ -192,6 +189,72 @@
     </ClInclude>
     <ClInclude Include="..\..\src\brimstone\windows\WindowsWindow.hpp">
       <Filter>src\brimstone\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\ui\Events.hpp">
+      <Filter>include\brimstone\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\ui\IPanel.hpp">
+      <Filter>include\brimstone\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\glcorearb.h">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\glext.h">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLHeader.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLLoad.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\glxext.h">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\wglext.h">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\WindowsGLContext.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLContext.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\graphics\DGraphicsImpl.hpp">
+      <Filter>include\brimstone\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\graphics\GraphicsImpl.hpp">
+      <Filter>src\brimstone\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLGraphicsImpl.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\graphics\Enums.hpp">
+      <Filter>include\brimstone\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLProgram.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLSampler.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLShader.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLTexture.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\opengl\GLVertexBuffer.hpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\Graphics.hpp">
+      <Filter>include\brimstone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\brimstone\window\DWindowImpl.hpp">
+      <Filter>include\brimstone\window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\brimstone\window\WindowImpl.hpp">
+      <Filter>src\brimstone\window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -238,6 +301,36 @@
       <Filter>src\brimstone</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\brimstone\Window.cpp">
+      <Filter>src\brimstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\ui\Events.cpp">
+      <Filter>src\brimstone\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\opengl\GLLoad.cpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\opengl\WindowsGLContext.cpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\opengl\GLGraphicsImpl.cpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\opengl\GLProgram.cpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\opengl\GLSampler.cpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\opengl\GLShader.cpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\opengl\GLTexture.cpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\opengl\GLVertexBuffer.cpp">
+      <Filter>src\brimstone\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\brimstone\Graphics.cpp">
       <Filter>src\brimstone</Filter>
     </ClCompile>
   </ItemGroup>
@@ -301,6 +394,21 @@
     </Filter>
     <Filter Include="src\brimstone\windows">
       <UniqueIdentifier>{87b8cad6-3f95-4411-b116-190b43065fcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\brimstone\opengl">
+      <UniqueIdentifier>{853f8226-5f86-4335-b7ac-14754131c537}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\graphics">
+      <UniqueIdentifier>{32944577-25ab-4d45-becb-2636cfb0822d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\brimstone\ui">
+      <UniqueIdentifier>{7b52bf59-bdf7-4e55-8fde-6390415d5cf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\brimstone\ui">
+      <UniqueIdentifier>{c9e1fee9-b56e-439c-b0f9-09b132d61c6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\brimstone\graphics">
+      <UniqueIdentifier>{c152fe16-c80a-4374-9063-d4d7a6dd3296}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

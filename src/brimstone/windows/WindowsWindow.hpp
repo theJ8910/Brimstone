@@ -39,6 +39,8 @@ private:
 
 public:
     WindowsWindow();
+    WindowsWindow( WindowsWindow& toCopy ) = delete;
+    WindowsWindow& operator =( WindowsWindow& toCopy ) = delete;
     ~WindowsWindow();
 
     void            open();
