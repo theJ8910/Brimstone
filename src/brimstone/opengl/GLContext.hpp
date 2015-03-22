@@ -17,9 +17,9 @@ Description:
 
 //Includes
 #if defined( BS_BUILD_WINDOWS )
-#include "../opengl/WindowsGLContext.hpp"
+#include "WindowsGLContext.hpp"
 #elif defined( BS_BUILD_LINUX )
-#include "../opengl/LinuxGLContext.hpp"
+#include "LinuxGLContext.hpp"
 #endif
 
 

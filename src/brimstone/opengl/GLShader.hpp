@@ -14,8 +14,8 @@ Description:
 
 
 //Includes
-#include <brimstone/types.hpp>                  //ustring
-#include "GLHeader.hpp"                         //GLuint
+#include <brimstone/types.hpp>  //Brimstone::ustring
+#include <gll/gl_types.hpp>     //gll::GLuint
 
 
 
@@ -38,8 +38,8 @@ public:
     void setSource( const ustring& source );
     void compile();
 private:
-    ShaderType m_type;
-    GLuint     m_name;
+    ShaderType  m_type;
+    gll::GLuint m_name;
 };
 
 }

@@ -16,6 +16,7 @@ Description:
 #include <brimstone/types.hpp>                  //Brimstone::ustring
 #include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 #include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle
+#include <brimstone/window/WindowDisplay.hpp>   //Brimstone::WindowDisplay
 
 #include <unordered_map>                        //std::unordered_map
 #include <mutex>                                //std::mutex
@@ -64,6 +65,7 @@ public:
     Point2i         screenToWindow( Point2i screenCoords ) const;
     Point2i         windowToScreen( Point2i windowCoords ) const;
 
+    WindowDisplay   getDisplay() const;
     WindowHandle    getHandle() const;
 
 private:
@@ -75,6 +77,8 @@ private:
     //we need to qualify the X11 Window by prefixing "::" to it
     //to indicate we want the Window in the global namespace.
     ::Window                m_window;
+    int                     m_screen;
+    Colormap                m_colorMap;
     XIM                     m_inputMethod;
     XIC                     m_inputContext;
     Atom                    m_closeAtom;
@@ -91,9 +95,6 @@ private:
     static std::mutex       m_windowsMutex;
     static bool             m_xInitialized;
     static Display*         m_display;
-    static int              m_screen;
-    static unsigned long    m_black;
-    static unsigned long    m_white;
     static XWinToWindowMap  m_windowMap;
 };
 

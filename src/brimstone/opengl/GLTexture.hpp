@@ -11,7 +11,7 @@ Description:
 #define BS_OPENGL_GLTEXTURE_HPP
 
 //Includes
-#include "GLHeader.hpp"     //OpenGL
+#include <gll/gl_types.hpp>      //gll::GLsizei
 
 
 
@@ -35,10 +35,10 @@ public:
     size_t getWidth() const;
     size_t getHeight() const;
 private:
-    GLuint m_name;
+    gll::GLuint m_name;
 
-    GLsizei m_width;
-    GLsizei m_height;
+    gll::GLsizei m_width;
+    gll::GLsizei m_height;
 };
 
 }

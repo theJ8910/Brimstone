@@ -13,6 +13,7 @@ Description:
 
 //Includes
 #include "LinuxWindow.hpp"                      //Class header
+#include "../opengl/LinuxGLContext.hpp"         //TEMP? LinuxGLContext::getIdealVisualInfo
 
 #include <brimstone/util/Range.hpp>             //Brimstone::clampedValue
 #include <brimstone/Exception.hpp>              //Brimstone::NullPointerException
@@ -30,15 +31,14 @@ std::mutex                      LinuxWindow::m_windowsMutex;
 bool                            LinuxWindow::m_xInitialized = false;
 
 Display*                        LinuxWindow::m_display      = nullptr;
-int                             LinuxWindow::m_screen       = 0;
-unsigned long                   LinuxWindow::m_black        = 0;
-unsigned long                   LinuxWindow::m_white        = 0;
 LinuxWindow::XWinToWindowMap    LinuxWindow::m_windowMap;
 
 
 
 LinuxWindow::LinuxWindow() :
     m_window( 0 ),
+    m_screen( 0 ),
+    m_colorMap( 0 ),
     m_inputMethod( 0 ),
     m_inputContext( 0 ),
     m_closeAtom( 0 ) {
@@ -58,22 +58,49 @@ void LinuxWindow::open() {
     //Initialize X11 if we haven't already
     if( !m_xInitialized )
         initX();
+    
+    //Ask GLX for info about the ideal visual for our window.
+    //NOTE: It kind of irks me that we need to interact with OpenGL prior to creating a window it can use.
+    //Is there something better we can do here?
+    {
+        XVisualInfo* vi = LinuxGLContext::getIdealVisualInfo( m_display );
+        std::unique_ptr< XVisualInfo, int(*)( void* ) > uptr( vi, &XFree );
 
-    //Create the window.
-    m_window = XCreateSimpleWindow(
-        m_display,
-        DefaultRootWindow( m_display ),
-        m_bounds.mins.x,
-        m_bounds.mins.y,
-        m_bounds.getWidth(),
-        m_bounds.getHeight(),
-        5,
-        m_white,
-        m_black
-    );
+        m_screen = vi->screen;
 
-    if( !m_window )
-        throw NullPointerException();
+        //Find root window
+        ::Window rootWindow = RootWindow( m_display, m_screen );
+
+        //Create the window.
+        m_window = XCreateWindow(
+            m_display,
+            rootWindow,
+            m_bounds.mins.x,
+            m_bounds.mins.y,
+            m_bounds.getWidth(),
+            m_bounds.getHeight(),
+            5,
+            vi->depth,
+            InputOutput,
+            vi->visual,
+            0, nullptr
+        );
+        if( !m_window )
+            throw NullPointerException();
+
+        //Create a colormap
+        m_colorMap = XCreateColormap(
+            m_display,
+            rootWindow, 
+            vi->visual,
+            AllocNone
+        );
+    }
+
+    //Set the window border, background, and colormap
+    XSetWindowBorder( m_display, m_window, WhitePixel( m_display, m_screen ) );
+    XSetWindowBackground( m_display, m_window, BlackPixel( m_display, m_screen ) );
+    XSetWindowColormap( m_display, m_window, m_colorMap );
 
     //Set title
     XSetStandardProperties( m_display, m_window, m_title.c_str(), m_title.c_str(), None, nullptr, 0, nullptr );
@@ -110,7 +137,7 @@ void LinuxWindow::open() {
     //these resources. We need to take advantage of an extension to transfer this responsibility
     //from the Window Manager to our application so we can handle it appropriately.
     //By setting the WM_PROTOCOLS property to use the WM_DELETE_WINDOW atom, we're telling it to
-    //send a ClientMessage event whenever the close button is clicked instead of doing it's default behavior.
+    //send a ClientMessage event whenever the close button is clicked instead of doing its default behavior.
     //NOTE: XInternAtom can return None if the third parameter (only_if_exists) is true,
     //      therefore we set it to "false" to ensure the atom is always created.
     //NOTE: you can run xlsatoms ("X list atoms") in a terminal to get registered atoms
@@ -137,6 +164,11 @@ void LinuxWindow::close() {
     if( m_inputMethod != 0 ) {
         XCloseIM( m_inputMethod );
         m_inputMethod = 0;
+    }
+
+    if( m_colorMap != 0 ) {
+        XFreeColormap( m_display, m_colorMap );
+        m_colorMap = 0;
     }
 
     //Destroy the window
@@ -618,6 +650,10 @@ Point2i LinuxWindow::windowToScreen( Point2i windowCoords ) const {
     return windowCoords;
 }
 
+WindowDisplay LinuxWindow::getDisplay() const {
+    return m_display;
+}
+
 WindowHandle LinuxWindow::getHandle() const {
     return m_window;
 }
@@ -628,13 +664,6 @@ void LinuxWindow::initX() {
     if( m_display == nullptr )
         throw NullPointerException();
 
-    //Pick a screen to use
-    m_screen = DefaultScreen( m_display );
-
-    //Get black and white colors for this display/screen combination
-    m_black  = BlackPixel( m_display, m_screen );
-    m_white  = WhitePixel( m_display, m_screen );
-
     //Finished initializing
     m_xInitialized = true;
 }
@@ -642,11 +671,9 @@ void LinuxWindow::initX() {
 void LinuxWindow::destroyX() {
     m_xInitialized = false;
 
+    //Close the display
     XCloseDisplay( m_display );
     m_display = nullptr;
-    m_screen  = 0;
-    m_black   = 0;
-    m_white   = 0;
 }
 
 }

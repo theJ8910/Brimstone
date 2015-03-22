@@ -15,10 +15,11 @@ Description:
 #include <brimstone/graphics/Enums.hpp>     //ShaderType
 #include <brimstone/Exception.hpp>
 #include "GLShader.hpp"
-#include "GLLoad.hpp"
 
 #include <memory>
 
+#include <gll/gl_4_4_comp.hpp>      //gll::* (GL 4.4 and below + compatibility)
+using namespace gll;
 
 
 

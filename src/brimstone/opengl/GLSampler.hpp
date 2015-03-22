@@ -11,8 +11,7 @@ Description:
 #define BS_OPENGL_GLSAMPLER_HPP
 
 //Includes
-#include "GLHeader.hpp"     //OpenGL
-
+#include <gll/gl_types.hpp> //gll::GLuint
 
 
 
@@ -38,7 +37,7 @@ public:
     void bind();
     void unbind();
 private:
-    GLuint m_name;
+    gll::GLuint m_name;
 };
 
 }

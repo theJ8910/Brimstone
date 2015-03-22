@@ -12,8 +12,9 @@ Description:
 
 //Includes
 #include "GLTexture.hpp"    //Header file
-#include "glext.h"          //GL_TEXTURE0
-#include "GLLoad.hpp"       //glActiveTexture
+
+#include <gll/gl_4_4_comp.hpp>      //gll::* (GL 4.4 and below + compatibility)
+using namespace gll;
 
 
 

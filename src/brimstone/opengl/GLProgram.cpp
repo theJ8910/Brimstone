@@ -14,9 +14,10 @@ Description:
 #include <brimstone/Exception.hpp>  //GraphicsException
 #include "GLProgram.hpp"            //Class header
 #include "GLShader.hpp"             //GLShader
-#include "GLLoad.hpp"               //OpenGL Extensions
 
 #include <memory>                   //std::unique_ptr
+#include <gll/gl_4_4_comp.hpp>      //gll::* (GL 4.4 and below + compatibility)
+using namespace gll;
 
 
 namespace Brimstone {

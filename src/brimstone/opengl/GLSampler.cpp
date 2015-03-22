@@ -12,11 +12,11 @@ Description:
 
 //Includes
 #include "GLSampler.hpp"    //Header file
-#include "glext.h"          //GL_TEXTURE0
-#include "GLLoad.hpp"       //glGenSamplers, glSamplerParameteri, ...
 
 #include <brimstone/graphics/Enums.hpp> //FilterType
 
+#include <gll/gl_4_4_comp.hpp>      //gll::* (GL 4.4 and below + compatibility)
+using namespace gll;
 
 
 
@@ -45,6 +45,7 @@ GLSampler::~GLSampler() {
 }
 
 void GLSampler::create() {
+
     glGenSamplers( 1, &m_name );
 
     //Controls how textures appear at anything but a 1:1 ratio when rendered on the screen

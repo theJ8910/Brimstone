@@ -23,7 +23,7 @@ ifeq ($(config),debug32)
   OBJDIR     = obj/x32/debug/Brimstone
   TARGETDIR  = lib
   TARGET     = $(TARGETDIR)/libBrimstone_x86d.a
-  DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX
+  DEFINES   += -DBS_BUILD_OPENGL -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m32 -pthread -std=c++11 -Wno-unknown-pragmas
@@ -45,7 +45,7 @@ ifeq ($(config),release32)
   OBJDIR     = obj/x32/release/Brimstone
   TARGETDIR  = lib
   TARGET     = $(TARGETDIR)/libBrimstone_x86.a
-  DEFINES   += -DBS_BUILD_LINUX
+  DEFINES   += -DBS_BUILD_OPENGL -DBS_BUILD_LINUX
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m32 -pthread -std=c++11 -Wno-unknown-pragmas
@@ -67,7 +67,7 @@ ifeq ($(config),debug64)
   OBJDIR     = obj/x64/debug/Brimstone
   TARGETDIR  = lib
   TARGET     = $(TARGETDIR)/libBrimstone_x64d.a
-  DEFINES   += -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT
+  DEFINES   += -DBS_BUILD_OPENGL -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g -m64 -pthread -std=c++11 -Wno-unknown-pragmas
@@ -89,7 +89,7 @@ ifeq ($(config),release64)
   OBJDIR     = obj/x64/release/Brimstone
   TARGETDIR  = lib
   TARGET     = $(TARGETDIR)/libBrimstone_x64.a
-  DEFINES   += -DBS_BUILD_LINUX -DBS_BUILD_64BIT
+  DEFINES   += -DBS_BUILD_OPENGL -DBS_BUILD_LINUX -DBS_BUILD_64BIT
   INCLUDES  += -Iinclude
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O3 -m64 -pthread -std=c++11 -Wno-unknown-pragmas
@@ -111,16 +111,26 @@ OBJECTS := \
 	$(OBJDIR)/Exception.o \
 	$(OBJDIR)/Stopwatch.o \
 	$(OBJDIR)/Logger.o \
+	$(OBJDIR)/Graphics.o \
 	$(OBJDIR)/LuaInstance.o \
 	$(OBJDIR)/Window.o \
 	$(OBJDIR)/Key.o \
 	$(OBJDIR)/MouseButton.o \
+	$(OBJDIR)/XException.o \
 	$(OBJDIR)/LinuxWindow.o \
 	$(OBJDIR)/LinuxThreadLocal.o \
 	$(OBJDIR)/ThreadLocal.o \
 	$(OBJDIR)/Unicode.o \
 	$(OBJDIR)/Math.o \
+	$(OBJDIR)/LinuxGLContext.o \
+	$(OBJDIR)/GLGraphicsImpl.o \
+	$(OBJDIR)/GLProgram.o \
+	$(OBJDIR)/GLShader.o \
+	$(OBJDIR)/GLSampler.o \
+	$(OBJDIR)/GLTexture.o \
+	$(OBJDIR)/GLVertexBuffer.o \
 	$(OBJDIR)/BaseWindowImpl.o \
+	$(OBJDIR)/Events.o \
 
 RESOURCES := \
 
@@ -190,6 +200,9 @@ $(OBJDIR)/Stopwatch.o: src/brimstone/Stopwatch.cpp
 $(OBJDIR)/Logger.o: src/brimstone/Logger.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Graphics.o: src/brimstone/Graphics.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/LuaInstance.o: src/brimstone/LuaInstance.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
@@ -200,6 +213,9 @@ $(OBJDIR)/Key.o: src/brimstone/input/Key.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/MouseButton.o: src/brimstone/input/MouseButton.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/XException.o: src/brimstone/linux/XException.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/LinuxWindow.o: src/brimstone/linux/LinuxWindow.cpp
@@ -217,7 +233,31 @@ $(OBJDIR)/Unicode.o: src/brimstone/util/Unicode.cpp
 $(OBJDIR)/Math.o: src/brimstone/util/Math.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/LinuxGLContext.o: src/brimstone/opengl/LinuxGLContext.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/GLGraphicsImpl.o: src/brimstone/opengl/GLGraphicsImpl.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/GLProgram.o: src/brimstone/opengl/GLProgram.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/GLShader.o: src/brimstone/opengl/GLShader.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/GLSampler.o: src/brimstone/opengl/GLSampler.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/GLTexture.o: src/brimstone/opengl/GLTexture.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/GLVertexBuffer.o: src/brimstone/opengl/GLVertexBuffer.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/BaseWindowImpl.o: src/brimstone/window/BaseWindowImpl.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/Events.o: src/brimstone/ui/Events.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 

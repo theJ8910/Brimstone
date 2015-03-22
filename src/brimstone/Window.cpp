@@ -132,6 +132,10 @@ Point2i Window::windowToScreen( Point2i windowCoords ) const {
     return m_impl->windowToScreen( windowCoords );
 }
 
+WindowDisplay Window::getDisplay() const {
+    return m_impl->getDisplay();
+}
+
 WindowHandle Window::getHandle() const {
     return m_impl->getHandle();
 }

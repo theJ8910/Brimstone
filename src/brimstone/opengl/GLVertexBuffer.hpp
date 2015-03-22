@@ -12,7 +12,7 @@ Description:
 
 
 //Includes
-#include "GLHeader.hpp"                     //GLuint
+#include <gll/gl_types.hpp>      //gll::GLuint, gll::GLsizei
 
 
 
@@ -38,9 +38,9 @@ public:
 
     void setType( const int type );
 private:
-    GLuint  m_name;
-    GLsizei m_count;
-    int     m_type;
+    gll::GLuint  m_name;
+    gll::GLsizei m_count;
+    int          m_type;
 };
 
 }

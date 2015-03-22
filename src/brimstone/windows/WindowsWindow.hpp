@@ -19,6 +19,7 @@ Description:
 #include <brimstone/types.hpp>                  //Brimstone::ustring
 #include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 #include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle
+#include <brimstone/window/WindowDisplay.hpp>   //Brimstone::WindowDisplay
 
 #include <unordered_map>                        //std::unordered_map
 #include <mutex>                                //std::mutex
@@ -60,6 +61,7 @@ public:
     Point2i         screenToWindow( Point2i screenCoords ) const;
     Point2i         windowToScreen( Point2i windowCoords ) const;
 
+    WindowDisplay   getDisplay() const;
     WindowHandle    getHandle() const;
 
 private:

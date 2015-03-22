@@ -9,7 +9,7 @@ Description:
 //Includes
 #include <brimstone/Graphics.hpp>       //Header file
 
-#include "graphics/GraphicsImpl.hpp"    //Brimstone::Private::DGraphicsImpl, etc
+#include "graphics/GraphicsImpl.hpp"    //Brimstone::Private::GraphicsImpl, etc
 
 
 

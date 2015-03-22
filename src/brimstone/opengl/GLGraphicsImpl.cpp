@@ -12,7 +12,6 @@ Description:
 
 //Includes
 #include "GLGraphicsImpl.hpp"   //Header file
-#include "GLLoad.hpp"           //OpenGL extensions
 #include "GLShader.hpp"         //Brimstone::GLShader
 #include "GLProgram.hpp"        //Brimstone::GLProgram
 #include "GLVertexBuffer.hpp"   //Brimstone::GLVertexBuffer
@@ -23,13 +22,15 @@ Description:
 
 #include <boost/format.hpp>     //boost::format
 
-
+#include <gll/loader.hpp>       //gll::Load
+#include <gll/gl_4_4_comp.hpp>  //gll::* (GL 4.4 and below + compatibility)
+using namespace gll;
 
 namespace Brimstone {
 namespace Private {
 
 //Static initializers
-std::atomic<bool> GLGraphicsImpl::m_initialized = false;
+std::atomic<bool> GLGraphicsImpl::m_initialized( false );
 
 void GLGraphicsImpl::init( const Brimstone::Window& window ) {
     m_context.init( window );
@@ -152,7 +153,7 @@ void GLGraphicsImpl::initOpenGL( GLContext& context ) {
     context.begin();
 
     //Now that a context is loaded we can load extensions
-    loadOpenGLExtensions();
+    gll::Load();
 
     //Get the version of OpenGL we're using and log it
     GLint major, minor;

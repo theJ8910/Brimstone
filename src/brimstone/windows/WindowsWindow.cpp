@@ -279,7 +279,12 @@ Point2i WindowsWindow::windowToScreen( Point2i windowCoords ) const {
     return windowCoords;
 }
 
-HWND WindowsWindow::getHandle() const {
+WindowDisplay WindowsWindow::getDisplay() const {
+    //Displays are an X11 thing
+    return nullptr;
+}
+
+WindowHandle WindowsWindow::getHandle() const {
     return m_wnd;
 }
 

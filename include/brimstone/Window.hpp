@@ -20,6 +20,7 @@ Description:
 #include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 #include <brimstone/types.hpp>                  //Brimstone::ustring
 #include <brimstone/window/WindowEvent.hpp>     //Brimstone::WindowEvent
+#include <brimstone/window/WindowDisplay.hpp>   //Brimstone::WindowDisplay
 #include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle
 
 
@@ -71,6 +72,7 @@ public:
     Point2i         screenToWindow( Point2i screenCoords ) const;
     Point2i         windowToScreen( Point2i windowCoords ) const;
 
+    WindowDisplay   getDisplay() const;
     WindowHandle    getHandle() const;
 private:
     Private::WindowImpl*        m_impl;

@@ -30,6 +30,10 @@ function doFlags()
 end
 
 function doBrimstoneDefines()
+    --Use OpenGL for the graphics implementation
+    configuration( {} )
+        defines( "BS_BUILD_OPENGL" )
+
     --Debug builds enable a bunch of safeguards
     configuration( "debug" )
         defines( {
@@ -39,7 +43,7 @@ function doBrimstoneDefines()
             "BS_CHECK_SIZE",
             "BS_CHECK_INDEX",
             "BS_CHECK_DIVBYZERO",
-            "BS_CHECK_DOMAIN"
+            "BS_CHECK_DOMAIN",
         } )
 
     --Define a preprocessor symbol indicating what OS we're compiling for

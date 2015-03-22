@@ -12,13 +12,17 @@ Description:
 
 
 
-//Include
-#include <brimstone/util/NonCopyable.hpp>   //Brimstone::NonCopyable
-#include "GLHeader.hpp"                     //OpenGL
+//Includes
+#include <X11/Xlib.h>                   //X11
+#include <X11/Xutil.h>                  //X11
+#include <X11/Xos.h>                    //X11
 
-#include <X11/Xlib.h>                       //X11
-#include <X11/Xutil.h>                      //X11
-#include <X11/Xos.h>                        //X11
+
+
+
+//TEMP: gll doesn't have a glx_types header yet
+typedef struct __GLXcontextRec  *GLXContext;
+typedef struct __GLXFBConfigRec *GLXFBConfig;
 
 
 
@@ -27,9 +31,11 @@ namespace Brimstone {
 class Window;
 namespace Private {
 
-class LinuxGLContext : public NonCopyable {
+class LinuxGLContext {
 public:
     LinuxGLContext();
+    LinuxGLContext( const LinuxGLContext& toCopy ) = delete;
+    LinuxGLContext& operator =( const LinuxGLContext& toCopy ) = delete;
     LinuxGLContext( const Window& window );
     ~LinuxGLContext();
 
@@ -43,9 +49,22 @@ public:
     void begin();
     void end();
 private:
+    void destroyContext();
+    void destroyFinish();
+private:
     GLXContext m_context;
-    Display    m_display;
     ::Window   m_window;
+public:
+    static XVisualInfo* getIdealVisualInfo( Display* display );
+private:
+    static void initGLX( Display* display );
+    static void destroyGLX();
+private:
+    static bool        m_glxInitialized;
+    static Display*    m_display;
+    static GLXFBConfig m_bestFBC;
+
+    static int         m_contextCount;
 };
 
 }

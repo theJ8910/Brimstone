@@ -14,8 +14,7 @@ Description:
 
 
 //Includes
-#include "GLHeader.hpp"                         //GLuint
-#include "GLext.h"                              //GLchar
+#include <gll/gl_types.hpp>     //gll:GLchar
 
 
 
@@ -42,15 +41,15 @@ public:
     void use();
     void stopUsing();
 
-    void setUniform( const GLchar* const name, const GLint value );
-    void setUniform( const GLchar* const name, const GLuint value );
-    void setUniform( const GLchar* const name, const GLfloat value );
-    void setUniform( const GLchar* const name, const GLint x, const GLint y );
-    void setUniform( const GLchar* const name, const GLfloat x, const GLfloat y );
-    void setUniform( const GLchar* const name, const GLint x, const GLint y, const GLint z, const GLint w );
-    void setUniform( const GLchar* const name, const GLfloat x, const GLfloat y, const GLfloat z, const GLfloat w );
+    void setUniform( const char* const name, const int value );
+    void setUniform( const char* const name, const uint value );
+    void setUniform( const char* const name, const float value );
+    void setUniform( const char* const name, const int x, const int y );
+    void setUniform( const char* const name, const float x, const float y );
+    void setUniform( const char* const name, const int x, const int y, const int z, const int w );
+    void setUniform( const char* const name, const float x, const float y, const float z, const float w );
 private:
-    GLuint     m_name;
+    gll::GLuint     m_name;
 };
 
 }
