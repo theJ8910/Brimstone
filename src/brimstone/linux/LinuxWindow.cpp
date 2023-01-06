@@ -24,6 +24,20 @@ Description:
 
 
 
+namespace {
+    static const long event_mask = (
+        ButtonPressMask     | ButtonReleaseMask   |
+        PointerMotionMask   |
+        KeyPressMask        | KeyReleaseMask      |
+        FocusChangeMask     |
+        KeymapStateMask     |
+        StructureNotifyMask /*| ExposureMask*/
+    );
+
+    static const long valuemask = (
+        CWBorderPixel | CWColormap | CWEventMask
+    );
+}
 namespace Brimstone {
 namespace Private {
 
@@ -53,8 +67,6 @@ LinuxWindow::~LinuxWindow() {
 }
 
 void LinuxWindow::open() {
-    std::lock_guard< std::mutex > l( m_windowsMutex );
-
     //Initialize X11 if we haven't already
     if( !m_xInitialized )
         initX();
@@ -67,9 +79,28 @@ void LinuxWindow::open() {
         std::unique_ptr< XVisualInfo, int(*)( void* ) > uptr( vi, &XFree );
 
         m_screen = vi->screen;
-
+        
         //Find root window
         ::Window rootWindow = RootWindow( m_display, m_screen );
+
+        //Create a colormap
+        m_colorMap = XCreateColormap(
+            m_display,
+            rootWindow,
+            vi->visual,
+            AllocNone
+        );
+
+        //Set window attributes.
+        //There's no need to zero out the entire structure - we only set the attributes we need to, then specify which values are set via the valuemask argument
+        //specified alongside the attributes argument.
+        //NOTE: The background_pixmap attribute is set in the example, but its corresponding mask bit isn't provided in the valuemask argument to XCreateWindow.
+        //I commented it out because setting this appears to not make any difference.
+        XSetWindowAttributes swa;
+        swa.colormap     = m_colorMap;
+        //swa.background_pixmap = None;
+        swa.border_pixel = 0;
+        swa.event_mask   = event_mask;
 
         //Create the window.
         m_window = XCreateWindow(
@@ -83,37 +114,16 @@ void LinuxWindow::open() {
             vi->depth,
             InputOutput,
             vi->visual,
-            0, nullptr
+            valuemask,
+            &swa
         );
+
         if( !m_window )
             throw NullPointerException();
-
-        //Create a colormap
-        m_colorMap = XCreateColormap(
-            m_display,
-            rootWindow, 
-            vi->visual,
-            AllocNone
-        );
     }
 
-    //Set the window border, background, and colormap
-    XSetWindowBorder( m_display, m_window, WhitePixel( m_display, m_screen ) );
-    XSetWindowBackground( m_display, m_window, BlackPixel( m_display, m_screen ) );
-    XSetWindowColormap( m_display, m_window, m_colorMap );
-
-    //Set title
-    XSetStandardProperties( m_display, m_window, m_title.c_str(), m_title.c_str(), None, nullptr, 0, nullptr );
-
-    //Tell X what kinds of events we're interested in
-    XSelectInput(
-        m_display, m_window,
-        ButtonPressMask     | ButtonReleaseMask   |
-        PointerMotionMask   |
-        KeyPressMask        | KeyReleaseMask      |
-        KeymapStateMask     |
-        StructureNotifyMask /*| ExposureMask*/
-    );
+    //Set the window title
+    XStoreName( m_display, m_window, m_title.c_str() );
 
     //Create an input method and context.
     //We need this to translate key press events to typed characters.
@@ -138,30 +148,33 @@ void LinuxWindow::open() {
     //from the Window Manager to our application so we can handle it appropriately.
     //By setting the WM_PROTOCOLS property to use the WM_DELETE_WINDOW atom, we're telling it to
     //send a ClientMessage event whenever the close button is clicked instead of doing its default behavior.
-    //NOTE: XInternAtom can return None if the third parameter (only_if_exists) is true,
-    //      therefore we set it to "false" to ensure the atom is always created.
+    //NOTE: XInternAtom can return None if the third parameter (only_if_exists) is True,
+    //      therefore we set it to False to ensure the atom is always created.
     //NOTE: you can run xlsatoms ("X list atoms") in a terminal to get registered atoms
-    m_closeAtom = XInternAtom( m_display, "WM_DELETE_WINDOW", false );
-    XSetWMProtocols( m_display, m_window, &m_closeAtom, 1 );
+    m_closeAtom = XInternAtom( m_display, "WM_DELETE_WINDOW", False );
+    if( m_closeAtom == None )
+        throw Exception( "XInternAtom failed." );
+
+    if( XSetWMProtocols( m_display, m_window, &m_closeAtom, 1 ) == 0 )
+        throw Exception( "XSetWMProtocols failed." );
 
     //Add the window to the map
-    m_windowMap.emplace( m_window, *this );
+    {
+        std::lock_guard< std::mutex > l( m_windowsMutex );
+        m_windowMap.emplace( m_window, *this );
+    }
 
     //Display the window to the user
-    //XClearWindow( m_display, m_window );
-    //XMapRaised( m_display, m_window );
     XMapWindow( m_display, m_window );
 }
 
 void LinuxWindow::close() {
-    std::lock_guard< std::mutex > l( m_windowsMutex );
-
     //Destroy the input context and method
-    if( m_inputContext != 0 ) {
+    if( m_inputContext != nullptr ) {
         XDestroyIC( m_inputContext );
         m_inputContext = 0;
     }
-    if( m_inputMethod != 0 ) {
+    if( m_inputMethod != nullptr ) {
         XCloseIM( m_inputMethod );
         m_inputMethod = 0;
     }
@@ -172,12 +185,14 @@ void LinuxWindow::close() {
     }
 
     //Destroy the window
-    //XFreeGC( m_pcDisplay, m_cGraphicsContext );
     if( m_window != 0 ) {
         XDestroyWindow( m_display, m_window );
 
         //Remove the window from the map
-        m_windowMap.erase( m_window );
+        {
+            std::lock_guard< std::mutex > l( m_windowsMutex );
+            m_windowMap.erase( m_window );
+        }
 
         //If this is the last window being closed, clean up shared X11 resources (display, etc)
         if( m_xInitialized && m_windowMap.empty() )
@@ -274,7 +289,7 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             if( button == Button4 || button == Button5 ) {
                 WindowEvent e;
                 e.type               = WindowEventType::MouseVScroll;
-                e.mouseScroll.scroll = xEvent.xbutton.button == Button4 ? 1.0f : -1.0f;
+                e.mouseScroll.scroll = button == Button4 ? 1.0f : -1.0f;
                 e.mouseScroll.x      = p.x;
                 e.mouseScroll.y      = p.y;
 
@@ -283,7 +298,7 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             } else if( button == 6 || button == 7 ) {
                 WindowEvent e;
                 e.type               = WindowEventType::MouseHScroll;
-                e.mouseScroll.scroll = xEvent.xbutton.button == 6 ? -1.0f : 1.0f;
+                e.mouseScroll.scroll = button == 6 ? -1.0f : 1.0f;
                 e.mouseScroll.x      = p.x;
                 e.mouseScroll.y      = p.y;
 
@@ -390,7 +405,13 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             Size2i  size( xEvent.xconfigure.width, xEvent.xconfigure.height );
 
             //Moved
-            if( pos != m_bounds.getPosition() ) {
+            //TODO: Apparently the coordinates that X gives are relative to the parent window.
+            //I need to figure out how to use XTranslateCoordinates to get the actual position of the window onscreen.
+            //Currently, when resizing we're getting a ConfigureNotify event where x and y are set to 0, followed by one using the actual window coordinates,
+            //which is causing unnecessary Move events to be dispatched.
+            //My best guess is maybe the window manager is reparenting the inner window each time it's resized? Either way, until I find a proper solution for
+            //this problem this HACK of checking if the coordinates aren't 0 should suffice.
+            if( !pos.isZero() and pos != m_bounds.getPosition() ) {
                 //Update position
                 m_bounds.setPosition( pos );
 
@@ -417,6 +438,18 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
                 pushEvent( e );
             }
         } break;
+        //Window gains keyboard focus
+        case FocusIn: {
+            WindowEvent e;
+            e.type = WindowEventType::Focus;
+            pushEvent( e );
+        } break;
+        //Window loses keyboard focus
+        case FocusOut: {
+            WindowEvent e;
+            e.type = WindowEventType::Blur;
+            pushEvent( e );
+        } break;
         //Window close request
         case ClientMessage: {
             //Client messages are generic, so we need to determine for certain that we were sent a close request.
@@ -432,6 +465,14 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
                 pushEvent( e );
             }
         } break;
+        //Events enabled by specifying StructureNotifyMask that we're not interested in
+        case CirculateNotify:
+        case DestroyNotify:
+        case GravityNotify:
+        case MapNotify:
+        case UnmapNotify:
+        case ReparentNotify:
+            break;
         //Unhandled event
         default: {
             logError( ( boost::format( "Unhandled event: %1%" ) % xEvent.type ).str() );

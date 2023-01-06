@@ -84,6 +84,8 @@ void GLGraphicsImpl::clear( const float r, const float g, const float b, const f
 
 void GLGraphicsImpl::setViewport( const int x, const int y, const int width, const int height ) {
     glViewport( x, y, width, height );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glViewport() failed." );
 }
 
 void GLGraphicsImpl::flush() {
@@ -166,12 +168,13 @@ void GLGraphicsImpl::initOpenGL( GLContext& context ) {
     GLint extensions;
     glGetIntegerv( GL_NUM_EXTENSIONS, &extensions );
     logInfo( "Supported extensions:" );
-    for( GLuint i = 0; i < (GLuint)extensions; ++i )
+    for( GLuint i = 0; i < (GLuint)extensions; ++i ) {
         logInfo( (
             boost::format( "%4d:    %s" ) %
             (i+1) %
             glGetStringi( GL_EXTENSIONS, i )
         ).str() );
+    }
 
     //Done using it
     context.end();

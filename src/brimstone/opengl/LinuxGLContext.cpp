@@ -228,7 +228,7 @@ void LinuxGLContext::initGLX( Display* display ) {
     //We'll need to know this extension is present in order to load glXCreateContextAttribsARB(),
     //a function that will allow us to create an OpenGL context. If the extension isn't available,
     //we can fall back on glXCreateNewContext (an older, less powerful context creation function).
-    const char* glxExts = glXQueryExtensionsString( m_display, DefaultScreen( m_display ) );
+    const char* glxExts = glXQueryExtensionsString( display, DefaultScreen( display ) );
     if( isExtensionSupported( glxExts, "GLX_ARB_create_context" ) ) {
         //Load the glXCreateContextAttribsARB function. We'll be using it to create a context below.
         //NOTE: Unlike Window's wglGetProcAddress, glXGetProcAddressARB can be called even if a context has not yet been created / made active.

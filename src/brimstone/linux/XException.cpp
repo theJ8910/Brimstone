@@ -207,12 +207,17 @@ void xerrEnd() {
     //Reset the error handler to what it was before the xerrBegin() call
     XErrorHandler previous = XSetErrorHandler( xerrOldHandler );
 
+    //Clear the reference to the old handler.
+    xerrOldHandler = nullptr;
+
     //Check to make sure the X Error Handler wasn't changed between calls to xerrBegin() and xerrEnd()
     //NOTE: If the error handler changed midway, should I restore THAT error handler, or the one from before xerrBegin?
     if( previous != xerrHandler ) {
         XSetErrorHandler( previous );
         throw Exception( "X11 error handler was changed between xerrBegin() and xerrEnd()." );
     }
+
+
 }
 
 /*
