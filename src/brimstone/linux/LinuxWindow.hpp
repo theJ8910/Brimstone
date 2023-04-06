@@ -61,6 +61,8 @@ public:
     void            setVisible( const bool visible );
     void            setBounds( const Bounds2i bounds );
     void            setMouseCapture( const bool capture );
+    
+    void            sendToBottom();
 
     Point2i         screenToWindow( Point2i screenCoords ) const;
     Point2i         windowToScreen( Point2i windowCoords ) const;
@@ -87,7 +89,8 @@ private:
     static void             destroyX();
 
     static void             mainProc( XEvent& xEvent );
-    static Point2i          getCursorPos( const XEvent& xEvent );
+    static Point2i          getCursorPosFromXEvent( const XButtonEvent& xbutton );
+    static Point2i          getCursorPosFromXEvent( const XMotionEvent& xmotion );
     static MouseButton      xButtonToMouseButton( const int button );
     static Key              xKeySymToKey( const KeySym& keySym );
 

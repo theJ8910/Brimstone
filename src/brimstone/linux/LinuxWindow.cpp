@@ -13,6 +13,7 @@ Description:
 
 //Includes
 #include "LinuxWindow.hpp"                      //Class header
+#include "XException.hpp"                       //Brimstone::xerrBegin, Brimstone::xerrEnd
 #include "../opengl/LinuxGLContext.hpp"         //TEMP? LinuxGLContext::getIdealVisualInfo
 
 #include <brimstone/util/Range.hpp>             //Brimstone::clampedValue
@@ -46,6 +47,7 @@ bool                            LinuxWindow::m_xInitialized = false;
 
 Display*                        LinuxWindow::m_display      = nullptr;
 LinuxWindow::XWinToWindowMap    LinuxWindow::m_windowMap;
+
 
 
 
@@ -263,27 +265,27 @@ void LinuxWindow::mainProc( XEvent& xEvent ) {
     it->second.windowProc( xEvent );
 }
 
-Point2i LinuxWindow::getCursorPos( const XEvent& xEvent ) {
-    return Point2i( xEvent.xbutton.x, xEvent.xbutton.y );
-}
-
 void LinuxWindow::windowProc( XEvent& xEvent ) {
     switch( xEvent.type ) {
         //Mouse move
         case MotionNotify: {
-            auto p = getCursorPos( xEvent );
+            auto p = getCursorPosFromXEvent( xEvent.xmotion );
 
-            WindowEvent e;
-            e.type        = WindowEventType::MouseMove;
-            e.mouseMove.x = p.x;
-            e.mouseMove.y = p.y;
+            if( p != m_cursorPos ) {
+                m_cursorPos = p;
 
-            pushEvent( e );
+                WindowEvent e;
+                e.type        = WindowEventType::MouseMove;
+                e.mouseMove.x = p.x;
+                e.mouseMove.y = p.y;
+
+                pushEvent( e );
+            }
         } break;
         //Button down
         case ButtonPress: {
             int button = xEvent.xbutton.button;
-            auto p = getCursorPos( xEvent );
+            auto p = getCursorPosFromXEvent( xEvent.xbutton );
 
             //Vertical scrolling
             if( button == Button4 || button == Button5 ) {
@@ -322,7 +324,7 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             if( button == Button4 || button == Button5 || button == 6 || button == 7 )
                 break;
 
-            auto p = getCursorPos( xEvent );
+            auto p = getCursorPosFromXEvent( xEvent.xbutton );
 
             WindowEvent e;
             e.type         = WindowEventType::MouseUp;
@@ -478,6 +480,14 @@ void LinuxWindow::windowProc( XEvent& xEvent ) {
             logError( ( boost::format( "Unhandled event: %1%" ) % xEvent.type ).str() );
         } break;
     }
+}
+
+Point2i LinuxWindow::getCursorPosFromXEvent( const XButtonEvent& xbutton ) {
+    return Point2i( xbutton.x, xbutton.y );
+}
+
+Point2i LinuxWindow::getCursorPosFromXEvent( const XMotionEvent& xmotion ) {
+    return Point2i( xmotion.x, xmotion.y );
 }
 
 MouseButton LinuxWindow::xButtonToMouseButton( const int button ) {
@@ -679,6 +689,14 @@ void LinuxWindow::setBounds( const Bounds2i bounds ) {
 void LinuxWindow::setMouseCapture( const bool capture ) {
     BaseWindowImpl::setMouseCapture( capture );
     //TODO
+}
+
+void LinuxWindow::sendToBottom() {
+    xerrBegin();
+    XLowerWindow( m_display, m_window );
+    xerrEnd();
+    if( xerrExists() )
+        throw xerrGet();
 }
 
 Point2i LinuxWindow::screenToWindow( Point2i screenCoords ) const {

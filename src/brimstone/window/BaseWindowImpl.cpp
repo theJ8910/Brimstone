@@ -18,6 +18,7 @@ namespace Private {
 
 BaseWindowImpl::BaseWindowImpl() :
     m_title( "Default Window Title" ),
+    m_cursorPos( -1, -1 ),
     m_bounds( Point2i( 32, 32 ), Size2i( 1024, 768 ) ),
     m_visible( true ),
     m_popup( false ),
@@ -61,6 +62,10 @@ void BaseWindowImpl::setVisible( const bool visible ) {
 
 bool BaseWindowImpl::isVisible() const {
     return m_visible;
+}
+
+Point2i BaseWindowImpl::getCursorPos() const {
+    return m_cursorPos;
 }
 
 void BaseWindowImpl::setBounds( const Bounds2i bounds ) {

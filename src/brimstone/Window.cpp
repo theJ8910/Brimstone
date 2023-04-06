@@ -124,6 +124,10 @@ bool Window::getMouseCapture() const {
     return m_impl->getMouseCapture();
 }
 
+void Window::sendToBottom() {
+    return m_impl->sendToBottom();
+}
+
 Point2i Window::screenToWindow( Point2i screenCoords ) const {
     return m_impl->screenToWindow( screenCoords );
 }

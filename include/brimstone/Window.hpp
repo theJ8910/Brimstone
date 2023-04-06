@@ -69,6 +69,8 @@ public:
     void            setMouseCapture( const bool capture );
     bool            getMouseCapture() const;
 
+    void            sendToBottom();
+
     Point2i         screenToWindow( Point2i screenCoords ) const;
     Point2i         windowToScreen( Point2i windowCoords ) const;
 

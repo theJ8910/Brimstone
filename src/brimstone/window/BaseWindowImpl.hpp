@@ -14,6 +14,7 @@ Description:
 
 //Includes
 #include <brimstone/window/WindowEvent.hpp>     //Brimstone::WindowEvent
+#include <brimstone/Point.hpp>                  //Brimstone::Point2i
 #include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 #include <brimstone/types.hpp>                  //Brimstone::ustring
 
@@ -43,6 +44,8 @@ public:
     void            setVisible( const bool visible );
     bool            isVisible() const;
 
+    Point2i         getCursorPos() const;
+
     void            setBounds( const Bounds2i bounds );
     Bounds2i        getBounds() const;
 
@@ -53,6 +56,7 @@ public:
     bool            getMouseCapture() const;
 protected:
     ustring                     m_title;
+    Point2i                     m_cursorPos;
     Bounds2i                    m_bounds;
     bool                        m_visible;
     bool                        m_popup;
