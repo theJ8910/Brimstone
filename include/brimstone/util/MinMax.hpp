@@ -1,7 +1,7 @@
 /*
 util/MinMax.hpp
------------------------
-Copyright (c) 2014, theJ89
+---------------
+Copyright (c) 2024, theJ89
 
 Description:
     Defines several functions for taking the minimum, maximum,

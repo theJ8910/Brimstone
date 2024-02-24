@@ -1,7 +1,7 @@
 /*
 factory/ThrowFactory.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Defines a concrete factory class, whose .create() method will

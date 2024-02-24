@@ -1,7 +1,6 @@
-dofile( "premake4_common.lua" )
+dofile( "premake5_common.lua" )
 solution( "Brimstone" )
-    configurations( { "debug", "release" } )
-    platforms( { "x32", "x64" } )
+    doBuilds()
 
     project( "Brimstone" )
         kind( "StaticLib" )
@@ -16,7 +15,7 @@ solution( "Brimstone" )
         targetdir( "lib" )
 
         --Exclude Windows files when compiling for non-window OSes
-        configuration( "not windows" )
+        filter( "system:not windows" )
             excludes( {
                 "src/brimstone/windows/**.cpp",
                 "include/brimstone/windows/**.hpp",
@@ -25,7 +24,7 @@ solution( "Brimstone" )
             } )
 
         --Exclude Linux files when compiling for non-linux OSes
-        configuration( "not linux" )
+        filter( "system:not linux" )
             excludes( {
                 "src/brimstone/linux/**.cpp",
                 "include/brimstone/linux/**.hpp",
@@ -38,10 +37,7 @@ solution( "Brimstone" )
 
         --The output library name is different depending on the
         --architecture and whether or not this is the debug/release version
-        for _,build in pairs( builds ) do
-            configuration( build )
-                targetname( "Brimstone_"..getSuffix( build ) )
-        end
+        doSuffixes()
 
     project( "UnitTests")
         kind( "ConsoleApp" )
@@ -57,21 +53,18 @@ solution( "Brimstone" )
 
         doFlags()
         doBrimstoneDefines()
+        doBrimstoneLinks()
+        doSuffixes()
 
         --UnitTests-specific defines.
         --The UnitTests framework is designed to be separate from Brimstone.
         --The upside is that it increases reusability, but the downside 
         --is that there is some redundancy between the two projects.
-        configuration( "windows" )
+        filter( "system:windows" )
             defines( "UT_BUILD_WINDOWS" )
-        configuration( "linux" )
+        filter( "system:linux" )
             defines( "UT_BUILD_LINUX" )
 
         --The output executable name and the library that UnitTests links to
         --is different depending on the architecture and whether or not this is the debug/release version
-        for _,build in pairs( builds ) do
-            local sx = getSuffix( build );
-            configuration( build )
-                targetname( "UnitTests_"..sx )
-                links( "Brimstone_"..sx )
-        end
+        doSuffixes()

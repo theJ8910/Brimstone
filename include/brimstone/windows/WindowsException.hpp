@@ -1,7 +1,7 @@
 /*
 windows/WindowsException.hpp
------------------------
-Copyright (c) 2014, theJ89
+----------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Defines the WindowsException class and a function to throw Windows exceptions.

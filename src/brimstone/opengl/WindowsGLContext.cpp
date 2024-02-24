@@ -1,7 +1,7 @@
 /*
 opengl/WindowsGLContext.cpp
------------------------
-Copyright (c) 2014, theJ89
+---------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     See WindowsGLContext.hpp for more information.

@@ -1,7 +1,7 @@
 /*
 test/Vector2.cpp
------------------------
-Copyright (c) 2014, theJ89
+----------------
+Copyright (c) 2024, theJ89
 
 Description:
     Unit tests for Vector<T,2> specialization

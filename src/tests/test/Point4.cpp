@@ -1,7 +1,7 @@
 ﻿/*
 test/Point4.cpp
------------------------
-Copyright (c) 2014, theJ89
+---------------
+Copyright (c) 2024, theJ89
 
 Description:
     Unit tests for PointN<T,4> specialization

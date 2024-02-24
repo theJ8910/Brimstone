@@ -1,7 +1,7 @@
 /*
 graphics/Enums.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Enumerations used by the graphics classes are defined here.

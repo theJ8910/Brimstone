@@ -1,7 +1,7 @@
 /*
 point/Point4.hpp
------------------------
-Copyright (c) 2014, theJ89
+----------------
+Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Point for 4D points.

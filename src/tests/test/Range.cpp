@@ -1,7 +1,7 @@
 /*
 test/Range.cpp
------------------------
-Copyright (c) 2014, theJ89
+--------------
+Copyright (c) 2024, theJ89
 
 Description:
     Unit tests for Range< T, N >

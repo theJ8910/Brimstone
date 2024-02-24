@@ -1,7 +1,7 @@
 /*
 util/Array.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------
+Copyright (c) 2024, theJ89
 
 Description:
     Adds a class for constant-size arrays, Array.

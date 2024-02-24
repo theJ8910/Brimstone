@@ -1,7 +1,7 @@
 /*
 signals/Signal.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Signals and slots are a modular form of the observer pattern.

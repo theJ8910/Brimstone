@@ -1,7 +1,7 @@
 /*
 util/ThreadLocal.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------------
+Copyright (c) 2024, theJ89
 
 Description:
     This file contains classes to make using thread-local storage (TLS) easier.

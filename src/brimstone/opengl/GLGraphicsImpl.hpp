@@ -1,7 +1,7 @@
 /*
 opengl/GLGraphicsImpl.hpp
------------------------
-Copyright (c) 2014, theJ89
+-------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     A Graphics implementation utilizing OpenGL

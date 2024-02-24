@@ -1,7 +1,7 @@
 /*
 util/Unicode.cpp
------------------------
-Copyright (c) 2014, theJ89
+----------------
+Copyright (c) 2024, theJ89
 
 Description:
     See Unicode.hpp for more information.

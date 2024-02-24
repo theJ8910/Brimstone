@@ -1,7 +1,7 @@
 /*
 factory/BasicFactory.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Defines a basic concrete factory class, whose .create() method will instantiate

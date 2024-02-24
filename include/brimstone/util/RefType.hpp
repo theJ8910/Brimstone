@@ -1,6 +1,7 @@
 /*
 util/RefType.hpp
------------------------
+----------------
+Copyright (c) 2024, theJ89
 
 Description:
     Utility for template classes that allows them to automatically determine

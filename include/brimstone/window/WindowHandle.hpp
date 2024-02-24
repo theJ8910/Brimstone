@@ -1,7 +1,7 @@
 /*
 window/WindowHandle.hpp
 -----------------------
-Copyright (c) 2014, theJ89
+Copyright (c) 2024, theJ89
 
 Description:
     Forward declares the appropriate type as WindowHandle, depending on build settings.

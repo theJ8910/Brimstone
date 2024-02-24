@@ -1,7 +1,7 @@
 /*
 test/Matrix2x2.cpp
------------------------
-Copyright (c) 2014, theJ89
+------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Unit tests for Matrix<T,2,2> specialization

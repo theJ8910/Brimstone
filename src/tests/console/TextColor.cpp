@@ -1,10 +1,10 @@
 ﻿/*
 console/TextColor.cpp
------------------------
-Copyright (c) 2014, theJ89
+---------------------
+Copyright (c) 2024, theJ89
 
 Description:
-    See console/TextColor.h for more information.
+    See console/TextColor.hpp for more information.
 */
 
 
@@ -39,8 +39,8 @@ unsigned char getXTIndex( unsigned char red, unsigned char green, unsigned char 
 
 
 /*
-InitTextColor
------------------------
+initTextColor
+-------------
 
 Description:
     This function must be called once at startup to make use of the TextColor function.
@@ -60,7 +60,7 @@ void initTextColor() {
 
 /*
 setTextColor
------------------------
+------------
 
 Description:
     When called prior to outputting text to the console, this function sets the foreground and background color of the text.
@@ -88,7 +88,7 @@ void setTextColor( const TextColors textColor, const TextColors backgroundColor 
 
 #ifdef UT_BUILD_LINUX
 
-    printf( "\x1B[38;5;%um\x1B[48;5;%um", textColor, backgroundColor );
+    printf( "\x1B[38;5;%um\x1B[48;5;%um", (unsigned int)textColor, (unsigned int)backgroundColor );
 
 #endif //UT_BUILD_LINUX
 }
@@ -97,7 +97,7 @@ void setTextColor( const TextColors textColor, const TextColors backgroundColor 
 
 /*
 setTextColorXT{1}
------------------------
+-----------------
 
 Description:
     When called prior to outputting text to the console, this function sets the foreground color of the text.
@@ -121,7 +121,7 @@ void setTextColorXT( const unsigned char xtermIndex ) {
 
 /*
 setTextColorXT{2}
------------------------
+-----------------
 
 Description:
     Same as above, but rather than taking a color index,
@@ -184,7 +184,7 @@ void setBackgroundColorXT( const unsigned char red, const unsigned char green, c
 
 /*
 getXTIndex
------------------------
+----------
 
 Description:
     Returns an xterm256 color index close to the given RGB values.

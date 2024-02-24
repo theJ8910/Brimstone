@@ -1,7 +1,7 @@
 /*
 util/NonCopyable.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Declares a struct, NonCopyable, that classes can inherit from

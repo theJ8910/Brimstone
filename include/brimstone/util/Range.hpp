@@ -1,7 +1,7 @@
 /*
 util/Range.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------
+Copyright (c) 2024, theJ89
 
 Description:
     Adds a class for representing a range of values, Range.

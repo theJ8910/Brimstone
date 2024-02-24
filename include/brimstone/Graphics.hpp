@@ -1,7 +1,7 @@
 /*
 Graphics.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------
+Copyright (c) 2024, theJ89
 
 Description:
     Graphics and its associated classes are defined here.

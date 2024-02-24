@@ -1,7 +1,7 @@
 /*
 util/Sequence.hpp
------------------------
-Copyright (c) 2014, theJ89
+-----------------
+Copyright (c) 2024, theJ89
 
 Code originally written by Johannes Schaub
 http://stackoverflow.com/questions/7858817/unpacking-a-tuple-to-call-a-matching-function-pointer

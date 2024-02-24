@@ -1,7 +1,7 @@
 /*
 windows/WindowsException.cpp
------------------------
-Copyright (c) 2014, theJ89
+----------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     See WindowsException.hpp for more information.

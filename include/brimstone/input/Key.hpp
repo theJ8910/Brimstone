@@ -1,7 +1,7 @@
 /*
 input/Key.hpp
------------------------
-Copyright (c) 2014, theJ89
+-------------
+Copyright (c) 2024, theJ89
 
 Description:
     The Key enum and its associated functions are defined in this header.

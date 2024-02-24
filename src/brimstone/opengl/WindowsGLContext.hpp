@@ -1,7 +1,7 @@
 /*
 opengl/WindowsGLContext.hpp
------------------------
-Copyright (c) 2014, theJ89
+---------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Windows implementation of the OpenGL Context.

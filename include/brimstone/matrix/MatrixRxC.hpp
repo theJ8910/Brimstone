@@ -1,7 +1,7 @@
 /*
 matrix/MatrixRxC.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Adds a generic matrix class, Matrix.

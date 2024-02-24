@@ -1,7 +1,7 @@
 /*
 Exception.hpp
------------------------
-Copyright (c) 2014, theJ89
+-------------
+Copyright (c) 2024, theJ89
 
 Description:
     Defines an interface for exceptions, IException.

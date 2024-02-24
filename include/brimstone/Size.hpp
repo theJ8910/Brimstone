@@ -1,7 +1,7 @@
 /*
 Size.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------
+Copyright (c) 2024, theJ89
 
 Description:
     Include this file for access to Size and its variations.

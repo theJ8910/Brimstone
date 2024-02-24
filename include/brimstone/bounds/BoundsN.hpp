@@ -1,7 +1,7 @@
 /*
 bounds/BoundsN.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Defines Bounds, a class for axis-aligned bounding rectangles, boxes, and similar higher order geometry.

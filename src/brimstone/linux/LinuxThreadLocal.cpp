@@ -1,7 +1,7 @@
 /*
 linux/LinuxThreadLocal.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     See LinuxThreadLocal.hpp for more information.

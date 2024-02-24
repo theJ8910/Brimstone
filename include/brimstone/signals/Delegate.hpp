@@ -1,7 +1,7 @@
 /*
 signals/Delegate.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------------
+Copyright (c) 2024, theJ89
 Based off of Don Clugston's FastDelegate implementation.
 http://www.codeproject.com/cpp/FastDelegate.asp
 

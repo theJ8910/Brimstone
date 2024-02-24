@@ -1,7 +1,7 @@
 /*
 linux/LinuxWindow.hpp
------------------------
-Copyright (c) 2014, theJ89
+---------------------
+Copyright (c) 2024, theJ89
 
 Description:
     The windowing implementation used on Linux, LinuxWindow, is defined here.

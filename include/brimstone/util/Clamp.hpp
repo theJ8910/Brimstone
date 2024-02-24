@@ -1,7 +1,7 @@
 /*
 util/Clamp.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------
+Copyright (c) 2024, theJ89
 
 Description:
     Defines several functions for testing if a given scalar is within a range,

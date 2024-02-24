@@ -1,7 +1,7 @@
 /*
 opengl/LinuxGLContext.hpp
------------------------
-Copyright (c) 2014, theJ89
+-------------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Linux implementation of the OpenGL context.

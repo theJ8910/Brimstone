@@ -1,7 +1,7 @@
 /*
 opengl/GLShader.cpp
------------------------
-Copyright (c) 2014, theJ89
+-------------------
+Copyright (c) 2024, theJ89
 
 Description:
     See GLShader.hpp for more information.

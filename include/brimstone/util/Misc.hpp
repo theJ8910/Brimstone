@@ -1,7 +1,7 @@
 /*
 util/Misc.hpp
------------------------
-Copyright (c) 2014, theJ89
+-------------
+Copyright (c) 2024, theJ89
 
 Description:
     This file contains miscellaneous utilities used in the engine.

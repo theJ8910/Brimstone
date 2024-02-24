@@ -1,7 +1,7 @@
 /*
 vector/Vector4.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Vector for 4D vectors.

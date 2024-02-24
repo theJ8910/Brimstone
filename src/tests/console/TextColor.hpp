@@ -1,7 +1,7 @@
 ﻿/*
 console/TextColor.hpp
------------------------
-Copyright (c) 2014, theJ89
+---------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Declares convenience functions to color the text / background in the Windows and Linux terminals,
@@ -105,11 +105,11 @@ enum class TextColors {
 void initTextColor();
 void setTextColor( const TextColors textColor = TextColors::DEFAULT_FOREGROUND, const TextColors backgroundColor = TextColors::DEFAULT_BACKGROUND );
 
-void setXTTextColor( const unsigned char xtermIndex );
-void setXTTextColor( const unsigned char red, const unsigned char green, const unsigned char blue );
+void setTextColorXT( const unsigned char xtermIndex );
+void setTextColorXT( const unsigned char red, const unsigned char green, const unsigned char blue );
 
-void setXTBackgroundColor( const unsigned char xtermIndex );
-void setXTBackgroundColor( const unsigned char red, const unsigned char green, const unsigned char blue );
+void setBackgroundColorXT( const unsigned char xtermIndex );
+void setBackgroundColorXT( const unsigned char red, const unsigned char green, const unsigned char blue );
 
 }
 

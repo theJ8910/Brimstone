@@ -1,7 +1,7 @@
 /*
 opengl/GLSampler.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------------
+Copyright (c) 2024, theJ89
 
 Description:
     GLSampler is defined here.

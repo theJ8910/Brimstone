@@ -1,6 +1,6 @@
 /*
 util/Macros.hpp
------------------------
+---------------
 
 Description:
     This file contains macros that are used by various classes in the engine.
@@ -71,8 +71,9 @@ Description:
 
 #ifdef BS_CHECK_INDEX
 
+//Note: BS_ASSERT_INDEX expects index and maxIndex to be of type size_t
 #define BS_ASSERT_INDEX( index, maxIndex )      \
-    if( index < 0 || index > maxIndex )         \
+    if( /*index < 0 ||*/ index > maxIndex )     \
         throw ::Brimstone::BoundsException();
 
 #define BS_ASSERT_BOUNDS( min, max )            \

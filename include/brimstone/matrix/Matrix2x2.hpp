@@ -1,7 +1,7 @@
 /*
 matrix/Matrix2x2.hpp
------------------------
-Copyright (c) 2014, theJ89
+--------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Matrix for 2x2 matrices.

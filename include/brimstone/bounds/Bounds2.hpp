@@ -1,7 +1,7 @@
 /*
 bounds/Bounds2.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Bounds for 2D bounds (rectangles).

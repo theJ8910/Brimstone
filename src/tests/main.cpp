@@ -1,7 +1,7 @@
 ﻿/*
-Main.cpp
------------------------
-Copyright (c) 2014, theJ89
+main.cpp
+--------
+Copyright (c) 2024, theJ89
 
 Description:
     Root of Brimstone's UnitTest program.
@@ -21,6 +21,7 @@ Description:
 #include "console/Menu.hpp"         //menu
 #include "MeasureXTime.hpp"         //measure
 #include "Test.hpp"                 //getTests
+#include "Exception.hpp"            //EOFError
 
 
 
@@ -88,12 +89,20 @@ int main( int /* argc */, char** /* argv */ ) {
               << std::endl;
 
     int choice;
-    while( ( choice = menu( choices, 3 ) ) != 2 ) {
-        switch( choice ) {
-        case 0:
-            doTests();
+    do {
+        try {
+            choice = menu( choices, 3 );
+        } catch( const EOFError& e ) {
+            std::cout << e.getDescription() << std::endl;
+            choice = 2;
         }
-    }
+
+        switch( choice ) {
+            case 0: {
+                doTests();
+            } break;
+        }
+    } while( choice != 2 );
 
     return 0;
 }

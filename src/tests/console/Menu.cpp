@@ -1,10 +1,10 @@
 ﻿/*
 console/Menu.cpp
------------------------
-Copyright (c) 2014, theJ89
+----------------
+Copyright (c) 2024, theJ89
 
 Description:
-    See console/Menu.h for more information.
+    See console/Menu.hpp for more information.
 */
 
 
@@ -16,6 +16,7 @@ Description:
 
 #include "Menu.hpp"         //Header file
 #include "TextColor.hpp"    //setTextColor
+#include "../Exception.hpp" //EOFError
 
 
 
@@ -42,6 +43,9 @@ Arguments:
 
 Returns:
     int:            index of the chosen choice (between 0 and iNumChoices)
+
+Throws:
+    EOFError:       If EOF is encountered on stdin while waiting for input.
 */
 int menu( const char* const* const choices, const int numChoices )
 {
@@ -59,6 +63,11 @@ int menu( const char* const* const choices, const int numChoices )
                   << "Choose an option: "; std::cin >> choice;
         std::cout << std::endl;
 
+        //Detect end-of-file (EOF) in the input stream; this can happen if, for example, the user presses Ctrl + D on their keyboard.
+        if( std::cin.eof() ) {
+            throw EOFError( "EOF encountered while waiting for user input." );
+        }
+
         //If the user supplied invalid input, we can detect it and reset the stream.
         //If we didn't do this, besides staying in the "fail" state, the invalid input would remain on the stream.
         if( std::cin.fail() ) {
@@ -67,15 +76,16 @@ int menu( const char* const* const choices, const int numChoices )
             choice = -1;
         }
 
+        //The user provided a valid integer, but does that correspond to a valid choice?
         if( choice > 0 && choice <= numChoices && *choices[ choice - 1 ] != '\0' ) {
             invalidOption = false;
+        //If not, the user is warned and we repeat the prompt.
         } else {
             setTextColor( TextColors::RED );
             std::cout << "That is not a valid choice. Please try again." << std::endl
                       << std::endl;
             setTextColor();
         }
-
     } while( invalidOption );
     return choice - 1;
 }

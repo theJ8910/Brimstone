@@ -1,6 +1,6 @@
 /*
 opengl/LinuxGLContext.cpp
------------------------
+-------------------------
 Copyright (c) 2014, theJ89
 
 Description:
@@ -25,6 +25,9 @@ namespace {
 
 typedef GLXContext (*GLXCREATECONTEXTATTRIBSARBPROC)( Display*, GLXFBConfig, GLXContext, Bool, const int* );
 GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = nullptr;
+
+typedef void (*GLXSWAPINTERVALEXTPROC)( Display*, GLXDrawable, int interval );
+GLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = nullptr;
 
 /*
 isExtensionSupported
@@ -237,6 +240,16 @@ void LinuxGLContext::initGLX( Display* display ) {
             throw GraphicsException( "Couldn't load glXCreateContextAttribsARB." );
     }
 
+    //Check if the "GLX_EXT_swap_control" extension is available.
+    //We'll need to know this extension is present in order to load glXSwapIntervalEXT(),
+    //a function that will allow us to enable or disable vsync.
+    if( isExtensionSupported( glxExts, "GLX_EXT_swap_control" ) ) {
+        //Load the glXSwapIntervalEXT function. This is needed for setVSync.
+        glXSwapIntervalEXT = (GLXSWAPINTERVALEXTPROC)glXGetProcAddress( reinterpret_cast<const GLubyte*>( "glXSwapIntervalEXT" ) );
+        if( glXSwapIntervalEXT == nullptr )
+            throw GraphicsException( "Couldn't load glXSwapIntervalEXT." );
+    }
+
     m_display        = display;
     m_bestFBC        = bestFBC;
     m_glxInitialized = true;
@@ -427,6 +440,12 @@ void LinuxGLContext::destroyFinish() {
 }
 
 void LinuxGLContext::setVSync( const bool vsync ) {
+    xerrBegin();
+    glXSwapIntervalEXT( m_display, m_window, vsync ? 1 : 0 );
+    xerrEnd();
+    XSync( m_display, False );
+    if( xerrExists() )
+        throw xerrGet();
 }
 
 void LinuxGLContext::swapBuffers() {

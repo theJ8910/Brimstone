@@ -1,7 +1,7 @@
 /*
 bounds/Bounds4.hpp
------------------------
-Copyright (c) 2014, theJ89
+------------------
+Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Bounds for 4D bounds (tesseracts).

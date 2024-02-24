@@ -1,7 +1,7 @@
 /*
 linux/LinuxWindow.cpp
------------------------
-Copyright (c) 2014, theJ89
+---------------------
+Copyright (c) 2024, theJ89
 A lot of code in this file was taken from SFML (by Laurent Gomila)
 
 Description:

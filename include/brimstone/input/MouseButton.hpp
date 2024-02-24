@@ -1,7 +1,7 @@
 /*
 input/MouseButton.hpp
------------------------
-Copyright (c) 2014, theJ89
+---------------------
+Copyright (c) 2024, theJ89
 
 Description:
     The MouseButton enum and its associated functions are defined in this header.

@@ -1,8 +1,7 @@
-
 /*
 linux/XException.cpp
------------------------
-Copyright (c) 2014, theJ89
+--------------------
+Copyright (c) 2024, theJ89
 
 Description:
     See XException.hpp for more information.
