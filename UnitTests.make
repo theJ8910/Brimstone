@@ -49,7 +49,7 @@ ifeq ($(config),debug_x64)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g -Wall -Wextra -pthread -Wno-unknown-pragmas
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -Wall -Wextra -std=c++20 -pthread -Wno-unknown-pragmas
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += -lBrimstone_x86-64d -lluajit-5.1_x64 -lgll_x64 -lGL -ldl -lX11
+  LIBS += -lBrimstone_x86-64d -lluajit-5.1_x64 -lgll_x86-64 -lGL -ldl -lX11
   LDDEPS +=
   ALL_LDFLAGS += $(LDFLAGS) -Llib -L/usr/lib64 -m64 -pthread
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
@@ -103,7 +103,7 @@ ifeq ($(config),release_x64)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O3 -Wall -Wextra -pthread -Wno-unknown-pragmas
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O3 -Wall -Wextra -std=c++20 -pthread -Wno-unknown-pragmas
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += -lBrimstone_x86-64 -lluajit-5.1_x64 -lgll_x64 -lGL -ldl -lX11
+  LIBS += -lBrimstone_x86-64 -lluajit-5.1_x64 -lgll_x86-64 -lGL -ldl -lX11
   LDDEPS +=
   ALL_LDFLAGS += $(LDFLAGS) -Llib -L/usr/lib64 -m64 -s -pthread
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)

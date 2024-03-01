@@ -98,7 +98,7 @@ function doBrimstoneLinks()
     filter( "platforms:x32" )
         links( { "luajit-5.1_x86", "gll_x86", "GL" } )
     filter( "platforms:x64" )
-        links( { "luajit-5.1_x64", "gll_x64", "GL" } )
+        links( { "luajit-5.1_x64", "gll_x86-64", "GL" } )
 
     --[[
     All configurations link to dl and X11.

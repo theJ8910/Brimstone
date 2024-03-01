@@ -54,7 +54,6 @@ solution( "Brimstone" )
         doFlags()
         doBrimstoneDefines()
         doBrimstoneLinks()
-        doSuffixes()
 
         --UnitTests-specific defines.
         --The UnitTests framework is designed to be separate from Brimstone.
