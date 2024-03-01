@@ -11,10 +11,11 @@ Description:
 
 
 //Includes
-#include <sstream>              //std::ostringstream
-
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll
+
+#include <cstddef>              //std::size_t
+#include <sstream>              //std::ostringstream
 
 #include <brimstone/Point.hpp>
 #include <brimstone/Vector.hpp> //Vector
@@ -28,14 +29,14 @@ namespace {
     using ::Brimstone::Vector2i;
     using ::Brimstone::BoundsException;
 
-    const size_t cv_size         = 2;
-    const int    cv_zero[2]      {  0, 0 };
-    const int    cv_values[2]    {  1, 2 };
-    const int    cv_valuesAlt[2] {  3, 4 };
-    const int    cv_distant[2]   { -4, 3 };
-    const int    cv_distanceSq   = 26;
-    const int    cv_manhattan    = 6;
-    const char*  cv_output       = "( 1, 2 )";
+    const std::size_t cv_size         = 2;
+    const int         cv_zero[2]      {  0, 0 };
+    const int         cv_values[2]    {  1, 2 };
+    const int         cv_valuesAlt[2] {  3, 4 };
+    const int         cv_distant[2]   { -4, 3 };
+    const int         cv_distanceSq   = 26;
+    const int         cv_manhattan    = 6;
+    const char*       cv_output       = "( 1, 2 )";
 
     const float cv_valuesF[2]   { 1.0f, 2.0f };
     const char* cv_outputF      = "( 1.00000, 2.00000 )";
@@ -156,7 +157,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point2_index )
     Point2i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -166,7 +167,7 @@ UT_TEST_BEGIN( Point2_indexConst )
     int data[ cv_size ];
     const Point2i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -318,7 +319,7 @@ UT_TEST_BEGIN( Point2_index_OOB )
     Point2i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -334,7 +335,7 @@ UT_TEST_BEGIN( Point2_constIndex_OOB )
     const Point2i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 

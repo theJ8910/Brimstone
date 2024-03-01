@@ -43,7 +43,7 @@ void GLVertexBuffer::destroy() {
     }
 }
 
-void GLVertexBuffer::set( const float* const data, const size_t sizeInBytes ) {
+void GLVertexBuffer::set( const float* const data, const std::size_t sizeInBytes ) {
     //Temporarily bind the buffer to GL_ARRAY_BUFFER so we can fill it
     //with the data the user provided
     glBindBuffer( GL_ARRAY_BUFFER, m_name                            );
@@ -68,7 +68,7 @@ void GLVertexBuffer::set( const float* const data, const size_t sizeInBytes ) {
     m_count = sizeInBytes / (vsize*sizeof(float));
 }
 
-void GLVertexBuffer::set( const float* const data, const size_t offsetInBytes, const size_t sizeInBytes ) {
+void GLVertexBuffer::set( const float* const data, const std::size_t offsetInBytes, const std::size_t sizeInBytes ) {
     glBindBuffer( GL_ARRAY_BUFFER, m_name );
     glBufferSubData( GL_ARRAY_BUFFER, offsetInBytes, sizeInBytes, data );
     glBindBuffer( GL_ARRAY_BUFFER, 0 );

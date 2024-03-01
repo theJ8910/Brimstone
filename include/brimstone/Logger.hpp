@@ -26,6 +26,7 @@ Description:
 
 
 //Include
+#include <cstddef>              //std::size_t
 #include <fstream>              //std::ofstream
 #include <vector>               //std::vector
 #include <initializer_list>     //std::initializer_list
@@ -74,15 +75,15 @@ private:
 
 class Loggers {
 private:
-    typedef std::pair< std::unique_ptr< ILogger >, size_t > LoggerPair;
+    typedef std::pair< std::unique_ptr< ILogger >, std::size_t > LoggerPair;
 public:
-    static void   write( const ustring& str, LogMessageType type = LogMessageType::INFO );
-    static size_t add( std::unique_ptr< ILogger >&& logger );
-    static void   remove( const size_t id );
+    static void        write( const ustring& str, LogMessageType type = LogMessageType::INFO );
+    static std::size_t add( std::unique_ptr< ILogger >&& logger );
+    static void        remove( const std::size_t id );
 private:
-    static std::mutex                   m_loggersMutex;
-    static std::vector< LoggerPair >    m_loggers;
-    static size_t                       m_nextLoggerID;
+    static std::mutex                m_loggersMutex;
+    static std::vector< LoggerPair > m_loggers;
+    static std::size_t               m_nextLoggerID;
 };
 
 //Convenience functions

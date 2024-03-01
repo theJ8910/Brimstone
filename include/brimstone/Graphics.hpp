@@ -16,8 +16,10 @@ Description:
 
 
 //Includes
-#include <brimstone/graphics/DGraphicsImpl.hpp> //Brimstone::Private::DGraphicsImpl, etc
+#include <cstddef>                              //std::size_t
+
 #include <brimstone/types.hpp>                  //Brimstone::ustring, Brimstone::uint
+#include <brimstone/graphics/DGraphicsImpl.hpp> //Brimstone::Private::DGraphicsImpl, etc
 #include <brimstone/graphics/Enums.hpp>         //Brimstone::FilterType, Brimstone::WrapType
 
 
@@ -141,8 +143,8 @@ public:
     void create();
     void destroy();
 
-    void set( const float* const data, const size_t sizeInBytes );
-    void set( const float* const data, const size_t offsetInBytes, const size_t sizeInBytes );
+    void set( const float* const data, const std::size_t sizeInBytes );
+    void set( const float* const data, const std::size_t offsetInBytes, const std::size_t sizeInBytes );
     void bind();
     void unbind();
     void draw();
@@ -167,13 +169,13 @@ public:
     void create();
     void destroy();
 
-    void set( const size_t width, const size_t height, const void* data );
+    void set( const std::size_t width, const std::size_t height, const void* data );
 
     void bind();
     void unbind();
 
-    size_t getWidth() const;
-    size_t getHeight() const;
+    std::size_t getWidth() const;
+    std::size_t getHeight() const;
 private:
     Texture( Private::TextureImpl* impl );
 private:

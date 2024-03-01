@@ -18,7 +18,7 @@ Description:
     ThreadLocal, a type-safe wrapper class around an UntypedThreadLocal, is also defined here.
     ThreadLocal is a template class taking a parameter T.
     A ThreadLocal object allows you to assign values of type T, and implicit conversions to T.
-    T must be the same size as a void* (e.g. same size as size_t; typically 4 bytes when compiling
+    T must be the same size as a void* (e.g. same size as std::size_t; typically 4 bytes when compiling
     for x86, or 8 bytes when compiling for x64).
 */
 #ifndef BS_UTIL_THREADLOCAL_HPP

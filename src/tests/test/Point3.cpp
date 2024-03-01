@@ -11,10 +11,11 @@ Description:
 
 
 //Includes
-#include <sstream>              //std::ostringstream
-
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll
+
+#include <cstddef>              //std::size_t
+#include <sstream>              //std::ostringstream
 
 #include <brimstone/Point.hpp>
 #include <brimstone/Vector.hpp> //Vector
@@ -28,7 +29,7 @@ namespace {
     using ::Brimstone::Vector3i;
     using ::Brimstone::BoundsException;
 
-    const size_t cv_size         = 3;
+    const std::size_t cv_size    = 3;
     const int    cv_zero[3]      {  0, 0, 0 };
     const int    cv_values[3]    {  1, 2, 3 };
     const int    cv_valuesAlt[3] {  4, 5, 6 };
@@ -156,7 +157,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point3_index )
     Point3i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -166,7 +167,7 @@ UT_TEST_BEGIN( Point3_indexConst )
     int data[ cv_size ];
     const Point3i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -319,7 +320,7 @@ UT_TEST_BEGIN( Point3_index_OOB )
     Point3i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -335,7 +336,7 @@ UT_TEST_BEGIN( Point3_constIndex_OOB )
     const Point3i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 

@@ -47,6 +47,7 @@ Description:
 
 
 //Includes
+#include <cstddef>                      //std::size_t
 #include <iostream>                     //std::ostream
 #include <initializer_list>             //std::initializer_list
 #include <iterator>                     //std::begin, std::end
@@ -81,8 +82,8 @@ Description:
     void setSize( const Size< T, N >& sizes );                                                          \
     Size< T, N > getSize() const;                                                                       \
                                                                                                         \
-    void setDimension( const size_t component, const T difference );                                    \
-    T    getDimension( const size_t component ) const;                                                  \
+    void setDimension( const std::size_t component, const T difference );                               \
+    T    getDimension( const std::size_t component ) const;                                             \
                                                                                                         \
     void zero();                                                                                        \
     bool isZero() const;                                                                                \
@@ -120,12 +121,12 @@ Description:
         return mins;                                                                                    \
     }                                                                                                   \
     tmpl                                                                                                \
-    void Bounds< T, N >::setDimension( const size_t component, const T difference ) {                   \
+    void Bounds< T, N >::setDimension( const std::size_t component, const T difference ) {              \
         BS_ASSERT_INDEX( component, N - 1 );                                                            \
         maxs[ component ] = mins[ component ] + difference;                                             \
     }                                                                                                   \
     tmpl                                                                                                \
-    T Bounds< T, N >::getDimension( const size_t component ) const {                                    \
+    T Bounds< T, N >::getDimension( const std::size_t component ) const {                               \
         BS_ASSERT_INDEX( component, N - 1 );                                                            \
         return maxs[ component ] - mins[ component ];                                                   \
     }
@@ -133,7 +134,7 @@ Description:
 
 namespace Brimstone {
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 class Bounds {
 public:
 //C4201: nonstandard extension used : nameless struct/union
@@ -155,78 +156,78 @@ public:
     BS_ARRAY_DECLARE_METHODS( Bounds, T )
     BS_BOUNDS_DECLARE_METHODS( N )
 };
-BS_ARRAY_DEFINE_GENERIC_METHODS( Bounds, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-BS_ARRAY_DEFINE_METHODS( Bounds, T, data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-BS_BOUNDS_DEFINE_METHODS( N, BS_TMPL_2( typename T, size_t N ) )
+BS_ARRAY_DEFINE_GENERIC_METHODS( Bounds, T, data, BS_TMPL_2( typename T, std::size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_METHODS( Bounds, T, data, BS_TMPL_2( typename T, std::size_t N ), BS_SPEC_2( T, N ) )
+BS_BOUNDS_DEFINE_METHODS( N, BS_TMPL_2( typename T, std::size_t N ) )
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Bounds< T, N >::Bounds() {
 #ifdef BS_ZERO
-for( size_t i = 0; i < 2*N; ++i )
+for( std::size_t i = 0; i < 2*N; ++i )
     data[i] = 0;
 #endif //BS_ZERO
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Bounds< T, N >::Bounds( const Point< T, N >& mins, const Size< T, N >& sizes ) :
     mins( mins ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         Bounds::maxs[i] = mins.data[i] + sizes.data[i];
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 template< typename T2 >
 Bounds< T, N >::Bounds( const Bounds< T2, N >& toCopy ) {
     (*this) = toCopy;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Bounds< T, N >::set( const Point< T, N >& mins, const Size< T, N >& sizes ) {
-    for( size_t i = 0; i < N; ++i ) {
+    for( std::size_t i = 0; i < N; ++i ) {
         Bounds::mins[i] = mins.data[i];
         Bounds::maxs[i] = mins.data[i] + sizes.data[i];
     }
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Bounds< T, N >::get( Point< T, N >& minsOut, Size< T, N >& sizesOut ) const {
-    for( size_t i = 0; i < N; ++i ) {
+    for( std::size_t i = 0; i < N; ++i ) {
         minsOut[i]  = mins.data[i];
         sizesOut[i] = maxs.data[i] - mins.data[i];
     }
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Bounds< T, N >::setPosition( const Point< T, N >& mins ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         maxs.data[i] = mins.data[i] + ( maxs.data[i] - Bounds::mins.data[i] );
     Bounds::mins = mins;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Bounds< T, N >::setSize( const Size< T, N >& sizes ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         maxs.data[i] = mins.data[i] + sizes.data[i];
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Size< T, N > Bounds< T, N >::getSize() const {
     Size< T, N > sizesOut;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         sizesOut.data[i] = maxs.data[i] - mins.data[i];
 
     return sizesOut;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Bounds< T, N >::zero() {
     std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool Bounds< T, N >::isZero() const {
-    for( size_t i = 0; i < 2*N; ++i )
+    for( std::size_t i = 0; i < 2*N; ++i )
         if( data[i] != 0 )
             return false;
     return true;
@@ -248,9 +249,9 @@ Arguments:
 Returns:
     void:   N/A
 */
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Bounds< T, N >::normalize() {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         minMax( mins.data[i], maxs.data[i] );
 }
 
@@ -270,9 +271,9 @@ Arguments:
 Returns:
     bool:   true if the Bounds is normal, false otherwise.
 */
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool Bounds< T, N >::isNormal() const {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         if( mins.data[i] > maxs.data[i] )
             return false;
     return true;
@@ -297,9 +298,9 @@ Arguments:
 Returns:
     bool:   true if the point is contained within the Bounds, false otherwise.
 */
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool Bounds< T, N >::contains( const Point< T, N >& point ) const {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         if( point.data[i] < mins.data[i] || point.data[i] > maxs.data[i] )
             return false;
 
@@ -326,9 +327,9 @@ Arguments:
 Returns:
     bool:   true if the point is contained within the Bounds, false otherwise.
 */
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool Bounds< T, N >::contains_mIME( const Point< T, N >& point ) const {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         if( point.data[i] < mins.data[i] || point.data[i] >= maxs.data[i] )
             return false;
 
@@ -351,9 +352,9 @@ Arguments:
 Returns:
     void:       N/A
 */
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Bounds< T, N >::include( const Point< T, N >& point ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         electMinMax( mins.data[i], maxs.data[i], point.data[i] );
 }
 
@@ -370,9 +371,9 @@ Arguments:
 Returns:
     bool:       true if the two bounds intersect, false otherwise.
 */
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool Bounds< T, N >::intersects( const Bounds< T, N >& bounds ) const {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         if( mins.data[i] > bounds.maxs.data[i] ||
             maxs.data[i] < bounds.mins.data[i] )
             return false;
@@ -398,9 +399,9 @@ Arguments:
 Returns:
     bool:       true if the two bounds intersect, false otherwise.
 */
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool Bounds< T, N >::intersects_EE( const Bounds< T, N >& bounds ) const {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         if( mins.data[i] >= bounds.maxs.data[i] ||
             maxs.data[i] <= bounds.mins.data[i] )
             return false;
@@ -408,47 +409,47 @@ bool Bounds< T, N >::intersects_EE( const Bounds< T, N >& bounds ) const {
     return true;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 template< typename T2 >
 Bounds< T, N >& Bounds< T, N >::operator =( const Bounds< T2, N >& right ) {
-    for( size_t i = 0; i < 2*N; ++i )
+    for( std::size_t i = 0; i < 2*N; ++i )
         data[i] = static_cast<T>( right.data[i] );
 
     return (*this);
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 std::ostream& operator <<( std::ostream& left, const Bounds< T, N >& right ) {
     return left << "[ " << right.mins << ", " << right.maxs << " ]";
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool operator ==( const Bounds< T, N >& left, const Bounds< T, N >& right ) {
-    for( size_t i = 0; i < 2*N; ++i )
+    for( std::size_t i = 0; i < 2*N; ++i )
         if( left.data[ i ] != right.data[ i ] )
             return false;
     return true;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool operator !=( const Bounds< T, N >& left, const Bounds< T, N >& right ) {
-    for( size_t i = 0; i < 2*N; ++i )
+    for( std::size_t i = 0; i < 2*N; ++i )
         if( left.data[ i ] != right.data[ i ] )
             return true;
     return false;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void clamp( Point< T, N >& pointInOut, const Bounds< T, N >& bounds ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         clamp( pointInOut[i], bounds.mins[i], bounds.maxs[i] );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Point< T, N > clampedPoint( const Point< T, N >& point, const Bounds< T, N >& bounds ) {
     Point< T, N > pointOut;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         pointOut[i] = clampedValue( point[i], bounds.mins[i], bounds.maxs[i] );
 
     return pointOut;
@@ -483,10 +484,10 @@ Arguments:
 Returns:
     Bounds: The intersection between a and b, or a zero bounds if a and b are not intersecting.
 */
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Bounds< T, N > intersect( const Bounds< T, N >& a, const Bounds< T, N >& b ) {
     Bounds< T, N > intersect;
-    for( size_t i = 0; i < N; ++i ) {
+    for( std::size_t i = 0; i < N; ++i ) {
         intersect.mins.data[i] = max( a.mins.data[i], b.mins.data[i] );
         intersect.maxs.data[i] = min( a.maxs.data[i], b.maxs.data[i] );
     }

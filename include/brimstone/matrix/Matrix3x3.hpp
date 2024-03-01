@@ -18,6 +18,7 @@ Description:
 
 
 //Includes
+#include <cstddef>                          //std::size_t
 #include <utility>                          //std::swap
 
 #include <brimstone/matrix/MatrixNxN.hpp>   //Matrix, BS_MATRIX_SQUARE_DECLARE_METHODS
@@ -208,7 +209,7 @@ bool Matrix< T, 3, 3 >::isZero() const {
 }
 
 template< typename T >
-void Matrix< T, 3, 3 >::setRow( const size_t row, const Vector< T, 3 >& values ) {
+void Matrix< T, 3, 3 >::setRow( const std::size_t row, const Vector< T, 3 >& values ) {
     BS_ASSERT_INDEX( row, 2 );
 
     elem[row][0] = values.data[0];
@@ -217,7 +218,7 @@ void Matrix< T, 3, 3 >::setRow( const size_t row, const Vector< T, 3 >& values )
 }
 
 template< typename T >
-void Matrix< T, 3, 3 >::setColumn( const size_t col, const Vector< T, 3 >& values ) {
+void Matrix< T, 3, 3 >::setColumn( const std::size_t col, const Vector< T, 3 >& values ) {
     BS_ASSERT_INDEX( col, 2 );
 
     elem[0][col] = values.data[0];
@@ -226,7 +227,7 @@ void Matrix< T, 3, 3 >::setColumn( const size_t col, const Vector< T, 3 >& value
 }
 
 template< typename T >
-Vector< T, 3 > Matrix< T, 3, 3 >::getRow( const size_t row ) const {
+Vector< T, 3 > Matrix< T, 3, 3 >::getRow( const std::size_t row ) const {
     BS_ASSERT_INDEX( row, 2 );
 
     return Vector< T, 3 >(
@@ -237,7 +238,7 @@ Vector< T, 3 > Matrix< T, 3, 3 >::getRow( const size_t row ) const {
 }
 
 template< typename T >
-Vector< T, 3 > Matrix< T, 3, 3 >::getColumn( const size_t col ) const {
+Vector< T, 3 > Matrix< T, 3, 3 >::getColumn( const std::size_t col ) const {
     BS_ASSERT_INDEX( col, 2 );
 
     return Vector< T, 3 >(
@@ -492,26 +493,26 @@ Matrix< T, 3, 3 > operator *( const Matrix< T, 3, 3 >& left, const Matrix< T, 3,
     );
 }
 
-template< typename T, size_t C2 >
+template< typename T, std::size_t C2 >
 Matrix< T, 3, C2 > operator *( const Matrix< T, 3, 3 >& left, const Matrix< T, 3, C2 >& right ) {
     Matrix< T, 3, C2 > out;
 
     //Set 1st row of output matrix
-    for( size_t c2 = 0; c2 < C2; ++c2 ) {
+    for( std::size_t c2 = 0; c2 < C2; ++c2 ) {
         out.elem[0][c2] = left._00 * right.elem[0][c2] +
                           left._01 * right.elem[1][c2] +
                           left._02 * right.elem[2][c2];
     }
 
     //Set 2nd row of output matrix
-    for( size_t c2 = 0; c2 < C2; ++c2 ) {
+    for( std::size_t c2 = 0; c2 < C2; ++c2 ) {
         out.elem[1][c2] = left._10 * right.elem[0][c2] +
                           left._11 * right.elem[1][c2] +
                           left._12 * right.elem[2][c2];
     }
 
     //Set 3rd row of output matrix
-    for( size_t c2 = 0; c2 < C2; ++c2 ) {
+    for( std::size_t c2 = 0; c2 < C2; ++c2 ) {
         out.elem[2][c2] = left._20 * right.elem[0][c2] +
                           left._21 * right.elem[1][c2] +
                           left._22 * right.elem[2][c2];
@@ -520,11 +521,11 @@ Matrix< T, 3, C2 > operator *( const Matrix< T, 3, 3 >& left, const Matrix< T, 3
     return out;
 }
 
-template< typename T, size_t R2 >
+template< typename T, std::size_t R2 >
 Matrix< T, R2, 3 > operator *( const Matrix< T, R2, 3 >& left, const Matrix< T, 3, 3 >& right ) {
     Matrix< T, R2, 3 > out;
 
-    for( size_t r2 = 0; r2 < R2; ++r2 ) {
+    for( std::size_t r2 = 0; r2 < R2; ++r2 ) {
         //Set 1st column of output matrix
         out.elem[r2][0] = left.elem[r2][0] * right._00 +
                           left.elem[r2][1] * right._10 +

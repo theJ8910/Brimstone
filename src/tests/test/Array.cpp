@@ -14,6 +14,8 @@ Description:
 #include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"             //allEqual, allEqualTo, copyAll
 
+#include <cstddef>                  //std::size_t
+
 #include <brimstone/util/Array.hpp>
 
 
@@ -22,9 +24,9 @@ Description:
 namespace {
     typedef ::Brimstone::Array< int, 5 > Array5i;
 
-    const size_t cv_size         = 5;
-    const int    cv_values[5]    { 1, 2, 3, 4,  5 };
-    const int    cv_valuesAlt[5] { 6, 7, 8, 9, 10 };
+    const std::size_t cv_size         = 5;
+    const int         cv_values[5]    { 1, 2, 3, 4,  5 };
+    const int         cv_valuesAlt[5] { 6, 7, 8, 9, 10 };
 }
 
 namespace UnitTest {
@@ -142,7 +144,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Array_index )
     Array5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.m_data, cv_valuesAlt );
@@ -152,7 +154,7 @@ UT_TEST_BEGIN( Array_indexConst )
     int data[cv_size];
     const Array5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );

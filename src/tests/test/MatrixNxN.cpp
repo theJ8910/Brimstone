@@ -14,6 +14,8 @@ Description:
 #include "../Test.hpp"
 #include "../utils.hpp"         //allEqual, allEqualTo
 
+#include <cstddef>              //std::size_t
+
 #include <brimstone/Matrix.hpp>
 
 
@@ -25,9 +27,9 @@ namespace {
     typedef ::Brimstone::Vector< int, 5 >      Vector5i;
     using   ::Brimstone::BoundsException;
 
-    const size_t cv_rows             = 5;
-    const size_t cv_cols             = 5;
-    const size_t cv_size             = cv_rows * cv_cols;
+    const std::size_t cv_rows = 5;
+    const std::size_t cv_cols = 5;
+    const std::size_t cv_size = cv_rows * cv_cols;
     const int    cv_zero[25] {
         0, 0, 0, 0, 0,
         0, 0, 0, 0, 0,
@@ -333,7 +335,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( MatrixNxN_index )
     Matrix5x5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -343,7 +345,7 @@ UT_TEST_BEGIN( MatrixNxN_indexConst )
     int data[cv_size];
     const Matrix5x5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -653,8 +655,8 @@ UT_TEST_END()
 UT_TEST_BEGIN( MatrixNxN_elem )
     Matrix5x5i o( cv_values );
 
-    for( size_t r = 0; r < cv_rows; ++r )
-        for( size_t c = 0; c < cv_cols; ++c )
+    for( std::size_t r = 0; r < cv_rows; ++r )
+        for( std::size_t c = 0; c < cv_cols; ++c )
             o( r, c ) = cv_valuesAlt[ r * cv_cols + c ];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -663,8 +665,8 @@ UT_TEST_END()
 UT_TEST_BEGIN( MatrixNxN_elemConst )
     const Matrix5x5i o( cv_values );
 
-    for( size_t r = 0; r < cv_rows; ++r )
-        for( size_t c = 0; c < cv_cols; ++c )
+    for( std::size_t r = 0; r < cv_rows; ++r )
+        for( std::size_t c = 0; c < cv_cols; ++c )
             if( o( r, c ) != cv_values[ r * cv_cols + c ] )
                 return false;
 
@@ -829,7 +831,7 @@ UT_TEST_BEGIN( MatrixNxN_index_OOB )
     Matrix5x5i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -845,7 +847,7 @@ UT_TEST_BEGIN( MatrixNxN_constIndex_OOB )
     const Matrix5x5i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -862,7 +864,7 @@ UT_TEST_BEGIN( MatrixNxN_setRow_OOB )
     Vector5i v;
 
     try {
-        o.setRow( (size_t)-1, v );
+        o.setRow( (std::size_t)-1, v );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -879,7 +881,7 @@ UT_TEST_BEGIN( MatrixNxN_setColumn_OOB )
     Vector5i v;
 
     try {
-        o.setColumn( (size_t)-1, v );
+        o.setColumn( (std::size_t)-1, v );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -895,7 +897,7 @@ UT_TEST_BEGIN( MatrixNxN_getRow_OOB )
     const Matrix5x5i o;
 
     try {
-        o.getRow( (size_t)-1 );
+        o.getRow( (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -911,7 +913,7 @@ UT_TEST_BEGIN( MatrixNxN_getColumn_OOB )
     const Matrix5x5i o;
 
     try {
-        o.getColumn( (size_t)-1 );
+        o.getColumn( (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -927,12 +929,12 @@ UT_TEST_BEGIN( MatrixNxN_elem_OOB )
     Matrix5x5i o;
 
     try {
-        o( (size_t)-1, 0 );
+        o( (std::size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        o( 0, (size_t)-1 );
+        o( 0, (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -953,12 +955,12 @@ UT_TEST_BEGIN( MatrixNxN_elemConst_OOB )
     const Matrix5x5i o;
 
     try {
-        o( (size_t)-1, 0 );
+        o( (std::size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        o( 0, (size_t)-1 );
+        o( 0, (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 

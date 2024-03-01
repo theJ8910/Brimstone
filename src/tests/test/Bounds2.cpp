@@ -14,6 +14,8 @@ Description:
 #include "../Test.hpp"
 #include "../utils.hpp"         //allEqual
 
+#include <cstddef>              //std::size_t
+
 #include <brimstone/Bounds.hpp>
 
 
@@ -26,35 +28,35 @@ namespace {
     using ::Brimstone::Bounds2f;
     using ::Brimstone::BoundsException;
 
-    const size_t cv_size             = 2;
-    const int    cv_zero[4]          {  0,  0,    0,  0 };
-    const int    cv_values[4]        {  1,  2,    3,  4 };
-    const int    cv_valuesMins[2]    {  1,  2 };
-    const int    cv_valuesMaxs[2]    {  3,  4 };
-    const int    cv_valuesAlt[4]     {  5,  6,    7,  8 };
-    const int    cv_valuesAltMins[2] {  5,  6 };
-    const int    cv_valuesAltMaxs[2] {  7,  8 };
-    const int    cv_abnormal[4]      {  3,  4,    1,  2 };
-    const int    cv_includeTest[4]   { -14, -11,   3,  12 };
-    const int    cv_includePt1[2]    { -14,  12 };
-    const int    cv_includePt2[2]    {  2,  -11 };
-    const int    cv_isTest1[4]       {  0,  1,    2,   3 };
-    const int    cv_isTest2[4]       {  2,  3,    4,   5 };
-    const int    cv_isTest3[4]       {  4,  5,    5,   6 };
-    const int    cv_isTestCorner[4]  {  3,  4,    5,   6 };
-    const int    cv_intersect1[4]    {  1,  2,    2,   3 };
-    const int    cv_intersect2[4]    {  2,  3,    3,   4 };
-    const int    cv_widthTest[4]     {  1,  2,   11,  4 };
-    const int    cv_heightTest[4]    {  1,  2,    3, 13 };
-    const int    cv_sizes[2]         { 10, 11 };
-    const int    cv_width            = 10;
-    const int    cv_height           = 11;
-    const int    cv_dimTest[4]       {  1,  2,   11, 13 };
-    const int    cv_outsideMins[2]   {  0,  1 };
-    const int    cv_outsideMaxs[2]   {  4,  5 };
-    const char*  cv_output           = "[ ( 1, 2 ), ( 3, 4 ) ]";
+    const std::size_t cv_size             = 2;
+    const int         cv_zero[4]          {  0,  0,    0,  0 };
+    const int         cv_values[4]        {  1,  2,    3,  4 };
+    const int         cv_valuesMins[2]    {  1,  2 };
+    const int         cv_valuesMaxs[2]    {  3,  4 };
+    const int         cv_valuesAlt[4]     {  5,  6,    7,  8 };
+    const int         cv_valuesAltMins[2] {  5,  6 };
+    const int         cv_valuesAltMaxs[2] {  7,  8 };
+    const int         cv_abnormal[4]      {  3,  4,    1,  2 };
+    const int         cv_includeTest[4]   { -14, -11,   3,  12 };
+    const int         cv_includePt1[2]    { -14,  12 };
+    const int         cv_includePt2[2]    {  2,  -11 };
+    const int         cv_isTest1[4]       {  0,  1,    2,   3 };
+    const int         cv_isTest2[4]       {  2,  3,    4,   5 };
+    const int         cv_isTest3[4]       {  4,  5,    5,   6 };
+    const int         cv_isTestCorner[4]  {  3,  4,    5,   6 };
+    const int         cv_intersect1[4]    {  1,  2,    2,   3 };
+    const int         cv_intersect2[4]    {  2,  3,    3,   4 };
+    const int         cv_widthTest[4]     {  1,  2,   11,  4 };
+    const int         cv_heightTest[4]    {  1,  2,    3, 13 };
+    const int         cv_sizes[2]         { 10, 11 };
+    const int         cv_width            = 10;
+    const int         cv_height           = 11;
+    const int         cv_dimTest[4]       {  1,  2,   11, 13 };
+    const int         cv_outsideMins[2]   {  0,  1 };
+    const int         cv_outsideMaxs[2]   {  4,  5 };
+    const char*       cv_output           = "[ ( 1, 2 ), ( 3, 4 ) ]";
 
-    const float  cv_valuesAltF[4]    { 5.0f, 6.0f, 7.0f, 8.0f };
+    const float       cv_valuesAltF[4]    { 5.0f, 6.0f, 7.0f, 8.0f };
 }
 
 
@@ -183,7 +185,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Bounds2_index )
     Bounds2i o( cv_values );
 
-    for( size_t i = 0; i < 2*cv_size; ++i )
+    for( std::size_t i = 0; i < 2*cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -193,7 +195,7 @@ UT_TEST_BEGIN( Bounds2_indexConst )
     int data[2*cv_size];
     const Bounds2i o( cv_values );
 
-    for( size_t i = 0; i < 2*cv_size; ++i )
+    for( std::size_t i = 0; i < 2*cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -399,7 +401,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Bounds2_setDimension )
     Bounds2i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o.setDimension( i, (int)(10 + i) );
 
     return allEqual( o.data, cv_dimTest );
@@ -424,7 +426,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Bounds2_getDimension )
     Bounds2i o( cv_dimTest );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         if( o.getDimension( i ) != (int)( 10 + i ) )
             return false;
 
@@ -596,7 +598,7 @@ UT_TEST_BEGIN( Bounds2_index_OOB )
     Bounds2i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -612,7 +614,7 @@ UT_TEST_BEGIN( Bounds2_constIndex_OOB )
     const Bounds2i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -628,7 +630,7 @@ UT_TEST_BEGIN( Bounds2_setDimension_OOB )
     Bounds2i o;
 
     try {
-        o.setDimension( (size_t)-1, 10 );
+        o.setDimension( (std::size_t)-1, 10 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -644,7 +646,7 @@ UT_TEST_BEGIN( Bounds2_getDimension_OOB )
     Bounds2i o;
 
     try {
-        o.getDimension( (size_t)-1 );
+        o.getDimension( (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 

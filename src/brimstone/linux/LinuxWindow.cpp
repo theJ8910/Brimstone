@@ -14,7 +14,9 @@ Description:
 //Includes
 #include "LinuxWindow.hpp"                      //Class header
 #include "XException.hpp"                       //Brimstone::xerrBegin, Brimstone::xerrEnd
-#include "../opengl/LinuxGLContext.hpp"         //TEMP? LinuxGLContext::getIdealVisualInfo
+#include "../opengl/LinuxGLContext.hpp"         //LinuxGLContext::getIdealVisualInfo (TEMP?)
+
+#include <cstddef>                              //std::size_t
 
 #include <brimstone/util/Range.hpp>             //Brimstone::clampedValue
 #include <brimstone/Exception.hpp>              //Brimstone::NullPointerException
@@ -217,7 +219,7 @@ bool LinuxWindow::peekEvent( WindowEvent& eventOut ) {
     XEvent xEvent;
     if( m_eventQueue.empty() ) {
         //Process all messages currently in the application's message queue
-        for( size_t i = XPending( m_display ); i > 0; --i ) {
+        for( std::size_t i = XPending( m_display ); i > 0; --i ) {
             XNextEvent( m_display, &xEvent );
             mainProc( xEvent );
         }

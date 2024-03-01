@@ -13,10 +13,11 @@ Description:
 
 
 //Includes
-#include <algorithm>            //std::equal
-#include <iterator>             //std::begin, std::end
-#include <type_traits>          //std::is_same
-#include <cassert>              //assert
+#include <cstddef>      //std::size_t
+#include <algorithm>    //std::equal
+#include <iterator>     //std::begin, std::end
+#include <type_traits>  //std::is_same
+#include <cassert>      //assert
 
 
 
@@ -50,8 +51,8 @@ bool allWithin( const float* values, const float* ideals, const float err, const
 //rangeSize{1}
 //Returns the number of elements in a container
 template< typename T >
-size_t rangeSize( const T& range ) {
-    return (size_t)( std::end( range ) - std::begin( range ) );
+std::size_t rangeSize( const T& range ) {
+    return (std::size_t)( std::end( range ) - std::begin( range ) );
 }
 
 //assertSizeDiff{1}
@@ -68,7 +69,7 @@ void assertSizeDiff( const TL& left, const TR& right ) {
 //assertSizeDiff{2}
 //Same as above but specializes for arrays.
 //Since the size of an array is known at compile time, it can use static_assert instead of assert.
-template< typename T, size_t NL, size_t NR >
+template< typename T, std::size_t NL, std::size_t NR >
 void assertSizeDiff( const T (&/* left */)[NL], const T(&/* right */)[NR] ) {
     static_assert( NL <= NR, "Right array is smaller than left array!" );
 }
@@ -104,7 +105,7 @@ bool allEqualTo( const TL& left, const TR& right ) {
 //Takes two arrays of the same type, "from" (of size NF) and "to" (of size NT).
 //Sets to[i] = from[i] for each i, where 0 <= i < NF.
 //NT must be greater than or equal to NF, or compilation will fail.
-template< typename T, size_t NF, size_t NT >
+template< typename T, std::size_t NF, std::size_t NT >
 void copyAll( const T (&from)[NF], T(&to)[NT] ) {
     static_assert( NF <= NT, "Destination array is smaller than source array!" );
     std::copy(
@@ -116,7 +117,7 @@ void copyAll( const T (&from)[NF], T(&to)[NT] ) {
 
 //copyAll{2}
 //Input pointer, output array
-template< typename InPtr, typename T, size_t NT >
+template< typename InPtr, typename T, std::size_t NT >
 void copyAll( InPtr from, T (&to)[NT] ) {
     static_assert(
         std::is_pointer< InPtr >::value &&
@@ -136,7 +137,7 @@ void copyAll( InPtr from, T (&to)[NT] ) {
 
 //copyAll{3}
 //Input array, output pointer
-template< typename T, size_t NF, typename OutPtr >
+template< typename T, std::size_t NF, typename OutPtr >
 void copyAll( const T (&from)[NF], OutPtr to ) {
     static_assert(
         std::is_pointer< OutPtr >::value &&

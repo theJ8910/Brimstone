@@ -71,7 +71,7 @@ Description:
 
 #ifdef BS_CHECK_INDEX
 
-//Note: BS_ASSERT_INDEX expects index and maxIndex to be of type size_t
+//Note: BS_ASSERT_INDEX expects index and maxIndex to be of type std::size_t
 #define BS_ASSERT_INDEX( index, maxIndex )      \
     if( /*index < 0 ||*/ index > maxIndex )     \
         throw ::Brimstone::BoundsException();

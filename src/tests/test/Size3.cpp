@@ -11,10 +11,11 @@ Description:
 
 
 //Include
-#include <sstream>              //std::ostringstream
-
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, allWithin, FAST_SQRT_ERR
+
+#include <cstddef>              //std::size_t
+#include <sstream>              //std::ostringstream
 
 #include <brimstone/Size.hpp>
 
@@ -26,15 +27,15 @@ namespace {
     using ::Brimstone::Size3f;
     using ::Brimstone::BoundsException;
 
-    const size_t cv_size         = 3;
-    const int    cv_zero[3]      { 0, 0, 0 };
-    const int    cv_values[3]    { 1, 2, 3 };
-    const int    cv_valuesAlt[3] { 4, 5, 6 };
-    const int    cv_volume       = 4 * 5 * 6;
-    const char*  cv_output       = "[ 1, 2, 3 ]";
+    const std::size_t cv_size         = 3;
+    const int         cv_zero[3]      { 0, 0, 0 };
+    const int         cv_values[3]    { 1, 2, 3 };
+    const int         cv_valuesAlt[3] { 4, 5, 6 };
+    const int         cv_volume       = 4 * 5 * 6;
+    const char*       cv_output       = "[ 1, 2, 3 ]";
 
-    const float  cv_valuesF[3]   { 1.0f, 2.0f, 3.0f };
-    const char*  cv_outputF      = "[ 1.00000, 2.00000, 3.00000 ]";
+    const float       cv_valuesF[3]   { 1.0f, 2.0f, 3.0f };
+    const char*       cv_outputF      = "[ 1.00000, 2.00000, 3.00000 ]";
 }
 
 namespace UnitTest {
@@ -152,7 +153,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Size3_index )
     Size3i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -162,7 +163,7 @@ UT_TEST_BEGIN( Size3_indexConst )
     int data[ cv_size ];
     const Size3i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -289,7 +290,7 @@ UT_TEST_BEGIN( Size3_index_OOB )
     Size3i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -305,7 +306,7 @@ UT_TEST_BEGIN( Size3_constIndex_OOB )
     const Size3i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 

@@ -27,6 +27,7 @@ Description:
 
 
 //Includes
+#include <cstddef>                      //std::size_t
 #include <initializer_list>             //std::initializer_list
 #include <algorithm>                    //std::fill, std::copy
 #include <type_traits>                  //std::remove_reference
@@ -54,7 +55,7 @@ public:
     template< typename T >
     inline Range( T& cppRange );
     inline Range( const Iter begin, const Iter end );
-    inline Range( const Iter begin, const size_t size );
+    inline Range( const Iter begin, const std::size_t size );
 
     template< typename T >
     inline void set( const T& cppRange );
@@ -62,19 +63,19 @@ public:
     template< typename T >
     inline void get( T& cppRangeOut ) const;
 
-    inline Iter      begin();
-    inline ConstIter begin() const;
-    inline ConstIter cbegin() const;
-    inline Iter      end();
-    inline ConstIter end() const;
-    inline ConstIter cend() const;
+    inline Iter        begin();
+    inline ConstIter   begin() const;
+    inline ConstIter   cbegin() const;
+    inline Iter        end();
+    inline ConstIter   end() const;
+    inline ConstIter   cend() const;
 
-    inline Ref       operator []( const size_t index );
-    inline ConstRef  operator []( const size_t index ) const;
+    inline Ref         operator []( const std::size_t index );
+    inline ConstRef    operator []( const std::size_t index ) const;
 
-    inline void      fill( ConstRef elem );
-    inline size_t    size() const;
-    inline bool      empty() const;
+    inline void        fill( ConstRef elem );
+    inline std::size_t size() const;
+    inline bool        empty() const;
 private:
     inline Range& operator =( const Range& right );
 };
@@ -96,7 +97,7 @@ inline Range< Iter, ConstIter >::Range( const Iter begin, const Iter end ) :
 }
 
 template< typename Iter, typename ConstIter >
-inline Range< Iter, ConstIter >::Range( const Iter begin, const size_t size ) :
+inline Range< Iter, ConstIter >::Range( const Iter begin, const std::size_t size ) :
     m_begin( begin        ),
     m_end(   begin + size ) {
     BS_ASSERT_NON_NULLPTR( begin );
@@ -153,14 +154,14 @@ inline ConstIter Range< Iter, ConstIter >::cend() const {
 }
 
 template< typename Iter, typename ConstIter >
-inline auto Range< Iter, ConstIter >::operator []( const size_t index ) -> Ref {
+inline auto Range< Iter, ConstIter >::operator []( const std::size_t index ) -> Ref {
     BS_ASSERT_INDEX( index, size() - 1 );
 
     return m_begin[ index ];
 }
 
 template< typename Iter, typename ConstIter >
-inline auto Range< Iter, ConstIter >::operator []( const size_t index ) const -> ConstRef {
+inline auto Range< Iter, ConstIter >::operator []( const std::size_t index ) const -> ConstRef {
     BS_ASSERT_INDEX( index, size() - 1 );
 
     return m_begin[ index ];
@@ -172,7 +173,7 @@ inline void Range< Iter, ConstIter >::fill( ConstRef elem ) {
 }
 
 template< typename Iter, typename ConstIter >
-inline size_t Range< Iter, ConstIter >::size() const {
+inline std::size_t Range< Iter, ConstIter >::size() const {
     return rangeSize( *this );
 }
 
@@ -216,7 +217,7 @@ struct RangeFromCpp {
 //NOTE: "end" is exclusive, so the range returned by slice
 //in the example above will cover indices 1, 2, and 3.
 template< typename T >
-inline typename Private::RangeFromCpp<T>::type slice( T& cppRange, const size_t begin, const size_t end ) {
+inline typename Private::RangeFromCpp<T>::type slice( T& cppRange, const std::size_t begin, const std::size_t end ) {
     BS_ASSERT_INDEX( begin, rangeSize( cppRange ) - 1 );
     BS_ASSERT_INDEX( end,   rangeSize( cppRange ) );
 
@@ -232,8 +233,8 @@ inline typename Private::RangeFromCpp<T>::type slice( T& cppRange, const size_t 
 //e.g. if an cppRange is int myArray[] = { 0, 1, 2, 3, 4 },
 //then slice( myArray, 2 ) would return a Range covering { 2, 3, 4 }.
 template< typename T >
-inline typename Private::RangeFromCpp<T>::type slice( T& cppRange, const size_t begin ) {
-    size_t size = rangeSize( cppRange );
+inline typename Private::RangeFromCpp<T>::type slice( T& cppRange, const std::size_t begin ) {
+    std::size_t size = rangeSize( cppRange );
     BS_ASSERT_INDEX( begin, size - 1 );
 
     return typename Private::RangeFromCpp< T >::type(

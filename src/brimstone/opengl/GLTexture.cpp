@@ -48,7 +48,7 @@ void GLTexture::destroy() {
     }
 }
 
-void GLTexture::set( const size_t width, const size_t height, const void* data ) {
+void GLTexture::set( const std::size_t width, const std::size_t height, const void* data ) {
     m_width  = width;
     m_height = height;
     glBindTexture( GL_TEXTURE_2D, m_name );
@@ -65,11 +65,11 @@ void GLTexture::unbind() {
     glBindTexture( GL_TEXTURE_2D, 0 );
 }
 
-size_t GLTexture::getWidth() const {
+std::size_t GLTexture::getWidth() const {
     return m_width;
 }
 
-size_t GLTexture::getHeight() const {
+std::size_t GLTexture::getHeight() const {
     return m_height;
 }
 

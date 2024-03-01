@@ -15,8 +15,9 @@ Description:
 
 
 //Includes
+#include <cstddef>                      //std::size_t
+#include <cstdlib>                      //std::abs
 #include <initializer_list>             //std::initializer_list
-#include <cstdlib>                      //abs
 
 #include <brimstone/Point.hpp>          //BasePoint
 #include <brimstone/util/Math.hpp>      //fastSqrt, fastInvSqrt
@@ -110,92 +111,92 @@ The upper bound is slightly higher than the lower bound, so we choose that for t
 
 namespace Brimstone {
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 class Vector;
 
 namespace Private {
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void normalize( Vector< T, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< int8, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< uint8, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< int16, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< uint16, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< int32, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< uint32, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< int64, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< uint64, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< float, N >& vecInOut );
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< double, N >& vecInOut );
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void intNormalize( Vector< T, N >& vecInOut );
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void floatNormalize( Vector< T, N >& vecInOut );
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool isUnitVec( const Vector< T, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< int8, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< uint8, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< int16, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< uint16, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< int32, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< uint32, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< int64, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< uint64, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< float, N >& vec );
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< double, N >& vec );
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool intIsUnitVec( const Vector< T, N >& vec );
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool floatIsUnitVec( const Vector< T, N >& vec );
 
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 class Vector {
 public:
     T data[N];
@@ -205,48 +206,48 @@ public:
     BS_BASEPOINT_DECLARE_METHODS(       Vector,    N )
     BS_VECTOR_DECLARE_METHODS( N )
 };
-BS_ARRAY_DEFINE_GENERIC_METHODS( Vector, T,    data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-BS_ARRAY_DEFINE_METHODS(         Vector, T,    data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-BS_BASEPOINTN_DEFINE_METHODS(    Vector                                                                   )
-BS_VECTOR_DEFINE_METHODS(                   N,       BS_TMPL_2( typename T, size_t N )                    )
+BS_ARRAY_DEFINE_GENERIC_METHODS( Vector, T,    data, BS_TMPL_2( typename T, std::size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_METHODS(         Vector, T,    data, BS_TMPL_2( typename T, std::size_t N ), BS_SPEC_2( T, N ) )
+BS_BASEPOINTN_DEFINE_METHODS(    Vector                                                                        )
+BS_VECTOR_DEFINE_METHODS(                   N,       BS_TMPL_2( typename T, std::size_t N )                    )
 
 
 
 
 //Forward declarations
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 T dot( const Vector< T, N >& left, const Vector< T, N >& right );
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > invert( const Vector< T, N >& vector );
 
 
 
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >::Vector() {
 #ifdef BS_ZERO
     std::fill( std::begin( data ), std::end( data ), static_cast< T >( 0 ) );
 #endif //BS_ZERO
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 template< typename T2 >
 Vector< T, N >::Vector( const Point< T2, N >& to ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] = static_cast< T >( to.data[i] );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >::Vector( const Point< T, N >& from, const Point< T, N >& to ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] = to.data[i] - from.data[i];
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 T Vector< T, N >::getLengthSq() const {
     T lengthSq = 0;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         lengthSq += data[i] * data[i];
 
     return lengthSq;
@@ -261,10 +262,10 @@ namespace Private {
 //Having the operation performed on a volatile vector seems to work around the problem.
 //The only real way this differs from any other similar function is that it does "data[i] = static_cast< T > / data[i];"
 //Maybe it's got something to do with that?
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void invertImpl( volatile Vector< T, N >& v ) {
     const T one = static_cast< T >( 1 );
-    for( size_t i = 0; i < N; ++i ) {
+    for( std::size_t i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( v.data[i] );
         v.data[i] = one / v.data[i];
     }
@@ -274,14 +275,14 @@ void invertImpl( volatile Vector< T, N >& v ) {
 
 #endif
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Vector< T, N >::invert() {
     #if defined( BS_BUILD_LINUX ) && !defined( BS_BUILD_64BIT ) && !defined( BS_BUILD_DEBUG )
     Private::invertImpl( *this );
     #else
 
     const T one = static_cast< T >( 1 );
-    for( size_t i = 0; i < N; ++i ) {
+    for( std::size_t i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( data[i] );
         data[i] = one / data[i];
     }
@@ -289,39 +290,39 @@ void Vector< T, N >::invert() {
     #endif
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void Vector< T, N >::negate() {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] = -data[i];
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >& Vector< T, N >::operator +=( const Vector& right ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] += right.data[i];
 
     return ( *this );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >& Vector< T, N >::operator -=( const Vector& right ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] -= right.data[i];
 
     return ( *this );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >& Vector< T, N >::operator *=( const Vector& right ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] *= right.data[i];
 
     return ( *this );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >& Vector< T, N >::operator /=( const Vector& right ) {
-    for( size_t i = 0; i < N; ++i ) {
+    for( std::size_t i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( right.data[i] );
         data[i] /= right.data[i];
     }
@@ -329,117 +330,117 @@ Vector< T, N >& Vector< T, N >::operator /=( const Vector& right ) {
     return ( *this );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >& Vector< T, N >::operator +=( const T right ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] += right;
 
     return ( *this );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >& Vector< T, N >::operator -=( const T right ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] -= right;
 
     return ( *this );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >& Vector< T, N >::operator *=( const T right ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] *= right;
 
     return ( *this );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N >& Vector< T, N >::operator /=( const T right ) {
     BS_ASSERT_NONZERO_DIVISOR( right );
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         data[i] /= right;
 
     return ( *this );
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 std::ostream& operator <<( std::ostream& left, const Vector< T, N >& right ) {
     left << "< "
          << ( boost::format( "%|.5f|" ) % right.data[0] ).str();
-    for( size_t i = 1; i < N; ++i )
+    for( std::size_t i = 1; i < N; ++i )
         left << ", " << ( boost::format( "%|.5f|" ) % right.data[i] ).str();
     left << " >";
 
     return left;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool operator ==( const Vector< T, N >& left, const Vector< T, N >& right ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         if( left.data[i] != right.data[i] )
             return false;
     return true;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool operator !=( const Vector< T, N >& left, const Vector< T, N >& right ) {
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         if( left.data[i] != right.data[i] )
             return true;
     return false;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator +( const Vector< T, N >& right ) {
     return right;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator -( const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out.data[i] = -right.data[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator +( const Vector< T, N >& left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] + right.data[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator -( const Vector< T, N >& left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] - right.data[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator *( const Vector< T, N >& left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] * right.data[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator /( const Vector< T, N >& left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i ) {
+    for( std::size_t i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( right.data[i] );
         out.data[i] = left.data[i] / right.data[i];
     }
@@ -447,114 +448,114 @@ Vector< T, N > operator /( const Vector< T, N >& left, const Vector< T, N >& rig
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator +( const T left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out[i] = left + right[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator +( const Vector< T, N >& left, const T right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out[i] = left[i] + right;
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator -( const Vector< T, N >& left, const T right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out[i] = left[i] - right;
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator *( const T left, const Vector< T, N >& right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out[i] = left * right[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator *( const Vector< T, N >& left, const T right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out[i] = left[i] * right;
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator /( const Vector< T, N >& left, const T right ) {
     BS_ASSERT_NONZERO_DIVISOR( right );
 
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out[i] = left[i] / right;
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > operator -( const Point< T, N >& left, const Point< T, N >& right ) {
     Vector< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] - right.data[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Point< T, N > operator +( const Point< T, N >& left, const Vector< T, N >& right ) {
     Point< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] + right.data[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Point< T, N > operator +( const Vector< T, N >& left, const Point< T, N >& right ) {
     Point< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] + right.data[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Point< T, N > operator -( const Point< T, N >& left, const Vector< T, N >& right ) {
     Point< T, N > out;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         out.data[i] = left.data[i] - right.data[i];
 
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 Vector< T, N > invert( const Vector< T, N >& vector ) {
     Vector< T, N > out;
 
     const T one = static_cast< T >( 1 );
-    for( size_t i = 0; i < N; ++i ) {
+    for( std::size_t i = 0; i < N; ++i ) {
         BS_ASSERT_NONZERO_DIVISOR( vector.data[i] );
         out.data[i] = one / vector.data[i];
     }
@@ -562,11 +563,11 @@ Vector< T, N > invert( const Vector< T, N >& vector ) {
     return out;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 T dot( const Vector< T, N >& left, const Vector< T, N >& right ) {
     T dp = 0;
 
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         dp += left.data[i] * right.data[i];
 
     return dp;
@@ -574,39 +575,39 @@ T dot( const Vector< T, N >& left, const Vector< T, N >& right ) {
 
 namespace Private {
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void normalize( const Vector< T, N >& vec ) {
     //By default, do nothing for exotic types
     //Make an override if you want it to do something special
 }
 
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< int8,   N >& vecInOut ) { intNormalize( vecInOut );   }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< uint8,  N >& vecInOut ) { intNormalize( vecInOut );   }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< int16,  N >& vecInOut ) { intNormalize( vecInOut );   }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< uint16, N >& vecInOut ) { intNormalize( vecInOut );   }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< int32,  N >& vecInOut ) { intNormalize( vecInOut );   }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< uint32, N >& vecInOut ) { intNormalize( vecInOut );   }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< int64,  N >& vecInOut ) { intNormalize( vecInOut );   }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< uint64, N >& vecInOut ) { intNormalize( vecInOut );   }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< float,  N >& vecInOut ) { floatNormalize( vecInOut ); }
-template< size_t N >
+template< std::size_t N >
 void normalize( Vector< double, N >& vecInOut ) { floatNormalize( vecInOut ); }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void intNormalize( Vector< T, N >& vecInOut ) {
     BS_ASSERT_CAN_NORMALIZE( vecInOut );
 
     T* maxp   = vecInOut.data;
-    T  maxmag = abs( vecInOut.data[0] );
+    T  maxmag = std::abs( vecInOut.data[0] );
     T  mag;
 
     //There are only 2 * N possible "normalized" vectors for integer vectors,
@@ -616,7 +617,7 @@ void intNormalize( Vector< T, N >& vecInOut ) {
     //So instead, we approximate the normal by finding the coordinate with the largest magnitude,
     //setting its magnitude to 1, and setting all other coordinates to 0.
     for( T* p = vecInOut.data + 1; p != vecInOut.data + N; ++p ) {
-        mag = abs( *p );
+        mag = std::abs( *p );
         if( mag > maxmag ) {
             //Winners replace the incumbent as the new max coordinate.
             //The old max coordinate is set to 0.
@@ -634,51 +635,51 @@ void intNormalize( Vector< T, N >& vecInOut ) {
 }
 
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 void floatNormalize( Vector< T, N >& vecInOut ) {
     BS_ASSERT_CAN_NORMALIZE( vecInOut );
 
     T invLen = fastInvSqrt( vecInOut.getLengthSq() );
-    for( size_t i = 0; i < N; ++i )
+    for( std::size_t i = 0; i < N; ++i )
         vecInOut.data[i] *= invLen;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool isUnitVector( const Vector< T, N >& vec ) {
     //By default, return false for exotic types
     //Make an override if you want it to do something special
     return false;
 }
 
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< int8,   N >& vec ) { return intIsUnitVec( vec );   }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< uint8,  N >& vec ) { return intIsUnitVec( vec );   }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< int16,  N >& vec ) { return intIsUnitVec( vec );   }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< uint16, N >& vec ) { return intIsUnitVec( vec );   }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< int32,  N >& vec ) { return intIsUnitVec( vec );   }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< uint32, N >& vec ) { return intIsUnitVec( vec );   }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< int64,  N >& vec ) { return intIsUnitVec( vec );   }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< uint64, N >& vec ) { return intIsUnitVec( vec );   }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< float,  N >& vec ) { return floatIsUnitVec( vec ); }
-template< size_t N >
+template< std::size_t N >
 bool isUnitVec( const Vector< double, N >& vec ) { return floatIsUnitVec( vec ); }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool intIsUnitVec( const Vector< T, N >& vec ) {
     return vec.getLengthSq() == (T)1;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 bool floatIsUnitVec( const Vector< T, N >& vec ) {
-    return abs( (T)1.0 - vec.getLengthSq() ) < BS_VECTOR_UNIT_MAX_ERROR;
+    return std::abs( (T)1.0 - vec.getLengthSq() ) < BS_VECTOR_UNIT_MAX_ERROR;
 }
 
 }

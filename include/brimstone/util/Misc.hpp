@@ -13,9 +13,11 @@ Description:
 
 
 //Includes
-#include <brimstone/types.hpp>  //Brimstone::int32
+#include <cstddef>              //std::size_t
 #include <tuple>                //std::tuple
 #include <type_traits>          //std::integral_constant, std::underlying_type
+
+#include <brimstone/types.hpp>  //Brimstone::int32
 
 
 
@@ -34,15 +36,15 @@ namespace Brimstone {
 
 //Returns how many elements are in a C++ range
 template< typename T >
-inline size_t rangeSize( const T& cppRange ) {
-    return static_cast< size_t >( std::end( cppRange ) - std::begin( cppRange ) );
+inline std::size_t rangeSize( const T& cppRange ) {
+    return static_cast< std::size_t >( std::end( cppRange ) - std::begin( cppRange ) );
 }
 template< typename T >
-inline size_t rangeSize( std::initializer_list< T > il ) {
-    return static_cast< size_t >( std::end( il ) - std::begin( il ) );
+inline std::size_t rangeSize( std::initializer_list< T > il ) {
+    return static_cast< std::size_t >( std::end( il ) - std::begin( il ) );
 }
-template< typename T, size_t N >
-inline size_t rangeSize( const T (&/* cppRange */)[N] ) {
+template< typename T, std::size_t N >
+inline std::size_t rangeSize( const T (&/* cppRange */)[N] ) {
     return N;
 }
 

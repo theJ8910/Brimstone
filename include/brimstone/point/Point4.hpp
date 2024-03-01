@@ -28,6 +28,7 @@ Description:
     className( const T x, const T y, const T z, const T w );                                \
     void set( const T x, const T y, const T z, const T w );                                 \
     void get( T& xOut, T& yOut, T& zOut, T& wOut ) const;
+
 #define BS_BASEPOINT4_DEFINE_METHODS( className )                                           \
     template< typename T >                                                                  \
     inline className< T, 4 >::className( const T& elem ) :                                  \

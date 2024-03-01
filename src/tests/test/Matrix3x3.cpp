@@ -14,6 +14,8 @@ Description:
 #include "../Test.hpp"
 #include "../utils.hpp"         //allEqual, allEqualTo
 
+#include <cstddef>              //std::size_t
+
 #include <brimstone/Matrix.hpp>
 
 
@@ -25,9 +27,9 @@ namespace {
     using ::Brimstone::Vector3i;
     using ::Brimstone::BoundsException;
 
-    const size_t cv_rows             = 3;
-    const size_t cv_cols             = 3;
-    const size_t cv_size             = cv_rows * cv_cols;
+    const std::size_t cv_rows = 3;
+    const std::size_t cv_cols = 3;
+    const std::size_t cv_size = cv_rows * cv_cols;
     const int    cv_zero[9] {
         0, 0, 0,
         0, 0, 0,
@@ -281,7 +283,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix3x3_index )
     Matrix3x3i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -291,7 +293,7 @@ UT_TEST_BEGIN( Matrix3x3_indexConst )
     int data[cv_size];
     const Matrix3x3i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -630,8 +632,8 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix3x3_elem )
     Matrix3x3i o( cv_values );
 
-    for( size_t r = 0; r < cv_rows; ++r )
-        for( size_t c = 0; c < cv_cols; ++c )
+    for( std::size_t r = 0; r < cv_rows; ++r )
+        for( std::size_t c = 0; c < cv_cols; ++c )
             o( r, c ) = cv_valuesAlt[ r * cv_cols + c ];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -640,8 +642,8 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix3x3_elemConst )
     const Matrix3x3i o( cv_values );
 
-    for( size_t r = 0; r < cv_rows; ++r )
-        for( size_t c = 0; c < cv_cols; ++c )
+    for( std::size_t r = 0; r < cv_rows; ++r )
+        for( std::size_t c = 0; c < cv_cols; ++c )
             if( o( r, c ) != cv_values[ r * cv_cols + c ] )
                 return false;
 
@@ -806,7 +808,7 @@ UT_TEST_BEGIN( Matrix3x3_index_OOB )
     Matrix3x3i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -822,7 +824,7 @@ UT_TEST_BEGIN( Matrix3x3_constIndex_OOB )
     const Matrix3x3i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -839,7 +841,7 @@ UT_TEST_BEGIN( Matrix3x3_setRow_OOB )
     Vector3i v;
 
     try {
-        o.setRow( (size_t)-1, v );
+        o.setRow( (std::size_t)-1, v );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -856,7 +858,7 @@ UT_TEST_BEGIN( Matrix3x3_setColumn_OOB )
     Vector3i v;
 
     try {
-        o.setColumn( (size_t)-1, v );
+        o.setColumn( (std::size_t)-1, v );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -872,12 +874,12 @@ UT_TEST_BEGIN( Matrix3x3_elem_OOB )
     Matrix3x3i o;
 
     try {
-        o( (size_t)-1, 0 );
+        o( (std::size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        o( 0, (size_t)-1 );
+        o( 0, (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -898,12 +900,12 @@ UT_TEST_BEGIN( Matrix3x3_elemConst_OOB )
     const Matrix3x3i o;
 
     try {
-        o( (size_t)-1, 0 );
+        o( (std::size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        o( 0, (size_t)-1 );
+        o( 0, (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 

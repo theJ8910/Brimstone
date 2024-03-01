@@ -11,10 +11,11 @@ Description:
 
 
 //Includes
-#include <sstream>              //std::ostringstream
-
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, allWithin, FAST_SQRT_ERR
+
+#include <cstddef>              //std::size_t
+#include <sstream>              //std::ostringstream
 
 #include <brimstone/Vector.hpp>
 
@@ -28,46 +29,46 @@ namespace {
     using ::Brimstone::BoundsException;
     using ::Brimstone::DivideByZeroException;
 
-    const size_t cv_size               = 3;
-    const int    cv_zero[3]            {  0,  0,   0 };
-    const int    cv_values[3]          {  1,  2,   3 };
-    const int    cv_valuesAlt[3]       {  4,  5,   6 };
+    const std::size_t cv_size               = 3;
+    const int         cv_zero[3]            {  0,  0,   0 };
+    const int         cv_values[3]          {  1,  2,   3 };
+    const int         cv_valuesAlt[3]       {  4,  5,   6 };
 
-    const int    cv_unit[3]            {  0,  0,   1 };
-    const int    cv_lengthSq           = 77;
-    const int    cv_length             = 8;  //Rounded down from 8.77496439f
-    const int    cv_dot                = 32;
+    const int         cv_unit[3]            {  0,  0,   1 };
+    const int         cv_lengthSq           = 77;
+    const int         cv_length             = 8;  //Rounded down from 8.77496439f
+    const int         cv_dot                = 32;
 
-    const int    cv_arithmetic1[3]     {   6, 10,  24 };
-    const int    cv_arithmetic2[3]     {   3,  5,   8 };
-    const int    cv_addResult[3]       {   9, 15,  32 };
-    const int    cv_subResult[3]       {   3,  5,  16 };
-    const int    cv_mulResult[3]       {  18, 50, 192 };
-    const int    cv_divResult[3]       {   2,  2,   3 };
-    const int    cv_scalar             = 2;
-    const int    cv_addScalarResult[3] {  8,  12,  26 };
-    const int    cv_subScalarResult[3] {  4,   8,  22 };
-    const int    cv_mulScalarResult[3] { 12,  20,  48 };
-    const int    cv_divScalarResult[3] {  3,   5,  12 };
-    const int    cv_negateResult[3]    { -6, -10, -24 };
-    const int    cv_crossResult[3]     { -40, 24,   0 };
-    const char*  cv_output             = "< 1, 2, 3 >";
+    const int         cv_arithmetic1[3]     {   6, 10,  24 };
+    const int         cv_arithmetic2[3]     {   3,  5,   8 };
+    const int         cv_addResult[3]       {   9, 15,  32 };
+    const int         cv_subResult[3]       {   3,  5,  16 };
+    const int         cv_mulResult[3]       {  18, 50, 192 };
+    const int         cv_divResult[3]       {   2,  2,   3 };
+    const int         cv_scalar             = 2;
+    const int         cv_addScalarResult[3] {  8,  12,  26 };
+    const int         cv_subScalarResult[3] {  4,   8,  22 };
+    const int         cv_mulScalarResult[3] { 12,  20,  48 };
+    const int         cv_divScalarResult[3] {  3,   5,  12 };
+    const int         cv_negateResult[3]    { -6, -10, -24 };
+    const int         cv_crossResult[3]     { -40, 24,   0 };
+    const char*       cv_output             = "< 1, 2, 3 >";
 
-    const float cv_zeroF[3]            { 0.0f, 0.0f, 0.0f };
-    const float cv_valuesF[3]          { 1.0f, 2.0f, 3.0f };
-    const float cv_valuesAltF[3]       { 4.0f, 5.0f, 6.0f };
-    const float cv_lengthF             = 8.77496439f;
-    const float cv_unitF[3] {
+    const float       cv_zeroF[3]            { 0.0f, 0.0f, 0.0f };
+    const float       cv_valuesF[3]          { 1.0f, 2.0f, 3.0f };
+    const float       cv_valuesAltF[3]       { 4.0f, 5.0f, 6.0f };
+    const float       cv_lengthF             = 8.77496439f;
+    const float       cv_unitF[3] {
          4.0f / cv_lengthF,
          5.0f / cv_lengthF,
          6.0f / cv_lengthF
     };
-    const float cv_inverseF[3] {
+    const float       cv_inverseF[3] {
          1.0f / 1.0f,
          1.0f / 2.0f,
          1.0f / 3.0f
     };
-    const char* cv_outputF = "< 1.00000, 2.00000, 3.00000 >";
+    const char*       cv_outputF = "< 1.00000, 2.00000, 3.00000 >";
 }
 
 
@@ -186,7 +187,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector3_index )
     Vector3i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -196,7 +197,7 @@ UT_TEST_BEGIN( Vector3_indexConst )
     int data[cv_size];
     const Vector3i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -753,7 +754,7 @@ UT_TEST_BEGIN( Vector3_index_OOB )
     Vector3i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -769,7 +770,7 @@ UT_TEST_BEGIN( Vector3_constIndex_OOB )
     const Vector3i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 

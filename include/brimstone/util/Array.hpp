@@ -13,12 +13,13 @@ Description:
 
 
 //Includes
-#include <algorithm>                        //std::copy, std::fill
-#include <iterator>                         //std::begin, std::end
-#include <initializer_list>                 //std::initializer_list
+#include <cstddef>                    //std::size_t
+#include <algorithm>                  //std::copy, std::fill
+#include <iterator>                   //std::begin, std::end
+#include <initializer_list>           //std::initializer_list
 
-#include <brimstone/util/Macros.hpp>        //BS_ASSERT_SIZE, BS_ASSERT_INDEX, BS_TMPL_2, BS_SPEC_2
-#include <brimstone/util/Misc.hpp>          //rangeSize
+#include <brimstone/util/Macros.hpp>  //BS_ASSERT_SIZE, BS_ASSERT_INDEX, BS_TMPL_2, BS_SPEC_2
+#include <brimstone/util/Misc.hpp>    //rangeSize
 
 
 
@@ -51,8 +52,8 @@ Description:
     inline       memberType* end();                                                             \
     inline const memberType* end() const;                                                       \
     inline const memberType* cend() const;                                                      \
-    inline       memberType& operator []( const size_t index );                                 \
-    inline const memberType& operator []( const size_t index ) const;
+    inline       memberType& operator []( const std::size_t index );                            \
+    inline const memberType& operator []( const std::size_t index ) const;
 #define BS_ARRAY_DEFINE_GENERIC_METHODS( className, memberType, memberName, tmpl, spec )        \
     tmpl                                                                                        \
     inline className spec::className( const memberType& elem ) {                                \
@@ -123,12 +124,12 @@ Description:
         return std::end( memberName );                                                          \
     }                                                                                           \
     tmpl                                                                                        \
-    inline memberType& className spec::operator []( const size_t index ) {                      \
+    inline memberType& className spec::operator []( const std::size_t index ) {                 \
         BS_ASSERT_INDEX( index, ::Brimstone::rangeSize( memberName ) - 1 );                     \
         return memberName[ index ];                                                             \
     }                                                                                           \
     tmpl                                                                                        \
-    inline const memberType& className spec::operator []( const size_t index ) const {          \
+    inline const memberType& className spec::operator []( const std::size_t index ) const {     \
         BS_ASSERT_INDEX( index, ::Brimstone::rangeSize( memberName ) - 1 );                     \
         return memberName[ index ];                                                             \
     }
@@ -153,7 +154,7 @@ Description:
 namespace Brimstone {
 
 //Wrapper class for constant-size arrays
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 class Array {
 public:
     T m_data[N];
@@ -163,21 +164,21 @@ public:
 
     inline Array();
 
-    inline size_t size() const;
-    inline bool   empty() const;
+    inline std::size_t size() const;
+    inline bool        empty() const;
 };
-BS_ARRAY_DEFINE_GENERIC_METHODS( Array, T, m_data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
-BS_ARRAY_DEFINE_METHODS( Array, T, m_data, BS_TMPL_2( typename T, size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_GENERIC_METHODS( Array, T, m_data, BS_TMPL_2( typename T, std::size_t N ), BS_SPEC_2( T, N ) )
+BS_ARRAY_DEFINE_METHODS( Array, T, m_data, BS_TMPL_2( typename T, std::size_t N ), BS_SPEC_2( T, N ) )
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 inline Array< T, N >::Array() {}
 
-template< typename T, size_t N >
-inline size_t Array< T, N >::size() const {
+template< typename T, std::size_t N >
+inline std::size_t Array< T, N >::size() const {
     return N;
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 inline bool Array< T, N >::empty() const {
     return false;
 }

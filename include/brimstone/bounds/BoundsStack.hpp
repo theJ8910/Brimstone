@@ -17,6 +17,7 @@ Description:
 
 
 //Includes
+#include <cstddef>  //std::size_t
 #include <vector>   //std::vector
 
 
@@ -34,11 +35,11 @@ public:
 
     void        clear();
 
-    size_t      size() const;
+    std::size_t size() const;
     bool        empty() const;
 
-    T&          operator []( const size_t index );
-    const T&    operator []( const size_t index ) const;
+    T&          operator []( const std::size_t index );
+    const T&    operator []( const std::size_t index ) const;
 private:
     std::vector< T > m_stack;
 };
@@ -69,7 +70,7 @@ void BoundsStack::clear() {
 }
 
 template< typename T >
-size_t BoundsStack::size() const {
+std::size_t BoundsStack::size() const {
     return m_stack.size();
 }
 
@@ -79,14 +80,14 @@ bool BoundsStack<T>::empty() const {
 }
 
 template< typename T >
-T& BoundsStack<T>::operator []( const size_t index ) {
+T& BoundsStack<T>::operator []( const std::size_t index ) {
     BS_ASSERT_INDEX( index, m_stack.size() - 1 );
 
     return m_stack[index];
 }
 
 template< typename T >
-const T& BoundsStack<T>::operator []( const size_t index ) const {
+const T& BoundsStack<T>::operator []( const std::size_t index ) const {
     BS_ASSERT_INDEX( index, m_stack.size() - 1 );
 
     return m_stack[index];

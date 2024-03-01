@@ -39,7 +39,7 @@ Throws:
     SizeException:              If byteCount is 0, or if a character is encoded with "N" bytes and byteCount < N.
     MalformedStringException:   If the UTF-8 string is not properly encoded.
 */
-uint32 utf8ToCodePoint( const uchar* utf8Buffer, const size_t byteCount ) {
+uint32 utf8ToCodePoint( const uchar* utf8Buffer, const std::size_t byteCount ) {
     //Byte count of 0
     if( byteCount == 0 )
         throw SizeException();

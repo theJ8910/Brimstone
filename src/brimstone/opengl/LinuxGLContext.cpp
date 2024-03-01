@@ -26,7 +26,7 @@ namespace {
 typedef GLXContext (*GLXCREATECONTEXTATTRIBSARBPROC)( Display*, GLXFBConfig, GLXContext, Bool, const int* );
 GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = nullptr;
 
-typedef void (*GLXSWAPINTERVALEXTPROC)( Display*, GLXDrawable, int interval );
+typedef void (*GLXSWAPINTERVALEXTPROC)( Display*, GLXDrawable, int );
 GLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = nullptr;
 
 /*

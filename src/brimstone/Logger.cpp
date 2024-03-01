@@ -23,7 +23,7 @@ namespace Brimstone {
 
 std::mutex                          Loggers::m_loggersMutex;
 std::vector< Loggers::LoggerPair >  Loggers::m_loggers;
-size_t                              Loggers::m_nextLoggerID = (size_t)-1;
+std::size_t                         Loggers::m_nextLoggerID = (std::size_t)-1;
 
 const uchar* logMessageTypeToString( LogMessageType type ) {
     static const uchar* lmtToString[] = {
@@ -78,14 +78,14 @@ void Loggers::write( const ustring& str, LogMessageType type ) {
         pair.first->write( str.c_str(), type );
 }
 
-size_t Loggers::add( std::unique_ptr< ILogger >&& logger ) {
+std::size_t Loggers::add( std::unique_ptr< ILogger >&& logger ) {
     std::lock_guard< std::mutex > l( m_loggersMutex );
     m_loggers.push_back( LoggerPair( std::move( logger ), ++m_nextLoggerID ) );
 
     return m_nextLoggerID;
 }
 
-void Loggers::remove( const size_t id ) {
+void Loggers::remove( const std::size_t id ) {
     std::lock_guard< std::mutex > l( m_loggersMutex );
 
     for( auto it = std::begin( m_loggers ); it != std::end( m_loggers ); ++it ) {

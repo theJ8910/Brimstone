@@ -11,10 +11,11 @@ Description:
 
 
 //Includes
-#include <sstream>              //std::ostringstream
-
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll
+
+#include <cstddef>              //std::size_t
+#include <sstream>              //std::ostringstream
 
 #include <brimstone/Point.hpp>
 #include <brimstone/Vector.hpp> //Vector
@@ -28,17 +29,17 @@ namespace {
     using ::Brimstone::Vector4i;
     using ::Brimstone::BoundsException;
 
-    const size_t cv_size         = 4;
-    const int    cv_zero[4]      {  0,  0,  0,  0 };
-    const int    cv_values[4]    {  1,  2,  3,  4 };
-    const int    cv_valuesAlt[4] {  5,  6,  7,  8 };
-    const int    cv_distant[4]   { -8,  7, -6,  5 };
-    const int    cv_distanceSq   = 188;
-    const int    cv_manhattan    = 24;
-    const char*  cv_output       = "( 1, 2, 3, 4 )";
+    const std::size_t cv_size         = 4;
+    const int         cv_zero[4]      {  0,  0,  0,  0 };
+    const int         cv_values[4]    {  1,  2,  3,  4 };
+    const int         cv_valuesAlt[4] {  5,  6,  7,  8 };
+    const int         cv_distant[4]   { -8,  7, -6,  5 };
+    const int         cv_distanceSq   = 188;
+    const int         cv_manhattan    = 24;
+    const char*       cv_output       = "( 1, 2, 3, 4 )";
 
-    const float  cv_valuesF[4]   { 1.0f, 2.0f, 3.0f, 4.0f };
-    const char*  cv_outputF      = "( 1.00000, 2.00000, 3.00000, 4.00000 )";
+    const float       cv_valuesF[4]   { 1.0f, 2.0f, 3.0f, 4.0f };
+    const char*       cv_outputF      = "( 1.00000, 2.00000, 3.00000, 4.00000 )";
 }
 
 namespace UnitTest {
@@ -156,7 +157,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point4_index )
     Point4i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -166,7 +167,7 @@ UT_TEST_BEGIN( Point4_indexConst )
     int data[ cv_size ];
     const Point4i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -320,7 +321,7 @@ UT_TEST_BEGIN( Point4_index_OOB )
     Point4i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -336,7 +337,7 @@ UT_TEST_BEGIN( Point4_constIndex_OOB )
     const Point4i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 

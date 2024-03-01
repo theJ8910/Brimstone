@@ -21,6 +21,7 @@ Description:
 
 
 //Includes
+#include <cstddef>                      //std::size_t
 #include <brimstone/util/Macros.hpp>    //BS_ASSERT_INDEX
 
 #include <vector>                       //std::vector
@@ -40,11 +41,11 @@ public:
 
     void        clear();
 
-    size_t      size() const;
+    std::size_t size() const;
     bool        empty() const;
 
-    T&          operator []( const size_t index );
-    const T&    operator []( const size_t index ) const;
+    T&          operator []( const std::size_t index );
+    const T&    operator []( const std::size_t index ) const;
 private:
     std::vector< T >    m_stack;
 };
@@ -83,7 +84,7 @@ void MatrixStack<T>::clear() {
 }
 
 template< typename T >
-size_t MatrixStack<T>::size() const {
+std::size_t MatrixStack<T>::size() const {
     return m_stack.size();
 }
 
@@ -93,14 +94,14 @@ bool MatrixStack<T>::empty() const {
 }
 
 template< typename T >
-T& MatrixStack<T>::operator []( const size_t index ) {
+T& MatrixStack<T>::operator []( const std::size_t index ) {
     BS_ASSERT_INDEX( index, m_stack.size() - 1 );
 
     return m_stack[index];
 }
 
 template< typename T >
-const T& MatrixStack<T>::operator []( const size_t index ) const {
+const T& MatrixStack<T>::operator []( const std::size_t index ) const {
     BS_ASSERT_INDEX( index, m_stack.size() - 1 );
 
     return m_stack[index];

@@ -11,10 +11,11 @@ Description:
 
 
 //Includes
-#include <sstream>              //std::ostringstream
-
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, allWithin, FAST_SQRT_ERR
+
+#include <cstddef>              //std::size_t
+#include <sstream>              //std::ostringstream
 
 #include <brimstone/Size.hpp>
 
@@ -26,17 +27,17 @@ namespace {
     typedef ::Brimstone::Size< float, 5 > Size5f;
     using   ::Brimstone::BoundsException;
 
-    const size_t cv_size               = 5;
-    const int    cv_zero[5]            {  0,  0,   0,  0,   0 };
-    const int    cv_values[5]          {  1,  2,   3,  4,   5 };
-    const int    cv_valuesAlt[5]       {  6,  7,   8,  9,  10 };
-    const int    cv_volume             = 6 * 7 * 8 * 9 * 10;
-    const char*  cv_output             = "[ 1, 2, 3, 4, 5 ]";
+    const std::size_t cv_size               = 5;
+    const int         cv_zero[5]            {  0,  0,   0,  0,   0 };
+    const int         cv_values[5]          {  1,  2,   3,  4,   5 };
+    const int         cv_valuesAlt[5]       {  6,  7,   8,  9,  10 };
+    const int         cv_volume             = 6 * 7 * 8 * 9 * 10;
+    const char*       cv_output             = "[ 1, 2, 3, 4, 5 ]";
 
-    const float cv_zeroF[5]            { 0.0f, 0.0f, 0.0f, 0.0f,  0.0f };
-    const float cv_valuesF[5]          { 1.0f, 2.0f, 3.0f, 4.0f,  5.0f };
+    const float       cv_zeroF[5]            { 0.0f, 0.0f, 0.0f, 0.0f,  0.0f };
+    const float       cv_valuesF[5]          { 1.0f, 2.0f, 3.0f, 4.0f,  5.0f };
 
-    const char* cv_outputF = "[ 1.00000, 2.00000, 3.00000, 4.00000, 5.00000 ]";
+    const char*       cv_outputF = "[ 1.00000, 2.00000, 3.00000, 4.00000, 5.00000 ]";
 }
 
 namespace UnitTest {
@@ -154,7 +155,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( SizeN_index )
     Size5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -164,7 +165,7 @@ UT_TEST_BEGIN( SizeN_indexConst )
     int data[cv_size];
     const Size5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -266,7 +267,7 @@ UT_TEST_BEGIN( SizeN_index_OOB )
     Size5i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -282,7 +283,7 @@ UT_TEST_BEGIN( SizeN_constIndex_OOB )
     const Size5i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 

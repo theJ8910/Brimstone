@@ -12,6 +12,7 @@ Description:
 
 
 //Includes
+#include <cstddef>               //std::size_t
 #include <gll/gl_types.hpp>      //gll::GLuint, gll::GLsizei
 
 
@@ -30,8 +31,8 @@ public:
     void create();
     void destroy();
 
-    void set( const float* const data, const size_t sizeInBytes );
-    void set( const float* const data, const size_t offsetInBytes, const size_t sizeInBytes );
+    void set( const float* const data, const std::size_t sizeInBytes );
+    void set( const float* const data, const std::size_t offsetInBytes, const std::size_t sizeInBytes );
     void bind();
     void unbind();
     void draw();

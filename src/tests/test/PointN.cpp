@@ -11,10 +11,11 @@ Description:
 
 
 //Includes
-#include <sstream>              //std::ostringstream
-
 #include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, FAST_SQRT_ERR
+
+#include <cstddef>              //std::size_t
+#include <sstream>              //std::ostringstream
 
 #include <brimstone/Point.hpp>
 #include <brimstone/Vector.hpp> //Vector
@@ -28,7 +29,7 @@ namespace {
     typedef ::Brimstone::Vector< int, 5 >  Vector5i;
     using   ::Brimstone::BoundsException;
 
-    const size_t cv_size         = 5;
+    const std::size_t cv_size    = 5;
     const int    cv_zero[5]      {   0, 0, 0,  0,  0 };
     const int    cv_values[5]    {   1, 2, 3,  4,  5 };
     const int    cv_valuesAlt[5] {   6, 7, 8,  9, 10 };
@@ -159,7 +160,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( PointN_index )
     Point5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -169,7 +170,7 @@ UT_TEST_BEGIN( PointN_indexConst )
     int data[cv_size];
     const Point5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -311,7 +312,7 @@ UT_TEST_BEGIN( PointN_index_OOB )
     Point5i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -327,7 +328,7 @@ UT_TEST_BEGIN( PointN_constIndex_OOB )
     const Point5i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 

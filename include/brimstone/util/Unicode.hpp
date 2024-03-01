@@ -13,6 +13,8 @@ Description:
 
 
 //Includes
+#include <cstddef>              //std::size_t
+
 #include <brimstone/types.hpp>  //uchar, ustring&
 
 
@@ -20,7 +22,7 @@ Description:
 
 namespace Brimstone {
 
-uint32 utf8ToCodePoint( const uchar* utf8Buffer, const size_t byteCount );
+uint32 utf8ToCodePoint( const uchar* utf8Buffer, const std::size_t byteCount );
 uint32 utf8ToCodePoint( const ustring& utf8 );
 
 }

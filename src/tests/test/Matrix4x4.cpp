@@ -14,6 +14,8 @@ Description:
 #include "../Test.hpp"
 #include "../utils.hpp"         //allEqual, allEqualTo
 
+#include <cstddef>              //std::size_t
+
 #include <brimstone/Matrix.hpp>
 
 
@@ -25,9 +27,9 @@ namespace {
     using ::Brimstone::Vector4i;
     using ::Brimstone::BoundsException;
 
-    const size_t cv_rows             = 4;
-    const size_t cv_cols             = 4;
-    const size_t cv_size             = cv_rows * cv_cols;
+    const std::size_t cv_rows = 4;
+    const std::size_t cv_cols = 4;
+    const std::size_t cv_size = cv_rows * cv_cols;
     const int    cv_zero[16] {
         0, 0, 0, 0,
         0, 0, 0, 0,
@@ -307,7 +309,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix4x4_index )
     Matrix4x4i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -317,7 +319,7 @@ UT_TEST_BEGIN( Matrix4x4_indexConst )
     int data[cv_size];
     const Matrix4x4i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -663,8 +665,8 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix4x4_elem )
     Matrix4x4i o( cv_values );
 
-    for( size_t r = 0; r < cv_rows; ++r )
-        for( size_t c = 0; c < cv_cols; ++c )
+    for( std::size_t r = 0; r < cv_rows; ++r )
+        for( std::size_t c = 0; c < cv_cols; ++c )
             o( r, c ) = cv_valuesAlt[ r * cv_cols + c ];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -673,8 +675,8 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix4x4_elemConst )
     const Matrix4x4i o( cv_values );
 
-    for( size_t r = 0; r < cv_rows; ++r )
-        for( size_t c = 0; c < cv_cols; ++c )
+    for( std::size_t r = 0; r < cv_rows; ++r )
+        for( std::size_t c = 0; c < cv_cols; ++c )
             if( o( r, c ) != cv_values[ r * cv_cols + c ] )
                 return false;
 
@@ -839,7 +841,7 @@ UT_TEST_BEGIN( Matrix4x4_index_OOB )
     Matrix4x4i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -855,7 +857,7 @@ UT_TEST_BEGIN( Matrix4x4_constIndex_OOB )
     const Matrix4x4i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -872,7 +874,7 @@ UT_TEST_BEGIN( Matrix4x4_setRow_OOB )
     Vector4i v;
 
     try {
-        o.setRow( (size_t)-1, v );
+        o.setRow( (std::size_t)-1, v );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -889,7 +891,7 @@ UT_TEST_BEGIN( Matrix4x4_setColumn_OOB )
     Vector4i v;
 
     try {
-        o.setColumn( (size_t)-1, v );
+        o.setColumn( (std::size_t)-1, v );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -905,7 +907,7 @@ UT_TEST_BEGIN( Matrix4x4_getRow_OOB )
     const Matrix4x4i o;
 
     try {
-        o.getRow( (size_t)-1 );
+        o.getRow( (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -921,7 +923,7 @@ UT_TEST_BEGIN( Matrix4x4_getColumn_OOB )
     const Matrix4x4i o;
 
     try {
-        o.getColumn( (size_t)-1 );
+        o.getColumn( (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -937,12 +939,12 @@ UT_TEST_BEGIN( Matrix4x4_elem_OOB )
     Matrix4x4i o;
 
     try {
-        o( (size_t)-1, 0 );
+        o( (std::size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        o( 0, (size_t)-1 );
+        o( 0, (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -963,12 +965,12 @@ UT_TEST_BEGIN( Matrix4x4_elemConst_OOB )
     const Matrix4x4i o;
 
     try {
-        o( (size_t)-1, 0 );
+        o( (std::size_t)-1, 0 );
         return false;
     } catch( const BoundsException& ) {}
 
     try {
-        o( 0, (size_t)-1 );
+        o( 0, (std::size_t)-1 );
         return false;
     } catch( const BoundsException& ) {}
 

@@ -268,11 +268,11 @@ void VertexBuffer::destroy() {
     m_impl->destroy();
 }
 
-void VertexBuffer::set( const float* const data, const size_t sizeInBytes ) {
+void VertexBuffer::set( const float* const data, const std::size_t sizeInBytes ) {
     m_impl->set( data, sizeInBytes );
 }
 
-void VertexBuffer::set( const float* const data, const size_t offsetInBytes, const size_t sizeInBytes ) {
+void VertexBuffer::set( const float* const data, const std::size_t offsetInBytes, const std::size_t sizeInBytes ) {
     m_impl->set( data, offsetInBytes, sizeInBytes );
 }
 
@@ -327,7 +327,7 @@ void Texture::destroy() {
     m_impl->destroy();
 }
 
-void Texture::set( const size_t width, const size_t height, const void* data ) {
+void Texture::set( const std::size_t width, const std::size_t height, const void* data ) {
     m_impl->set( width, height, data );
 }
 
@@ -339,11 +339,11 @@ void Texture::unbind() {
     m_impl->unbind();
 }
 
-size_t Texture::getWidth() const {
+std::size_t Texture::getWidth() const {
     return m_impl->getWidth();
 }
 
-size_t Texture::getHeight() const {
+std::size_t Texture::getHeight() const {
     return m_impl->getHeight();
 }
 

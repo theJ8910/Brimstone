@@ -14,6 +14,8 @@ Description:
 #include "../Test.hpp"
 #include "../utils.hpp"         //allEqual, allEqualTo
 
+#include <cstddef>              //std::size_t
+
 #include <brimstone/Bounds.hpp>
 
 
@@ -26,7 +28,7 @@ namespace {
     typedef ::Brimstone::Bounds< float, 5 > Bounds5f;
     using   ::Brimstone::BoundsException;
 
-    const size_t cv_size             = 5;
+    const std::size_t cv_size        = 5;
     const int    cv_zero[10]         {  0,  0,  0,  0,  0,    0,  0,  0,  0,  0 };
     const int    cv_values[10]       {  1,  2,  3,  4,  5,    6,  7,  8,  9, 10 };
     const int    cv_valuesMins[5]    {  1,  2,  3,  4,  5 };
@@ -190,7 +192,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( BoundsN_index )
     Bounds5i o( cv_values );
 
-    for( size_t i = 0; i < 2*cv_size; ++i )
+    for( std::size_t i = 0; i < 2*cv_size; ++i )
         o[i] = cv_valuesAlt[i];
 
     return allEqual( o.data, cv_valuesAlt );
@@ -200,7 +202,7 @@ UT_TEST_BEGIN( BoundsN_indexConst )
     int data[2*cv_size];
     const Bounds5i o( cv_values );
 
-    for( size_t i = 0; i < 2*cv_size; ++i )
+    for( std::size_t i = 0; i < 2*cv_size; ++i )
         data[i] = o[i];
 
     return allEqual( data, cv_values );
@@ -321,7 +323,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( BoundsN_setDimension )
     Bounds5i o( cv_values );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         o.setDimension( i, (int)(10 + i) );
 
     return allEqual( o.data, cv_dimTest );
@@ -330,7 +332,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( BoundsN_getDimension )
     Bounds5i o( cv_dimTest );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         if( o.getDimension( i ) != (int)( 10 + i ) )
             return false;
 
@@ -502,7 +504,7 @@ UT_TEST_BEGIN( BoundsN_index_OOB )
     Bounds5i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -518,7 +520,7 @@ UT_TEST_BEGIN( BoundsN_constIndex_OOB )
     const Bounds5i o;
 
     try {
-        o[(size_t)-1];
+        o[(std::size_t)-1];
         return false;
     } catch( const BoundsException& ) {}
 
@@ -534,7 +536,7 @@ UT_TEST_BEGIN( BoundsN_setDimension_OOB )
     Bounds5i o;
 
     try {
-        o.setDimension( (size_t)-1, 10 );
+        o.setDimension( (std::size_t)-1, 10 );
         return false;
     } catch( const BoundsException& ) {}
 
@@ -550,7 +552,7 @@ UT_TEST_BEGIN( BoundsN_getDimension_OOB )
     Bounds5i o;
 
     try {
-        o.getDimension( (size_t)(-1) );
+        o.getDimension( (std::size_t)(-1) );
         return false;
     } catch( const BoundsException& ) {}
 

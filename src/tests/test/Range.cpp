@@ -14,6 +14,8 @@ Description:
 #include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
 #include "../utils.hpp"             //allEqual, allEqualTo, copyAll
 
+#include <cstddef>                  //std::size_t
+
 #include <brimstone/util/Range.hpp>
 
 
@@ -23,7 +25,7 @@ namespace {
     typedef ::Brimstone::Range< int*, const int* > RangeI;
     using   ::Brimstone::NullPointerException;
 
-    const size_t cv_size      = 5;
+    const std::size_t cv_size = 5;
     const int cv_values[5]    = { 1, 2, 3, 4,  5 };
     const int cv_valuesAlt[5] = { 6, 7, 8, 9, 10 };
 }
@@ -162,7 +164,7 @@ UT_TEST_BEGIN( Range_index )
     copyAll( cv_values, data );
     RangeI r( data );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         r[i] = cv_valuesAlt[i];
 
     return allEqual( data, cv_valuesAlt );
@@ -175,7 +177,7 @@ UT_TEST_BEGIN( Range_indexConst )
     int data2[ cv_size ];
     copyAll( cv_valuesAlt, data2 );
 
-    for( size_t i = 0; i < cv_size; ++i )
+    for( std::size_t i = 0; i < cv_size; ++i )
         data2[i] = r[i];
 
     return allEqual( data2, cv_values );

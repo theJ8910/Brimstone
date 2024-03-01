@@ -26,11 +26,12 @@ Description:
 
 
 //Includes
-#include <vector>                                   //std::vector
-#include <utility>                                  //std::move, std::forward
-#include <algorithm>                                //std::find
+#include <cstddef>                         //std::size_t
+#include <vector>                          //std::vector
+#include <utility>                         //std::move, std::forward
+#include <algorithm>                       //std::find
 
-#include <brimstone/signals/Delegate.hpp>           //Delegate
+#include <brimstone/signals/Delegate.hpp>  //Delegate
 
 
 
@@ -80,7 +81,7 @@ public:
     void operator ()( Args&&... args ) const;
 
     bool isEmpty() const;
-    size_t size() const;
+    std::size_t size() const;
 private:
     Signal& operator =( const Signal& toCopy );
 private:
@@ -181,7 +182,7 @@ bool Signal< Slot >::isEmpty() const {
 
 //Returns the number of slots connected
 template< typename Slot >
-size_t Signal< Slot >::size() const {
+std::size_t Signal< Slot >::size() const {
     return m_slots.size();
 }
 
