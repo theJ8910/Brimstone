@@ -1,8 +1,8 @@
 --Supported platforms
-local build_platforms = { "x32", "x64" }
+local build_platforms = { "x64", "x32" }
 
 --Supported configurations
-local build_configurations = { "debug", "release" }
+local build_configurations = { "release", "debug" }
 
 --[[
 Table of all supported builds, one for each combination of build_platforms and build_configurations.
@@ -15,8 +15,8 @@ local builds = {}
 function doBuilds()
     --Translation table from premake's platform strings to CPU architecture strings
     local pfToArch = {
-        x32 = "x86",
-        x64 = "x86-64"
+        x64 = "x86-64",
+        x32 = "x86"
     }
 
     --Create a list of builds. Builds are a cartesian product of platforms and configurations.
