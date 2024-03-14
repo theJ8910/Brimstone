@@ -35,7 +35,9 @@ public:
     void begin();
     void end();
 
-    void setVSync( const bool vsync );
+    void setVSync( const bool enabled );
+    bool getVSync() const;
+    
     void swapBuffers();
 private:
     void init( HWND hwnd );

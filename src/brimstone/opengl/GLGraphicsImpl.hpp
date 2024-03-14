@@ -19,7 +19,7 @@ Description:
 
 #include "GLContext.hpp"                //Brimstone::Private::GLContext
 
-#include <atomic>                       //std::mutex
+#include <atomic>                       //std::atomic
 
 
 
@@ -55,20 +55,41 @@ public:
 
     void            flush();
 
+    void            enableDepthTest();
+    void            disableDepthTest();
+    void            setDepthTest( const bool enabled );
+    bool            getDepthTest() const;
+
     void            enableBackFaceCulling();
     void            disableBackFaceCulling();
+    void            setBackFaceCulling( const bool enabled );
+    bool            getBackFaceCulling() const;
 
     void            enableScissor();
     void            disableScissor();
-    void            setScissor( const int x, const int y, const int width, const int height );
+    void            setScissor( const bool enabled );
+    bool            getScissor() const;
+    void            setScissorBox( const int x, const int y, const int width, const int height );
+    void            getScissorBox( int (&xywhOut)[4] ) const;
 
     void            enableBlend();
     void            disableBlend();
+    void            setBlend( const bool enabled );
+    bool            getBlend() const;
 
-    void            clear( const float r, const float g, const float b, const float a, const float depth );
+    void            setClearColor( const float r, const float g, const float b, const float a );
+    void            getClearColor( float (&rgbaOut)[4] ) const;
+    void            setClearDepth( const float depth );
+    void            setClearDepth( const double depth );
+    double          getClearDepth() const;
+    void            clear();
+
     void            setViewport( const int x, const int y, const int width, const int height );
+    void            getViewport( int (&xywhOut)[4] ) const;
 
-    void            setVSync( const bool vsync );
+    void            setVSync( const bool enabled );
+    bool            getVSync() const;
+
     void            swapBuffers();
 private:
     //Context used by this object

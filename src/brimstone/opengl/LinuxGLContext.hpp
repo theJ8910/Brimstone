@@ -43,11 +43,13 @@ public:
     void init( const Window& window );
     void destroy();
 
-    void setVSync( const bool vsync );
-    void swapBuffers();
-
     void begin();
     void end();
+
+    void setVSync( const bool enabled );
+    bool getVSync() const;
+
+    void swapBuffers();    
 private:
     void destroyContext();
     void destroyFinish();

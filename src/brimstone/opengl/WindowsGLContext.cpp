@@ -162,9 +162,13 @@ void WindowsGLContext::destroyWindow() {
     }
 }
 
-void WindowsGLContext::setVSync( const bool vsync ) {
-    if( wglSwapIntervalEXT( vsync ? 1 : 0 ) == FALSE )
+void WindowsGLContext::setVSync( const bool enabled ) {
+    if( wglSwapIntervalEXT( enabled ? 1 : 0 ) == FALSE )
         throwWindowsException();
+}
+
+bool WindowsGLContext::getVSync() const {
+    return wglGetSwapIntervalEXT() == 1;
 }
 
 void WindowsGLContext::swapBuffers() {

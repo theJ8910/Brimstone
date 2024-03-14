@@ -66,12 +66,36 @@ void Graphics::flush() {
     m_impl->flush();
 }
 
+void Graphics::enableDepthTest() {
+    m_impl->enableDepthTest();
+}
+
+void Graphics::disableDepthTest() {
+    m_impl->disableDepthTest();
+}
+
+void Graphics::setDepthTest( const bool enabled ) {
+    m_impl->setDepthTest( enabled );
+}
+
+bool Graphics::getDepthTest() const {
+    return m_impl->getDepthTest();
+}
+
 void Graphics::enableBackFaceCulling() {
     m_impl->enableBackFaceCulling();
 }
 
 void Graphics::disableBackFaceCulling() {
     m_impl->disableBackFaceCulling();
+}
+
+void Graphics::setBackFaceCulling( const bool enabled ) {
+    m_impl->setBackFaceCulling( enabled );
+}
+
+bool Graphics::getBackFaceCulling() const {
+    return m_impl->getBackFaceCulling();
 }
 
 void Graphics::enableScissor() {
@@ -82,8 +106,20 @@ void Graphics::disableScissor() {
     m_impl->disableScissor();
 }
 
-void Graphics::setScissor( const int x, const int y, const int width, const int height ) {
-    m_impl->setScissor( x, y, width, height );
+void Graphics::setScissor( const bool enabled ) {
+    m_impl->setScissor( enabled );
+}
+
+bool Graphics::getScissor() const {
+    return m_impl->getScissor();
+}
+
+void Graphics::setScissorBox( const int x, const int y, const int width, const int height ) {
+    m_impl->setScissorBox( x, y, width, height );
+}
+
+void Graphics::getScissorBox( int (&xywhOut)[4] ) const {
+    return m_impl->getScissorBox( xywhOut );
 }
 
 void Graphics::enableBlend() {
@@ -94,16 +130,52 @@ void Graphics::disableBlend() {
     m_impl->disableBlend();
 }
 
-void Graphics::clear( const float r, const float g, const float b, const float a, const float depth ) {
-    m_impl->clear( r, g, b, a, depth );
+void Graphics::setBlend( const bool enabled ) {
+    m_impl->setBlend( enabled );
+}
+
+bool Graphics::getBlend() const {
+    return m_impl->getBlend();
+}
+
+void Graphics::setClearColor( const float r, const float g, const float b, const float a ) {
+    m_impl->setClearColor( r, g, b, a );
+}
+
+void Graphics::getClearColor( float (&rgbaOut)[4] ) const {
+    return m_impl->getClearColor( rgbaOut );
+}
+
+void Graphics::setClearDepth( const float depth ) {
+    m_impl->setClearDepth( depth );
+}
+
+void Graphics::setClearDepth( const double depth ) {
+    m_impl->setClearDepth( depth );
+}
+
+double Graphics::getClearDepth() const {
+    return m_impl->getClearDepth();
+}
+
+void Graphics::clear() {
+    m_impl->clear();
 }
 
 void Graphics::setViewport( const int x, const int y, const int width, const int height ) {
     m_impl->setViewport( x, y, width, height );
 }
 
-void Graphics::setVSync( const bool vsync ) {
-    m_impl->setVSync( vsync );
+void Graphics::getViewport( int (&xywhOut)[4] ) const {
+    m_impl->getViewport( xywhOut );
+}
+
+void Graphics::setVSync( const bool enabled ) {
+    m_impl->setVSync( enabled );
+}
+
+bool Graphics::getVSync() const {
+    return m_impl->getVSync();
 }
 
 void Graphics::swapBuffers() {

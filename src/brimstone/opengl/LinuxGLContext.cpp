@@ -29,6 +29,9 @@ GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = nullptr;
 typedef void (*GLXSWAPINTERVALEXTPROC)( Display*, GLXDrawable, int );
 GLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = nullptr;
 
+//TEMP
+#define GLX_SWAP_INTERVAL_EXT 0x20F1
+
 /*
 isExtensionSupported
 -----------------------
@@ -439,25 +442,36 @@ void LinuxGLContext::destroyFinish() {
         destroyGLX();
 }
 
-void LinuxGLContext::setVSync( const bool vsync ) {
-    xerrBegin();
-    glXSwapIntervalEXT( m_display, m_window, vsync ? 1 : 0 );
-    xerrEnd();
-    XSync( m_display, False );
-    if( xerrExists() )
-        throw xerrGet();
-}
-
-void LinuxGLContext::swapBuffers() {
-    glXSwapBuffers( m_display, m_window );
-}
-
 void LinuxGLContext::begin() {
     glXMakeCurrent( m_display, m_window, m_context );
 }
 
 void LinuxGLContext::end() {
     glXMakeCurrent( m_display, 0, nullptr );
+}
+
+void LinuxGLContext::setVSync( const bool enabled ) {
+    xerrBegin();
+    glXSwapIntervalEXT( m_display, m_window, enabled ? 1 : 0 );
+    xerrEnd();
+    XSync( m_display, False );
+    if( xerrExists() )
+        throw xerrGet();
+}
+
+bool LinuxGLContext::getVSync() const {
+    unsigned int interval;
+    xerrBegin();
+    glXQueryDrawable( m_display, m_window, GLX_SWAP_INTERVAL_EXT, &interval );
+    xerrEnd();
+    XSync( m_display, False );
+    if( xerrExists() )
+        throw xerrGet();
+    return interval == 1;
+}
+
+void LinuxGLContext::swapBuffers() {
+    glXSwapBuffers( m_display, m_window );
 }
 
 }
