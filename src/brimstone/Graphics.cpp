@@ -66,22 +66,6 @@ void Graphics::flush() {
     m_impl->flush();
 }
 
-void Graphics::enableDepthTest() {
-    m_impl->enableDepthTest();
-}
-
-void Graphics::disableDepthTest() {
-    m_impl->disableDepthTest();
-}
-
-void Graphics::setDepthTest( const bool enabled ) {
-    m_impl->setDepthTest( enabled );
-}
-
-bool Graphics::getDepthTest() const {
-    return m_impl->getDepthTest();
-}
-
 void Graphics::enableBackFaceCulling() {
     m_impl->enableBackFaceCulling();
 }
@@ -98,20 +82,44 @@ bool Graphics::getBackFaceCulling() const {
     return m_impl->getBackFaceCulling();
 }
 
-void Graphics::enableScissor() {
-    m_impl->enableScissor();
+void Graphics::enableDepthTest() {
+    m_impl->enableDepthTest();
 }
 
-void Graphics::disableScissor() {
-    m_impl->disableScissor();
+void Graphics::disableDepthTest() {
+    m_impl->disableDepthTest();
 }
 
-void Graphics::setScissor( const bool enabled ) {
-    m_impl->setScissor( enabled );
+void Graphics::setDepthTest( const bool enabled ) {
+    m_impl->setDepthTest( enabled );
 }
 
-bool Graphics::getScissor() const {
-    return m_impl->getScissor();
+bool Graphics::getDepthTest() const {
+    return m_impl->getDepthTest();
+}
+
+void Graphics::setDepthMask( const bool enabled ) {
+    return m_impl->setDepthMask( enabled );
+}
+
+bool Graphics::getDepthMask() const {
+    return m_impl->getDepthMask();
+}
+
+void Graphics::enableScissorTest() {
+    m_impl->enableScissorTest();
+}
+
+void Graphics::disableScissorTest() {
+    m_impl->disableScissorTest();
+}
+
+void Graphics::setScissorTest( const bool enabled ) {
+    m_impl->setScissorTest( enabled );
+}
+
+bool Graphics::getScissorTest() const {
+    return m_impl->getScissorTest();
 }
 
 void Graphics::setScissorBox( const int x, const int y, const int width, const int height ) {
@@ -120,6 +128,34 @@ void Graphics::setScissorBox( const int x, const int y, const int width, const i
 
 void Graphics::getScissorBox( int (&xywhOut)[4] ) const {
     return m_impl->getScissorBox( xywhOut );
+}
+
+void Graphics::enableAlphaTest() {
+    m_impl->enableAlphaTest();
+}
+
+void Graphics::disableAlphaTest() {
+    m_impl->disableAlphaTest();
+}
+
+void Graphics::setAlphaTest( const bool enabled ) {
+    m_impl->setAlphaTest( enabled );
+}
+
+bool Graphics::getAlphaTest() const {
+    return m_impl->getAlphaTest();
+}
+
+void Graphics::setAlphaFunc( const AlphaFunc func, const float ref ) {
+    m_impl->setAlphaFunc( func, ref );
+}
+
+AlphaFunc Graphics::getAlphaFunc() const {
+    return m_impl->getAlphaFunc();
+}
+
+float Graphics::getAlphaRef() const {
+    return m_impl->getAlphaRef();
 }
 
 void Graphics::enableBlend() {

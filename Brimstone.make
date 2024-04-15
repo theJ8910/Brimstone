@@ -125,6 +125,7 @@ OBJECTS := \
 	$(OBJDIR)/LuaInstance.o \
 	$(OBJDIR)/Stopwatch.o \
 	$(OBJDIR)/Window.o \
+	$(OBJDIR)/Enums.o \
 	$(OBJDIR)/Key.o \
 	$(OBJDIR)/MouseButton.o \
 	$(OBJDIR)/LinuxThreadLocal.o \
@@ -216,6 +217,9 @@ $(OBJDIR)/Stopwatch.o: src/brimstone/Stopwatch.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Window.o: src/brimstone/Window.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Enums.o: src/brimstone/graphics/Enums.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Key.o: src/brimstone/input/Key.cpp

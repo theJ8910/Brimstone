@@ -27,7 +27,7 @@ namespace {
     XErrorHandler xerrOldHandler  = nullptr;
     Display*      xerrDisplay     = nullptr;
     int           xerrCode        = 0;
-    int xerrHandler( Display* display, XErrorEvent* event ) {
+    int xerrHandler( Display* /*display*/, XErrorEvent* event ) {
         xerrDisplay = event->display;
         xerrCode    = event->error_code;
         return 0;

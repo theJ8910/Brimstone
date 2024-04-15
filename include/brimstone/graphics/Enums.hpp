@@ -10,6 +10,14 @@ Description:
 #define BS_GRAPHICS_ENUMS_HPP
 
 
+
+
+//Includes
+#include <brimstone/types.hpp>  //uchar
+
+
+
+
 namespace Brimstone {
 
 //A ShaderType is passed to a function that creates a shader
@@ -33,6 +41,20 @@ enum class WrapType {
     CLAMP,
     MIRRORED_CLAMP
 };
+
+//An AlphaFunc specifies what kind of comparison the alpha test should use.
+enum class AlphaFunc {
+    NEVER,
+    LESS_THAN,
+    EQUAL,
+    LESS_THAN_OR_EQUAL,
+    GREATER_THAN,
+    NOT_EQUAL,
+    GREATER_THAN_OR_EQUAL,
+    ALWAYS
+};
+
+const uchar* alphaFuncToString( const AlphaFunc func );
 
 }
 

@@ -26,8 +26,49 @@ Description:
 #include <gll/gl_4_4_comp.hpp>  //gll::* (GL 4.4 and below + compatibility)
 using namespace gll;
 
+
+
+
+namespace {
+
+
+
+
+const int AlphaFuncToGLAlphaFunc[] {
+    GL_NEVER,     //NEVER
+    GL_LESS,      //LESS_THAN
+    GL_EQUAL,     //EQUAL
+    GL_LEQUAL,    //LESS_THAN_OR_EQUAL
+    GL_GREATER,   //GREATER_THAN
+    GL_NOTEQUAL,  //NOT_EQUAL
+    GL_GEQUAL,    //GREATER_THAN_OR_EQUAL
+    GL_ALWAYS,    //ALWAYS
+};
+
+const Brimstone::AlphaFunc GLAlphaFuncToAlphaFunc[] {
+    Brimstone::AlphaFunc::NEVER,                  //GL_NEVER
+    Brimstone::AlphaFunc::LESS_THAN,              //GL_LESS
+    Brimstone::AlphaFunc::EQUAL,                  //GL_EQUAL
+    Brimstone::AlphaFunc::LESS_THAN_OR_EQUAL,     //GL_LEQUAL
+    Brimstone::AlphaFunc::GREATER_THAN,           //GL_GREATER
+    Brimstone::AlphaFunc::NOT_EQUAL,              //GL_NOTEQUAL
+    Brimstone::AlphaFunc::GREATER_THAN_OR_EQUAL,  //GL_GEQUAL
+    Brimstone::AlphaFunc::ALWAYS,                 //GL_ALWAYS
+};
+
+
+
+
+}
+
+
+
+
 namespace Brimstone {
 namespace Private {
+
+
+
 
 //Static initializers
 std::atomic<bool> GLGraphicsImpl::m_initialized( false );
@@ -85,35 +126,6 @@ void GLGraphicsImpl::flush() {
     glFlush();
 }
 
-void GLGraphicsImpl::enableDepthTest() {
-    glEnable( GL_DEPTH_TEST );
-    if( glGetError() != GL_NO_ERROR )
-        throw GraphicsException( "glEnable() failed." );
-}
-
-void GLGraphicsImpl::disableDepthTest() {
-    glDisable( GL_DEPTH_TEST );
-    if( glGetError() != GL_NO_ERROR )
-        throw GraphicsException( "glDisable() failed." );
-}
-
-void GLGraphicsImpl::setDepthTest( const bool enabled ) {
-    if( enabled ) {
-        enableDepthTest();
-    } else {
-        disableDepthTest();
-    }
-}
-
-bool GLGraphicsImpl::getDepthTest() const {
-    GLboolean enabled;
-    glGetBooleanv( GL_DEPTH_TEST, &enabled );
-    if( glGetError() != GL_NO_ERROR )
-        throw GraphicsException( "glGetBooleanv() failed." );
-    return enabled == GL_TRUE;
-
-}
-
 void GLGraphicsImpl::enableBackFaceCulling() {
     //Initial value of GL_CULL_FACE_MODE is GL_BACK; no need to set it explicitly:
     //glCullFace( GL_BACK );
@@ -144,27 +156,69 @@ bool GLGraphicsImpl::getBackFaceCulling() const {
     return enabled == GL_TRUE;
 }
 
-void GLGraphicsImpl::enableScissor() {
+void GLGraphicsImpl::enableDepthTest() {
+    glEnable( GL_DEPTH_TEST );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glEnable() failed." );
+}
+
+void GLGraphicsImpl::disableDepthTest() {
+    glDisable( GL_DEPTH_TEST );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glDisable() failed." );
+}
+
+void GLGraphicsImpl::setDepthTest( const bool enabled ) {
+    if( enabled ) {
+        enableDepthTest();
+    } else {
+        disableDepthTest();
+    }
+}
+
+bool GLGraphicsImpl::getDepthTest() const {
+    GLboolean enabled;
+    glGetBooleanv( GL_DEPTH_TEST, &enabled );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glGetBooleanv() failed." );
+    return enabled == GL_TRUE;
+}
+
+void GLGraphicsImpl::setDepthMask( const bool enabled ) {
+    glDepthMask( enabled ? GL_TRUE : GL_FALSE );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glDepthMask() failed." );
+}
+
+bool GLGraphicsImpl::getDepthMask() const {
+    GLboolean enabled;
+    glGetBooleanv( GL_DEPTH_WRITEMASK, &enabled );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glGetBooleanv() failed." );
+    return enabled == GL_TRUE;
+}
+
+void GLGraphicsImpl::enableScissorTest() {
     glEnable( GL_SCISSOR_TEST );
     if( glGetError() != GL_NO_ERROR )
         throw GraphicsException( "glEnable() failed." );
 }
 
-void GLGraphicsImpl::disableScissor() {
+void GLGraphicsImpl::disableScissorTest() {
     glDisable( GL_SCISSOR_TEST );
     if( glGetError() != GL_NO_ERROR )
         throw GraphicsException( "glDisable() failed." );
 }
 
-void GLGraphicsImpl::setScissor( const bool enabled ) {
+void GLGraphicsImpl::setScissorTest( const bool enabled ) {
     if( enabled ) {
-        enableScissor();
+        enableScissorTest();
     } else {
-        disableScissor();
+        disableScissorTest();
     }
 }
 
-bool GLGraphicsImpl::getScissor() const {
+bool GLGraphicsImpl::getScissorTest() const {
     GLboolean enabled;
     glGetBooleanv( GL_SCISSOR_TEST, &enabled );
     if( glGetError() != GL_NO_ERROR )
@@ -186,6 +240,56 @@ void GLGraphicsImpl::getScissorBox( int (&xywhOut)[4] ) const {
     if( glGetError() != GL_NO_ERROR )
         throw GraphicsException( "glGetIntegerv() failed." );
     xywhOut[1] = m_viewport.getHeight() - xywhOut[1] - xywhOut[3];
+}
+
+void GLGraphicsImpl::enableAlphaTest() {
+    glEnable( GL_ALPHA_TEST );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glEnable() failed." );
+}
+
+void GLGraphicsImpl::disableAlphaTest() {
+    glDisable( GL_ALPHA_TEST );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glDisable() failed." );
+}
+
+void GLGraphicsImpl::setAlphaTest( const bool enabled ) {
+    if( enabled ) {
+        enableAlphaTest();
+    } else {
+        disableAlphaTest();
+    }
+}
+
+bool GLGraphicsImpl::getAlphaTest() const {
+    GLboolean enabled;
+    glGetBooleanv( GL_ALPHA_TEST, &enabled );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glGetBooleanv() failed." );
+    return enabled == GL_TRUE;
+}
+
+void GLGraphicsImpl::setAlphaFunc( const AlphaFunc func, const float ref ) {
+    glAlphaFunc( AlphaFuncToGLAlphaFunc[ (int)func ], ref );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glAlphaFunc() failed." );
+}
+
+AlphaFunc GLGraphicsImpl::getAlphaFunc() const {
+    GLint func;
+    glGetIntegerv( GL_ALPHA_TEST_FUNC, &func );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glGetIntegerv() failed." );
+    return GLAlphaFuncToAlphaFunc[ func - GL_NEVER ];
+}
+
+float GLGraphicsImpl::getAlphaRef() const {
+    GLfloat ref;
+    glGetFloatv( GL_ALPHA_TEST_REF, &ref );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glGetFloatv() failed." );
+    return ref;
 }
 
 void GLGraphicsImpl::enableBlend() {

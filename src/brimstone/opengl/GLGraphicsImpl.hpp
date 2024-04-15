@@ -14,7 +14,7 @@ Description:
 
 
 //Includes
-#include <brimstone/graphics/Enums.hpp> //Brimstone::ShaderType
+#include <brimstone/graphics/Enums.hpp> //Brimstone::AlphaFunc, Brimstone::ShaderType
 #include <brimstone/Bounds.hpp>         //Brimstone::Bounds2i
 
 #include "GLContext.hpp"                //Brimstone::Private::GLContext
@@ -55,22 +55,32 @@ public:
 
     void            flush();
 
-    void            enableDepthTest();
-    void            disableDepthTest();
-    void            setDepthTest( const bool enabled );
-    bool            getDepthTest() const;
-
     void            enableBackFaceCulling();
     void            disableBackFaceCulling();
     void            setBackFaceCulling( const bool enabled );
     bool            getBackFaceCulling() const;
 
-    void            enableScissor();
-    void            disableScissor();
-    void            setScissor( const bool enabled );
-    bool            getScissor() const;
+    void            enableDepthTest();
+    void            disableDepthTest();
+    void            setDepthTest( const bool enabled );
+    bool            getDepthTest() const;
+    void            setDepthMask( const bool enabled );
+    bool            getDepthMask() const;
+
+    void            enableScissorTest();
+    void            disableScissorTest();
+    void            setScissorTest( const bool enabled );
+    bool            getScissorTest() const;
     void            setScissorBox( const int x, const int y, const int width, const int height );
     void            getScissorBox( int (&xywhOut)[4] ) const;
+
+    void            enableAlphaTest();
+    void            disableAlphaTest();
+    void            setAlphaTest( const bool enabled );
+    bool            getAlphaTest() const;
+    void            setAlphaFunc( const AlphaFunc func, const float ref );
+    AlphaFunc       getAlphaFunc() const;
+    float           getAlphaRef() const;
 
     void            enableBlend();
     void            disableBlend();
