@@ -23,43 +23,8 @@ Description:
 #include <boost/format.hpp>     //boost::format
 
 #include <gll/loader.hpp>       //gll::Load
-#include <gll/gl_4_4_comp.hpp>  //gll::* (GL 4.4 and below + compatibility)
+#include <gll/gl_4_6_comp.hpp>  //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
-
-
-
-
-namespace {
-
-
-
-
-const int AlphaFuncToGLAlphaFunc[] {
-    GL_NEVER,     //NEVER
-    GL_LESS,      //LESS_THAN
-    GL_EQUAL,     //EQUAL
-    GL_LEQUAL,    //LESS_THAN_OR_EQUAL
-    GL_GREATER,   //GREATER_THAN
-    GL_NOTEQUAL,  //NOT_EQUAL
-    GL_GEQUAL,    //GREATER_THAN_OR_EQUAL
-    GL_ALWAYS,    //ALWAYS
-};
-
-const Brimstone::AlphaFunc GLAlphaFuncToAlphaFunc[] {
-    Brimstone::AlphaFunc::NEVER,                  //GL_NEVER
-    Brimstone::AlphaFunc::LESS_THAN,              //GL_LESS
-    Brimstone::AlphaFunc::EQUAL,                  //GL_EQUAL
-    Brimstone::AlphaFunc::LESS_THAN_OR_EQUAL,     //GL_LEQUAL
-    Brimstone::AlphaFunc::GREATER_THAN,           //GL_GREATER
-    Brimstone::AlphaFunc::NOT_EQUAL,              //GL_NOTEQUAL
-    Brimstone::AlphaFunc::GREATER_THAN_OR_EQUAL,  //GL_GEQUAL
-    Brimstone::AlphaFunc::ALWAYS,                 //GL_ALWAYS
-};
-
-
-
-
-}
 
 
 
@@ -271,12 +236,35 @@ bool GLGraphicsImpl::getAlphaTest() const {
 }
 
 void GLGraphicsImpl::setAlphaFunc( const AlphaFunc func, const float ref ) {
+    static const int AlphaFuncToGLAlphaFunc[] {
+        GL_NEVER,     //NEVER
+        GL_LESS,      //LESS_THAN
+        GL_EQUAL,     //EQUAL
+        GL_LEQUAL,    //LESS_THAN_OR_EQUAL
+        GL_GREATER,   //GREATER_THAN
+        GL_NOTEQUAL,  //NOT_EQUAL
+        GL_GEQUAL,    //GREATER_THAN_OR_EQUAL
+        GL_ALWAYS,    //ALWAYS
+    };
+
     glAlphaFunc( AlphaFuncToGLAlphaFunc[ (int)func ], ref );
     if( glGetError() != GL_NO_ERROR )
         throw GraphicsException( "glAlphaFunc() failed." );
 }
 
 AlphaFunc GLGraphicsImpl::getAlphaFunc() const {
+    using enum AlphaFunc;
+    static const AlphaFunc GLAlphaFuncToAlphaFunc[] {
+        NEVER,                  //GL_NEVER
+        LESS_THAN,              //GL_LESS
+        EQUAL,                  //GL_EQUAL
+        LESS_THAN_OR_EQUAL,     //GL_LEQUAL
+        GREATER_THAN,           //GL_GREATER
+        NOT_EQUAL,              //GL_NOTEQUAL
+        GREATER_THAN_OR_EQUAL,  //GL_GEQUAL
+        ALWAYS,                 //GL_ALWAYS
+    };
+
     GLint func;
     glGetIntegerv( GL_ALPHA_TEST_FUNC, &func );
     if( glGetError() != GL_NO_ERROR )
@@ -293,19 +281,6 @@ float GLGraphicsImpl::getAlphaRef() const {
 }
 
 void GLGraphicsImpl::enableBlend() {
-    //TEMP: enabling blend sets the blending mode to transparency.
-    //NOTE: transparency is linear interpolation between d_rgb and s_rgb,
-    //with s_a as the parameter:
-    //  d_rgb + s_a*(s_rgb-d_rgb)     =
-    //s_a*s_rgb + 1*d_rgb - s_a*d_rgb =
-    //s_a*s_rgb + (1 - s_a) * d_rgb
-    glBlendEquationSeparate( GL_ADD, GL_ADD );
-    if( glGetError() != GL_NO_ERROR )
-        throw GraphicsException( "glBlendEquationSeparate() failed." );
-    glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE );
-    if( glGetError() != GL_NO_ERROR )
-        throw GraphicsException( "glBlendFuncSeparate() failed." );
-
     glEnable( GL_BLEND );
     if( glGetError() != GL_NO_ERROR )
         throw GraphicsException( "glEnable() failed." );
@@ -331,6 +306,36 @@ bool GLGraphicsImpl::getBlend() const {
     if( glGetError() != GL_NO_ERROR )
         throw GraphicsException( "glGetBooleanv() failed." );
     return enabled == GL_TRUE;
+}
+
+void GLGraphicsImpl::setBlendModeToTransparency() {
+    //NOTE: Transparency is linear interpolation between destination RGB (d_rgb) and source RGB (s_rgb),
+    //with source alpha (s_a) as the parameter:
+    //      d_rgb + s_a*(s_rgb-d_rgb)     =
+    //    s_a*s_rgb + 1*d_rgb - s_a*d_rgb =
+    //    s_a*s_rgb + (1 - s_a) * d_rgb
+    //TEMP: The destination alpha is unchanged:
+    //    0*s_a + 1*d_a = d_a
+    //This is probably what we should be doing though:
+    //    (1-d_a)*s_a + 1*d_a =
+    //    (1-d_a)*s_a + d_a
+
+    //Set RGB blending equation to the sum of two products, one involving the source RGB and the other involving the destination RGB.
+    //Set alpha blending equation to the sum of two products, one involving source alpha and the other involving destination alpha.
+    glBlendEquationSeparate( GL_FUNC_ADD, GL_FUNC_ADD );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glBlendEquationSeparate() failed." );
+
+    //In the RGB blending equation:
+    //    For the first product, multiply source alpha and source RGB.
+    //    For the second product, multiply the source alpha's complement and the destination RGB.
+    //In the Alpha blending equation:
+    //    For the first product, multiply zero against source alpha.
+    //    For the second product, multiply one against the destination alpha.
+    //glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE );
+    glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE );
+    if( glGetError() != GL_NO_ERROR )
+        throw GraphicsException( "glBlendFuncSeparate() failed." );
 }
 
 void GLGraphicsImpl::setClearColor( const float r, const float g, const float b, const float a ) {

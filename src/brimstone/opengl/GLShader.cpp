@@ -18,7 +18,7 @@ Description:
 
 #include <memory>
 
-#include <gll/gl_4_4_comp.hpp>      //gll::* (GL 4.4 and below + compatibility)
+#include <gll/gl_4_6_comp.hpp>      //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
 
 

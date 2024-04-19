@@ -87,6 +87,7 @@ public:
     void            disableBlend();
     void            setBlend( const bool enabled );
     bool            getBlend() const;
+    void            setBlendModeToTransparency();
 
     void            setClearColor( const float r, const float g, const float b, const float a );
     void            getClearColor( float (&rgbaOut)[4] ) const;

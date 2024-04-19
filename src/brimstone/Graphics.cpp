@@ -174,6 +174,10 @@ bool Graphics::getBlend() const {
     return m_impl->getBlend();
 }
 
+void Graphics::setBlendModeToTransparency() {
+    m_impl->setBlendModeToTransparency();
+}
+
 void Graphics::setClearColor( const float r, const float g, const float b, const float a ) {
     m_impl->setClearColor( r, g, b, a );
 }
