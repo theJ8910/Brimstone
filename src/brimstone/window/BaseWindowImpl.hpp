@@ -35,8 +35,8 @@ public:
     void            setTitle( const ustring& title );
     ustring         getTitle() const;
 
-    void            setPopup( const bool popup );
-    bool            isPopup() const;
+    void            setBorderless( const bool borderless );
+    bool            isBorderless() const;
 
     void            setResizable( const bool resizable );
     bool            isResizable() const;
@@ -49,20 +49,51 @@ public:
     void            setBounds( const Bounds2i bounds );
     Bounds2i        getBounds() const;
 
+    void            setFullscreen( const bool fullscreen );
+    bool            isFullscreen() const;
+
+    void            setMaximized( const bool maximized );
+    bool            isMaximized() const;
+
+    void            setMinimized( const bool minimized );
+    bool            isMinimized() const;
+
+    void            setShaded( const bool shaded );
+    bool            isShaded() const;
+
+    void            restore();
+    bool            isRestored() const;
+
+    void            focus();
+    bool            isFocused() const;
+
     void            setKeyRepeat( const bool keyRepeat );
     bool            getKeyRepeat() const;
 
     void            setMouseCapture( const bool capture );
     bool            getMouseCapture() const;
+
+    void            setCursorVisible( const bool cursorVisible );
+    bool            isCursorVisible() const;
+
+    void            setKeepCursorCentered( const bool keepCursorCentered );
+    bool            getKeepCursorCentered() const;
 protected:
     ustring                     m_title;
     Point2i                     m_cursorPos;
     Bounds2i                    m_bounds;
     bool                        m_visible;
-    bool                        m_popup;
+    bool                        m_borderless;
     bool                        m_resizable;
+    bool                        m_fullscreen;
+    bool                        m_maximized;
+    bool                        m_minimized;
+    bool                        m_shaded;
+    bool                        m_focused;
     bool                        m_keyRepeat;
     bool                        m_mouseCapture;
+    bool                        m_cursorVisible;
+    bool                        m_keepCursorCentered;
 
     std::queue< WindowEvent >   m_eventQueue;
 };

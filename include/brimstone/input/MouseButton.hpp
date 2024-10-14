@@ -14,12 +14,6 @@ Description:
 
 
 
-//Includes
-#include <brimstone/types.hpp>  //uchar
-
-
-
-
 namespace Brimstone {
 
 enum class MouseButton {
@@ -39,7 +33,7 @@ enum class MouseButton {
     COUNT
 };
 
-const uchar* mouseButtonToString( const MouseButton button );
+const char* mouseButtonToString( const MouseButton button );
 
 }
 

@@ -12,7 +12,9 @@ Description:
 
 //Includes
 #include <brimstone/windows/WindowsException.hpp>   //Header
-#include <brimstone/windows/WindowsUtil.hpp>        //utf16to8
+#include <brimstone/windows/WindowsUtil.hpp>        //Brimstone::Private::utf16to8
+
+#include <memory>                                   //std::unique_ptr
 
 
 

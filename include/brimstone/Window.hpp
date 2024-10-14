@@ -44,6 +44,8 @@ public:
     void            close();
     bool            isOpen() const;
 
+    void            frame();
+
     bool            peekEvent( WindowEvent& eventOut );
     bool            getEvent( WindowEvent& eventOut );
     void            pushEvent( const WindowEvent& eventIn );
@@ -51,8 +53,8 @@ public:
     void            setTitle( const ustring& title );
     ustring         getTitle() const;
 
-    void            setPopup( const bool popup );
-    bool            isPopup() const;
+    void            setBorderless( const bool borderless );
+    bool            isBorderless() const;
 
     void            setResizable( const bool resizable );
     bool            isResizable() const;
@@ -63,12 +65,37 @@ public:
     void            setBounds( const Bounds2i bounds );
     Bounds2i        getBounds() const;
 
+    void            setFullscreen( const bool fullscreen );
+    bool            isFullscreen() const;
+
+    void            setMaximized( const bool maximized );
+    bool            isMaximized() const;
+
+    void            setMinimized( const bool minimized );
+    bool            isMinimized() const;
+
+    void            setShaded( const bool shaded );
+    bool            isShaded() const;
+
+    void            restore();
+    bool            isRestored() const;
+
+    void            focus();
+    bool            isFocused() const;
+
     void            setKeyRepeat( const bool keyRepeat );
     bool            getKeyRepeat() const;
 
     void            setMouseCapture( const bool capture );
     bool            getMouseCapture() const;
 
+    void            setCursorVisible( const bool cursorVisible );
+    bool            isCursorVisible() const;
+
+    void            setKeepCursorCentered( const bool keepCursorCentered );
+    bool            getKeepCursorCentered() const;
+
+    void            sendToTop();
     void            sendToBottom();
 
     Point2i         screenToWindow( Point2i screenCoords ) const;
@@ -79,8 +106,6 @@ public:
 private:
     Private::WindowImpl*        m_impl;
 };
-
-#undef BS_WINDOW_EVENT
 
 }
 

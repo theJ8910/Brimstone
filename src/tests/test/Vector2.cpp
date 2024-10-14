@@ -32,14 +32,14 @@ namespace {
     const std::size_t cv_size               = 2;
     const int         cv_zero[2]            {  0,  0 };
     const int         cv_values[2]          {  1,  2 };
-    const int         cv_valuesAlt[2]       {  3,  4 };
+    const int         cv_valuesAlt[2]       {  5,  6 };
 
     const int         cv_unit[2]            {  0,  1 };
     const int         cv_left[2]            { -2,  1 };
     const int         cv_right[2]           {  2, -1 };
-    const int         cv_lengthSq           = 5;
-    const int         cv_length             = 2;  //Rounded down from 2.23606798f
-    const int         cv_dot                = 11;
+    const int         cv_lengthSq           = 61;
+    const int         cv_length             = 7;  //Rounded down from 7.81024968f
+    const int         cv_dot                = 17;
 
     const int         cv_arithmetic1[2]     {   6, 10 };
     const int         cv_arithmetic2[2]     {   3,  5 };
@@ -57,11 +57,11 @@ namespace {
 
     const float       cv_zeroF[2]           { 0.0f, 0.0f };
     const float       cv_valuesF[2]         { 1.0f, 2.0f };
-    const float       cv_valuesAltF[2]      { 3.0f, 4.0f };
-    const float       cv_lengthF            = 2.23606798f;
+    const float       cv_valuesAltF[2]      { 5.0f, 6.0f };
+    const float       cv_lengthF            = 7.81024968f;
     const float       cv_unitF[2] {
-         1.0f / cv_lengthF,
-         2.0f / cv_lengthF
+         5.0f / cv_lengthF,
+         6.0f / cv_lengthF
     };
     const float       cv_inverseF[2] {
          1.0f / 1.0f,
@@ -266,19 +266,19 @@ UT_TEST_BEGIN( Vector2_constructorFromTo )
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_getLengthSq )
-    Vector2i o( cv_values );
+    Vector2i o( cv_valuesAlt );
 
     return o.getLengthSq() == cv_lengthSq;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_getLength_int )
-    Vector2i o( cv_values );
+    Vector2i o( cv_valuesAlt );
 
     return o.getLength() == cv_length;
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_getLength_float )
-    Vector2f o( cv_valuesF );
+    Vector2f o( cv_valuesAltF );
 
     return isWithin( o.getLength(), cv_lengthF, FAST_SQRT_ERROR );
 UT_TEST_END()
@@ -292,11 +292,25 @@ UT_TEST_BEGIN( Vector2_normalize_int )
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_normalize_float )
-    Vector2f o( cv_valuesF );
+    Vector2f o( cv_valuesAltF );
 
     o.normalize();
 
     return allWithin( o.data, cv_unitF, FAST_SQRT_ERROR, cv_size );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_getNormal_int )
+    Vector2i o1( cv_values );
+    Vector2i o2 = o1.getNormal();
+
+    return allEqual( o2.data, cv_unit );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Vector2_getNormal_float )
+    Vector2f o1( cv_valuesAltF );
+    Vector2f o2 = o1.getNormal();
+
+    return allWithin( o2.data, cv_unitF, FAST_SQRT_ERROR, cv_size );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_isUnitVec_int )
@@ -309,7 +323,7 @@ UT_TEST_END()
 
 UT_TEST_BEGIN( Vector2_isUnitVec_float )
     Vector2f v1( cv_unitF );
-    Vector2f v2( cv_valuesF );
+    Vector2f v2( cv_valuesAltF );
 
     return  v1.isUnitVec() &&
            !v2.isUnitVec();

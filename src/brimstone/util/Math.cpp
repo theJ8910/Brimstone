@@ -128,7 +128,7 @@ float fastInvSqrt( float value ) {
     BS_ASSERT_NONZERO_DIVISOR( value );
 
     float half = 0.5f * value;
-    (int32&)value = 0x5f3759df - ( (int32&)value >> 1 );
+    (int32&)value = 0x5F3759DF - ( (int32&)value >> 1 );
 
     //One iteration of newton's method, using a very good initial guess given above
     //NOTE: This line can be copied and pasted to produce more accurate estimates at the expense of performance.

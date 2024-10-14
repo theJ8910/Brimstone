@@ -14,12 +14,6 @@ Description:
 
 
 
-//Includes
-#include <brimstone/types.hpp>      //Brimstone::uchar
-
-
-
-
 namespace Brimstone {
 
 enum class Key {
@@ -36,13 +30,13 @@ enum class Key {
     // )        !        @        #        $        %        ^        &        *        (
     DIGIT_0, DIGIT_1, DIGIT_2, DIGIT_3, DIGIT_4, DIGIT_5, DIGIT_6, DIGIT_7, DIGIT_8, DIGIT_9,
     // _     +
-    DASH, EQUALS,
+    MINUS, EQUALS,
 
     //Letters
     A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
 
     //Miscellaneous keys on the main part of the keyboard
-    SPACE, ENTER, TAB, BACKSPACE, CAPS_LOCK, COMMA, PERIOD, QUOTE,
+    SPACE, RETURN, TAB, BACKSPACE, CAPS_LOCK, COMMA, PERIOD, QUOTE,
     SEMICOLON, SLASH, BACKSLASH,
     // [ {      } ]
     LBRACKET, RBRACKET,
@@ -66,13 +60,19 @@ enum class Key {
     ADD, SUBTRACT, MULTIPLY, DIVIDE, DECIMAL, NUMLOCK,
     NUMPAD_INSERT, NUMPAD_DEL, NUMPAD_HOME, NUMPAD_END, NUMPAD_PAGE_UP, NUMPAD_PAGE_DOWN,
     NUMPAD_UP, NUMPAD_DOWN, NUMPAD_LEFT, NUMPAD_RIGHT,
-    NUMPAD_ENTER, CLEAR,
+    ENTER, CLEAR,
+
+    //Media keys
+    MEDIA_PLAY_PAUSE, MEDIA_STOP, MEDIA_PREVIOUS, MEDIA_NEXT,
+
+    //Volume controls
+    VOLUME_UP, VOLUME_DOWN, MUTE,
 
     //Dummy value to retrieve total number of key codes
     COUNT
 };
 
-const uchar* keyToString( const Key key );
+const char* keyToString( const Key key );
 
 }
 

@@ -18,7 +18,7 @@ namespace Private {
 #if defined( BS_BUILD_WINDOWS )
 typedef class WindowsWindow WindowImpl;
 #elif defined( BS_BUILD_LINUX )
-typedef class LinuxWindow   WindowImpl;
+typedef class XWindow       WindowImpl;
 #endif
 
 }

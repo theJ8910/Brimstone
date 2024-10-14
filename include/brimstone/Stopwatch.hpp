@@ -15,8 +15,8 @@ Description:
 
 
 //Includes
-#include <brimstone/types.hpp>  //Brimstone::uint64
-#include <chrono>               //std::chrono
+#include <cstdint>  //std::uint64_t
+#include <chrono>   //std::chrono
 
 
 
@@ -25,14 +25,30 @@ namespace Brimstone {
 
 class Stopwatch {
 private:
+    typedef std::chrono::high_resolution_clock             Clock;
     typedef std::chrono::high_resolution_clock::time_point Time;
 public:
     Stopwatch();
     void reset();
-    uint64 get();
+    template< typename Duration >
+    std::uint64_t get();
+    std::uint64_t getMilliseconds();
+    std::uint64_t getMicroseconds();
+    std::uint64_t getNanoseconds();
 private:
-    Time    m_start;
+    Time m_start;
 };
+
+template< typename Duration >
+std::uint64_t Stopwatch::get() {
+    using std::chrono::duration_cast;
+
+    Time now = Clock::now();
+    std::uint64_t off = duration_cast< Duration >( now - m_start ).count();
+    m_start = now;
+
+    return off;
+}
 
 }
 

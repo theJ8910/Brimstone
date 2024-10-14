@@ -1,13 +1,13 @@
 /*
-opengl/WindowsGLContext.hpp
----------------------------
+windows/opengl/WindowsGLContext.hpp
+-----------------------------------
 Copyright (c) 2024, theJ89
 
 Description:
     Windows implementation of the OpenGL Context.
 */
-#ifndef BS_OPENGL_WINDOWSGLCONTEXT_HPP
-#define BS_OPENGL_WINDOWSGLCONTEXT_HPP
+#ifndef BS_WINDOWS_OPENGL_WINDOWSGLCONTEXT_HPP
+#define BS_WINDOWS_OPENGL_WINDOWSGLCONTEXT_HPP
 
 
 
@@ -57,4 +57,4 @@ private:
 
 
 
-#endif //BS_OPENGL_WINDOWSGLCONTEXT_HPP
+#endif //BS_WINDOWS_OPENGL_WINDOWSGLCONTEXT_HPP

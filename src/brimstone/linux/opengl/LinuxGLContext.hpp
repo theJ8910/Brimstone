@@ -1,18 +1,20 @@
 /*
-opengl/LinuxGLContext.hpp
--------------------------
+linux/opengl/LinuxGLContext.hpp
+-------------------------------
 Copyright (c) 2024, theJ89
 
 Description:
     Linux implementation of the OpenGL context.
 */
-#ifndef BS_OPENGL_LINUXGLCONTEXT_HPP
-#define BS_OPENGL_LINUXGLCONTEXT_HPP
+#ifndef BS_LINUX_OPENGL_LINUXGLCONTEXT_HPP
+#define BS_LINUX_OPENGL_LINUXGLCONTEXT_HPP
 
 
 
 
 //Includes
+#include "../x11/XVisualInfo.hpp"       //Brimstone::Private::XVisualInfo
+
 #include <X11/Xlib.h>                   //X11
 #include <X11/Xutil.h>                  //X11
 #include <X11/Xos.h>                    //X11
@@ -57,7 +59,7 @@ private:
     GLXContext m_context;
     ::Window   m_window;
 public:
-    static XVisualInfo* getIdealVisualInfo( Display* display );
+    static XVisualInfo getIdealVisualInfo( Display* display );
 private:
     static void initGLX( Display* display );
     static void destroyGLX();
@@ -75,4 +77,4 @@ private:
 
 
 
-#endif //BS_OPENGL_LINUXGLCONTEXT_HPP
+#endif //BS_LINUX_OPENGL_LINUXGLCONTEXT_HPP

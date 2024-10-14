@@ -28,35 +28,37 @@ namespace {
     using ::Brimstone::Bounds2f;
     using ::Brimstone::BoundsException;
 
-    const std::size_t cv_size             = 2;
-    const int         cv_zero[4]          {  0,  0,    0,  0 };
-    const int         cv_values[4]        {  1,  2,    3,  4 };
-    const int         cv_valuesMins[2]    {  1,  2 };
-    const int         cv_valuesMaxs[2]    {  3,  4 };
-    const int         cv_valuesAlt[4]     {  5,  6,    7,  8 };
-    const int         cv_valuesAltMins[2] {  5,  6 };
-    const int         cv_valuesAltMaxs[2] {  7,  8 };
-    const int         cv_abnormal[4]      {  3,  4,    1,  2 };
-    const int         cv_includeTest[4]   { -14, -11,   3,  12 };
-    const int         cv_includePt1[2]    { -14,  12 };
-    const int         cv_includePt2[2]    {  2,  -11 };
-    const int         cv_isTest1[4]       {  0,  1,    2,   3 };
-    const int         cv_isTest2[4]       {  2,  3,    4,   5 };
-    const int         cv_isTest3[4]       {  4,  5,    5,   6 };
-    const int         cv_isTestCorner[4]  {  3,  4,    5,   6 };
-    const int         cv_intersect1[4]    {  1,  2,    2,   3 };
-    const int         cv_intersect2[4]    {  2,  3,    3,   4 };
-    const int         cv_widthTest[4]     {  1,  2,   11,  4 };
-    const int         cv_heightTest[4]    {  1,  2,    3, 13 };
-    const int         cv_sizes[2]         { 10, 11 };
-    const int         cv_width            = 10;
-    const int         cv_height           = 11;
-    const int         cv_dimTest[4]       {  1,  2,   11, 13 };
-    const int         cv_outsideMins[2]   {  0,  1 };
-    const int         cv_outsideMaxs[2]   {  4,  5 };
-    const char*       cv_output           = "[ ( 1, 2 ), ( 3, 4 ) ]";
+    const std::size_t cv_size               = 2;
+    const int         cv_zero[4]            {  0,  0,    0,  0 };
+    const int         cv_values[4]          {  1,  2,    3,  4 };
+    const int         cv_valuesMins[2]      {  1,  2 };
+    const int         cv_valuesMaxs[2]      {  3,  4 };
+    const int         cv_valuesAlt[4]       {  5,  6,    7,  8 };
+    const int         cv_valuesAltMins[2]   {  5,  6 };
+    const int         cv_valuesAltMaxs[2]   {  7,  8 };
+    const int         cv_valuesAltCenter[2] {  6,  7 };
+    const int         cv_abnormal[4]        {  3,  4,    1,  2 };
+    const int         cv_includeTest[4]     { -14, -11,   3,  12 };
+    const int         cv_includePt1[2]      { -14,  12 };
+    const int         cv_includePt2[2]      {  2,  -11 };
+    const int         cv_isTest1[4]         {  0,  1,    2,   3 };
+    const int         cv_isTest2[4]         {  2,  3,    4,   5 };
+    const int         cv_isTest3[4]         {  4,  5,    5,   6 };
+    const int         cv_isTestCorner[4]    {  3,  4,    5,   6 };
+    const int         cv_intersect1[4]      {  1,  2,    2,   3 };
+    const int         cv_intersect2[4]      {  2,  3,    3,   4 };
+    const int         cv_widthTest[4]       {  1,  2,   11,  4 };
+    const int         cv_heightTest[4]      {  1,  2,    3, 13 };
+    const int         cv_sizes[2]           { 10, 11 };
+    const int         cv_valuesMinsSizes[4] { 1, 2, 10, 11 };
+    const int         cv_width              = 10;
+    const int         cv_height             = 11;
+    const int         cv_dimTest[4]         {  1,  2,   11, 13 };
+    const int         cv_outsideMins[2]     {  0,  1 };
+    const int         cv_outsideMaxs[2]     {  4,  5 };
+    const char*       cv_output             = "[ ( 1, 2 ), ( 3, 4 ) ]";
 
-    const float       cv_valuesAltF[4]    { 5.0f, 6.0f, 7.0f, 8.0f };
+    const float       cv_valuesAltF[4]      { 5.0f, 6.0f, 7.0f, 8.0f };
 }
 
 
@@ -265,27 +267,6 @@ UT_TEST_BEGIN( Bounds2_get_minMax )
            allEqual( maxs.data, cv_valuesAltMaxs );
 UT_TEST_END()
 
-UT_TEST_BEGIN( Bounds2_set_posSize )
-    Bounds2i o( cv_valuesAlt );
-    Point2i mins( cv_valuesMins );
-    Size2i  sizes( cv_sizes );
-
-    o.set( mins, sizes );
-
-    return allEqual( o.data, cv_dimTest );
-UT_TEST_END()
-
-UT_TEST_BEGIN( Bounds2_get_posSize )
-    Point2i mins( cv_valuesAltMins );
-    Size2i  sizes( cv_valuesAltMaxs );
-
-    Bounds2i o( cv_dimTest );
-    o.get( mins, sizes );
-
-    return allEqual( mins.data,  cv_valuesMins ) &&
-           allEqual( sizes.data, cv_sizes      );
-UT_TEST_END()
-
 UT_TEST_BEGIN( Bounds2_set_values )
     Bounds2i o( cv_values );
 
@@ -300,7 +281,10 @@ UT_TEST_END()
 UT_TEST_BEGIN( Bounds2_get_values )
     Bounds2i o( cv_values );
 
-    int data[2*cv_size];
+    int data[2*cv_size] {
+        cv_valuesAlt[0], cv_valuesAlt[1],
+        cv_valuesAlt[2], cv_valuesAlt[3]
+    };
 
     o.get(
         data[0], data[1],
@@ -431,6 +415,104 @@ UT_TEST_BEGIN( Bounds2_getDimension )
             return false;
 
     return true;
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_setPositionAndSize_point_size )
+    Bounds2i o( cv_valuesAlt );
+    Point2i  mins( cv_valuesMins );
+    Size2i   sizes( cv_sizes );
+
+    o.setPositionAndSize( mins, sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getPositionAndSize_point_size )
+    Point2i mins( cv_valuesAltMins );
+    Size2i  sizes( cv_valuesAltMaxs );
+
+    Bounds2i o( cv_dimTest );
+    o.getPositionAndSize( mins, sizes );
+
+    return allEqual( mins.data,  cv_valuesMins ) &&
+           allEqual( sizes.data, cv_sizes      );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_setPositionAndSize_point_w_h )
+    Bounds2i o( cv_valuesAlt );
+    Point2i  mins( cv_valuesMins );
+    o.setPositionAndSize(
+        mins,
+        cv_sizes[0], cv_sizes[1]
+    );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getPositionAndSize_point_w_h )
+    Point2i mins( cv_valuesAltMins );
+    int     data[cv_size] { cv_valuesAlt[2], cv_valuesAlt[3] };
+
+    Bounds2i o( cv_dimTest );
+    o.getPositionAndSize(
+        mins,
+        data[0], data[1]
+    );
+
+    return allEqual( mins.data, cv_valuesMins ) &&
+           allEqual( data,      cv_sizes      );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_setPositionAndSize_x_y_size )
+    Bounds2i o( cv_valuesAlt );
+    Size2i   sizes( cv_sizes );
+
+    o.setPositionAndSize( cv_values[0], cv_values[1], sizes );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getPositionAndSize_x_y_size )
+    int     data[cv_size] { cv_valuesAlt[0], cv_valuesAlt[1] };
+    Size2i  sizes( cv_valuesAltMaxs );
+
+    Bounds2i o( cv_dimTest );
+    o.getPositionAndSize( data[0], data[1], sizes );
+
+    return allEqual( data,       cv_valuesMins ) &&
+           allEqual( sizes.data, cv_sizes      );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_setPositionAndSize_x_y_w_h )
+    Bounds2i o( cv_valuesAlt );
+    o.setPositionAndSize(
+        cv_valuesMinsSizes[0], cv_valuesMinsSizes[1],
+        cv_valuesMinsSizes[2], cv_valuesMinsSizes[3]
+    );
+
+    return allEqual( o.data, cv_dimTest );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getPositionAndSize_x_y_w_h )
+    int data[2*cv_size] {
+        cv_valuesAlt[0], cv_valuesAlt[1],
+        cv_valuesAlt[2], cv_valuesAlt[3]
+    };
+
+    Bounds2i o( cv_dimTest );
+    o.getPositionAndSize(
+        data[0], data[1],
+        data[2], data[3]
+    );
+
+    return allEqual( data, cv_valuesMinsSizes );
+UT_TEST_END()
+
+UT_TEST_BEGIN( Bounds2_getCenter )
+    Bounds2i o( cv_valuesAlt );
+    Point2i center = o.getCenter();
+
+    return allEqual( center.data, cv_valuesAltCenter );
 UT_TEST_END()
 
 UT_TEST_BEGIN( Bounds2_output )

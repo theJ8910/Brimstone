@@ -1,6 +1,6 @@
 /*
-opengl/LinuxGLContext.cpp
--------------------------
+linux/opengl/LinuxGLContext.cpp
+-------------------------------
 Copyright (c) 2014, theJ89
 
 Description:
@@ -12,7 +12,7 @@ Description:
 
 //Includes
 #include "LinuxGLContext.hpp"           //Header file
-#include "../linux/XException.hpp"      //Brimstone::XException
+#include "../x11/XException.hpp"        //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd, Brimstone::Private::xerrExists, Brimstone::Private::xerrGet
 
 #include <brimstone/Window.hpp>         //Brimstone::Window
 
@@ -34,17 +34,17 @@ GLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = nullptr;
 
 /*
 isExtensionSupported
------------------------
+--------------------
 
 Description:
     Checks whether a given extension is supported.
 
 Arguments:
-    extensions: An extensions string returned by glXQueryExtensionsString
-    extension:  Name of the extension to check.
+    extensions:  An extensions string returned by glXQueryExtensionsString
+    extension:   Name of the extension to check.
 
 Returns:
-    bool:       true if the extension is supported, false otherwise.
+    bool:        true if the extension is supported, false otherwise.
 */
 bool isExtensionSupported( const char* extensions, const char* extension ) {
     //There are no extensions with an empty name
@@ -136,13 +136,13 @@ Description:
     If the displays are the same, the function returns immediately. Otherwise, a GraphicsException is thrown.
 
 Arguments:
-    display:                The X11 display to initialize GLX with.
+    display:            The X11 display to initialize GLX with.
 
 Returns:
-    void:                   N/A
+    void:               N/A
 
 Throws:
-    GraphicsException:      If display is different from the display that was used to initialize GLX previously.
+    GraphicsException:  If display is different from the display that was used to initialize GLX previously.
 */
 void LinuxGLContext::initGLX( Display* display ) {
     if( m_glxInitialized ) {
@@ -182,7 +182,7 @@ void LinuxGLContext::initGLX( Display* display ) {
     //Framebuffer configurations were added in GLX 1.3, therefore we require GLX 1.3+.
     int glxMajor, glxMinor;
     if( glXQueryVersion( display, &glxMajor, &glxMinor ) == False )
-        throw GraphicsException( "glxQueryVersion failed" );
+        throw GraphicsException( "glxQueryVersion() failed." );
 
     if( glxMajor < 1 || ( glxMajor == 1 && glxMinor < 3 ) )
         throw GraphicsException( "Supported version of GLX is too low; GLX 1.3+ is required." );
@@ -193,7 +193,7 @@ void LinuxGLContext::initGLX( Display* display ) {
     int fbCount = 0;
     GLXFBConfig* fbcs = glXChooseFBConfig( display, DefaultScreen( display ), visual_attribs, &fbCount );
     if( fbcs == nullptr )
-        throw GraphicsException( "glXChooseFBConfig failed." );
+        throw GraphicsException( "glXChooseFBConfig() failed." );
 
     //Now that we have a list of acceptable framebuffer configurations, lets choose the best one,
     //based on how many samples the framebuffer config supports.
@@ -209,7 +209,7 @@ void LinuxGLContext::initGLX( Display* display ) {
             //NOTE: GLX_SAMPLE_BUFFERS is not documented anywhere.
             //It seems to be a simple X11 True / False indicating if a framebuffer configuration supports sample buffers.
             if( glXGetFBConfigAttrib( display, fbcs[i], GLX_SAMPLE_BUFFERS, &haveSamples ) != Success )
-                throw GraphicsException( "glxGetFBConfigAttrib failed." );
+                throw GraphicsException( "glXGetFBConfigAttrib() failed." );
 
             if( !haveSamples )
                 continue;
@@ -217,7 +217,7 @@ void LinuxGLContext::initGLX( Display* display ) {
             //Grab the # of samples this frame buffer config supports.
             //Replace the previous winner (if any) if this config supports more samples.
             if( glXGetFBConfigAttrib( display, fbcs[i], GLX_SAMPLES,        &samples     ) != Success )
-                throw GraphicsException( "glxGetFBConfigAttrib failed." );
+                throw GraphicsException( "glXGetFBConfigAttrib() failed." );
 
             if( bestFBC == nullptr || samples > maxSamples ) {
                 maxSamples = samples;
@@ -260,7 +260,7 @@ void LinuxGLContext::initGLX( Display* display ) {
 
 /*
 LinuxGLContext::destroyGLX
------------------------
+--------------------------
 
 Description:
     Releases any resources related to GLX.
@@ -275,7 +275,7 @@ Arguments:
     N/A
 
 Returns:
-    void:                   N/A
+    void:  N/A
 */
 void LinuxGLContext::destroyGLX() {
     if( !m_glxInitialized )
@@ -291,31 +291,29 @@ void LinuxGLContext::destroyGLX() {
 
 /*
 LinuxGLContext::getIdealVisualInfo
------------------------
+----------------------------------
 
 Description:
     Returns an XVisualInfo detailing the ideal format for an X11 window in the given display to use.
-    
-    NOTE: You must call XFree() to dispose of the returned XVisualInfo once you're done using it.
 Arguments:
-    display:                The X11 display.
+    display:            The X11 display.
 
 Returns:
-    XVisualInfo*:           Info about the ideal visual to use in the given Display.
+    XVisualInfo:        Info about the ideal visual to use in the given Display.
 
 Throws:
-    GraphicsException:      If GLX was already initialized and the given display was different.
+    GraphicsException:  If GLX was already initialized and the given display was different.
 */
-XVisualInfo* LinuxGLContext::getIdealVisualInfo( Display* display ) {
+XVisualInfo LinuxGLContext::getIdealVisualInfo( Display* display ) {
     //Need to init GLX first to find the ideal framebuffer config
     initGLX( display );
 
     //Now that we've found our ideal framebuffer config, we can grab the Visual:    
-    XVisualInfo* vi = glXGetVisualFromFBConfig( m_display, m_bestFBC );
+    ::XVisualInfo* vi = glXGetVisualFromFBConfig( m_display, m_bestFBC );
     if( vi == nullptr )
         throw GraphicsException( "Invalid framebuffer config." );
 
-    return vi;
+    return XVisualInfo( vi );
 }
 
 //Windowless init currently isn't supported
@@ -325,7 +323,7 @@ void LinuxGLContext::init() {
 
 /*
 LinuxGLContext::init
------------------------
+--------------------
 
 Description:
     Initialize the context with the given window.
@@ -334,13 +332,13 @@ Description:
     If GLX has been initialized, verifies that the given window belongs to the same Display.
 
 Arguments:
-    display:                The X11 display to initialize GLX with.
+    display:            The X11 display to initialize GLX with.
 
 Returns:
-    void:                   N/A
+    void:               N/A
 
 Throws:
-    GraphicsException:      If display is different from the display that was used to initialize GLX previously.
+    GraphicsException:  If display is different from the display that was used to initialize GLX previously.
 */
 void LinuxGLContext::init( const Window& window ) {
     //Ensure GLX is initialized, and that the window is using the same Display as us.
@@ -406,13 +404,13 @@ Description:
     Additionally, if this is the last context, GLX is destroyed.
 
 Arguments:
-    display:    The X11 display to initialize GLX with.
+    display:     The X11 display to initialize GLX with.
 
 Returns:
-    void:       N/A
+    void:        N/A
 
 Throws:
-    XException: Thrown if the context could not be destroyed.
+    XException:  Thrown if the context could not be destroyed.
 */
 void LinuxGLContext::destroy() {
     destroyContext();
@@ -421,6 +419,7 @@ void LinuxGLContext::destroy() {
 
 void LinuxGLContext::destroyContext() {
     if( m_context != nullptr ) {
+        //BUG: If m_display has been closed, e.g. because the last XWindow was destroyed, any of these glX calls that use m_display will result in a segfault.
         if( glXGetCurrentContext() == m_context )
             glXMakeCurrent( m_display, 0, nullptr );
 

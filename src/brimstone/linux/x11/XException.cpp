@@ -1,6 +1,6 @@
 /*
-linux/XException.cpp
---------------------
+linux/x11/XException.cpp
+------------------------
 Copyright (c) 2024, theJ89
 
 Description:
@@ -17,17 +17,20 @@ Description:
 
 
 namespace {
+    //Maximum number of characters we can retrieve from a call to XGetErrorText()
+    constexpr int XGETERRORTEXT_BUFFER_SIZE = 1024;
+
     //X Error Handler prototype
-    typedef int (*XErrorHandler)( Display*, XErrorEvent* );
+    typedef int (*XErrorHandler)( ::Display*, ::XErrorEvent* );
 
     //An X11 error handler that sets a global code to something other than 0 if an error occurs.
     //This handler is used temporarily between calls to xerrBegin() and xerrEnd() X11-related functions we want to detect errors in.
-    //HACK: Not threadsafe. This is a functional approach suggested by the tutorial.
+    //HACK: Not threadsafe. This is a functional approach suggested by the OpenGL X11 tutorial.
     //There is likely a better solution, but this will do for now.
     XErrorHandler xerrOldHandler  = nullptr;
-    Display*      xerrDisplay     = nullptr;
+    ::Display*    xerrDisplay     = nullptr;
     int           xerrCode        = 0;
-    int xerrHandler( Display* /*display*/, XErrorEvent* event ) {
+    int xerrHandler( ::Display* /*display*/, ::XErrorEvent* event ) {
         xerrDisplay = event->display;
         xerrCode    = event->error_code;
         return 0;
@@ -39,7 +42,7 @@ namespace Private {
 
 /*
 XException::XException
------------------------
+----------------------
 
 Description:
     XException constructor.
@@ -51,14 +54,14 @@ Arguments:
 Returns:
     N/A
 */
-XException::XException( Display* const display, const int code ) :
+XException::XException( ::Display* const display, const int code ) :
     m_display( display ),
     m_code( code ) {
 }
 
 /*
 XException::getDisplay
------------------------
+----------------------
 
 Description:
     Returns the display the error occurred on.
@@ -69,13 +72,13 @@ Arguments:
 Returns:
     Display*:   The display.
 */
-Display* XException::getDisplay() const {
+::Display* XException::getDisplay() const {
     return m_display;
 }
 
 /*
 XException::getCode
------------------------
+-------------------
 
 Description:
     Returns the error code.
@@ -113,7 +116,7 @@ int XException::getCode() const {
 
 /*
 XException::getDescription
------------------------
+--------------------------
 
 Description:
     Returns a textual description of the error that occurred.
@@ -125,12 +128,11 @@ Returns:
     ustring:    The message.
 */
 ustring XException::getDescription() const {
-    static const int BUFFER_SIZE = 1024;
-    ustring msg( BUFFER_SIZE, '\0' );
+    ustring msg( XGETERRORTEXT_BUFFER_SIZE, '\0' );
 
     //Grab a textual description of the error that occurred from X11.
     //HACK: Using string's internal buffer directly...
-    XGetErrorText( m_display, m_code, &msg[0], BUFFER_SIZE );
+    XGetErrorText( m_display, m_code, &msg[0], XGETERRORTEXT_BUFFER_SIZE );
 
     //NOTE: the string's internal buffer is (at least) BUFFER_SIZE+1 characters long.
     //The final character is a null character, so we don't have to worry about null terminating the string.
@@ -140,7 +142,7 @@ ustring XException::getDescription() const {
 
 /*
 xerrBegin
------------------------
+---------
 
 Description:
     Temporarily sets the X11 Error Handler to an internal handler that records the codes of any errors that may occur.
@@ -178,7 +180,7 @@ void xerrBegin() {
 
 /*
 xerrEnd
------------------------
+-------
 
 Description:
     Restores the previous X11 Error Handler.
@@ -188,6 +190,7 @@ Description:
         xerrBegin();
         //Call to some function that can generate X11 errors...
         xerrEnd();
+
 Arguments:
     N/A
 
@@ -220,17 +223,37 @@ void xerrEnd() {
 }
 
 /*
-Returns true if an error occurred between calls to xerrBegin() and xerrEnd(), false otherwise
+xerrExists
+----------
+
+Description:
+    Returns true if an error occurred between calls to xerrBegin() and xerrEnd(), false otherwise.
+
+Arguments:
+    N/A
+
+Returns:
+    bool:  true if an error occurred between calls to xerrBegin() and xerrEnd(), false otherwise.
 */
 bool xerrExists() {
     return xerrCode != 0;
 }
 
 /*
-Returns an XException containing the display and error code of the most recent X11 error
-captured between calls to xerrBegin() and xerrEnd().
+xerrGet
+-------
 
-Call xerrExists() first to confirm that an error is available.
+Description:
+    Returns an XException containing the display and error code of the most recent X11 error
+    captured between calls to xerrBegin() and xerrEnd().
+
+    Call xerrExists() first to confirm that an error is available.
+
+Arguments:
+    N/A
+
+Returns:
+    XException:  An exception object.
 */
 XException xerrGet() {
     return XException( xerrDisplay, xerrCode );

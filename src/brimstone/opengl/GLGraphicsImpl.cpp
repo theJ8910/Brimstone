@@ -236,7 +236,7 @@ bool GLGraphicsImpl::getAlphaTest() const {
 }
 
 void GLGraphicsImpl::setAlphaFunc( const AlphaFunc func, const float ref ) {
-    static const int AlphaFuncToGLAlphaFunc[] {
+    static constexpr int AlphaFuncToGLAlphaFunc[] {
         GL_NEVER,     //NEVER
         GL_LESS,      //LESS_THAN
         GL_EQUAL,     //EQUAL
@@ -254,7 +254,7 @@ void GLGraphicsImpl::setAlphaFunc( const AlphaFunc func, const float ref ) {
 
 AlphaFunc GLGraphicsImpl::getAlphaFunc() const {
     using enum AlphaFunc;
-    static const AlphaFunc GLAlphaFuncToAlphaFunc[] {
+    static constexpr AlphaFunc GLAlphaFuncToAlphaFunc[] {
         NEVER,                  //GL_NEVER
         LESS_THAN,              //GL_LESS
         EQUAL,                  //GL_EQUAL
@@ -375,9 +375,11 @@ void GLGraphicsImpl::clear() {
 }
 
 void GLGraphicsImpl::setViewport( const int x, const int y, const int width, const int height ) {
-    //Note: glViewport is relative to the lower-left corner of the window,
-    //rather than the upper-left corner. We need to adjust the y-coordinate
-    //to compensate for this difference. TODO
+    //NOTE:
+    //    glViewport is relative to the lower-left corner of the window, rather than the upper-left corner.
+    //    We need to adjust the y-coordinate to compensate for this difference.
+    //TODO:
+    //    Actually implement this. This requires knowing the height of the window that we're rendering to.
     glViewport( x, y, width, height );
     if( glGetError() != GL_NO_ERROR )
         throw GraphicsException( "glViewport() failed." );

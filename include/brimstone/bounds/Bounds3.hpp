@@ -59,8 +59,8 @@ public:
     Bounds( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ );
 
     //Set / get the bounds individually
-    void set( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ );
-    void get( T& minXOut, T& minYOut, T& minZOut, T& maxXOut, T& maxYOut, T& maxZOut ) const;
+    void    set( const T minX, const T minY, const T minZ, const T maxX, const T maxY, const T maxZ );
+    void    get( T& minXOut, T& minYOut, T& minZOut, T& maxXOut, T& maxYOut, T& maxZOut ) const;
 
     //Set / get the position of the bounds, preserving width/length/height.
     void    setPosition( const T minX, const T minY, const T minZ );
@@ -78,6 +78,16 @@ public:
 
     void    setHeight( const T height );
     T       getHeight() const;
+
+    //Set / get both the position and the size of the bounds.
+    void    setPositionAndSize( const Point< T, 3 >& mins, const T width, const T length, const T height );
+    void    getPositionAndSize( Point< T, 3 >& minsOut, T& widthOut, T& lengthOut, T& heightOut ) const;
+
+    void    setPositionAndSize( const T minX, const T minY, const T minZ, const Size< T, 3 >& sizes );
+    void    getPositionAndSize( T& minXOut, T& minYOut, T& minZOut, Size< T, 3 >& sizesOut ) const;
+
+    void    setPositionAndSize( const T minX, const T minY, const T minZ, const T width, const T length, const T height );
+    void    getPositionAndSize( T& minXOut, T& minYOut, T& minZOut, T& widthOut, T& lengthOut, T& heightOut ) const;
 };
 BS_ARRAY_DEFINE_METHODS( Bounds, T, data, BS_TMPL_1( typename T ), BS_SPEC_2( T, 3 ) )
 BS_BOUNDS_DEFINE_METHODS( 3, BS_TMPL_1( typename T ) )
@@ -173,28 +183,6 @@ template< typename T2 >
 Bounds< T, 3 >::Bounds( const Bounds< T2, 3 >& toCopy ) :
     minX( static_cast< T >( toCopy.minX ) ), minY( static_cast< T >( toCopy.minY ) ), minZ( static_cast< T >( toCopy.minZ ) ),
     maxX( static_cast< T >( toCopy.maxX ) ), maxY( static_cast< T >( toCopy.maxY ) ), maxZ( static_cast< T >( toCopy.maxZ ) ) {
-}
-
-template< typename T >
-void Bounds< T, 3 >::set( const Point< T, 3 >& mins, const Size< T, 3 >& sizes ) {
-    minX = mins.x;
-    minY = mins.y;
-    minZ = mins.z;
-
-    maxX = mins.x + sizes.width;
-    maxY = mins.y + sizes.length;
-    maxZ = mins.z + sizes.height;
-}
-
-template< typename T >
-void Bounds< T, 3 >::get( Point< T, 3 >& minsOut, Size< T, 3 >& sizesOut ) const {
-    minsOut.x = minX;
-    minsOut.y = minY;
-    minsOut.z = minZ;
-
-    sizesOut.width   = maxX - minX;
-    sizesOut.length  = maxY - minY;
-    sizesOut.height  = maxZ - minZ;
 }
 
 template< typename T >
@@ -312,6 +300,95 @@ void Bounds< T, 3 >::setHeight( const T height ) {
 template< typename T >
 T Bounds< T, 3 >::getHeight() const {
     return maxZ - minZ;
+}
+
+template< typename T >
+void Bounds< T, 3 >::setPositionAndSize( const Point< T, 3 >& mins, const Size< T, 3 >& sizes ) {
+    Bounds::mins = mins;
+
+    maxX = minX + sizes.width;
+    maxY = minY + sizes.length;
+    maxZ = minZ + sizes.height;
+}
+
+template< typename T >
+void Bounds< T, 3 >::getPositionAndSize( Point< T, 3 >& minsOut, Size< T, 3 >& sizesOut ) const {
+    minsOut = mins;
+
+    sizesOut.width  = maxX - minX;
+    sizesOut.length = maxY - minY;
+    sizesOut.height = maxZ - minZ;
+}
+
+template< typename T >
+void Bounds< T, 3 >::setPositionAndSize( const T minX, const T minY, const T minZ, const Size< T, 3 >& sizes ) {
+    Bounds::minX = minX;
+    Bounds::minY = minY;
+    Bounds::minZ = minZ;
+
+    maxX = minX + sizes.width;
+    maxY = minY + sizes.length;
+    maxZ = minZ + sizes.height;
+}
+
+template< typename T >
+void Bounds< T, 3 >::getPositionAndSize( T& minXOut, T& minYOut, T& minZOut, Size< T, 3 >& sizesOut ) const {
+    minXOut = minX;
+    minYOut = minY;
+    minZOut = minZ;
+
+    sizesOut.width  = maxX - minX;
+    sizesOut.length = maxY - minY;
+    sizesOut.height = maxZ - minZ;
+}
+
+template< typename T >
+void Bounds< T, 3 >::setPositionAndSize( const Point< T, 3 >& mins, const T width, const T length, const T height ) {
+    Bounds::mins = mins;
+
+    maxX = minX + width;
+    maxY = minY + length;
+    maxZ = minZ + height;
+}
+
+template< typename T >
+void Bounds< T, 3 >::getPositionAndSize( Point< T, 3 >& minsOut, T& widthOut, T& lengthOut, T& heightOut ) const {
+    minsOut = mins;
+
+    widthOut   = maxX - minX;
+    lengthOut  = maxY - minY;
+    heightOut  = maxZ - minZ;
+}
+
+template< typename T >
+void Bounds< T, 3 >::setPositionAndSize( const T minX, const T minY, const T minZ, const T width, const T length, const T height ) {
+    Bounds::minX = minX;
+    Bounds::minY = minY;
+    Bounds::minZ = minZ;
+
+    maxX = minX + width;
+    maxY = minY + length;
+    maxZ = minZ + height;
+}
+
+template< typename T >
+void Bounds< T, 3 >::getPositionAndSize( T& minXOut, T& minYOut, T& minZOut, T& widthOut, T& lengthOut, T& heightOut ) const {
+    minXOut = minX;
+    minYOut = minY;
+    minZOut = minZ;
+
+    widthOut  = maxX - minX;
+    lengthOut = maxY - minY;
+    heightOut = maxZ - minZ;
+}
+
+template< typename T >
+Point< T, 3 > Bounds< T, 3 >::getCenter() const {
+    return Point< T, 3 >(
+        ( maxX + minX ) / static_cast<T>( 2 ),
+        ( maxY + minY ) / static_cast<T>( 2 ),
+        ( maxZ + minZ ) / static_cast<T>( 2 )
+    );
 }
 
 template< typename T >

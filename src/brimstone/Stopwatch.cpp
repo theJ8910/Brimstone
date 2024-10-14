@@ -23,20 +23,22 @@ Stopwatch::Stopwatch() {
 }
 
 void Stopwatch::reset() {
-    m_start = std::chrono::high_resolution_clock::now();
+    m_start = Clock::now();
+}
+
+std::uint64_t Stopwatch::getMilliseconds() {
+    return get<std::chrono::milliseconds>();
+}
+
+std::uint64_t Stopwatch::getMicroseconds() {
+    return get<std::chrono::microseconds>();
+}
+
+std::uint64_t Stopwatch::getNanoseconds() {
+    return get<std::chrono::nanoseconds>();
 }
 
 //Returns the number of milliseconds that have passed between calls to .start() and .stop()
-uint64 Stopwatch::get() {
-    using std::chrono::duration_cast;
-    using std::chrono::milliseconds;
-    typedef std::chrono::high_resolution_clock clock;
 
-    Time now = clock::now();
-    uint64 off = duration_cast< milliseconds >( now - m_start ).count();
-    m_start = now;
-
-    return off;
-}
 
 }

@@ -29,9 +29,6 @@ Description:
 
 
 namespace Brimstone {
-
-enum class Key;
-
 namespace Private {
 
 class WindowsWindow : public BaseWindowImpl {
@@ -48,15 +45,41 @@ public:
     void            close();
     bool            isOpen() const;
 
+    void            frame();
+
     bool            peekEvent( WindowEvent& eventOut );
     bool            getEvent( WindowEvent& eventOut );
 
     void            setTitle( const ustring& title );
-    void            setPopup( const bool popup );
-    void            setResizable( const bool sizable );
+    
+    void            setBorderless( const bool borderless );
+    
+    void            setResizable( const bool resizable );
+    
     void            setVisible( const bool visible );
+    
     void            setBounds( const Bounds2i bounds );
+    
+    void            setFullscreen( const bool fullscreen );
+    
+    void            setMaximized( const bool maximized );
+    
+    void            setMinimized( const bool minimized );
+    
+    void            setShaded( const bool shaded );
+    bool            isShaded() const;
+    
+    void            restore();
+    bool            isRestored() const;
+
+    void            focus();
+
     void            setMouseCapture( const bool capture );
+
+    void            setCursorVisible( const bool cursorVisible );
+
+    void            sendToTop();
+    void            sendToBottom();
 
     Point2i         screenToWindow( Point2i screenCoords ) const;
     Point2i         windowToScreen( Point2i windowCoords ) const;
@@ -69,19 +92,21 @@ private:
     Point2i         getCursorPos( LPARAM lParam ) const;
     DWORD           getWindowStyle() const;
     void            readjustWindow();
+    void            trackMouseEvent();
 
 private:
     HWND            m_wnd;
     wchar           m_leadSurrogate;
+    bool            m_hovering;
 
 private:
     static void             registerWindowClass( HINSTANCE instance );
     static LRESULT CALLBACK mainProc( HWND wnd, UINT message, WPARAM wParam, LPARAM lParam );
-    static Key              vkToKey( WPARAM wParam, LPARAM lParam );
 private:
     static std::mutex      m_windowsMutex;
     static bool            m_classRegistered;
     static HWNDToWindowMap m_windowMap;
+    static HCURSOR         m_arrowCursor;
 };
 
 }

@@ -18,18 +18,14 @@ solution( "Brimstone" )
         filter( "system:not windows" )
             excludes( {
                 "src/brimstone/windows/**.cpp",
-                "include/brimstone/windows/**.hpp",
-                "src/brimstone/opengl/WindowsGLContext.cpp",
-                "src/brimstone/opengl/WindowsGLContext.hpp"
+                "include/brimstone/windows/**.hpp"
             } )
 
         --Exclude Linux files when compiling for non-linux OSes
         filter( "system:not linux" )
             excludes( {
                 "src/brimstone/linux/**.cpp",
-                "include/brimstone/linux/**.hpp",
-                "src/brimstone/opengl/LinuxGLContext.cpp",
-                "src/brimstone/opengl/LinuxGLContext.hpp"
+                "include/brimstone/linux/**.hpp"
             } )
 
         doFlags()

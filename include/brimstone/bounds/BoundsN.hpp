@@ -72,9 +72,7 @@ Description:
     Bounds( const Bounds< T2, N >& toCopy );                                                            \
                                                                                                         \
     void set( const Point< T, N >& mins, const Point< T, N >& maxs );                                   \
-    void set( const Point< T, N >& mins, const Size< T, N >& sizes );                                   \
     void get( Point< T, N >& minsOut, Point< T, N >& maxsOut ) const;                                   \
-    void get( Point< T, N >& minsOut, Size< T, N >& sizesOut ) const;                                   \
                                                                                                         \
     void setPosition( const Point< T, N >& mins );                                                      \
     Point< T, N > getPosition() const;                                                                  \
@@ -82,8 +80,13 @@ Description:
     void setSize( const Size< T, N >& sizes );                                                          \
     Size< T, N > getSize() const;                                                                       \
                                                                                                         \
+    void setPositionAndSize( const Point< T, N >& mins, const Size< T, N >& sizes );                    \
+    void getPositionAndSize( Point< T, N >& minsOut, Size< T, N >& sizesOut ) const;                    \
+                                                                                                        \
     void setDimension( const std::size_t component, const T difference );                               \
     T    getDimension( const std::size_t component ) const;                                             \
+                                                                                                        \
+    Point< T, N > getCenter() const;                                                                    \
                                                                                                         \
     void zero();                                                                                        \
     bool isZero() const;                                                                                \
@@ -182,22 +185,6 @@ Bounds< T, N >::Bounds( const Bounds< T2, N >& toCopy ) {
 }
 
 template< typename T, std::size_t N >
-void Bounds< T, N >::set( const Point< T, N >& mins, const Size< T, N >& sizes ) {
-    for( std::size_t i = 0; i < N; ++i ) {
-        Bounds::mins[i] = mins.data[i];
-        Bounds::maxs[i] = mins.data[i] + sizes.data[i];
-    }
-}
-
-template< typename T, std::size_t N >
-void Bounds< T, N >::get( Point< T, N >& minsOut, Size< T, N >& sizesOut ) const {
-    for( std::size_t i = 0; i < N; ++i ) {
-        minsOut[i]  = mins.data[i];
-        sizesOut[i] = maxs.data[i] - mins.data[i];
-    }
-}
-
-template< typename T, std::size_t N >
 void Bounds< T, N >::setPosition( const Point< T, N >& mins ) {
     for( std::size_t i = 0; i < N; ++i )
         maxs.data[i] = mins.data[i] + ( maxs.data[i] - Bounds::mins.data[i] );
@@ -218,6 +205,28 @@ Size< T, N > Bounds< T, N >::getSize() const {
         sizesOut.data[i] = maxs.data[i] - mins.data[i];
 
     return sizesOut;
+}
+
+template< typename T, std::size_t N >
+void Bounds< T, N >::setPositionAndSize( const Point< T, N >& mins, const Size< T, N >& sizes ) {
+    Bounds::mins = mins;
+    for( std::size_t i = 0; i < N; ++i )
+        maxs.data[i] = mins.data[i] + sizes.data[i];
+}
+
+template< typename T, std::size_t N >
+void Bounds< T, N >::getPositionAndSize( Point< T, N >& minsOut, Size< T, N >& sizesOut ) const {
+    minsOut = mins;
+    for( std::size_t i = 0; i < N; ++i )
+        sizesOut.data[i] = maxs.data[i] - mins.data[i];
+}
+
+template< typename T, std::size_t N >
+Point< T, N > Bounds< T, N >::getCenter() const {
+    Point< T, N > center;
+    for( std::size_t i = 0; i < N; ++i )
+        center.data[i] = ( maxs.data[i] + mins.data[i] ) / static_cast<T>( 2 );
+    return center;
 }
 
 template< typename T, std::size_t N >

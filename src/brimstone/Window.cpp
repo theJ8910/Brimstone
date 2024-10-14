@@ -37,6 +37,7 @@ Window::Window( Window&& toMove ) :
 
     toMove.m_impl = nullptr;
 }
+
 Window& Window::operator =( Window&& toMove ) {
     m_impl        = toMove.m_impl;
     toMove.m_impl = nullptr;
@@ -54,6 +55,10 @@ void Window::close() {
 
 bool Window::isOpen() const {
     return m_impl->isOpen();
+}
+
+void Window::frame() {
+    return m_impl->frame();
 }
 
 bool Window::peekEvent( WindowEvent& eventOut ) {
@@ -76,12 +81,12 @@ ustring Window::getTitle() const {
     return m_impl->getTitle();
 }
 
-void Window::setPopup( const bool popup ) {
-    m_impl->setPopup( popup );
+void Window::setBorderless( const bool borderless ) {
+    m_impl->setBorderless( borderless );
 }
 
-bool Window::isPopup() const {
-    return m_impl->isPopup();
+bool Window::isBorderless() const {
+    return m_impl->isBorderless();
 }
 
 void Window::setResizable( const bool resizable ) {
@@ -108,6 +113,54 @@ Bounds2i Window::getBounds() const {
     return m_impl->getBounds();
 }
 
+void Window::setFullscreen( const bool fullscreen ) {
+    m_impl->setFullscreen( fullscreen );
+}
+
+bool Window::isFullscreen() const {
+    return m_impl->isFullscreen();
+}
+
+void Window::setMaximized( const bool maximized ) {
+    m_impl->setMaximized( maximized );
+}
+
+bool Window::isMaximized() const {
+    return m_impl->isMaximized();
+}
+
+void Window::setMinimized( const bool minimized ) {
+    m_impl->setMinimized( minimized );
+}
+
+bool Window::isMinimized() const {
+    return m_impl->isMinimized();
+}
+
+void Window::setShaded( const bool shaded ) {
+    m_impl->setShaded( shaded );
+}
+
+bool Window::isShaded() const {
+    return m_impl->isShaded();
+}
+
+void Window::restore() {
+    m_impl->restore();
+}
+
+bool Window::isRestored() const {
+    return m_impl->isRestored();
+}
+
+void Window::focus() {
+    return m_impl->focus();
+}
+
+bool Window::isFocused() const {
+    return m_impl->isFocused();
+}
+
 void Window::setKeyRepeat( const bool keyRepeat ) {
     m_impl->setKeyRepeat( keyRepeat );
 }
@@ -122,6 +175,26 @@ void Window::setMouseCapture( const bool capture ) {
 
 bool Window::getMouseCapture() const {
     return m_impl->getMouseCapture();
+}
+
+void Window::setCursorVisible( const bool cursorVisible ) {
+    m_impl->setCursorVisible( cursorVisible );
+}
+
+bool Window::isCursorVisible() const {
+    return m_impl->isCursorVisible();
+}
+
+void Window::setKeepCursorCentered( const bool keepCursorCentered ) {
+    m_impl->setKeepCursorCentered( keepCursorCentered );
+}
+
+bool Window::getKeepCursorCentered() const {
+    return m_impl->getKeepCursorCentered();
+}
+
+void Window::sendToTop() {
+    return m_impl->sendToTop();
 }
 
 void Window::sendToBottom() {

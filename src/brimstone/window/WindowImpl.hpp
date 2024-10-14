@@ -16,7 +16,7 @@ Description:
 #if defined( BS_BUILD_WINDOWS )
 #include "../windows/WindowsWindow.hpp"    //WindowImpl (WindowsWindow)
 #elif defined( BS_BUILD_LINUX )
-#include "../linux/LinuxWindow.hpp"        //WindowImpl (LinuxWindow)
+#include "../linux/x11/XWindow.hpp"        //WindowImpl (XWindow)
 #endif
 
 #endif //BS_WINDOW_WINDOWIMPL_HPP

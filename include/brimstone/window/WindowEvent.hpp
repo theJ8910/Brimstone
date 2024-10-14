@@ -38,6 +38,8 @@ enum class WindowEventType {
     MouseMove,      //msg.mouseMove
     MouseVScroll,   //msg.mouseScroll
     MouseHScroll,   //msg.mouseScroll
+    MouseEnter,     //N/A
+    MouseLeave,     //N/A
     KeyDown,        //msg.key
     KeyUp,          //msg.key
     Text,           //msg.text
@@ -45,6 +47,15 @@ enum class WindowEventType {
     Blur,           //N/A
     Move,           //msg.move
     Resize,         //msg.resize
+    EnterFullscreen,//N/A
+    ExitFullscreen, //N/A
+    Maximize,       //N/A
+    Unmaximize,     //N/A
+    Minimize,       //N/A
+    Unminimize,     //N/A
+    Shade,          //N/A
+    Unshade,        //N/A
+    Restore,        //N/A
     Close           //N/A
 };
 
@@ -52,25 +63,43 @@ struct WindowEventMouse {
     int x;
     int y;
     MouseButton button;
+    bool ctrl;
+    bool alt;
+    bool shift;
+    bool system;
 };
 
 struct WindowEventMouseMove {
     int x;
     int y;
+    bool ctrl;
+    bool alt;
+    bool shift;
+    bool system;
 };
 
 struct WindowEventMouseScroll {
     int x;
     int y;
     float scroll;
+    bool ctrl;
+    bool alt;
+    bool shift;
+    bool system;
 };
 
 struct WindowEventKey {
     Key key;
+    bool ctrl;
+    bool alt;
+    bool shift;
+    bool system;
+    bool repeat;
 };
 
 struct WindowEventText {
     uchar utf8[5];
+    bool  repeat;
 };
 
 struct WindowEventMove {

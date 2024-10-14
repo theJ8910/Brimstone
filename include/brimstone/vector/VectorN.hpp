@@ -28,10 +28,10 @@ Description:
 
 //Defines
 /*
-NOTE: This define controls how much error isUnitVec() tolerates.
+NOTE: These defines control how much error isUnitVec() tolerates.
 
-isUnitVec() returns true if the square length of the vector is within 1 +- 0.00100025.
-The value is chosen with this in mind: For any vector, if you call .normalize() and then .isUnitVec(),
+isUnitVec() returns true if the square length of the vector is between 0.99900025 (1.0 - 0.00099975) and 1.00100025 (1.0 + 0.00100025).
+These values are chosen with this in mind: For any vector, if you call .normalize() and then .isUnitVec(),
 isUnitVec() should return true.
 
 Ideally, a unit vector should only have a length of 1.0.
@@ -49,14 +49,9 @@ We can calculate the minimum, ideal, and maximum bounds for the length and squar
 1 + 0.0005 = 1.0005, and 1.0005 * 1.0005 = 1.00100025
 1 + 0      = 1,      and 1      * 1      = 1
 1 - 0.0005 = 0.9995, and 0.9995 * 0.9995 = 0.99900025
-
-From here we calculate the max error in the square length:
-1.00100025 - 1 = 0.00100025
-1 - 0.99900025 = 0.00099975
-
-The upper bound is slightly higher than the lower bound, so we choose that for the max error in the square length of a unit vector.
 */
-#define BS_VECTOR_UNIT_MAX_ERROR 0.00100025
+#define BS_VECTOR_UNIT_MIN 0.99900025
+#define BS_VECTOR_UNIT_MAX 1.00100025
 
 
 
@@ -71,6 +66,7 @@ The upper bound is slightly higher than the lower bound, so we choose that for t
     T getLengthSq() const;                                                          \
                                                                                     \
     void normalize();                                                               \
+    Vector getNormal() const;                                                       \
     bool isUnitVec() const;                                                         \
                                                                                     \
     void invert();                                                                  \
@@ -95,6 +91,12 @@ The upper bound is slightly higher than the lower bound, so we choose that for t
     tmpl                                                                            \
     void Vector< T, N >::normalize() {                                              \
         Private::normalize( *this );                                                \
+    }                                                                               \
+    tmpl                                                                            \
+    Vector< T, N> Vector< T, N >::getNormal() const {                               \
+        auto copy = Vector< T, N >( *this );                                        \
+        copy.normalize();                                                           \
+        return copy;                                                                \
     }                                                                               \
     tmpl                                                                            \
     bool Vector< T, N >::isUnitVec() const {                                        \
@@ -679,7 +681,8 @@ bool intIsUnitVec( const Vector< T, N >& vec ) {
 
 template< typename T, std::size_t N >
 bool floatIsUnitVec( const Vector< T, N >& vec ) {
-    return std::abs( (T)1.0 - vec.getLengthSq() ) < BS_VECTOR_UNIT_MAX_ERROR;
+    auto lengthSq = vec.getLengthSq();
+    return BS_VECTOR_UNIT_MIN < lengthSq && lengthSq < BS_VECTOR_UNIT_MAX;
 }
 
 }

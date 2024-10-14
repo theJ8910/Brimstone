@@ -278,6 +278,20 @@ UT_TEST_BEGIN( VectorN_normalize_float )
     return allWithin( o.data, cv_unitF, FAST_SQRT_ERROR, cv_size );
 UT_TEST_END()
 
+UT_TEST_BEGIN( VectorN_getNormal_int )
+    Vector5i o1( cv_values );
+    Vector5i o2 = o1.getNormal();
+
+    return allEqual( o2.data, cv_unit );
+UT_TEST_END()
+
+UT_TEST_BEGIN( VectorN_getNormal_float )
+    Vector5f o1( cv_valuesAltF );
+    Vector5f o2 = o1.getNormal();
+
+    return allWithin( o2.data, cv_unitF, FAST_SQRT_ERROR, cv_size );
+UT_TEST_END()
+
 UT_TEST_BEGIN( VectorN_isUnitVec_int )
     Vector5i o1( cv_unit );
     Vector5i o2( cv_valuesAlt );
