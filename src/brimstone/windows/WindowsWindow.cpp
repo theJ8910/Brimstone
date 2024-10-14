@@ -672,15 +672,58 @@ void WindowsWindow::focus() {
         throwWindowsException();
 }
 
-void WindowsWindow::setMouseCapture( const bool capture ) {
-    BaseWindowImpl::setMouseCapture( capture );
+void WindowsWindow::setMouseCapture( const bool mouseCapture ) {
+    //If we're already at the requested mouse capture state, there's nothing to do:
+    if( m_mouseCapture == mouseCapture )
+        return;
 
-    if( capture ) {
+    //If the window isn't open yet, just set whether mouse events should be captured not:
+    if( m_wnd == nullptr ) {
+        BaseWindowImpl::setMouseCapture( mouseCapture );
+        return;
+    }
+
+    //Capture mouse events:
+    if( mouseCapture ) {
         SetCapture( m_wnd );
+    //Stop capturing mouse events:
     } else {
         if( ReleaseCapture() == FALSE )
             throwWindowsException();
     }
+
+    //Update the mouse capture state:
+    BaseWindowImpl::setMouseCapture( mouseCapture );
+}
+
+void WindowsWindow::setCursorTrapped( const bool cursorTrapped ) {
+    //TODO: Needs testing
+    
+    //If we're already at the requested cursor trap state, there's nothing to do:
+    if( m_cursorTrapped == cursorTrapped )
+        return;
+
+    //If the window isn't open yet, just set whether the cursor should be trapped or not:
+    if( m_wnd == nullptr ) {
+        BaseWindowImpl::setCursorTrapped( cursorTrapped );
+        return;
+    }
+
+    //Trap the cursor:
+    //NOTE:
+    //    The clipping rect needs to be updated every time the window's bounds change.
+    //    This is done in the onBoundsUpdated() function.
+    if( cursorTrapped ) {
+        if( ClipCursor( reinterpret_cast< LPRECT >( &m_bounds ) ) == FALSE )
+            throwWindowsException();
+    //Stop trapping the cursor:
+    } else {
+        if( ClipCursor( NULL ) == FALSE )
+            throwWindowsException();
+    }
+
+    //Update the cursor trap state:
+    BaseWindowImpl::setCursorTrapped( cursorTrapped );
 }
 
 void WindowsWindow::sendToTop() {
@@ -1044,6 +1087,9 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
         e.move.y = pos.y;
 
         pushEvent( e );
+
+        //Update anything internal that relies on the bounds of the window:
+        onBoundsUpdated();
     } break;
     case WM_MOVING: {
     } break;
@@ -1059,6 +1105,9 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
         e.resize.h = size.h;
 
         pushEvent( e );
+
+        //Update anything internal that relies on the bounds of the window:
+        onBoundsUpdated();
     } break;
     case WM_SIZING: {
     } break;
@@ -1152,6 +1201,23 @@ void WindowsWindow::readjustWindow() {
         throwWindowsException();
 }
 
+void WindowsWindow::onBoundsUpdated() {
+    if( m_cursorTrapped ) {
+        if( ClipCursor( reinterpret_cast< LPRECT >( &m_bounds ) ) == FALSE )
+            throwWindowsException();
+    }
+}
+
+void WindowsWindow::trackMouseEvent() {
+    TRACKMOUSEEVENT tme;
+    tme.cbSize      = sizeof( tme );
+    tme.dwFlags     = TME_HOVER | TME_LEAVE;
+    tme.hwndTrack   = m_wnd;
+    tme.dwHoverTime = 0;
+    if( TrackMouseEvent( &tme ) == FALSE )
+        throwWindowsException();
+}
+
 /*
 WindowsWindow::registerWindowClass
 ----------------------------------
@@ -1220,16 +1286,6 @@ LRESULT CALLBACK WindowsWindow::mainProc( HWND hWnd, UINT message, WPARAM wParam
         return DefWindowProc( hWnd, message, wParam, lParam );
 
     return it->second.windowProc( message, wParam, lParam );
-}
-
-void WindowsWindow::trackMouseEvent() {
-    TRACKMOUSEEVENT tme;
-    tme.cbSize      = sizeof( tme );
-    tme.dwFlags     = TME_HOVER | TME_LEAVE;
-    tme.hwndTrack   = m_wnd;
-    tme.dwHoverTime = 0;
-    if( TrackMouseEvent( &tme ) == FALSE )
-        throwWindowsException();
 }
 
 

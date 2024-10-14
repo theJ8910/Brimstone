@@ -32,6 +32,7 @@ BaseWindowImpl::BaseWindowImpl() :
     m_focused( false ),
     m_keyRepeat( true ),
     m_mouseCapture( false ),
+    m_cursorTrapped( false ),
     m_cursorVisible( true ),
     m_keepCursorCentered( false )
 {
@@ -141,12 +142,20 @@ bool BaseWindowImpl::getKeyRepeat() const {
     return m_keyRepeat;
 }
 
-void BaseWindowImpl::setMouseCapture( const bool capture ) {
-    m_mouseCapture = capture;
+void BaseWindowImpl::setMouseCapture( const bool mouseCapture ) {
+    m_mouseCapture = mouseCapture;
 }
 
 bool BaseWindowImpl::getMouseCapture() const {
     return m_mouseCapture;
+}
+
+void BaseWindowImpl::setCursorTrapped( const bool cursorTrapped ) {
+    m_cursorTrapped = cursorTrapped;
+}
+
+bool BaseWindowImpl::isCursorTrapped() const {
+    return m_cursorTrapped;
 }
 
 void BaseWindowImpl::setCursorVisible( const bool cursorVisible ) {

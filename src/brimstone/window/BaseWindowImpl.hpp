@@ -70,8 +70,11 @@ public:
     void            setKeyRepeat( const bool keyRepeat );
     bool            getKeyRepeat() const;
 
-    void            setMouseCapture( const bool capture );
+    void            setMouseCapture( const bool mouseCapture );
     bool            getMouseCapture() const;
+
+    void            setCursorTrapped( const bool cursorTrapped );
+    bool            isCursorTrapped() const;
 
     void            setCursorVisible( const bool cursorVisible );
     bool            isCursorVisible() const;
@@ -92,6 +95,7 @@ protected:
     bool                        m_focused;
     bool                        m_keyRepeat;
     bool                        m_mouseCapture;
+    bool                        m_cursorTrapped;
     bool                        m_cursorVisible;
     bool                        m_keepCursorCentered;
 

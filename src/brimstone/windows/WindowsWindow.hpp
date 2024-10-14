@@ -74,7 +74,9 @@ public:
 
     void            focus();
 
-    void            setMouseCapture( const bool capture );
+    void            setMouseCapture( const bool mouseCapture );
+
+    void            setCursorTrapped( const bool cursorTrapped );
 
     void            setCursorVisible( const bool cursorVisible );
 
@@ -93,6 +95,7 @@ private:
     DWORD           getWindowStyle() const;
     void            readjustWindow();
     void            trackMouseEvent();
+    void            onBoundsUpdated();
 
 private:
     HWND            m_wnd;

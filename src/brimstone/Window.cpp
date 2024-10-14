@@ -169,12 +169,20 @@ bool Window::getKeyRepeat() const {
     return m_impl->getKeyRepeat();
 }
 
-void Window::setMouseCapture( const bool capture ) {
-    m_impl->setMouseCapture( capture );
+void Window::setMouseCapture( const bool mouseCapture ) {
+    m_impl->setMouseCapture( mouseCapture );
 }
 
 bool Window::getMouseCapture() const {
     return m_impl->getMouseCapture();
+}
+
+void Window::setCursorTrapped( const bool cursorTrapped ) {
+    m_impl->setCursorTrapped( cursorTrapped );
+}
+
+bool Window::isCursorTrapped() const {
+    return m_impl->isCursorTrapped();
 }
 
 void Window::setCursorVisible( const bool cursorVisible ) {

@@ -2155,47 +2155,58 @@ Description:
     Enables or disables mouse capture.
 
 Arguments:
-    capture:  true if mouse capture should be enabled, false otherwise.
+    mouseCapture:  true if mouse capture should be enabled, false otherwise.
 
 Returns:
     N/A
 */
-void XWindow::setMouseCapture( const bool capture ) {
+void XWindow::setMouseCapture( const bool mouseCapture ) {
     //If we're already at the requested mouse capture state, there's nothing to do:
-    if( m_mouseCapture == capture )
+    if( m_mouseCapture == mouseCapture )
         return;
     
-    //We can't capture the mouse if the window isn't open yet:
-    if( m_window == None )
+    //If the window isn't open yet, just set whether the mouse should be captured or not:
+    if( m_window == None ) {
+        BaseWindowImpl::setMouseCapture( mouseCapture );
         return;
-    
-    if( capture ) {
-        xerrBegin();
-        int rv = XGrabPointer(
-            XShared::getDisplay(),
-            m_window,
-            False,
-            XGRABPOINTER_EVENT_MASK,
-            GrabModeAsync,
-            GrabModeAsync,
-            None,
-            None,
-            CurrentTime
-        );
-        xerrEnd();
-        if( xerrExists() )
-            throw xerrGet();
-        if( rv != GrabSuccess )
-            throw Exception( "XGrabPointer() failed." );
-    } else {
-        xerrBegin();
-        XUngrabPointer( XShared::getDisplay(), CurrentTime );
-        xerrEnd();
-        if( xerrExists() )
-            throw xerrGet();
     }
 
-    BaseWindowImpl::setMouseCapture( capture );
+    //Update mouse capture state:
+    BaseWindowImpl::setMouseCapture( mouseCapture );
+
+    //Update the active X11 pointer grab:
+    updatePointerGrab();
+}
+
+/*
+XWindow::setCursorTrapped
+-------------------------
+
+Description:
+    Traps the cursor within the confines of the window or releases the cursor if it's trapped.
+
+Arguments:
+    cursorTrapped:  true if the cursor should be trapped, false otherwise.
+
+Returns:
+    N/A
+*/
+void XWindow::setCursorTrapped( const bool cursorTrapped ) {
+    //If we're already at the requested cursor trap state, there's nothing to do:
+    if( m_cursorTrapped == cursorTrapped )
+        return;
+
+    //If the window isn't open yet, just set whether the cursor should be trapped or not:
+    if( m_window == None ) {
+        BaseWindowImpl::setCursorTrapped( cursorTrapped );
+        return;
+    }
+
+    //Update cursor trap state:
+    BaseWindowImpl::setCursorTrapped( cursorTrapped );
+
+    //Update the active X11 pointer grab:
+    updatePointerGrab();
 }
 
 /*
@@ -2370,6 +2381,57 @@ Returns:
 */
 WindowHandle XWindow::getHandle() const {
     return m_window;
+}
+
+/*
+XWindow::updatePointerGrab
+--------------------------
+
+Description:
+    This function is called to update the active X11 pointer grab when the state of a variable that influences it is changed.
+
+Arguments:
+    N/A
+
+Returns:
+    N/A
+
+Throws:
+    Exception:   If a call to an Xlib function fails.
+    XException:  If a call to an Xlib function fails.
+*/
+void XWindow::updatePointerGrab() {
+    //Capture mouse events (and possibly trap the pointer), depending on the state of m_mouseCapture and m_cursorTrapped:
+    //NOTE:
+    //    Because of how XGrabPointer() works, we can't trap the pointer and not capture mouse events, so every cursor trap is also a mouse capture, regardless of the state of m_mouseCapture.
+    //NOTE:
+    //    If the X11 client is already grabbing the pointer (e.g. if you started a mouse capture, then started trapping the cursor) it doesn't seem like it's necessary to cancel the existing
+    //    pointer grab with XUngrabPointer() before starting a new pointer grab with XGrabPointer() - the new pointer grab will take the place of the old one.
+    if( m_mouseCapture || m_cursorTrapped ) {
+        xerrBegin();
+        int rv = XGrabPointer(
+            XShared::getDisplay(),
+            m_window,
+            False,
+            XGRABPOINTER_EVENT_MASK,
+            GrabModeAsync,
+            GrabModeAsync,
+            m_cursorTrapped ? m_window : None,
+            None,
+            CurrentTime
+        );
+        xerrEnd();
+        if( xerrExists() )
+            throw xerrGet();
+        if( rv != GrabSuccess )
+            throw Exception( "XGrabPointer() failed." );
+    } else {
+        xerrBegin();
+        XUngrabPointer( XShared::getDisplay(), CurrentTime );
+        xerrEnd();
+        if( xerrExists() )
+            throw xerrGet();
+    }
 }
 
 /*

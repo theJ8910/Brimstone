@@ -74,7 +74,9 @@ public:
 
     void            focus();
 
-    void            setMouseCapture( const bool capture );
+    void            setMouseCapture( const bool mouseCapture );
+
+    void            setCursorTrapped( const bool cursorTrapped );
 
     void            setCursorVisible( const bool cursorVisible );
     
@@ -93,6 +95,7 @@ private:
     void            setMaximizedInternal( const bool maximized );
     void            setMinimizedInternal( const bool minimized );
     void            setShadedInternal( const bool shaded );
+    void            updatePointerGrab();
     void            updateWindowState();
     void            updateFrameExtents();
     void            updateFrameExtentsFromBounds();
