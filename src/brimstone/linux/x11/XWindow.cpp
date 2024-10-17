@@ -129,6 +129,23 @@ namespace {
     }
 
     /*
+    getCursorPosFromXEvent{3}
+    -------------------------
+
+    Description:
+        Returns the position the cursor was at during an X11 mouse crossing event (XCrossingEvent).
+
+    Arguments:
+        xcrossing:  An XCrossingEvent.
+
+    Returns:
+        Point2i:  The cursor position.
+    */
+    Point2i getCursorPosFromXEvent( const XCrossingEvent& xcrossing ) {
+        return Point2i( xcrossing.x, xcrossing.y );
+    }
+
+    /*
     xButtonToMouseButton
     --------------------
 
@@ -1170,8 +1187,17 @@ void XWindow::windowProc( XEvent& xEvent, const bool repeated ) {
             if( xEvent.xcrossing.mode != NotifyNormal )
                 break;
 
+            auto p = getCursorPosFromXEvent( xEvent.xcrossing );
+            unsigned int state = xEvent.xcrossing.state;
+
             WindowEvent e;
             e.type = WindowEventType::MouseEnter;
+            e.mouseMove.x      = p.x;
+            e.mouseMove.y      = p.y;
+            e.mouseMove.ctrl   = state & ControlMask;
+            e.mouseMove.alt    = state & Mod1Mask;
+            e.mouseMove.shift  = state & ShiftMask;
+            e.mouseMove.system = state & Mod4Mask;
 
             pushEvent( e );
         } break;
@@ -1181,8 +1207,17 @@ void XWindow::windowProc( XEvent& xEvent, const bool repeated ) {
             if( xEvent.xcrossing.mode != NotifyNormal )
                 break;
 
+            auto p = getCursorPosFromXEvent( xEvent.xcrossing );
+            unsigned int state = xEvent.xcrossing.state;
+
             WindowEvent e;
             e.type = WindowEventType::MouseLeave;
+            e.mouseMove.x      = p.x;
+            e.mouseMove.y      = p.y;
+            e.mouseMove.ctrl   = state & ControlMask;
+            e.mouseMove.alt    = state & Mod1Mask;
+            e.mouseMove.shift  = state & ShiftMask;
+            e.mouseMove.system = state & Mod4Mask;
             
             pushEvent( e );
         } break;
@@ -2217,7 +2252,7 @@ Description:
     Sets whether or not the cursor should be visible.
 
 Arguments:
-    N/A
+    cursorVisible:  true if the cursor should be visible, false otherwise.
 
 Returns:
     N/A

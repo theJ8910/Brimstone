@@ -38,8 +38,8 @@ enum class WindowEventType {
     MouseMove,      //msg.mouseMove
     MouseVScroll,   //msg.mouseScroll
     MouseHScroll,   //msg.mouseScroll
-    MouseEnter,     //N/A
-    MouseLeave,     //N/A
+    MouseEnter,     //msg.mouseMove
+    MouseLeave,     //msg.mouseMove
     KeyDown,        //msg.key
     KeyUp,          //msg.key
     Text,           //msg.text

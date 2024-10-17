@@ -777,6 +777,9 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
     case WM_MOUSEMOVE: {
         WindowEvent e;
 
+        auto p = getCursorPos( lParam );
+        m_cursorPos = p;
+
         //If the mouse wasn't previously hovering over this window, set it as hovering and push a MouseEnter event:
         if( !m_hovering ) {
             trackMouseEvent();
@@ -784,10 +787,16 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
 
             //TODO: Needs testing and probably more work
             e.type = WindowEvent::MouseEnter;
+            e.mouseMove.x = p.x;
+            e.mouseMove.y = p.y;
+            //TODO
+            e.mouseMove.ctrl   = false;
+            e.mouseMove.alt    = false;
+            e.mouseMove.shift  = false;
+            e.mouseMove.system = false;
 
             pushEvent( e );
         }
-        auto p = getCursorPos( lParam );
 
         e.type        = WindowEventType::MouseMove;
         e.mouseMove.x = p.x;
@@ -1052,9 +1061,18 @@ LRESULT WindowsWindow::windowProc( UINT message, WPARAM wParam, LPARAM lParam ) 
         m_hovering = false;
 
         //TODO: Needs testing and probably more work
+        auto p = getCursorPos( lParam );
+
         //Push MouseLeave event:
         WindowEvent e;
         e.type = WindowEvent::MouseLeave;
+        e.mouseMove.x = m_cursorPos.x;
+        e.mouseMove.y = m_cursorPos.y;
+        //TODO
+        e.mouseMove.ctrl   = false;
+        e.mouseMove.alt    = false;
+        e.mouseMove.shift  = false;
+        e.mouseMove.system = false;
 
         pushEvent( e );
     } break;
