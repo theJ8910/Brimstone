@@ -92,6 +92,7 @@ GENERATED += $(OBJDIR)/GLShader.o
 GENERATED += $(OBJDIR)/GLTexture.o
 GENERATED += $(OBJDIR)/GLVertexBuffer.o
 GENERATED += $(OBJDIR)/Graphics.o
+GENERATED += $(OBJDIR)/Image.o
 GENERATED += $(OBJDIR)/Key.o
 GENERATED += $(OBJDIR)/LinuxGLContext.o
 GENERATED += $(OBJDIR)/LinuxThreadLocal.o
@@ -124,6 +125,7 @@ OBJECTS += $(OBJDIR)/GLShader.o
 OBJECTS += $(OBJDIR)/GLTexture.o
 OBJECTS += $(OBJDIR)/GLVertexBuffer.o
 OBJECTS += $(OBJDIR)/Graphics.o
+OBJECTS += $(OBJDIR)/Image.o
 OBJECTS += $(OBJDIR)/Key.o
 OBJECTS += $(OBJDIR)/LinuxGLContext.o
 OBJECTS += $(OBJDIR)/LinuxThreadLocal.o
@@ -212,6 +214,9 @@ $(OBJDIR)/Exception.o: src/brimstone/Exception.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Graphics.o: src/brimstone/Graphics.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Image.o: src/brimstone/Image.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Logger.o: src/brimstone/Logger.cpp

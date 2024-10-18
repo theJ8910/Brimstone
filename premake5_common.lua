@@ -108,7 +108,7 @@ function doBrimstoneLinks()
     before it would allow me to build the 32-bit versions of the game.
     ]]--
     filter( {} )
-        links( { "dl", "X11" } )
+        links( { "dl", "X11", "png" } )
 end
 
 function doBrimstoneDefines()

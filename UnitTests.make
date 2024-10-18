@@ -39,7 +39,7 @@ OBJDIR = obj/x64/release/UnitTests
 DEFINES += -DBS_BUILD_OPENGL -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O3 -Wall -Wextra -pthread -Wno-unknown-pragmas
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O3 -Wall -Wextra -std=c++20 -pthread -Wno-unknown-pragmas
-LIBS += -lBrimstone_x86-64 -lluajit-5.1_x64 -lgll_x86-64 -lGL -ldl -lX11
+LIBS += -lBrimstone_x86-64 -lluajit-5.1_x64 -lgll_x86-64 -lGL -ldl -lX11 -lpng
 ALL_LDFLAGS += $(LDFLAGS) -Llib -L/usr/lib64 -m64 -s -pthread
 
 else ifeq ($(config),release_x32)
@@ -49,7 +49,7 @@ OBJDIR = obj/x32/release/UnitTests
 DEFINES += -DBS_BUILD_OPENGL -DBS_BUILD_LINUX -DUT_BUILD_LINUX
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -O3 -Wall -Wextra -pthread -Wno-unknown-pragmas
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -O3 -Wall -Wextra -std=c++20 -pthread -Wno-unknown-pragmas
-LIBS += -lBrimstone_x86 -lluajit-5.1_x86 -lgll_x86 -lGL -ldl -lX11
+LIBS += -lBrimstone_x86 -lluajit-5.1_x86 -lgll_x86 -lGL -ldl -lX11 -lpng
 ALL_LDFLAGS += $(LDFLAGS) -Llib -L/usr/lib32 -m32 -s -pthread
 
 else ifeq ($(config),debug_x64)
@@ -59,7 +59,7 @@ OBJDIR = obj/x64/debug/UnitTests
 DEFINES += -DBS_BUILD_OPENGL -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DBS_BUILD_64BIT -DUT_BUILD_LINUX
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g -Wall -Wextra -pthread -Wno-unknown-pragmas
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -Wall -Wextra -std=c++20 -pthread -Wno-unknown-pragmas
-LIBS += -lBrimstone_x86-64d -lluajit-5.1_x64 -lgll_x86-64 -lGL -ldl -lX11
+LIBS += -lBrimstone_x86-64d -lluajit-5.1_x64 -lgll_x86-64 -lGL -ldl -lX11 -lpng
 ALL_LDFLAGS += $(LDFLAGS) -Llib -L/usr/lib64 -m64 -pthread
 
 else ifeq ($(config),debug_x32)
@@ -69,7 +69,7 @@ OBJDIR = obj/x32/debug/UnitTests
 DEFINES += -DBS_BUILD_OPENGL -DBS_BUILD_DEBUG -DBS_ZERO -DBS_CHECK_NULLPTR -DBS_CHECK_SIZE -DBS_CHECK_INDEX -DBS_CHECK_DIVBYZERO -DBS_CHECK_DOMAIN -DBS_BUILD_LINUX -DUT_BUILD_LINUX
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -g -Wall -Wextra -pthread -Wno-unknown-pragmas
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -g -Wall -Wextra -std=c++20 -pthread -Wno-unknown-pragmas
-LIBS += -lBrimstone_x86d -lluajit-5.1_x86 -lgll_x86 -lGL -ldl -lX11
+LIBS += -lBrimstone_x86d -lluajit-5.1_x86 -lgll_x86 -lGL -ldl -lX11 -lpng
 ALL_LDFLAGS += $(LDFLAGS) -Llib -L/usr/lib32 -m32 -pthread
 
 endif
