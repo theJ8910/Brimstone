@@ -102,6 +102,7 @@ GENERATED += $(OBJDIR)/Math.o
 GENERATED += $(OBJDIR)/MouseButton.o
 GENERATED += $(OBJDIR)/Stopwatch.o
 GENERATED += $(OBJDIR)/ThreadLocal.o
+GENERATED += $(OBJDIR)/Time.o
 GENERATED += $(OBJDIR)/Unicode.o
 GENERATED += $(OBJDIR)/Window.o
 GENERATED += $(OBJDIR)/XColormap.o
@@ -135,6 +136,7 @@ OBJECTS += $(OBJDIR)/Math.o
 OBJECTS += $(OBJDIR)/MouseButton.o
 OBJECTS += $(OBJDIR)/Stopwatch.o
 OBJECTS += $(OBJDIR)/ThreadLocal.o
+OBJECTS += $(OBJDIR)/Time.o
 OBJECTS += $(OBJDIR)/Unicode.o
 OBJECTS += $(OBJDIR)/Window.o
 OBJECTS += $(OBJDIR)/XColormap.o
@@ -226,6 +228,9 @@ $(OBJDIR)/LuaInstance.o: src/brimstone/LuaInstance.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Stopwatch.o: src/brimstone/Stopwatch.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Time.o: src/brimstone/Time.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Window.o: src/brimstone/Window.cpp
