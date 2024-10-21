@@ -51,10 +51,7 @@ Timer< Callback >::Timer( const std::size_t id, const std::uint64_t time, const 
 template< typename Callback >
 class TimerHeapNodeKey {
 public:
-    typedef std::uint64_t Key;
-    static Key key( const Timer< Callback >* node ) {
-        return node->m_time;
-    }
+    static inline std::uint64_t getKey( const Timer< Callback >* node ) { return node->m_time; }
 };
 
 
@@ -102,8 +99,8 @@ template< typename Callback >
 void Timers< Callback >::clearTimeout( const std::size_t id ) {
     for( std::size_t i = 0; i < m_queue.size(); ++i ) {
         Private::Timer< Callback >* timer = m_queue[i];
-        if( timer->id == id ) {
-            m_queue.remove( i );
+        if( timer->m_id == id ) {
+            m_queue.removeIndex( i );
             delete timer;
             return;
         }
@@ -132,6 +129,10 @@ void Timers< Callback >::frame() {
     }
 }
 
+
+
+
+//Type aliases
 using TimersD = Timers< Delegate< void() > >;
 using TimersF = Timers< std::function< void() > >;
 

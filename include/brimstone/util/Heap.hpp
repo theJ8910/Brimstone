@@ -33,75 +33,26 @@ namespace Brimstone::Private {
 
 
 
-//By default, the key for a Node in a heap is the node itself.
-//This helper class implements the default class passed to the NodeKey template parameter:
+//Heap Type for minheaps:
+template< typename Key >
+class MinHeapType {
+public:
+    static inline bool compare( const Key left, const Key right ) { return left < right; }
+};
+
+//Heap Type for maxheaps:
+template< typename Key >
+class MaxHeapType {
+public:
+    static inline bool compare( const Key left, const Key right ) { return left > right; }
+};
+
+//This helper class implements the default class passed to the NodeKey template parameter in Heap:
 template< typename Node >
 class DefaultHeapNodeKey {
 public:
-    typedef Node Key;
-    static Key key( const Node node );
+    static inline Node getKey( const Node node ) { return node; };
 };
-
-template< typename Node >
-DefaultHeapNodeKey< Node >::Key DefaultHeapNodeKey< Node >::key( const Node node ) {
-    return node;
-}
-
-template< typename Key >
-class MinHeap {
-public:
-    static bool compare( const Key left, const Key right );
-};
-
-template< typename Key >
-class MaxHeap {
-public:
-    static bool compare( const Key left, const Key right );
-};
-
-
-
-/*
-Minheap::compare
-----------------
-
-Description:
-    Returns true if the Node with the given key, left, should come before the node with the given key, right.
-    Returns false otherwise.
-
-    This is a specialization of heapCompare() for minheaps: returns true if left < right, false otherwise.
-
-Arguments:
-    N/A
-
-Returns:
-    bool:  true if left should come before right, false otherwise.
-*/
-template< typename Key >
-bool MinHeap<Key>::compare( const Key left, const Key right ) {
-    return left < right;
-}
-
-/*
-Maxheap::compare
-----------------
-
-Description:
-    Returns true if the Node with the given key, left, should come before the node with the given key, right.
-    Returns false otherwise.
-
-    This is a specialization of heapCompare() for maxheaps: returns true if left > right, false otherwise.
-
-Arguments:
-    N/A
-
-Returns:
-    bool:  true if left should come before right, false otherwise.
-*/
-template< typename Key >
-bool MaxHeap<Key>::compare( const Key left, const Key right ) {
-    return left > right;
-}
 
 
 
@@ -117,14 +68,14 @@ namespace Brimstone {
 
 
 //NOTE:
-//    If NodeKey is specified, it should be a class that implements the following:
-//    * A typedef Key, defined to the type of the keys used to sort the nodes contained by this heap.
-//    * A static method key, which takes a Node and returns the key (of type Key) that corresponds to that node, with the following signature:
-//          Key key( const Node node );
-template< template< typename > typename Type, typename Node, typename NodeKey = Private::DefaultHeapNodeKey< Node > >
+//    If NodeKey is specified, it should be a class that implements a static method, getKey(), which takes a Node and returns the key (of type Key) that corresponds to that node.
+//    getKey() has the following signature:
+//          Key getKey( const Node node );
+//    Key can be any type you want, provided you can use the the < and > operators with it.
+template< template< typename > typename HeapType, typename Node, typename NodeKey = Private::DefaultHeapNodeKey< Node > >
 class Heap {
 private:
-    typedef NodeKey::Key Key;
+    typedef decltype( NodeKey::getKey( Node() ) ) Key;
 public:
     Heap();
     ~Heap();
@@ -159,7 +110,37 @@ private:
     std::size_t m_size;
     std::size_t m_capacity;
 private:
-    static bool compare( const Key left, const Key right );
+    /*
+    Heap::compare
+    -------------
+
+    Description:
+        Compares the two given keys, left and right, with an appropriate comparison function for this type of heap.
+
+    Arguments:
+        left:   The key that appears on the left-hand side of the comparison operator.
+        right:  The key that appears on the right-hand side of the comparison operator.
+
+    Returns:
+        bool:  true if left should come before right, false otherwise.
+    */
+    static inline bool compare( const Key left, const Key right ) { return HeapType<Key>::compare( left, right ); }
+
+    /*
+    Heap::getKey
+    ------------
+
+    Description:
+        Given a node, returns the key for that node.
+        Calls the static getKey method provided by the class passed to the NodeKey template parameter.
+
+    Arguments:
+        node:  The node to whose key to get.
+
+    Returns:
+        Key:  The key that corresponds to the given node.
+    */
+    static inline Key getKey( const Node node ) { return NodeKey::getKey( node ); }
 };
 
 /*
@@ -175,8 +156,8 @@ Arguments:
 Returns:
     N/A
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Heap< Type, Node, NodeKey >::Heap() :
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Heap< HeapType, Node, NodeKey >::Heap() :
     m_array( nullptr ),
     m_size( 0 ),
     m_capacity( 0 ) {
@@ -195,8 +176,8 @@ Arguments:
 Returns:
     N/A
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Heap< Type, Node, NodeKey >::~Heap() {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Heap< HeapType, Node, NodeKey >::~Heap() {
     if( m_array != nullptr )
         delete [] m_array;
 }
@@ -214,8 +195,8 @@ Arguments:
 Returns:
     N/A
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-void Heap< Type, Node, NodeKey >::push( const Node node ) {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+void Heap< HeapType, Node, NodeKey >::push( const Node node ) {
     //Double the capacity of the heap if we're at full capacity:
     if( m_size == m_capacity )
         resize( m_capacity != 0 ? m_capacity <<= 1 : 1 ); //NOTE: ( x <<= 1 ) == ( x *= 2 )
@@ -223,7 +204,7 @@ void Heap< Type, Node, NodeKey >::push( const Node node ) {
     //We'll need to determine where in the heap we're inserting the new node.
     //We'll consider inserting it at the end of the array initially:
     std::size_t index = m_size;
-    Key         key   = NodeKey::key( node );
+    Key         key   = getKey( node );
 
     //Next, we'll sift up - this involves moving nodes that should come before the node we're inserting down a level in the hierarchy:
     std::size_t parentIndex;
@@ -232,7 +213,7 @@ void Heap< Type, Node, NodeKey >::push( const Node node ) {
         parentIndex = ( index - 1 ) >> 1; //NOTE: ( x >> 1 ) == ( x / 2 )
 
         //If the node we're inserting should come before the parent node, move the parent node down a level:
-        if( compare( key, NodeKey::key( m_array[ parentIndex ] ) ) ) {
+        if( compare( key, getKey( m_array[ parentIndex ] ) ) ) {
             //Move the parent node down a level in the tree:
             m_array[ index ] = std::move( m_array[ parentIndex ] );
 
@@ -269,8 +250,8 @@ Returns:
 Throws:
     NoSuchElementException:  If the heap was empty.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Node Heap< Type, Node, NodeKey >::pop() {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Node Heap< HeapType, Node, NodeKey >::pop() {
     if( m_size == 0 )
         throw NoSuchElementException();
     Node node = std::move( m_array[ 0 ] );
@@ -309,8 +290,8 @@ Returns:
 Throws:
     NoSuchElementException:  If the heap was empty.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Node& Heap< Type, Node, NodeKey >::peek() {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Node& Heap< HeapType, Node, NodeKey >::peek() {
     if( m_size == 0 )
         throw NoSuchElementException();
     return m_array[ 0 ];
@@ -335,8 +316,8 @@ Returns:
 Throws:
     NoSuchElementException:  If the heap was empty.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-const Node& Heap< Type, Node, NodeKey >::peek() const {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+const Node& Heap< HeapType, Node, NodeKey >::peek() const {
     if( m_size == 0 )
         throw NoSuchElementException();
     return m_array[ 0 ];
@@ -359,8 +340,8 @@ Returns:
 Throws:
     NoSuchElementException:  If the heap was empty or a matching element couldn't be found.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Node Heap< Type, Node, NodeKey >::remove( const Node node ) {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Node Heap< HeapType, Node, NodeKey >::remove( const Node node ) {
     if( m_size == 0 )
         throw NoSuchElementException();
     //TODO:
@@ -389,14 +370,14 @@ Returns:
 Throws:
     NoSuchElementException:  If the heap was empty or an element with a matching key couldn't be found.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Node Heap< Type, Node, NodeKey >::removeKey( const Key key ) {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Node Heap< HeapType, Node, NodeKey >::removeKey( const Key key ) {
     if( m_size == 0 )
         throw NoSuchElementException();
     //TODO:
     //    There's probably a faster way to search for the element to remove here using the element's key, but this naive search will do for now:
     for( std::size_t i = 0; i < m_size; ++i ) {
-        if( NodeKey::key( m_array[i] ) == key ) {
+        if( getKey( m_array[i] ) == key ) {
             return removeIndex( i );
         }
     }
@@ -418,8 +399,8 @@ Returns:
 Throws:
     NoSuchElementException:  If the given index was out of range.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Node Heap< Type, Node, NodeKey >::removeIndex( const std::size_t index ) {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Node Heap< HeapType, Node, NodeKey >::removeIndex( const std::size_t index ) {
     if( index >= m_size )
         throw NoSuchElementException();
 
@@ -455,8 +436,8 @@ Arguments:
 Returns:
     Node*:  Pointer to the first node in the heap.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Node* Heap< Type, Node, NodeKey >::begin() {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Node* Heap< HeapType, Node, NodeKey >::begin() {
     return m_array;
 }
 
@@ -474,8 +455,8 @@ Arguments:
 Returns:
     const Node*:  Pointer to the first node in the heap.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-const Node* Heap< Type, Node, NodeKey >::begin() const {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+const Node* Heap< HeapType, Node, NodeKey >::begin() const {
     return m_array;
 }
 
@@ -492,8 +473,8 @@ Arguments:
 Returns:
     Node*:  Pointer to the first node in the heap.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-const Node* Heap< Type, Node, NodeKey >::cbegin() const {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+const Node* Heap< HeapType, Node, NodeKey >::cbegin() const {
     return m_array;
 }
 
@@ -511,8 +492,8 @@ Arguments:
 Returns:
     Node*:  Pointer to the first node in the heap.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Node* Heap< Type, Node, NodeKey >::end() {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Node* Heap< HeapType, Node, NodeKey >::end() {
     return m_array + m_size;
 }
 
@@ -530,8 +511,8 @@ Arguments:
 Returns:
     Node*:  Pointer to a non-existent node following the last node in the heap.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-const Node* Heap< Type, Node, NodeKey >::end() const {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+const Node* Heap< HeapType, Node, NodeKey >::end() const {
     return m_array + m_size;
 }
 
@@ -548,8 +529,8 @@ Arguments:
 Returns:
     Node*:  Pointer to a non-existent node following the last node in the heap.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-const Node* Heap< Type, Node, NodeKey >::cend() const {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+const Node* Heap< HeapType, Node, NodeKey >::cend() const {
     return m_array + m_size;
 }
 
@@ -575,8 +556,8 @@ Returns:
 Throws:
     NoSuchElementException:  If the given index is out of range.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-Node& Heap< Type, Node, NodeKey >::operator []( const std::size_t index ) {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+Node& Heap< HeapType, Node, NodeKey >::operator []( const std::size_t index ) {
     if( index >= m_size )
         throw NoSuchElementException();
     return m_array[ index ];
@@ -600,8 +581,8 @@ Returns:
 Throws:
     NoSuchElementException:  If the given index is out of range.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-const Node& Heap< Type, Node, NodeKey >::operator []( const std::size_t index ) const {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+const Node& Heap< HeapType, Node, NodeKey >::operator []( const std::size_t index ) const {
     if( index >= m_size )
         throw NoSuchElementException();
     return m_array[ index ];
@@ -620,8 +601,8 @@ Arguments:
 Returns:
     std::size_t:  The size of the heap.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-std::size_t Heap< Type, Node, NodeKey >::size() const {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+std::size_t Heap< HeapType, Node, NodeKey >::size() const {
     return m_size;
 }
 
@@ -638,8 +619,8 @@ Arguments:
 Returns:
     bool:  true if the heap is empty, false otherwise.
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-bool Heap< Type, Node, NodeKey >::empty() const {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+bool Heap< HeapType, Node, NodeKey >::empty() const {
     return m_size == 0;
 }
 
@@ -661,14 +642,14 @@ Arguments:
 Returns:
     N/A
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-void Heap< Type, Node, NodeKey >::siftDown( std::size_t index ) {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+void Heap< HeapType, Node, NodeKey >::siftDown( std::size_t index ) {
     //Nothing to sift down if the heap is empty:
     if( m_size == 0 )
         return;
 
     //Get the key of the last node in the internal array:
-    Key key = NodeKey::key( m_array[ m_size ] );
+    Key key = getKey( m_array[ m_size ] );
 
     //NOTE: The recursion here is implemented with a while loop instead.
     std::size_t leftIndex, rightIndex;
@@ -684,10 +665,10 @@ void Heap< Type, Node, NodeKey >::siftDown( std::size_t index ) {
         //The current node has a right child as well:
         if( rightIndex < m_size ) {
             //If the left child should come before the last node...
-            leftKey = NodeKey::key( m_array[ leftIndex ] );
+            leftKey = getKey( m_array[ leftIndex ] );
             if( compare( leftKey, key ) ) {
                 //...and the right child should come before the left child, then the right child becomes the foremost node:
-                if( compare( NodeKey::key( m_array[ rightIndex ] ), leftKey ) ) {
+                if( compare( getKey( m_array[ rightIndex ] ), leftKey ) ) {
                     m_array[ index ] = std::move( m_array[ rightIndex ] );
                     index = rightIndex;
                 //Otherwise, the left child becomes the foremost node:
@@ -696,7 +677,7 @@ void Heap< Type, Node, NodeKey >::siftDown( std::size_t index ) {
                     index = leftIndex;
                 }
             //Otherwise, if the right child should come before the last node, it becomes the foremost node:
-            } else if( compare( NodeKey::key( m_array[ rightIndex ] ), key ) ) {
+            } else if( compare( getKey( m_array[ rightIndex ] ), key ) ) {
                 m_array[ index ] = std::move( m_array[ rightIndex ] );
                 index = rightIndex;
             //If neither the left nor right child should come before the last node, we're done - exit the loop:
@@ -706,7 +687,7 @@ void Heap< Type, Node, NodeKey >::siftDown( std::size_t index ) {
         //The current node only has a left child:
         } else {
             //If the current node's left child should come before the last node, then move it to the current index:
-            if( compare( NodeKey::key( m_array[ leftIndex ] ), key ) ) {
+            if( compare( getKey( m_array[ leftIndex ] ), key ) ) {
                 m_array[index] = std::move( m_array[ leftIndex ] );
                 index = leftIndex;
             //Otherwise, we're done - exit the loop:
@@ -731,10 +712,10 @@ Arguments:
     capacity:  The size to resize the internal array to.
 
 Returns:
-    bool:  true if left should come before right, false otherwise.
+    N/A
 */
-template< template< typename > typename Type, typename Node, typename NodeKey >
-void Heap< Type, Node, NodeKey >::resize( const std::size_t capacity ) {
+template< template< typename > typename HeapType, typename Node, typename NodeKey >
+void Heap< HeapType, Node, NodeKey >::resize( const std::size_t capacity ) {
     //Set the capacity of the heap:
     m_capacity = capacity;
 
@@ -757,20 +738,15 @@ void Heap< Type, Node, NodeKey >::resize( const std::size_t capacity ) {
     }
 }
 
-template< template< typename > typename Type, typename Node, typename NodeKey >
-bool Heap< Type, Node, NodeKey >::compare( const Key left, const Key right ) {
-    return Type<Key>::compare( left, right );
-}
-
 
 
 
 //Typedefs
 template< typename Node, typename NodeKey = Private::DefaultHeapNodeKey< Node > >
-using MinHeap = Heap< Private::MinHeap, Node, NodeKey >;
+using MinHeap = Heap< Private::MinHeapType, Node, NodeKey >;
 
 template< typename Node, typename NodeKey = Private::DefaultHeapNodeKey< Node > >
-using MaxHeap = Heap< Private::MaxHeap, Node, NodeKey >;
+using MaxHeap = Heap< Private::MaxHeapType, Node, NodeKey >;
 
 
 

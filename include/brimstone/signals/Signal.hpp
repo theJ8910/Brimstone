@@ -29,28 +29,43 @@ Description:
 #include <cstddef>                         //std::size_t
 #include <vector>                          //std::vector
 #include <utility>                         //std::move, std::forward
-#include <algorithm>                       //std::find
+#include <functional>                      //std::function
 
 #include <brimstone/signals/Delegate.hpp>  //Delegate
 
 
 
 
+namespace Brimstone::Private {
+
+
+
+
+//If a function signature is provided as the slot type,
+//we need to rewrite it as a function pointer, otherwise
+//C++ will give you tons of warnings and fail to compile
+//(can't allocate a function type, but can allocate a function pointer).
+template< typename T >
+struct ToFunctionPointer {
+    typedef T type;
+};
+template< typename R, typename... Args >
+struct ToFunctionPointer< R( Args... ) > {
+    typedef R(*type)(Args...);
+};
+
+
+
+
+} //namespace Brimstone::Private
+
+
+
+
 namespace Brimstone {
-namespace Private {
-    //If a function signature is provided as the slot type,
-    //we need to rewrite it as a function pointer, otherwise
-    //C++ will give you tons of warnings and fail to compile
-    //(can't allocate a function type, but can allocate a function pointer).
-    template< typename T >
-    struct ToFunctionPointer {
-        typedef T type;
-    };
-    template< typename R, typename... Args >
-    struct ToFunctionPointer< R( Args... ) > {
-        typedef R(*type)(Args...);
-    };
-}
+
+
+
 
 template< typename Slot >
 class Signal {
@@ -186,11 +201,20 @@ std::size_t Signal< Slot >::size() const {
     return m_slots.size();
 }
 
-//Typedefs
+
+
+
+//Alias templates
 template< typename Signature >
 using SignalD = Signal< typename Delegate< Signature > >;
 
-}
+template< typename Signature >
+using SignalF = Signal< typename std::function< Signature > >;
+
+
+
+
+} //namespace Brimstone
 
 
 
