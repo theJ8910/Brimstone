@@ -25,6 +25,9 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 template< typename T >
 class BoundsStack {
 public:
@@ -93,6 +96,12 @@ const T& BoundsStack<T>::operator []( const std::size_t index ) const {
     return m_stack[index];
 }
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_BOUNDS_BOUNDSSTACK_HPP

@@ -11,36 +11,56 @@ Description:
 
 
 //Includes
-#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, allWithin, FAST_SQRT_ERR
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll, UnitTest::isWithin, UnitTest::allWithin, UnitTest::FAST_SQRT_ERR
 
-#include <cstddef>              //std::size_t
-#include <sstream>              //std::ostringstream
+#include <brimstone/Size.hpp>       //Brimstone::Size
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException
 
-#include <brimstone/Size.hpp>
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    typedef ::Brimstone::Size< int, 5 >   Size5i;
-    typedef ::Brimstone::Size< float, 5 > Size5f;
-    using   ::Brimstone::BoundsException;
 
-    const std::size_t cv_size               = 5;
-    const int         cv_zero[5]            {  0,  0,   0,  0,   0 };
-    const int         cv_values[5]          {  1,  2,   3,  4,   5 };
-    const int         cv_valuesAlt[5]       {  6,  7,   8,  9,  10 };
-    const int         cv_volume             = 6 * 7 * 8 * 9 * 10;
-    const char*       cv_output             = "[ 1, 2, 3, 4, 5 ]";
 
-    const float       cv_zeroF[5]            { 0.0f, 0.0f, 0.0f, 0.0f,  0.0f };
-    const float       cv_valuesF[5]          { 1.0f, 2.0f, 3.0f, 4.0f,  5.0f };
 
-    const char*       cv_outputF = "[ 1.00000, 2.00000, 3.00000, 4.00000, 5.00000 ]";
-}
+
+//Types
+using Size5i = ::Brimstone::Size< int, 5 >;
+using Size5f = ::Brimstone::Size< float, 5 >;
+using          ::Brimstone::BoundsException;
+
+
+
+
+//Constants
+const std::size_t cv_size         = 5;
+const int         cv_zero[5]      {  0,  0,   0,  0,   0 };
+const int         cv_values[5]    {  1,  2,   3,  4,   5 };
+const int         cv_valuesAlt[5] {  6,  7,   8,  9,  10 };
+const int         cv_volume       = 6 * 7 * 8 * 9 * 10;
+const char*       cv_output       = "[ 1, 2, 3, 4, 5 ]";
+
+const float       cv_zeroF[5]     { 0.0f, 0.0f, 0.0f, 0.0f,  0.0f };
+const float       cv_valuesF[5]   { 1.0f, 2.0f, 3.0f, 4.0f,  5.0f };
+
+const char*       cv_outputF      = "[ 1.00000, 2.00000, 3.00000, 4.00000, 5.00000 ]";
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( SizeN_constructorFill )
     Size5i o( 1 );
@@ -231,7 +251,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( SizeN_output_int )
     Size5i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -240,7 +260,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( SizeN_output_float )
     Size5f o( cv_valuesF );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_outputF;
@@ -297,4 +317,7 @@ UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
-}
+
+
+
+} //namespace UnitTest

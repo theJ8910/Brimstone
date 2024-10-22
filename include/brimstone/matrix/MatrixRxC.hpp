@@ -16,15 +16,15 @@ Description:
 
 
 //Includes
-#include <cstddef>                      //std::size_t
-#include <iostream>                     //std::ostream
-#include <iomanip>                      //std::setw, std::setprecision
+#include <cstddef>                    //std::size_t
+#include <iostream>                   //std::ostream
+#include <iomanip>                    //std::setw, std::setprecision
 
-#include <boost/format.hpp>             //boost::format
+#include <boost/format.hpp>           //boost::format
 
-#include <brimstone/util/Array.hpp>     //BS_ARRAY_DECLARE_METHODS, BS_ARRAY_DEFINE_METHODS, etc
-#include <brimstone/Vector.hpp>         //Vector
-#include <brimstone/util/MinMax.hpp>    //electMax
+#include <brimstone/util/Array.hpp>   //BS_ARRAY_DECLARE_METHODS, BS_ARRAY_DEFINE_METHODS, etc.
+#include <brimstone/Vector.hpp>       //Brimstone::Vector
+#include <brimstone/util/MinMax.hpp>  //Brimstone::electMax
 
 
 
@@ -92,6 +92,9 @@ Description:
         BS_ASSERT_INDEX( col, C - 1 );                                                \
         return elem[row][col];                                                        \
     }
+
+
+
 
 namespace Brimstone {
 
@@ -527,7 +530,10 @@ Matrix< T, C, R > transpose( const Matrix< T, R, C >& matrix ) {
     return out;
 }
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

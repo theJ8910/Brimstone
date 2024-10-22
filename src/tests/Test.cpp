@@ -11,13 +11,16 @@ Description:
 
 
 //Includes
-#include "Test.hpp"     //Class header
+#include "Test.hpp"  //Header
 
 
 
 
 
 namespace UnitTest {
+
+
+
 
 std::set< IUnitTest* >& getTests() {
     static std::set< IUnitTest* > tests;
@@ -50,4 +53,7 @@ bool UnitTest::run() {
     return m_function();
 }
 
-}
+
+
+
+} //namespace UnitTest

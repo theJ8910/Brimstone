@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include "GLVertexBuffer.hpp"   //Header file
+#include "GLVertexBuffer.hpp"   //Header
 
 #include <gll/gl_4_6_comp.hpp>  //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
@@ -19,8 +19,10 @@ using namespace gll;
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 GLVertexBuffer::GLVertexBuffer() :
     m_name( 0 ),
@@ -169,5 +171,7 @@ void GLVertexBuffer::setType( const int type ) {
     m_type = type;
 }
 
-}
-}
+
+
+
+} //namespace Brimstone

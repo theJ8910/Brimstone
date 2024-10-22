@@ -7,7 +7,6 @@ Description:
     Defines the Timers and Timer classes.
     The Timers class manages the creation and execution of timers.
 */
-
 #ifndef BS_TIMERS_HPP
 #define BS_TIMERS_HPP
 
@@ -15,14 +14,14 @@ Description:
 
 
 //Includes
-#include <cstddef>               //std::size_t
-#include <cstdint>               //std::uint64_t
-#include <limits>                //std::numeric_limits
-#include <functional>            //std::function
+#include <cstddef>                         //std::size_t
+#include <cstdint>                         //std::uint64_t
+#include <limits>                          //std::numeric_limits
+#include <functional>                      //std::function
 
-#include <brimstone/signals/Delegate.hpp>  //Brimstone::Delegate
-#include <brimstone/Time.hpp>              //Brimstone::getRealTime()
+#include <brimstone/Time.hpp>              //Brimstone::getRealTime
 #include <brimstone/util/Heap.hpp>         //Brimstone::MinHeap
+#include <brimstone/signals/Delegate.hpp>  //Brimstone::Delegate
 
 
 
@@ -70,7 +69,7 @@ namespace Brimstone {
 template< typename Callback >
 class Timers {
 private:
-    typedef MinHeap< Private::Timer< Callback >*, Private::TimerHeapNodeKey< Callback > > TimerQueue;
+    using TimerQueue = MinHeap< Private::Timer< Callback >*, Private::TimerHeapNodeKey< Callback > >;
 public:
     Timers();
     std::size_t setTimeout( const std::uint64_t delay, const Callback callback );
@@ -132,7 +131,7 @@ void Timers< Callback >::frame() {
 
 
 
-//Type aliases
+//Types
 using TimersD = Timers< Delegate< void() > >;
 using TimersF = Timers< std::function< void() > >;
 
@@ -140,9 +139,6 @@ using TimersF = Timers< std::function< void() > >;
 
 
 } //namespace Brimstone
-
-
-
 
 
 

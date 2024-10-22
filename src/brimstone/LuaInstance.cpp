@@ -11,10 +11,10 @@ Description:
 
 
 //Includes
-#include <brimstone/LuaInstance.hpp>    //Class header
-#include <brimstone/Exception.hpp>      //LuaException
+#include <brimstone/LuaInstance.hpp>    //Header
+#include <brimstone/Exception.hpp>      //Brimstone::LuaException
 
-#include <luajit/lua.hpp>               //lua_State, etc
+#include <luajit/lua.hpp>               //lua_State, etc.
 
 #include <boost/format.hpp>             //boost::format
 
@@ -22,6 +22,9 @@ Description:
 
 
 namespace Brimstone {
+
+
+
 
 LuaInstance::LuaInstance() {
     m_state = lua_open();
@@ -197,4 +200,7 @@ void LuaInstance::callFunction( const int32 args, const int32 returnValues ) {
     //the return values for that function (with the last value at the top of the stack)
 }
 
-}
+
+
+
+} //namespace Brimstone

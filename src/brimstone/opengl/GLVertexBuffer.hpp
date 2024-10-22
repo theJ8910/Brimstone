@@ -7,19 +7,23 @@ Description:
     GLVertexBuffer is defined here.
     These objects wrap OpenGL buffers.
 */
+#ifndef BS_OPENGL_GLVERTEXBUFFER_HPP
+#define BS_OPENGL_GLVERTEXBUFFER_HPP
 
 
 
 
 //Includes
-#include <cstddef>               //std::size_t
-#include <gll/gl_types.hpp>      //gll::GLuint, gll::GLsizei
+#include <cstddef>           //std::size_t
+#include <gll/gl_types.hpp>  //gll::GLuint, gll::GLsizei
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 class GLVertexBuffer {
 public:
@@ -44,5 +48,12 @@ private:
     int          m_type;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
+
+#endif //BS_OPENGL_GLVERTEXBUFFER_HPP

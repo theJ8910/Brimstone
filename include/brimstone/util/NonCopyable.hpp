@@ -10,7 +10,13 @@ Description:
 #ifndef BS_UTIL_NONCOPYABLE_HPP
 #define BS_UTIL_NONCOPYABLE_HPP
 
+
+
+
 namespace Brimstone {
+
+
+
 
 struct NonCopyable {
     NonCopyable()                                 = default;
@@ -18,6 +24,12 @@ struct NonCopyable {
     NonCopyable& operator =( const NonCopyable& ) = delete;
 };
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_UTIL_NONCOPYABLE_HPP

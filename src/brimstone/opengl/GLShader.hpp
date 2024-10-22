@@ -21,9 +21,25 @@ Description:
 
 
 namespace Brimstone {
+
+
+
+
+//Forward declarations
 enum class ShaderType;
 
-namespace Private {
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 class GLShader {
 friend class GLProgram;
@@ -42,8 +58,10 @@ private:
     gll::GLuint m_name;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
 
 
 

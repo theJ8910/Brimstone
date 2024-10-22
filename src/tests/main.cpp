@@ -10,23 +10,37 @@ Description:
 
 
 
-//#define _ITERATOR_DEBUG_LEVEL 0
-
-
-
-
 //Includes
-#include <iostream>                 //std::cout
-#include "console/TextColor.hpp"    //InitTextColor
-#include "console/Menu.hpp"         //menu
-#include "MeasureXTime.hpp"         //measure
-#include "Test.hpp"                 //getTests
-#include "Exception.hpp"            //EOFError
+#include <iostream>               //std::cout
+#include "console/TextColor.hpp"  //UnitTest::InitTextColor
+#include "console/Menu.hpp"       //UnitTest::menu
+#include "MeasureXTime.hpp"       //UnitTest::measure
+#include "Test.hpp"               //UnitTest::getTests
+#include "Exception.hpp"          //UnitTest::EOFError
+
+
+
+
+namespace {
+
+
+
+
+//Constants
+constexpr const char* choices[] = { "Do Tests", "", "Quit" };
+
+
+
+
+} //namespace
 
 
 
 
 namespace UnitTest {
+
+
+
 
 void doTests() {
     int pass  = 0;
@@ -71,9 +85,13 @@ void doTests() {
               << std::endl;
 }
 
-}
 
-const char* const choices[] = { "Do Tests", "", "Quit" };
+
+
+} //namespace UnitTest
+
+
+
 
 int main( int /* argc */, char** /* argv */ ) {
     using namespace UnitTest;

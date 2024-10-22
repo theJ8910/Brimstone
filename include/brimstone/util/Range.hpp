@@ -27,17 +27,21 @@ Description:
 
 
 //Includes
-#include <cstddef>                      //std::size_t
-#include <initializer_list>             //std::initializer_list
-#include <algorithm>                    //std::fill, std::copy
-#include <type_traits>                  //std::remove_reference
+#include <cstddef>                    //std::size_t
+#include <initializer_list>           //std::initializer_list
+#include <algorithm>                  //std::fill, std::copy
+#include <type_traits>                //std::remove_reference
 
-#include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE
-#include <brimstone/util/Misc.hpp>      //rangeSize
+#include <brimstone/util/Macros.hpp>  //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE
+#include <brimstone/util/Misc.hpp>    //Brimstone::rangeSize
+
 
 
 
 namespace Brimstone {
+
+
+
 
 template< typename Iter, typename ConstIter >
 class Range {
@@ -48,9 +52,9 @@ public:
     //Note: MSVC 2013 is buggy. It fails to compile decltype statements that work on other compilers, like G++.
     //Originally, this took the decltype() of *m_begin, but MSVC reports the following error:
     //    error C2171: '*' : illegal on operands of type 'int *const '
-    typedef decltype( **static_cast< Iter*      >( nullptr ) )  Ref;
-    typedef decltype( **static_cast< ConstIter* >( nullptr ) )  ConstRef;
-    typedef typename std::remove_reference< Ref >::type         Value;
+    using Ref      = decltype( **static_cast< Iter*      >( nullptr ) );
+    using ConstRef = decltype( **static_cast< ConstIter* >( nullptr ) );
+    using Value    = typename std::remove_reference< Ref >::type;
 public:
     template< typename T >
     inline Range( T& cppRange );
@@ -191,9 +195,17 @@ inline Range< Iter, ConstIter >& Range< Iter, ConstIter >::operator =( const Ran
 
 
 
-namespace Private {
+} //namespace Brimstone
 
-//Given a c++ range of type T, defines a typedef for a Range that iterates over that container.
+
+
+
+namespace Brimstone::Private {
+
+
+
+
+//Given a C++ range of type T, defines an alias for a Range that iterates over that container.
 template< typename T >
 struct RangeFromCpp {
     //Note: Objects of this struct are never instantiated.
@@ -201,13 +213,24 @@ struct RangeFromCpp {
     T m_instance;
     const T m_constInstance;
 
-    typedef Range<
+    using type = Range<
         decltype( std::begin( m_instance      ) ),
         decltype( std::begin( m_constInstance ) )
-    > type;
+    >;
 };
 
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
 
 //slice{1}
 //Returns a Range of values from a C++ range between two indices, [begin, end).
@@ -243,6 +266,12 @@ inline typename Private::RangeFromCpp<T>::type slice( T& cppRange, const std::si
     );
 }
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_UTIL_RANGE_HPP

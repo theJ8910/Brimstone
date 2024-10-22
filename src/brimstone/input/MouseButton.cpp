@@ -20,6 +20,9 @@ Description:
 
 namespace {
 
+
+
+
 constexpr const char* mbToStringMap[ static_cast<std::size_t>( Brimstone::MouseButton::COUNT ) ] = {
     "Invalid",  //<= INVALID
 
@@ -31,12 +34,24 @@ constexpr const char* mbToStringMap[ static_cast<std::size_t>( Brimstone::MouseB
     "X2"        //<= X2
 };
 
-}
+
+
+
+} //namespace
+
+
+
 
 namespace Brimstone {
+
+
+
 
 const char* mouseButtonToString( const MouseButton button ) {
     return mbToStringMap[ static_cast<std::size_t>( button ) ];
 }
 
-}
+
+
+
+} //namespace Brimstone

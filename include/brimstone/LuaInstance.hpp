@@ -6,7 +6,6 @@ Copyright (c) 2024, theJ89
 Description:
     Represents a singular instance of Lua.
 */
-
 #ifndef BS_LUAINSTANCE_HPP
 #define BS_LUAINSTANCE_HPP
 
@@ -14,9 +13,9 @@ Description:
 
 
 //Includes
-#include <brimstone/types.hpp>          //uchar, int32
-#include <brimstone/util/Sequence.hpp>  //Sequence
-#include <brimstone/util/Misc.hpp>      //TupleSize
+#include <brimstone/types.hpp>          //Brimstone::uchar, Brimstone::int32
+#include <brimstone/util/Sequence.hpp>  //Brimstone::Sequence
+#include <brimstone/util/Misc.hpp>      //Brimstone::TupleSize
 #include <tuple>                        //std::tuple
 
 
@@ -29,6 +28,9 @@ struct lua_State;
 
 
 namespace Brimstone {
+
+
+
 
 class LuaInstance {
 friend class Lua;
@@ -166,7 +168,10 @@ void LuaInstance::popStackTuple( T& tuple, Sequence< Integers... > sequence ) {
     popStack( std::get< Integers >( tuple )... );
 }
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

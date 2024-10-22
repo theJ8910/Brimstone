@@ -11,26 +11,46 @@ Description:
 
 
 //Includes
-#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"             //allEqual, allEqualTo, copyAll
+#include "../Test.hpp"               //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"              //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll
 
-#include <cstddef>                  //std::size_t
+#include <brimstone/util/Range.hpp>  //Brimstone::Range
+#include <brimstone/Exception.hpp>   //Brimstone::NullPointerException
 
-#include <brimstone/util/Range.hpp>
+#include <cstddef>                   //std::size_t
 
 
 
 
 namespace {
-    typedef ::Brimstone::Range< int*, const int* > RangeI;
-    using   ::Brimstone::NullPointerException;
 
-    const std::size_t cv_size = 5;
-    const int cv_values[5]    = { 1, 2, 3, 4,  5 };
-    const int cv_valuesAlt[5] = { 6, 7, 8, 9, 10 };
-}
+
+
+
+//Types
+using RangeI = ::Brimstone::Range< int*, const int* >;
+using          ::Brimstone::NullPointerException;
+
+
+
+
+//Constants
+const std::size_t cv_size         = 5;
+const int         cv_values[5]    = { 1, 2, 3, 4,  5 };
+const int         cv_valuesAlt[5] = { 6, 7, 8, 9, 10 };
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Range_constructorCppRange )
     int data[ cv_size ];
@@ -217,4 +237,4 @@ UT_TEST_END()
 
 
 
-}
+} //namespace UnitTest

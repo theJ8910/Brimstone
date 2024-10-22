@@ -7,7 +7,6 @@ Description:
     Defines several functions for taking the minimum, maximum,
     or both minimum and maximum of two or more numbers.
 */
-
 #ifndef BS_UTIL_MINMAX_HPP
 #define BS_UTIL_MINMAX_HPP
 
@@ -17,14 +16,17 @@ Description:
 //Includes
 #include <utility>                      //std::swap
 
-#include <brimstone/Exception.hpp>      //NullPointerException, SizeException
-#include <brimstone/types.hpp>          //uint32
-#include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
+#include <brimstone/Exception.hpp>      //Brimstone::NullPointerException, Brimstone::SizeException
+#include <brimstone/types.hpp>          //Brimstone::uint32
+#include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc.
 
 
 
 
 namespace Brimstone {
+
+
+
 
 //Math
 //Faster ------------------------------------------------------------------------------------------------------------------------------------------ Slower
@@ -44,7 +46,7 @@ template< typename T >  inline void         minMax( const T* values, uint32 numI
 
 /*
 electMin
------------------------
+--------
 
 Description:
     In this function, two values (the first of which is currently considered the smallest) are compared,
@@ -81,7 +83,7 @@ inline void electMin( T& currentInWinnerOut, const T& candidate ) {
 
 /*
 min{1}
------------------------
+------
 
 Description:
     Takes two values, compares them, and sets minOut to the smaller value.
@@ -107,7 +109,7 @@ inline void min( const T& a, const T& b, T& minOut ) {
 
 /*
 min{2}
------------------------
+------
 
 Description:
     Takes two values, compares them, and returns the smaller value.
@@ -132,7 +134,7 @@ inline T min( const T& a, const T& b ) {
 
 /*
 min{3}
------------------------
+------
 
 Description:
     Finds the smallest element (minimum) in an array of values.
@@ -170,7 +172,7 @@ inline void min( const T* values, uint32 numItems, T& minOut ) {
 
 /*
 electMax
------------------------
+--------
 
 Description:
     In this function, two values (the first of which is currently considered the largest) are compared,
@@ -201,7 +203,7 @@ inline void electMax( T& currentInWinnerOut, const T& candidate ) {
 
 /*
 max{1}
------------------------
+------
 
 Description:
     Takes two values, compares them, and sets maxOut to the larger value.
@@ -227,7 +229,7 @@ inline void max( const T& a, const T& b, T& maxOut ) {
 
 /*
 max{2}
------------------------
+------
 
 Description:
     Takes two values, compares them, and returns the larger value.
@@ -251,7 +253,7 @@ inline T max( const T& a, const T& b ) {
 
 /*
 max{3}
------------------------
+------
 
 Description:
     Finds the largest element (maximum) in an array of values.
@@ -289,7 +291,7 @@ inline void max( const T* values, uint32 numItems, T& maxOut ) {
 
 /*
 electMinMax
------------------------
+-----------
 
 Description:
     In this function, two values (the first and second are the values currently considered smallest and largest, respectively) are compared
@@ -336,7 +338,7 @@ inline void electMinMax( T& minInOut, T& maxInOut, const T& candidate ) {
 
 /*
 minMax{1}
------------------------
+---------
 
 Description:
     Takes two values, compares them, and sets minOut to the smaller value,
@@ -375,7 +377,7 @@ inline void minMax( const T& a, const T& b, T& minOut, T& maxOut ) {
 
 /*
 minMax{2}
------------------------
+---------
 
 Description:
     Takes two values, compares them, and if necessary swaps
@@ -404,7 +406,7 @@ inline void minMax( T& aInMinOut, T& bInMaxOut ) {
 
 /*
 minMax{3}
------------------------
+---------
 
 Description:
     Finds the smallest (min) and largest (max) element in an array of values.
@@ -445,7 +447,10 @@ inline void minMax( const T* values, uint32 numItems, T& minOut, T& maxOut ) {
     }
 }
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

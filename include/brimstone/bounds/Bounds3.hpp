@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Bounds for 3D bounds (boxes).
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         * Bounds3< T >: Bounds<T,3>
         * Bounds3i:     Bounds<int32,3>
         * Bounds3f:     Bounds<float,3>
@@ -18,12 +18,15 @@ Description:
 
 
 //Includes
-#include <brimstone/bounds/BoundsN.hpp>
+#include <brimstone/bounds/BoundsN.hpp>  //Brimstone::Bounds
 
 
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class Bounds< T, 3 > {
@@ -529,14 +532,20 @@ Bounds< T, 3 > intersect( const Bounds< T, 3 >& a, const Bounds< T, 3 >& b ) {
     );
 }
 
-//Typedefs
-template< typename T >
-using Bounds3 = Bounds< T, 3 >;
-typedef Bounds3< int32 >    Bounds3i;
-typedef Bounds3< float >    Bounds3f;
-typedef Bounds3< double >   Bounds3d;
 
-}
+
+
+//Types
+template< typename T >
+using Bounds3  = Bounds< T, 3 >;
+using Bounds3i = Bounds3< int32 >;
+using Bounds3f = Bounds3< float >;
+using Bounds3d = Bounds3< double >;
+
+
+
+
+} //namespace Brimstone
 
 
 

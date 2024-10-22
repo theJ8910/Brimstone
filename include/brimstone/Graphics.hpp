@@ -16,16 +16,19 @@ Description:
 
 
 //Includes
-#include <cstddef>                              //std::size_t
+#include <cstddef>                               //std::size_t
 
-#include <brimstone/types.hpp>                  //Brimstone::ustring, Brimstone::uint
-#include <brimstone/graphics/DGraphicsImpl.hpp> //Brimstone::Private::DGraphicsImpl, etc
-#include <brimstone/graphics/Enums.hpp>         //Brimstone::AlphaFunc, Brimstone::ShaderType, Brimstone::FilterType, Brimstone::WrapType
+#include <brimstone/types.hpp>                   //Brimstone::ustring, Brimstone::uint
+#include <brimstone/graphics/DGraphicsImpl.hpp>  //Brimstone::Private::DGraphicsImpl, etc.
+#include <brimstone/graphics/Enums.hpp>          //Brimstone::AlphaFunc, Brimstone::ShaderType, Brimstone::FilterType, Brimstone::WrapType
 
 
 
 
 namespace Brimstone {
+
+
+
 
 //Forward declarations
 class Window;
@@ -35,6 +38,10 @@ class VertexBuffer;
 class Texture;
 class Sampler;
 
+
+
+
+//Class definitions
 class Graphics {
 public:
     Graphics();
@@ -107,7 +114,6 @@ private:
     Private::GraphicsImpl* m_impl;
 };
 
-//Class definitions
 class Shader {
 friend class Graphics;
 friend class Program;
@@ -239,6 +245,12 @@ private:
     Private::SamplerImpl* m_impl;
 };
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_GRAPHICS_HPP

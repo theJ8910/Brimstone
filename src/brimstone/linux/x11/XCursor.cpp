@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include "XCursor.hpp"              //Class header
+#include "XCursor.hpp"              //Header
 #include "XShared.hpp"              //Brimstone::Private::XShared
 #include "XException.hpp"           //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd, Brimstone::Private::xerrExists, Brimstone::Private::xerrGet
 
@@ -20,8 +20,7 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -109,5 +108,4 @@ void XCursor::createInternal( ::Pixmap source, ::Pixmap mask, ::XColor* const fo
 
 
 
-}
-}
+} //namespace Brimstone::Private

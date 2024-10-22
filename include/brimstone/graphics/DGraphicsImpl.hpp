@@ -18,26 +18,37 @@ Description:
 #ifndef BS_GRAPHICS_DGRAPHICSIMPL_HPP
 #define BS_GRAPHICS_DGRAPHICSIMPL_HPP
 
-namespace Brimstone {
-namespace Private {
 
+
+
+namespace Brimstone::Private {
+
+
+
+
+//Types
 #if defined( BS_BUILD_DIRECT3D )
-typedef class D3DGraphicsImpl   GraphicsImpl;
-typedef class D3DShader         ShaderImpl;
-typedef class D3DProgram        ProgramImpl;
-typedef class D3DVertexBuffer   VertexBufferImpl;
-typedef class D3DTexture        TextureImpl;
-typedef class D3DSampler        SamplerImpl;
+using GraphicsImpl     = class D3DGraphicsImpl;
+using ShaderImpl       = class D3DShader;
+using ProgramImpl      = class D3DProgram;
+using VertexBufferImpl = class D3DVertexBuffer;
+using TextureImpl      = class D3DTexture;
+using SamplerImpl      = class D3DSampler;
 #elif defined( BS_BUILD_OPENGL )
-typedef class GLGraphicsImpl    GraphicsImpl;
-typedef class GLShader          ShaderImpl;
-typedef class GLProgram         ProgramImpl;
-typedef class GLVertexBuffer    VertexBufferImpl;
-typedef class GLTexture         TextureImpl;
-typedef class GLSampler         SamplerImpl;
+using GraphicsImpl     = class GLGraphicsImpl;
+using ShaderImpl       = class GLShader;
+using ProgramImpl      = class GLProgram;
+using VertexBufferImpl = class GLVertexBuffer;
+using TextureImpl      = class GLTexture;
+using SamplerImpl      = class GLSampler;
 #endif
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_GRAPHICS_DGRAPHICSIMPL_HPP

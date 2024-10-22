@@ -11,24 +11,43 @@ Description:
 
 
 //Includes
-#include <brimstone/Logger.hpp>     //Class header
-#include <brimstone/Exception.hpp>  //NoSuchElementException
+#include <brimstone/Logger.hpp>     //Header
+#include <brimstone/Exception.hpp>  //Brimstone::NoSuchElementException
 #include <iostream>                 //std::cout, std::cerr
-#include <algorithm>                //std::find
+
+
+
+
+namespace {
+
+
+
+
+constexpr const Brimstone::uchar* lmtToString[] = {
+    "DETAIL", "INFO", "WARNING", "ERROR"
+};
+
+
+
+
+} //namespace
 
 
 
 
 namespace Brimstone {
 
+
+
+
 std::mutex                          Loggers::m_loggersMutex;
 std::vector< Loggers::LoggerPair >  Loggers::m_loggers;
 std::size_t                         Loggers::m_nextLoggerID = (std::size_t)-1;
 
+
+
+
 const uchar* logMessageTypeToString( LogMessageType type ) {
-    static const uchar* lmtToString[] = {
-        "DETAIL", "INFO", "WARNING", "ERROR"
-    };
     return lmtToString[ (int32)type ];
 }
 
@@ -98,4 +117,7 @@ void Loggers::remove( const std::size_t id ) {
     throw NoSuchElementException();
 }
 
-}
+
+
+
+} //namespace Brimstone

@@ -31,7 +31,7 @@ Description:
 #include <utility>                         //std::move, std::forward
 #include <functional>                      //std::function
 
-#include <brimstone/signals/Delegate.hpp>  //Delegate
+#include <brimstone/signals/Delegate.hpp>  //Brimstone::Delegate
 
 
 
@@ -47,11 +47,11 @@ namespace Brimstone::Private {
 //(can't allocate a function type, but can allocate a function pointer).
 template< typename T >
 struct ToFunctionPointer {
-    typedef T type;
+    using type = T;
 };
 template< typename R, typename... Args >
 struct ToFunctionPointer< R( Args... ) > {
-    typedef R(*type)(Args...);
+    using type = R(*)(Args...);
 };
 
 
@@ -70,10 +70,10 @@ namespace Brimstone {
 template< typename Slot >
 class Signal {
 public:
-    typedef typename Private::ToFunctionPointer< Slot >::type   MySlot;
-    typedef Signal< Slot >                                      MyType;
+    using MySlot = typename Private::ToFunctionPointer< Slot >::type;
+    using MyType = Signal< Slot >;
 private:
-    typedef std::vector< MySlot >                               SlotCollection;
+    using SlotCollection = std::vector< MySlot >;
 public:
     Signal() = default;
     Signal( const Signal& toCopy );
@@ -204,7 +204,7 @@ std::size_t Signal< Slot >::size() const {
 
 
 
-//Alias templates
+//Types
 template< typename Signature >
 using SignalD = Signal< typename Delegate< Signature > >;
 

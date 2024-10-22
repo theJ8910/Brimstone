@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include <brimstone/Time.hpp>       //Class header
+#include <brimstone/Time.hpp>       //Header
 #include <brimstone/Exception.hpp>  //Brimstone::Exception
 
 
@@ -79,4 +79,4 @@ std::uint64_t Time::getGameTime() {
 
 
 
-}
+} //namespace Brimstone

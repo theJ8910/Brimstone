@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Vector for 4D vectors.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Vector4< T >: Vector<T,4>
         Vector4i:     Vector<int32,4>
         Vector4f:     Vector<float,4>
@@ -18,14 +18,15 @@ Description:
 
 
 //Includes
-#include <brimstone/vector/VectorN.hpp>
+#include <brimstone/vector/VectorN.hpp>  //Brimstone::Vector
 
 
 
 
-namespace Brimstone {
+namespace Brimstone::Private {
 
-namespace Private {
+
+
 
 template< typename T >
 void intNormalize( Vector< T, 4 >& vecInOut );
@@ -33,7 +34,18 @@ void intNormalize( Vector< T, 4 >& vecInOut );
 template< typename T >
 void floatNormalize( Vector< T, 4 >& vecInOut );
 
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
 
 template< typename T >
 class Vector< T, 4 > {
@@ -397,7 +409,18 @@ T dot( const Vector< T, 4 >& left, const Vector< T, 4 >& right ) {
            left.w * right.w;
 }
 
-namespace Private {
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 template< typename T >
 void intNormalize( Vector< T, 4 >& vecInOut ) {
@@ -488,16 +511,30 @@ void floatNormalize( Vector< T, 4 >& vecInOut ) {
     vecInOut.w *= invLen;
 }
 
-}
 
-//Typedefs
+
+
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
+
+//Types
 template< typename T >
-using Vector4 = Vector< T, 4 >;
-typedef Vector4< int32  > Vector4i;
-typedef Vector4< float  > Vector4f;
-typedef Vector4< double > Vector4d;
+using Vector4  = Vector< T, 4 >;
+using Vector4i = Vector4< int32  >;
+using Vector4f = Vector4< float  >;
+using Vector4d = Vector4< double >;
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

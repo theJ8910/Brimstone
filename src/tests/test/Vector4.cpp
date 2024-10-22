@@ -4,76 +4,96 @@ test/Vector4.cpp
 Copyright (c) 2024, theJ89
 
 Description:
-    Unit tests for Vector<T,4> specialization
+    Unit tests for Vector< T, 4 > specialization
 */
 
 
 
 
 //Includes
-#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, allWithin, FAST_SQRT_ERR
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll, UnitTest::isWithin, UnitTest::allWithin, UnitTest::FAST_SQRT_ERR
 
-#include <cstddef>              //std::size_t
-#include <sstream>              //std::ostringstream
+#include <brimstone/Vector.hpp>     //Brimstone::Vector4i
+#include <brimstone/Point.hpp>      //Brimstone::Point4i
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException, Brimstone::DivideByZeroException
 
-#include <brimstone/Vector.hpp>
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    using ::Brimstone::Vector4i;
-    using ::Brimstone::Point4i;
-    using ::Brimstone::Vector4f;
-    using ::Brimstone::BoundsException;
-    using ::Brimstone::DivideByZeroException;
 
-    const std::size_t cv_size               = 4;
-    const int         cv_zero[4]            {  0,  0,   0,  0 };
-    const int         cv_values[4]          {  1,  2,   3,  4 };
-    const int         cv_valuesAlt[4]       {  5,  6,   7,  8 };
 
-    const int         cv_unit[4]            {  0,  0,   0,  1 };
-    const int         cv_lengthSq           = 174;
-    const int         cv_length             = 13;  //Rounded down from 3.74165739f
-    const int         cv_dot                = 70;
 
-    const int         cv_arithmetic1[4]     {  6,  10,  24,  9 };
-    const int         cv_arithmetic2[4]     {  3,   5,   8,  9 };
-    const int         cv_addResult[4]       {  9,  15,  32, 18 };
-    const int         cv_subResult[4]       {  3,   5,  16,  0 };
-    const int         cv_mulResult[4]       { 18,  50, 192, 81 };
-    const int         cv_divResult[4]       {  2,   2,   3,  1 };
-    const int         cv_scalar             = 2;
-    const int         cv_addScalarResult[4] {  8,  12,  26, 11 };
-    const int         cv_subScalarResult[4] {  4,   8,  22,  7 };
-    const int         cv_mulScalarResult[4] { 12,  20,  48, 18 };
-    const int         cv_divScalarResult[4] {  3,   5,  12,  4 };   //Note: 9 / 2 = 4.5 -> 4
-    const int         cv_negateResult[4]    { -6, -10, -24, -9 };
-    const char*       cv_output             = "< 1, 2, 3, 4 >";
 
-    const float       cv_zeroF[4]            { 0.0f, 0.0f, 0.0f, 0.0f };
-    const float       cv_valuesF[4]          { 1.0f, 2.0f, 3.0f, 4.0f };
-    const float       cv_valuesAltF[4]       { 5.0f, 6.0f, 7.0f, 8.0f };
-    const float       cv_lengthF             = 13.190905958272919170936807732722f;
-    const float cv_unitF[4] {
-         5.0f / cv_lengthF,
-         6.0f / cv_lengthF,
-         7.0f / cv_lengthF,
-         8.0f / cv_lengthF
-    };
-    const float       cv_inverseF[4] {
-         1.0f / 1.0f,
-         1.0f / 2.0f,
-         1.0f / 3.0f,
-         1.0f / 4.0f
-    };
-    const char*       cv_outputF = "< 1.00000, 2.00000, 3.00000, 4.00000 >";
-}
+//Types
+using ::Brimstone::Vector4i;
+using ::Brimstone::Point4i;
+using ::Brimstone::Vector4f;
+using ::Brimstone::BoundsException;
+using ::Brimstone::DivideByZeroException;
+
+
+
+
+//Constants
+const std::size_t cv_size               = 4;
+const int         cv_zero[4]            {  0,  0,   0,  0 };
+const int         cv_values[4]          {  1,  2,   3,  4 };
+const int         cv_valuesAlt[4]       {  5,  6,   7,  8 };
+
+const int         cv_unit[4]            {  0,  0,   0,  1 };
+const int         cv_lengthSq           = 174;
+const int         cv_length             = 13;  //Rounded down from 3.74165739f
+const int         cv_dot                = 70;
+
+const int         cv_arithmetic1[4]     {  6,  10,  24,  9 };
+const int         cv_arithmetic2[4]     {  3,   5,   8,  9 };
+const int         cv_addResult[4]       {  9,  15,  32, 18 };
+const int         cv_subResult[4]       {  3,   5,  16,  0 };
+const int         cv_mulResult[4]       { 18,  50, 192, 81 };
+const int         cv_divResult[4]       {  2,   2,   3,  1 };
+const int         cv_scalar             = 2;
+const int         cv_addScalarResult[4] {  8,  12,  26, 11 };
+const int         cv_subScalarResult[4] {  4,   8,  22,  7 };
+const int         cv_mulScalarResult[4] { 12,  20,  48, 18 };
+const int         cv_divScalarResult[4] {  3,   5,  12,  4 };   //Note: 9 / 2 = 4.5 -> 4
+const int         cv_negateResult[4]    { -6, -10, -24, -9 };
+const char*       cv_output             = "< 1, 2, 3, 4 >";
+
+const float       cv_zeroF[4]           { 0.0f, 0.0f, 0.0f, 0.0f };
+const float       cv_valuesF[4]         { 1.0f, 2.0f, 3.0f, 4.0f };
+const float       cv_valuesAltF[4]      { 5.0f, 6.0f, 7.0f, 8.0f };
+const float       cv_lengthF            = 13.190905958272919170936807732722f;
+const float cv_unitF[4] {
+     5.0f / cv_lengthF,
+     6.0f / cv_lengthF,
+     7.0f / cv_lengthF,
+     8.0f / cv_lengthF
+};
+const float       cv_inverseF[4] {
+     1.0f / 1.0f,
+     1.0f / 2.0f,
+     1.0f / 3.0f,
+     1.0f / 4.0f
+};
+const char*       cv_outputF            = "< 1.00000, 2.00000, 3.00000, 4.00000 >";
+
+
+
+
+} //namespace
+
+
 
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Vector4_constructorFill )
     Vector4i o( 1 );
@@ -379,7 +399,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector4_output_int )
     Vector4i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -388,7 +408,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector4_output_float )
     Vector4f o( cv_valuesF );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_outputF;
@@ -793,4 +813,7 @@ UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
-}
+
+
+
+} //namespace UnitTest

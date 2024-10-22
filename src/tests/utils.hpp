@@ -40,12 +40,21 @@ Description:
 
 namespace UnitTest {
 
+
+
+
 //Constants
 extern const float FAST_SQRT_ERROR;
+
+
+
 
 //Forward declarations
 bool isWithin( const float value, const float ideal, const float err );
 bool allWithin( const float* values, const float* ideals, const float err, const int size );
+
+
+
 
 //Functions
 //rangeSize{1}
@@ -157,7 +166,8 @@ void copyAll( const T (&from)[NF], OutPtr to ) {
 
 
 
-}
+
+} //namespace UnitTest
 
 
 

@@ -12,13 +12,10 @@ Description:
 
 
 
-//Includes
-#include <brimstone/types.hpp>  //uchar
-
-
-
-
 namespace Brimstone {
+
+
+
 
 //A ShaderType is passed to a function that creates a shader
 //to indicate what kind of shader is desired.
@@ -54,9 +51,16 @@ enum class AlphaFunc {
     ALWAYS
 };
 
-const uchar* alphaFuncToString( const AlphaFunc func );
 
-}
+
+
+//Forward declarations
+const char* alphaFuncToString( const AlphaFunc func );
+
+
+
+
+} //namespace Brimstone
 
 
 

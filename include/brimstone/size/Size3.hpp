@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Size for 3D sizes.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Size3< T >: Size<T,3>
         Size3i:     Size<int32,3>
         Size3f:     Size<float,3>
@@ -24,6 +24,9 @@ Description:
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class Size< T, 3 > {
@@ -208,13 +211,22 @@ bool operator !=( const Size< T, 3 >& left, const Size< T, 3 >& right ) {
            left.height != right.height;
 }
 
-//Typedefs
-template< typename T >
-using Size3 = Size< T, 3 >;
-typedef Size3< int32  > Size3i;
-typedef Size3< float  > Size3f;
-typedef Size3< double > Size3d;
 
-}
+
+
+//Types
+template< typename T >
+using Size3  = Size< T, 3 >;
+using Size3i = Size3< int32  >;
+using Size3f = Size3< float  >;
+using Size3d = Size3< double >;
+
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_SIZE_SIZE3_HPP

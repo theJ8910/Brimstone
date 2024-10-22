@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include "XDisplay.hpp"             //Class header
+#include "XDisplay.hpp"             //Header
 #include "XException.hpp"           //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd, Brimstone::Private::xerrExists, Brimstone::Private::xerrGet
 
 #include <brimstone/Exception.hpp>  //Brimstone::Exception
@@ -19,8 +19,7 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -100,5 +99,4 @@ XDisplay& XDisplay::operator =( XDisplay&& toMove ) {
 
 
 
-}
-}
+} //namespace Brimstone::Private

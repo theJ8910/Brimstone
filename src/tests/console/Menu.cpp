@@ -11,21 +11,24 @@ Description:
 
 
 //Includes
+#include "Menu.hpp"         //Header
+#include "TextColor.hpp"    //UnitTest::setTextColor
+#include "../Exception.hpp" //UnitTest::EOFError
+
 #include <iostream>         //std::cout, std::cin
 #include <limits>           //std::numeric_limits
-
-#include "Menu.hpp"         //Header file
-#include "TextColor.hpp"    //setTextColor
-#include "../Exception.hpp" //EOFError
 
 
 
 
 namespace UnitTest {
 
+
+
+
 /*
 menu
------------------------
+----
 
 Description:
     Displays a numbered menu of available options (starting at 1) to the user and asks him to make a choice.
@@ -38,17 +41,16 @@ Description:
     These are not counted as valid choices. Numbering continues to increase.
 
 Arguments:
-    choices:        An array of C-style strings (array of const char*) containing the choices offered by the menu.
-    numChoices:     The number of strings in the above array (empty strings count!)
+    choices:     An array of C-style strings (array of const char*) containing the choices offered by the menu.
+    numChoices:  The number of strings in the above array (empty strings count!)
 
 Returns:
-    int:            index of the chosen choice (between 0 and iNumChoices)
+    int:  index of the chosen choice (between 0 and iNumChoices)
 
 Throws:
-    EOFError:       If EOF is encountered on stdin while waiting for input.
+    EOFError:  If EOF is encountered on stdin while waiting for input.
 */
-int menu( const char* const* const choices, const int numChoices )
-{
+int menu( const char* const* const choices, const int numChoices ) {
     int choice;
     bool invalidOption = true;
     do {
@@ -90,4 +92,7 @@ int menu( const char* const* const choices, const int numChoices )
     return choice - 1;
 }
 
-}
+
+
+
+} //namespace UnitTest

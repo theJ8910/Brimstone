@@ -23,10 +23,13 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 class Stopwatch {
 private:
-    typedef std::chrono::high_resolution_clock             Clock;
-    typedef std::chrono::high_resolution_clock::time_point Time;
+    using Clock = std::chrono::high_resolution_clock;
+    using Time  = std::chrono::high_resolution_clock::time_point;
 public:
     Stopwatch();
     void reset();
@@ -50,6 +53,12 @@ std::uint64_t Stopwatch::get() {
     return off;
 }
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_STOPWATCH_HPP

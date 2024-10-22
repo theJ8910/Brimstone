@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Vector for 3D vectors.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Vector3< T >: Vector<T,3>
         Vector3i:     Vector<int32,3>
         Vector3f:     Vector<float,3>
@@ -18,14 +18,15 @@ Description:
 
 
 //Includes
-#include <brimstone/vector/VectorN.hpp>
+#include <brimstone/vector/VectorN.hpp>  //Brimstone::Vector
 
 
 
 
-namespace Brimstone {
+namespace Brimstone::Private {
 
-namespace Private {
+
+
 
 template< typename T >
 void intNormalize( Vector< T, 3 >& vecInOut );
@@ -33,7 +34,18 @@ void intNormalize( Vector< T, 3 >& vecInOut );
 template< typename T >
 void floatNormalize( Vector< T, 3 >& vecInOut );
 
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
 
 template< typename T >
 class Vector< T, 3 > {
@@ -372,7 +384,18 @@ Vector< T, 3 > cross( const Vector< T, 3 >& left, const Vector< T, 3 >& right ) 
     );
 }
 
-namespace Private {
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 template< typename T >
 void intNormalize( Vector< T, 3 >& vecInOut ) {
@@ -418,16 +441,30 @@ void floatNormalize( Vector< T, 3 >& vecInOut ) {
     vecInOut.z *= invLen;
 }
 
-}
 
-//Typedefs
+
+
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
+
+//Types
 template< typename T >
-using Vector3 = Vector< T, 3 >;
-typedef Vector3< int32  > Vector3i;
-typedef Vector3< float  > Vector3f;
-typedef Vector3< double > Vector3d;
+using Vector3  = Vector< T, 3 >;
+using Vector3i = Vector3< int32  >;
+using Vector3f = Vector3< float  >;
+using Vector3d = Vector3< double >;
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

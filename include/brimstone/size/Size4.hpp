@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Size for 4D sizes.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Size4< T >: Size<T,4>
         Size4i:     Size<int32,4>
         Size4f:     Size<float,4>
@@ -24,6 +24,9 @@ Description:
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class Size< T, 4 > {
@@ -224,13 +227,22 @@ bool operator !=( const Size< T, 4 >& left, const Size< T, 4 >& right ) {
            left.depth  != right.depth;
 }
 
-//Typedefs
-template< typename T >
-using Size4 = Size< T, 4 >;
-typedef Size4< int32  > Size4i;
-typedef Size4< float  > Size4f;
-typedef Size4< double > Size4d;
 
-}
+
+
+//Types
+template< typename T >
+using Size4  = Size< T, 4 >;
+using Size4i = Size4< int32  >;
+using Size4f = Size4< float  >;
+using Size4d = Size4< double >;
+
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_SIZE_SIZE4_HPP

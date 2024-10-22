@@ -19,7 +19,8 @@ Description:
 #include <initializer_list>           //std::initializer_list
 
 #include <brimstone/util/Macros.hpp>  //BS_ASSERT_SIZE, BS_ASSERT_INDEX, BS_TMPL_2, BS_SPEC_2
-#include <brimstone/util/Misc.hpp>    //rangeSize
+#include <brimstone/util/Misc.hpp>    //Brimstone::rangeSize
+
 
 
 
@@ -153,6 +154,9 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 //Wrapper class for constant-size arrays
 template< typename T, std::size_t N >
 class Array {
@@ -183,6 +187,12 @@ inline bool Array< T, N >::empty() const {
     return false;
 }
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_UTIL_ARRAY_HPP

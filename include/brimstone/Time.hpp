@@ -6,7 +6,6 @@ Copyright (c) 2024, theJ89
 Description:
     Defines a class that keeps track of time.
 */
-
 #ifndef BS_TIME_HPP
 #define BS_TIME_HPP
 
@@ -50,6 +49,9 @@ private:
 
 
 
-}
+} //namespace Brimstone
+
+
+
 
 #endif //BS_TIME_HPP

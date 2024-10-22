@@ -7,7 +7,6 @@ Description:
     Window implementation used on the Windows platform.
     Handles the creation and management of any windows created through the engine.
 */
-
 #ifndef BS_WINDOWS_WINDOWSWINDOW_HPP
 #define BS_WINDOWS_WINDOWSWINDOW_HPP
 
@@ -15,6 +14,8 @@ Description:
 
 
 //Includes
+#include "../window/BaseWindowImpl.hpp"         //Brimstone::Private::BaseWindowImpl
+
 #include <brimstone/windows/WindowsHeader.hpp>  //HWND, HINSTANCE, ATOM, LRESULT, CALLBACK, WPARAM, LPARAM, etc
 #include <brimstone/types.hpp>                  //Brimstone::ustring
 #include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
@@ -24,16 +25,17 @@ Description:
 #include <unordered_map>                        //std::unordered_map
 #include <mutex>                                //std::mutex
 
-#include "../window/BaseWindowImpl.hpp"         //Brimstone::Private::BaseWindowImpl
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 class WindowsWindow : public BaseWindowImpl {
 private:
-    typedef std::unordered_map< HWND, WindowsWindow& > HWNDToWindowMap;
+    using HWNDToWindowMap = std::unordered_map< HWND, WindowsWindow& >;
 
 public:
     WindowsWindow();
@@ -112,8 +114,10 @@ private:
     static HCURSOR         m_arrowCursor;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
 
 
 

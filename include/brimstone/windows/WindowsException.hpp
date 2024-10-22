@@ -26,11 +26,17 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
+
+
+
+//Forward declarations
 void throwWindowsException();
 void throwWindowsException( const DWORD errorCode );
+
+
+
 
 class WindowsException : public IException {
 private:
@@ -49,7 +55,9 @@ private:
 
 
 
-}
-}
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_WINDOWS_WINDOWSEXCEPTION_HPP

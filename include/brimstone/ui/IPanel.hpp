@@ -7,7 +7,6 @@ Description:
     IPanel is defined here.
     IPanel is an interface for panels, of which all of Brimstone's UI elements derive from.
 */
-
 #ifndef BS_UI_IPANEL_HPP
 #define BS_UI_IPANEL_HPP
 
@@ -15,18 +14,27 @@ Description:
 
 
 //Includes
-#include <brimstone/Point.hpp>                  //Brimstone::Point2i
-#include <brimstone/Size.hpp>                   //Brimstone::Size2i
-#include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
-#include <brimstone/ui/Events.hpp>              //Brimstone::IEvent
-//#include <brimstone/graphics/IRenderable.hpp>   //Brimstone::IRenderable
+#include <brimstone/Point.hpp>                 //Brimstone::Point2i
+#include <brimstone/Size.hpp>                  //Brimstone::Size2i
+#include <brimstone/Bounds.hpp>                //Brimstone::Bounds2i
+#include <brimstone/ui/Events.hpp>             //Brimstone::IEvent
+//#include <brimstone/graphics/IRenderable.hpp>  //Brimstone::IRenderable
 
 
 
 
 namespace Brimstone {
+
+
+
+
+//Forward declarations
 class IContainer;
 class RootPanel;
+
+
+
+
 class IPanel : /*public IRenderable,*/ public virtual IEventHandler {
 public:
     virtual void        setParent( IContainer* parent )                 = 0;
@@ -56,7 +64,10 @@ public:
     virtual Point2i  windowToLocal( const Point2i windowCoords ) const  = 0;
 };
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

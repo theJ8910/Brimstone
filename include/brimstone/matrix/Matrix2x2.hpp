@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Matrix for 2x2 matrices.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Matrix2x2< T >: Matrix<T,2,2>
         Matrix2x2i:     Matrix<int32,2,2>
         Matrix2x2f:     Matrix<float,2,2>
@@ -18,15 +18,18 @@ Description:
 
 
 //Includes
-#include <cstddef>                          //std::size_t
-#include <utility>                          //std::swap
+#include <cstddef>                         //std::size_t
+#include <utility>                         //std::swap
 
-#include <brimstone/matrix/MatrixNxN.hpp>   //Matrix, BS_MATRIX_SQUARE_DECLARE_METHODS
+#include <brimstone/matrix/MatrixNxN.hpp>  //Brimstone::Matrix, BS_MATRIX_SQUARE_DECLARE_METHODS
 
 
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class Matrix< T, 2, 2 > {
@@ -569,14 +572,17 @@ void Matrix< T, 2, 2 >::get(
     _10Out = _10;   _11Out = _11;
 }
 
-//Typedefs
+//Types
 template< typename T >
-using Matrix2x2 = Matrix< T, 2, 2 >;
-typedef Matrix2x2< int32  > Matrix2x2i;
-typedef Matrix2x2< float  > Matrix2x2f;
-typedef Matrix2x2< double > Matrix2x2d;
+using Matrix2x2  = Matrix< T, 2, 2 >;
+using Matrix2x2i = Matrix2x2< int32  >;
+using Matrix2x2f = Matrix2x2< float  >;
+using Matrix2x2d = Matrix2x2< double >;
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

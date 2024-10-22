@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Matrix for 3x3 matrices.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Matrix3x3< T >: Matrix<T,3,3>
         Matrix3x3i:     Matrix<int32,3,3>
         Matrix3x3f:     Matrix<float,3,3>
@@ -18,15 +18,18 @@ Description:
 
 
 //Includes
-#include <cstddef>                          //std::size_t
-#include <utility>                          //std::swap
+#include <cstddef>                         //std::size_t
+#include <utility>                         //std::swap
 
-#include <brimstone/matrix/MatrixNxN.hpp>   //Matrix, BS_MATRIX_SQUARE_DECLARE_METHODS
+#include <brimstone/matrix/MatrixNxN.hpp>  //Brimstone::Matrix, BS_MATRIX_SQUARE_DECLARE_METHODS
 
 
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class Matrix< T, 3, 3 > {
@@ -708,14 +711,17 @@ void Matrix< T, 3, 3 >::get(
 
 
 
-//Typedefs
+//Types
 template< typename T >
-using Matrix3x3 = Matrix< T, 3, 3 >;
-typedef Matrix3x3< int32  > Matrix3x3i;
-typedef Matrix3x3< float  > Matrix3x3f;
-typedef Matrix3x3< double > Matrix3x3d;
+using Matrix3x3  = Matrix< T, 3, 3 >;
+using Matrix3x3i = Matrix3x3< int32  >;
+using Matrix3x3f = Matrix3x3< float  >;
+using Matrix3x3d = Matrix3x3< double >;
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

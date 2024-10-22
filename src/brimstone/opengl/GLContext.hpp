@@ -25,18 +25,22 @@ Description:
 
 
 
-//Typedefs
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
+
+
+
+//Types
 #if defined( BS_BUILD_WINDOWS )
-typedef class WindowsGLContext  GLContext;
+using GLContext = class WindowsGLContext;
 #elif defined( BS_BUILD_LINUX )
-typedef class LinuxGLContext    GLContext;
+using GLContext = class LinuxGLContext;
 #endif
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
 
 
 

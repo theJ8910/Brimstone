@@ -13,12 +13,15 @@ Description:
 
 
 //Includes
-#include <string>   //std::string
+#include <string>  //std::string
 
 
 
 
 namespace UnitTest {
+
+
+
 
 /*
 Exception
@@ -47,6 +50,12 @@ Description:
 */
 class EOFError : public Exception { using Exception::Exception; };
 
-}
+
+
+
+} //namespace UnitTest
+
+
+
 
 #endif //UT_EXCEPTION_HPP

@@ -13,7 +13,6 @@ Description:
     * No support for methods from multiple inheritance and virtual inheritance classes.
     * Uses C++11 variadic templates to support any number of arguments, reducing the amount of necessary code in this file.
 */
-
 #ifndef BS_SIGNALS_DELEGATE_HPP
 #define BS_SIGNALS_DELEGATE_HPP
 
@@ -21,7 +20,7 @@ Description:
 
 
 //Includes
-#include <brimstone/util/Cast.hpp>      //universal_cast
+#include <brimstone/util/Cast.hpp>  //Brimstone::universal_cast
 
 
 
@@ -33,19 +32,22 @@ Description:
 
 
 
-namespace Brimstone {
 
-namespace Private {
+namespace Brimstone::Private {
+
+
+
+
 #if defined( BS_BUILD_WINDOWS )
     class __single_inheritance GenericClass;
 #elif defined( BS_BUILD_LINUX )
     class GenericClass;
 #endif
-    typedef GenericClass* GenericClassPtr;
-    typedef void (GenericClass::*GenericMethodPtr)();
+    using GenericClassPtr  = GenericClass*;
+    using GenericMethodPtr = void (GenericClass::*)();
 
 #ifndef BS_DELEGATE_POINTER_HACK
-    typedef void (*GenericFunctionPtr)();
+    using GenericFunctionPtr = void (*)();
 #endif //BS_DELEGATE_POINTER_HACK
 
     const int DELEGATE_POINTER_SIZE = sizeof( GenericMethodPtr );
@@ -177,7 +179,15 @@ namespace Private {
     #endif
                );
     }
-}
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
 
 /*
 Delegate template definition.
@@ -192,6 +202,9 @@ Delegates can be bound to either methods, static methods, or functors
 */
 template< typename Return, typename... Args >
 class Delegate< Return ( Args... ) > {
+private:
+    using Method       = Return (Private::GenericClass::*)( Args... );
+    using StaticMethod = Return (*)( Args... );
 public:
     Delegate();
 
@@ -224,9 +237,7 @@ public:
 private:
     Return staticInvoker( Args... args );
 private:
-    typedef Return (Private::GenericClass::*Method)( Args... );
-    typedef Return (*StaticMethod)( Args... );
-    Private::Closure< Method, StaticMethod >    m_closure;
+    Private::Closure< Method, StaticMethod > m_closure;
 };
 
 template< typename Return, typename... Args >
@@ -302,6 +313,12 @@ inline Delegate< Return ( Args... ) > bind( const T* self, Return (BaseClass::*c
     return Delegate< Return ( Args... ) >( self, constMethod );
 }
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_SIGNALS_DELEGATE_HPP

@@ -7,7 +7,6 @@ Description:
     Defines several functions for testing if a given scalar is within a range,
     or restricting the given scalar to a range.
 */
-
 #ifndef BS_UTIL_CLAMP_HPP
 #define BS_UTIL_CLAMP_HPP
 
@@ -15,6 +14,9 @@ Description:
 
 
 namespace Brimstone {
+
+
+
 
 //Faster ------------------------------------------------------------------------------------------------------------------------------------------ Slower
 template< typename T >  inline bool         isBetween( const T& val, const T& lowerBound, const T& upperBound );
@@ -29,7 +31,7 @@ template< typename T >  inline void         highClamp( T& valInOut, const T& upp
 
 /*
 isBetween
------------------------
+---------
 
 Description:
     Takes a value and the lower and upper bounds of a range of numbers.
@@ -53,7 +55,7 @@ inline bool isBetween( const T& val, const T& lowerBound, const T& upperBound ) 
 
 /*
 isOutside
------------------------
+---------
 
 Description:
     Takes a value and the lower and upper bounds of a range of numbers.
@@ -77,7 +79,7 @@ inline bool isOutside( const T& val, const T& lowerBound, const T& upperBound ) 
 
 /*
 approxEquals
------------------------
+------------
 
 Description:
     Compares two values - an 'actual' and an 'ideal' - to see if they are "approximately equal" to one another.
@@ -107,7 +109,7 @@ inline bool approxEquals( const T& actualVal, const T& idealVal, const T& tolera
 
 /*
 clamp
------------------------
+-----
 
 Description:
     Takes a value and two bounds.
@@ -133,7 +135,7 @@ inline void clamp( T& valInOut, const T& lowerBound, const T& upperBound ) {
 
 /*
 clampedValue
------------------------
+------------
 
 Description:
     Takes a value and two bounds.
@@ -165,7 +167,7 @@ inline T clampedValue( const T& val, const T& lowerBound, const T& upperBound ) 
 
 /*
 lowClamp
------------------------
+--------
 
 Description:
     Takes a value and a lower bound.
@@ -186,7 +188,7 @@ inline void lowClamp( T& valInOut, const T& lowerBound ) {
 
 /*
 lowClampedValue
------------------------
+---------------
 
 Description:
     Takes a value and a lower bound.
@@ -210,7 +212,7 @@ inline T lowClampedValue( const T& val, const T& lowerBound ) {
 
 /*
 highClamp
------------------------
+---------
 
 Description:
     Takes a value and an upper bound.
@@ -231,7 +233,7 @@ inline void highClamp( T& valInOut, const T& upperBound ) {
 
 /*
 highClampedValue
------------------------
+----------------
 
 Description:
     Takes a value and an upper bound.
@@ -253,7 +255,10 @@ inline T highClampedValue( const T& val, const T& upperBound ) {
     return val;
 }
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

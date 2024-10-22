@@ -23,8 +23,16 @@ Description:
 
 
 namespace Brimstone {
+
+
+
+
+//Forward declarations
 class IPanel;
 class IEventHandler;
+
+
+
 
 enum class EventType {
     MOUSE_DOWN,
@@ -253,7 +261,10 @@ public:
     virtual void handle( const ClickEvent& eventIn );
 };
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

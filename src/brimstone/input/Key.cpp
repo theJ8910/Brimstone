@@ -20,6 +20,9 @@ Description:
 
 namespace {
 
+
+
+
 constexpr const char* keyToStringMap[ static_cast<std::size_t>( Brimstone::Key::COUNT ) ] = {
     "Invalid",
     "Escape",
@@ -63,12 +66,24 @@ constexpr const char* keyToStringMap[ static_cast<std::size_t>( Brimstone::Key::
     "VolumeUp", "VolumeDown", "Mute"
 };
 
-}
+
+
+
+} //namespace
+
+
+
 
 namespace Brimstone {
+
+
+
 
 const char* keyToString( const Key key ) {
     return keyToStringMap[ static_cast<std::size_t>( key ) ];
 }
 
-}
+
+
+
+} //namespace Brimstone

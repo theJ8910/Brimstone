@@ -7,6 +7,9 @@ Description:
     See util/Math.hpp for more information.
 */
 
+
+
+
 //Includes
 #include <brimstone/util/Math.hpp>      //Header
 #include <brimstone/util/Macros.hpp>    //BS_ASSERT_NONZERO_DIVISOR, BS_ASSERT_DOMAIN_GTE
@@ -15,6 +18,9 @@ Description:
 
 
 namespace Brimstone {
+
+
+
 
 /*
 leadingZeroCount's implementation is platform dependent.
@@ -63,7 +69,7 @@ uint32 closestUpperPowerOfTwo( const uint32 i ) {
 
 /*
 fastSqrt
------------------------
+--------
 
 Description:
     A fast and fairly accurate square root function.
@@ -97,7 +103,7 @@ float fastSqrt( float value ) {
 
 /*
 fastInvSqrt
------------------------
+-----------
 
 Description:
     A fast and fairly accurate inverse square root function that depends on the 32-bit (float) IEEE floating point implementation.
@@ -137,4 +143,7 @@ float fastInvSqrt( float value ) {
     return value;
 }
 
-}
+
+
+
+} //namespace Brimstone

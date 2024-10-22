@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include "XInputMethod.hpp"        //Class header
+#include "XInputMethod.hpp"        //Header
 #include "XShared.hpp"             //Brimstone::Private::XShared
 
 #include <brimstone/Exception.hpp> //Brimstone::Exception
@@ -19,8 +19,7 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -92,5 +91,4 @@ void XInputMethod::createInternal( const ::XrmDatabase db, char* const res_name,
 
 
 
-}
-}
+} //namespace Brimstone::Private

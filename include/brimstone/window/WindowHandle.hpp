@@ -9,17 +9,34 @@ Description:
 #ifndef BS_WINDOW_WINDOWHANDLE_HPP
 #define BS_WINDOW_WINDOWHANDLE_HPP
 
+
+
+
 //Forward declarations
 #if defined( BS_BUILD_WINDOWS )
 struct HWND__;
 #endif //BS_BUILD_WINDOWS
 
+
+
+
 namespace Brimstone {
+
+
+
+
 #if defined( BS_BUILD_WINDOWS )
-typedef HWND__*       WindowHandle;
+using WindowHandle = HWND__*;
 #elif defined( BS_BUILD_LINUX )
-typedef unsigned long WindowHandle;
+using WindowHandle = unsigned long;
 #endif
-}
+
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_WINDOW_WINDOWHANDLE_HPP

@@ -11,29 +11,45 @@ Description:
 
 
 //Includes
-#include "GLSampler.hpp"    //Header file
+#include "GLSampler.hpp"                //Header
 
-#include <brimstone/graphics/Enums.hpp> //FilterType
+#include <brimstone/graphics/Enums.hpp> //Brimstone::FilterType
 
-#include <gll/gl_4_6_comp.hpp>      //gll::* (GL 4.6 and below + compatibility)
+#include <gll/gl_4_6_comp.hpp>          //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace {
 
-const int FilterTypeToGLFilterType[] {
+
+
+
+//Constants
+constexpr int FilterTypeToGLFilterType[] {
     GL_NEAREST,     //NEAREST
     GL_LINEAR,      //LINEAR
 };
 
-const int WrapTypeToGLWrapType[] {
+constexpr int WrapTypeToGLWrapType[] {
     GL_REPEAT,                  //REPEAT,
     GL_MIRRORED_REPEAT,         //MIRRORED_REPEAT,
     GL_CLAMP_TO_EDGE,           //CLAMP,
     GL_MIRROR_CLAMP_TO_EDGE     //MIRRORED_CLAMP
 };
+
+
+
+
+} //namespace
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 GLSampler::GLSampler() :
     m_name( 0 ) {
@@ -93,5 +109,7 @@ void GLSampler::setVWrap( const WrapType type ) {
     glSamplerParameteri( m_name, GL_TEXTURE_WRAP_T, WrapTypeToGLWrapType[ (int)type ] );
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

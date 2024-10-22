@@ -11,26 +11,34 @@ Description:
 
 
 //Includes
-#include <brimstone/types.hpp>              //Brimstone::ustring
-#include <brimstone/graphics/Enums.hpp>     //ShaderType
-#include <brimstone/Exception.hpp>
-#include "GLShader.hpp"
+#include "GLShader.hpp"                  //Header
 
-#include <memory>
+#include <brimstone/types.hpp>           //Brimstone::ustring
+#include <brimstone/graphics/Enums.hpp>  //Brimstone::ShaderType
+#include <brimstone/Exception.hpp>       //Brimstone::GraphicsException
 
-#include <gll/gl_4_6_comp.hpp>      //gll::* (GL 4.6 and below + compatibility)
+#include <memory>                        //std::unique_ptr
+
+#include <gll/gl_4_6_comp.hpp>           //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
 
 
 
-namespace Brimstone {
-namespace Private {
 
-const int ShaderTypeToGLShaderType[] {
+namespace Brimstone::Private {
+
+
+
+
+//Constants
+constexpr int ShaderTypeToGLShaderType[] {
     GL_VERTEX_SHADER,       //VERTEX
     GL_GEOMETRY_SHADER,     //GEOMETRY
     GL_FRAGMENT_SHADER      //FRAGMENT
 };
+
+
+
 
 GLShader::GLShader( const ShaderType type ) :
     m_type( type ), m_name( 0 ) {
@@ -78,5 +86,7 @@ void GLShader::compile() {
     throw GraphicsException( log.get() );
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

@@ -11,13 +11,15 @@ Description:
 
 
 //Includes
-#include "WindowsThreadLocal.hpp"   //Class header
+#include "WindowsThreadLocal.hpp"   //Header
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 WindowsThreadLocal::WindowsThreadLocal() : m_index( (DWORD)-1 ) {
     m_index = TlsAlloc();
@@ -36,5 +38,7 @@ void* WindowsThreadLocal::get() const {
     return TlsGetValue( m_index);
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

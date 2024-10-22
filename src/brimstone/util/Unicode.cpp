@@ -11,16 +11,20 @@ Description:
 
 
 //Includes
-#include <brimstone/util/Unicode.hpp>   //Header file
-#include <brimstone/Exception.hpp>      //SizeException
+#include <brimstone/util/Unicode.hpp>   //Header
+#include <brimstone/Exception.hpp>      //Brimstone::SizeException
 
 
 
 
 namespace Brimstone {
+
+
+
+
 /*
 utf8ToCodePoint{1}
------------------------
+------------------
 
 Description:
     Returns the code point (an integral representation) of the first unicode character encoded in utf8Buffer.
@@ -99,7 +103,7 @@ uint32 utf8ToCodePoint( const uchar* utf8Buffer, const std::size_t byteCount ) {
 
 /*
 utf8ToCodePoint{2}
------------------------
+------------------
 
 Description:
     Same as utf8ToCodePoint{1}, but takes an STL string instead.
@@ -121,4 +125,7 @@ uint32 utf8ToCodePoint( const ustring& utf8 ) {
     return utf8ToCodePoint( utf8.c_str(), utf8.size() );
 }
 
-}
+
+
+
+} //namespace Brimstone

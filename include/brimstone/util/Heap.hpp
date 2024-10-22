@@ -13,7 +13,6 @@ Description:
 
     A binary heap is a heap that is also a binary tree; in other words, it's a heap where every node in the tree has between 0 and 2 child nodes.
 */
-
 #ifndef BS_UTIL_HEAP_HPP
 #define BS_UTIL_HEAP_HPP
 
@@ -75,7 +74,7 @@ namespace Brimstone {
 template< template< typename > typename HeapType, typename Node, typename NodeKey = Private::DefaultHeapNodeKey< Node > >
 class Heap {
 private:
-    typedef decltype( NodeKey::getKey( Node() ) ) Key;
+    using Key = decltype( NodeKey::getKey( Node() ) );
 public:
     Heap();
     ~Heap();
@@ -741,7 +740,7 @@ void Heap< HeapType, Node, NodeKey >::resize( const std::size_t capacity ) {
 
 
 
-//Typedefs
+//Types
 template< typename Node, typename NodeKey = Private::DefaultHeapNodeKey< Node > >
 using MinHeap = Heap< Private::MinHeapType, Node, NodeKey >;
 

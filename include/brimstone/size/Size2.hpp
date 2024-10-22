@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Size for 2D sizes.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Size2< T >: Size<T,2>
         Size2i:     Size<int32,2>
         Size2f:     Size<float,2>
@@ -24,6 +24,9 @@ Description:
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class Size< T, 2 > {
@@ -191,13 +194,22 @@ bool operator !=( const Size< T, 2 >& left, const Size< T, 2 >& right ) {
            left.height != right.height;
 }
 
-//Typedefs
-template< typename T >
-using Size2 = Size< T, 2 >;
-typedef Size2< int32  > Size2i;
-typedef Size2< float  > Size2f;
-typedef Size2< double > Size2d;
 
-}
+
+
+//Types
+template< typename T >
+using Size2  = Size< T, 2 >;
+using Size2i = Size2< int32  >;
+using Size2f = Size2< float  >;
+using Size2d = Size2< double >;
+
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_SIZE_SIZE2_HPP

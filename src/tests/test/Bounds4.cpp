@@ -4,66 +4,85 @@ test/Bounds4.cpp
 Copyright (c) 2024, theJ89
 
 Description:
-    Unit tests for Bounds4
+    Unit tests for Bounds< T, 4 > specialization
 */
 
 
 
 
 //Includes
-#include "../Test.hpp"
-#include "../utils.hpp"         //allEqual, allEqualTo
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo
 
-#include <cstddef>              //std::size_t
+#include <brimstone/Bounds.hpp>     //Brimstone::Bounds4i, Brimstone::Bounds4f
+#include <brimstone/Point.hpp>      //Brimstone::Point4i
+#include <brimstone/Size.hpp>       //Brimstone::Size4i
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException
 
-#include <brimstone/Bounds.hpp>
-
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 namespace {
-    using ::Brimstone::Bounds4i;
-    using ::Brimstone::Point4i;
-    using ::Brimstone::Size4i;
-    using ::Brimstone::Bounds4f;
-    using ::Brimstone::BoundsException;
 
-    const std::size_t cv_size               = 4;
-    const int         cv_zero[8]            {  0,  0,  0,  0,   0,  0,  0,  0 };
-    const int         cv_values[8]          {  1,  2,  3,  4,   5,  6,  7,  8 };
-    const int         cv_valuesMins[4]      {  1,  2,  3,  4 };
-    const int         cv_valuesMaxs[4]      {  5,  6,  7,  8 };
-    const int         cv_valuesAlt[8]       {  9, 10, 11, 12,  13, 14, 15, 16 };
-    const int         cv_valuesAltMins[4]   {  9, 10, 11, 12 };
-    const int         cv_valuesAltMaxs[4]   { 13, 14, 15, 16 };
-    const int         cv_valuesAltCenter[4] { 11, 12, 13, 14 };
-    const int         cv_abnormal[8]        {   5,   6,   7,  8,   1,   2,  3,   4 };
-    const int         cv_includeTest[8]     { -14, -11, -12, -4,   5,  12,  7,  13 };
-    const int         cv_includePt1[4]      { -14,  12,   2, -4 };
-    const int         cv_includePt2[4]      {  2,  -11, -12, 13 };
-    const int         cv_isTest1[8]         { -1,  0,  1,  2,    3,   4,   5,   6 };
-    const int         cv_isTest2[8]         {  3,  4,  5,  6,    7,   8,   9,  10 };
-    const int         cv_isTest3[8]         {  6,  7,  8,  9,   10,  11,  12,  13 };
-    const int         cv_isTestCorner[8]    {  5,  6,  7,  8,    9,  10,  11,  12 };
-    const int         cv_intersect1[8]      {  1,  2,  3,  4,    3,   4,   5,   6 };
-    const int         cv_intersect2[8]      {  3,  4,  5,  6,    5,   6,   7,   8 };
-    const int         cv_widthTest[8]       {  1,  2,  3,  4,  11,  6,  7,  8 };
-    const int         cv_lengthTest[8]      {  1,  2,  3,  4,   5, 13,  7,  8 };
-    const int         cv_heightTest[8]      {  1,  2,  3,  4,   5,  6, 15,  8 };
-    const int         cv_depthTest[8]       {  1,  2,  3,  4,   5,  6,  7, 17 };
-    const int         cv_sizes[4]           { 10, 11, 12, 13 };
-    const int         cv_valuesMinsSizes[8] { 1, 2, 3, 4, 10, 11, 12, 13 };
-    const int         cv_width              = 10;
-    const int         cv_length             = 11;
-    const int         cv_height             = 12;
-    const int         cv_depth              = 13;
-    const int         cv_dimTest[8]         {  1,  2,  3,  4,  11, 13, 15, 17 };
-    const int         cv_outsideMins[4]     {  0,  1,  2,  3 };
-    const int         cv_outsideMaxs[4]     {  6,  7,  8,  9 };
-    const char*       cv_output             = "[ ( 1, 2, 3, 4 ), ( 5, 6, 7, 8 ) ]";
 
-    const float       cv_valuesAltF[8]      { 9.0f, 10.0f, 11.0f, 12.0f,  13.0f, 14.0f, 15.0f, 16.0f };
-}
+
+
+//Types
+using ::Brimstone::Bounds4i;
+using ::Brimstone::Point4i;
+using ::Brimstone::Size4i;
+using ::Brimstone::Bounds4f;
+using ::Brimstone::BoundsException;
+
+
+
+
+//Constants
+const std::size_t cv_size               = 4;
+const int         cv_zero[8]            {  0,  0,  0,  0,   0,  0,  0,  0 };
+const int         cv_values[8]          {  1,  2,  3,  4,   5,  6,  7,  8 };
+const int         cv_valuesMins[4]      {  1,  2,  3,  4 };
+const int         cv_valuesMaxs[4]      {  5,  6,  7,  8 };
+const int         cv_valuesAlt[8]       {  9, 10, 11, 12,  13, 14, 15, 16 };
+const int         cv_valuesAltMins[4]   {  9, 10, 11, 12 };
+const int         cv_valuesAltMaxs[4]   { 13, 14, 15, 16 };
+const int         cv_valuesAltCenter[4] { 11, 12, 13, 14 };
+const int         cv_abnormal[8]        {   5,   6,   7,  8,   1,   2,  3,   4 };
+const int         cv_includeTest[8]     { -14, -11, -12, -4,   5,  12,  7,  13 };
+const int         cv_includePt1[4]      { -14,  12,   2, -4 };
+const int         cv_includePt2[4]      {  2,  -11, -12, 13 };
+const int         cv_isTest1[8]         { -1,  0,  1,  2,    3,   4,   5,   6 };
+const int         cv_isTest2[8]         {  3,  4,  5,  6,    7,   8,   9,  10 };
+const int         cv_isTest3[8]         {  6,  7,  8,  9,   10,  11,  12,  13 };
+const int         cv_isTestCorner[8]    {  5,  6,  7,  8,    9,  10,  11,  12 };
+const int         cv_intersect1[8]      {  1,  2,  3,  4,    3,   4,   5,   6 };
+const int         cv_intersect2[8]      {  3,  4,  5,  6,    5,   6,   7,   8 };
+const int         cv_widthTest[8]       {  1,  2,  3,  4,  11,  6,  7,  8 };
+const int         cv_lengthTest[8]      {  1,  2,  3,  4,   5, 13,  7,  8 };
+const int         cv_heightTest[8]      {  1,  2,  3,  4,   5,  6, 15,  8 };
+const int         cv_depthTest[8]       {  1,  2,  3,  4,   5,  6,  7, 17 };
+const int         cv_sizes[4]           { 10, 11, 12, 13 };
+const int         cv_valuesMinsSizes[8] { 1, 2, 3, 4, 10, 11, 12, 13 };
+const int         cv_width              = 10;
+const int         cv_length             = 11;
+const int         cv_height             = 12;
+const int         cv_depth              = 13;
+const int         cv_dimTest[8]         {  1,  2,  3,  4,  11, 13, 15, 17 };
+const int         cv_outsideMins[4]     {  0,  1,  2,  3 };
+const int         cv_outsideMaxs[4]     {  6,  7,  8,  9 };
+const char*       cv_output             = "[ ( 1, 2, 3, 4 ), ( 5, 6, 7, 8 ) ]";
+
+const float       cv_valuesAltF[8]      { 9.0f, 10.0f, 11.0f, 12.0f,  13.0f, 14.0f, 15.0f, 16.0f };
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
 
@@ -563,7 +582,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Bounds4_output )
     Bounds4i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -787,4 +806,7 @@ UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
-}
+
+
+
+} //namespace UnitTest

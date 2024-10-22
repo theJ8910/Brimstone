@@ -4,66 +4,89 @@ test/Bounds3.cpp
 Copyright (c) 2024, theJ89
 
 Description:
-    Unit tests for Bounds3
+    Unit tests for Bounds< T, 3 > specialization
 */
 
 
 
 
 //Includes
-#include "../Test.hpp"
-#include "../utils.hpp"         //allEqual, allEqualTo
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo
 
-#include <cstddef>              //std::size_t
+#include <brimstone/Bounds.hpp>     //Brimstone::Bounds3i, Brimstone::Bounds3f
+#include <brimstone/Point.hpp>      //Brimstone::Point3i
+#include <brimstone/Size.hpp>       //Brimstone::Size3i
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException
 
-#include <brimstone/Bounds.hpp>
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    using ::Brimstone::Bounds3i;
-    using ::Brimstone::Point3i;
-    using ::Brimstone::Size3i;
-    using ::Brimstone::Bounds3f;
-    using ::Brimstone::BoundsException;
 
-    const std::size_t cv_size               = 3;
-    const int         cv_zero[6]            {  0,  0,  0,    0,  0,  0 };
-    const int         cv_values[6]          {  1,  2,  3,    4,  5,  6 };
-    const int         cv_valuesMins[3]      {  1,  2,  3 };
-    const int         cv_valuesMaxs[3]      {  4,  5,  6 };
-    const int         cv_valuesAlt[6]       {  7,  8,  9,   10, 11, 12 };
-    const int         cv_valuesAltMins[3]   {  7,  8,  9 };
-    const int         cv_valuesAltMaxs[3]   { 10, 11, 12 };
-    const int         cv_valuesAltCenter[3] {  8,  9, 10 };
-    const int         cv_abnormal[6]        {  4,  5,  6,    1,  2,  3 };
-    const int         cv_includeTest[6]     { -14, -11, -12,   4,  12,  6 };
-    const int         cv_includePt1[3]      { -14,  12,   2 };
-    const int         cv_includePt2[3]      {  2,  -11, -12 };
-    const int         cv_isTest1[6]         { -1,  0,  1,    3,   4,   5 };
-    const int         cv_isTest2[6]         {  2,  3,  4,    6,   7,   8 };
-    const int         cv_isTest3[6]         {  5,  6,  7,    8,   9,  10 };
-    const int         cv_isTestCorner[6]    {  4,  5,  6,    7,   8,   9 };
-    const int         cv_intersect1[6]      {  1,  2,  3,    3,   4,   5 };
-    const int         cv_intersect2[6]      {  2,  3,  4,    4,   5,   6 };
-    const int         cv_widthTest[6]       {  1,  2,  3,   11,  5,  6 };
-    const int         cv_lengthTest[6]      {  1,  2,  3,   4,  13,  6 };
-    const int         cv_heightTest[6]      {  1,  2,  3,   4,   5, 15 };
-    const int         cv_sizes[3]           { 10, 11, 12 };
-    const int         cv_valuesMinsSizes[6] { 1, 2, 3, 10, 11, 12 };
-    const int         cv_width              = 10;
-    const int         cv_length             = 11;
-    const int         cv_height             = 12;
-    const int         cv_dimTest[6]         {  1,  2,  3,   11, 13, 15 };
-    const int         cv_outsideMins[3]     {  0,  1,  2 };
-    const int         cv_outsideMaxs[3]     {  5,  6,  7 };
-    const char*       cv_output             = "[ ( 1, 2, 3 ), ( 4, 5, 6 ) ]";
 
-    const float       cv_valuesAltF[6]      { 7.0f, 8.0f, 9.0f,   10.0f, 11.0f, 12.0f };
-}
+
+
+//Types
+using ::Brimstone::Bounds3i;
+using ::Brimstone::Point3i;
+using ::Brimstone::Size3i;
+using ::Brimstone::Bounds3f;
+using ::Brimstone::BoundsException;
+
+
+
+
+//Constants
+const std::size_t cv_size               = 3;
+const int         cv_zero[6]            {  0,  0,  0,    0,  0,  0 };
+const int         cv_values[6]          {  1,  2,  3,    4,  5,  6 };
+const int         cv_valuesMins[3]      {  1,  2,  3 };
+const int         cv_valuesMaxs[3]      {  4,  5,  6 };
+const int         cv_valuesAlt[6]       {  7,  8,  9,   10, 11, 12 };
+const int         cv_valuesAltMins[3]   {  7,  8,  9 };
+const int         cv_valuesAltMaxs[3]   { 10, 11, 12 };
+const int         cv_valuesAltCenter[3] {  8,  9, 10 };
+const int         cv_abnormal[6]        {  4,  5,  6,    1,  2,  3 };
+const int         cv_includeTest[6]     { -14, -11, -12,   4,  12,  6 };
+const int         cv_includePt1[3]      { -14,  12,   2 };
+const int         cv_includePt2[3]      {  2,  -11, -12 };
+const int         cv_isTest1[6]         { -1,  0,  1,    3,   4,   5 };
+const int         cv_isTest2[6]         {  2,  3,  4,    6,   7,   8 };
+const int         cv_isTest3[6]         {  5,  6,  7,    8,   9,  10 };
+const int         cv_isTestCorner[6]    {  4,  5,  6,    7,   8,   9 };
+const int         cv_intersect1[6]      {  1,  2,  3,    3,   4,   5 };
+const int         cv_intersect2[6]      {  2,  3,  4,    4,   5,   6 };
+const int         cv_widthTest[6]       {  1,  2,  3,   11,  5,  6 };
+const int         cv_lengthTest[6]      {  1,  2,  3,   4,  13,  6 };
+const int         cv_heightTest[6]      {  1,  2,  3,   4,   5, 15 };
+const int         cv_sizes[3]           { 10, 11, 12 };
+const int         cv_valuesMinsSizes[6] { 1, 2, 3, 10, 11, 12 };
+const int         cv_width              = 10;
+const int         cv_length             = 11;
+const int         cv_height             = 12;
+const int         cv_dimTest[6]         {  1,  2,  3,   11, 13, 15 };
+const int         cv_outsideMins[3]     {  0,  1,  2 };
+const int         cv_outsideMaxs[3]     {  5,  6,  7 };
+const char*       cv_output             = "[ ( 1, 2, 3 ), ( 4, 5, 6 ) ]";
+
+const float       cv_valuesAltF[6]      { 7.0f, 8.0f, 9.0f,   10.0f, 11.0f, 12.0f };
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Bounds3_constructorFill )
     Bounds3i o( 1 );
@@ -540,7 +563,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Bounds3_output )
     Bounds3i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -764,4 +787,7 @@ UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
-}
+
+
+
+} //namespace UnitTest

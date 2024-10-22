@@ -10,16 +10,36 @@ Description:
 #ifndef BS_OPENGL_GLSAMPLER_HPP
 #define BS_OPENGL_GLSAMPLER_HPP
 
+
+
+
 //Includes
-#include <gll/gl_types.hpp> //gll::GLuint
+#include <gll/gl_types.hpp>  //gll::GLuint
+
 
 
 
 namespace Brimstone {
+
+
+
+
+//Forward declarations
 enum class FilterType;
 enum class WrapType;
 
-namespace Private {
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 class GLSampler {
 public:
@@ -40,7 +60,12 @@ private:
     gll::GLuint m_name;
 };
 
-}
-}
 
-#endif //BS_OPENGL_GLTEXTURE_HPP
+
+
+} //namespace Brimstone::Private
+
+
+
+
+#endif //BS_OPENGL_GLSAMPLER_HPP

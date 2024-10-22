@@ -8,7 +8,6 @@ Description:
     The window class is used to create, interact with, and receive feedback from a window.
     The underlying implementation is platform-specific.
 */
-
 #ifndef BS_WINDOW_HPP
 #define BS_WINDOW_HPP
 
@@ -16,22 +15,24 @@ Description:
 
 
 //Includes
-#include <brimstone/window/DWindowImpl.hpp>     //Brimstone::Private::WindowImpl
-#include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
-#include <brimstone/types.hpp>                  //Brimstone::ustring
-#include <brimstone/window/WindowEvent.hpp>     //Brimstone::WindowEvent
-#include <brimstone/window/WindowDisplay.hpp>   //Brimstone::WindowDisplay
-#include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle
-
+#include <brimstone/window/DWindowImpl.hpp>    //Brimstone::Private::WindowImpl
+#include <brimstone/Bounds.hpp>                //Brimstone::Bounds2i
+#include <brimstone/types.hpp>                 //Brimstone::ustring
+#include <brimstone/window/WindowEvent.hpp>    //Brimstone::WindowEvent
+#include <brimstone/window/WindowDisplay.hpp>  //Brimstone::WindowDisplay
+#include <brimstone/window/WindowHandle.hpp>   //Brimstone::WindowHandle
 
 
 
 
 namespace Brimstone {
 
+
+
+
 class Window {
 private:
-    typedef std::vector< Window* >  WindowList;
+    using WindowList = std::vector< Window* >;
 public:
     Window();
     Window( Window& toCopy ) = delete;
@@ -110,7 +111,10 @@ private:
     Private::WindowImpl*        m_impl;
 };
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

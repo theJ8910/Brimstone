@@ -10,35 +10,55 @@ Description:
 
 
 
-//Include
-#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, allWithin, FAST_SQRT_ERR
+//Includes
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll, UnitTest::isWithin, UnitTest::allWithin, UnitTest::FAST_SQRT_ERR
 
-#include <cstddef>              //std::size_t
-#include <sstream>              //std::ostringstream
+#include <brimstone/Size.hpp>       //Brimstone::Size4i, Brimstone::Size4f
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException
 
-#include <brimstone/Size.hpp>
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    using ::Brimstone::Size4i;
-    using ::Brimstone::Size4f;
-    using ::Brimstone::BoundsException;
 
-    const std::size_t cv_size         = 4;
-    const int         cv_zero[4]      {  0,  0,  0,  0 };
-    const int         cv_values[4]    {  1,  2,  3,  4 };
-    const int         cv_valuesAlt[4] {  5,  6,  7,  8 };
-    const int         cv_volume       = 5 * 6 * 7 * 8;
-    const char*       cv_output       = "[ 1, 2, 3, 4 ]";
 
-    const float       cv_valuesF[4]   { 1.0f, 2.0f, 3.0f, 4.0f };
-    const char*       cv_outputF      = "[ 1.00000, 2.00000, 3.00000, 4.00000 ]";
-}
+
+
+//Types
+using ::Brimstone::Size4i;
+using ::Brimstone::Size4f;
+using ::Brimstone::BoundsException;
+
+
+
+
+//Constants
+const std::size_t cv_size         = 4;
+const int         cv_zero[4]      {  0,  0,  0,  0 };
+const int         cv_values[4]    {  1,  2,  3,  4 };
+const int         cv_valuesAlt[4] {  5,  6,  7,  8 };
+const int         cv_volume       = 5 * 6 * 7 * 8;
+const char*       cv_output       = "[ 1, 2, 3, 4 ]";
+
+const float       cv_valuesF[4]   { 1.0f, 2.0f, 3.0f, 4.0f };
+const char*       cv_outputF      = "[ 1.00000, 2.00000, 3.00000, 4.00000 ]";
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Size4_constructorFill )
     Size4i o( 1 );
@@ -255,7 +275,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Size4_output_int )
     Size4i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -264,7 +284,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Size4_output_float )
     Size4f o( cv_valuesF );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_outputF;
@@ -324,4 +344,4 @@ UT_TEST_END()
 
 
 
-}
+} //namespace UnitTest

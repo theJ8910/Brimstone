@@ -11,15 +11,14 @@ Description:
 
 
 //Includes
-#include "XShared.hpp"                   //Class header
+#include "XShared.hpp"                   //Header
 #include "XPixmap.hpp"                   //Brimstone::Private::XPixmap
-#include "../opengl/LinuxGLContext.hpp"  //LinuxGLContext::getIdealVisualInfo (TEMP?)
+#include "../opengl/LinuxGLContext.hpp"  //Brimstone::LinuxGLContext::getIdealVisualInfo (TEMP?)
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -222,5 +221,4 @@ void XShared::createBlankCursor() {
 
 
 
-}
-}
+} //namespace Brimstone::Private

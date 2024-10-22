@@ -12,16 +12,27 @@ Description:
 #ifndef BS_WINDOW_DWINDOWIMPL_HPP
 #define BS_WINDOW_DWINDOWIMPL_HPP
 
-namespace Brimstone {
-namespace Private {
 
+
+
+namespace Brimstone::Private {
+
+
+
+
+//Types
 #if defined( BS_BUILD_WINDOWS )
-typedef class WindowsWindow WindowImpl;
+using WindowImpl = class WindowsWindow;
 #elif defined( BS_BUILD_LINUX )
-typedef class XWindow       WindowImpl;
+using WindowImpl = class XWindow;
 #endif
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_WINDOW_DWINDOWIMPL_HPP

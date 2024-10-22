@@ -6,7 +6,6 @@ Copyright (c) 2024, theJ89
 Description:
     A Graphics implementation utilizing OpenGL
 */
-
 #ifndef BS_OPENGL_GLGRAPHICSIMPL_HPP
 #define BS_OPENGL_GLGRAPHICSIMPL_HPP
 
@@ -14,12 +13,12 @@ Description:
 
 
 //Includes
-#include <brimstone/graphics/Enums.hpp> //Brimstone::AlphaFunc, Brimstone::ShaderType
-#include <brimstone/Bounds.hpp>         //Brimstone::Bounds2i
+#include <brimstone/graphics/Enums.hpp>  //Brimstone::AlphaFunc, Brimstone::ShaderType
+#include <brimstone/Bounds.hpp>          //Brimstone::Bounds2i
 
-#include "GLContext.hpp"                //Brimstone::Private::GLContext
+#include "GLContext.hpp"                 //Brimstone::Private::GLContext
 
-#include <atomic>                       //std::atomic
+#include <atomic>                        //std::atomic
 
 
 
@@ -27,10 +26,25 @@ Description:
 
 
 namespace Brimstone {
+
+
+
+
 //Forward declarations
 class Window;
 
-namespace Private {
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 //Forward declarations
 class GLShader;
@@ -38,6 +52,9 @@ class GLProgram;
 class GLVertexBuffer;
 class GLTexture;
 class GLSampler;
+
+
+
 
 class GLGraphicsImpl {
 public:
@@ -120,10 +137,12 @@ private:
     static std::atomic<bool>    m_initialized;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
 
 
 
 
-#endif //BS_OPENGL_GLGRAPHICS_HPP
+#endif //BS_OPENGL_GLGRAPHICSIMPL_HPP

@@ -22,8 +22,7 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -129,7 +128,9 @@ void XInputContext::createInternal( ::XIM im, Args... args ) {
 
 
 
-}
-}
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_LINUX_X11_XINPUTCONTEXT_HPP

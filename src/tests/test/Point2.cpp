@@ -4,45 +4,65 @@ test/Point2.cpp
 Copyright (c) 2024, theJ89
 
 Description:
-    Unit tests for PointN<T,2> specialization
+    Unit tests for Point< T, 2 > specialization
 */
 
 
 
 
 //Includes
-#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"         //allEqual, allEqualTo, copyAll
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll
 
-#include <cstddef>              //std::size_t
-#include <sstream>              //std::ostringstream
+#include <brimstone/Point.hpp>      //Brimstone::Point2i, Brimstone::Point2f
+#include <brimstone/Vector.hpp>     //Brimstone::Vector2i
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException
 
-#include <brimstone/Point.hpp>
-#include <brimstone/Vector.hpp> //Vector
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    using ::Brimstone::Point2i;
-    using ::Brimstone::Point2f;
-    using ::Brimstone::Vector2i;
-    using ::Brimstone::BoundsException;
 
-    const std::size_t cv_size         = 2;
-    const int         cv_zero[2]      {  0, 0 };
-    const int         cv_values[2]    {  1, 2 };
-    const int         cv_valuesAlt[2] {  3, 4 };
-    const int         cv_distant[2]   { -4, 3 };
-    const int         cv_distanceSq   = 26;
-    const int         cv_manhattan    = 6;
-    const char*       cv_output       = "( 1, 2 )";
 
-    const float cv_valuesF[2]   { 1.0f, 2.0f };
-    const char* cv_outputF      = "( 1.00000, 2.00000 )";
-}
+
+
+//Types
+using ::Brimstone::Point2i;
+using ::Brimstone::Point2f;
+using ::Brimstone::Vector2i;
+using ::Brimstone::BoundsException;
+
+
+
+
+//Constants
+const std::size_t cv_size         = 2;
+const int         cv_zero[2]      {  0, 0 };
+const int         cv_values[2]    {  1, 2 };
+const int         cv_valuesAlt[2] {  3, 4 };
+const int         cv_distant[2]   { -4, 3 };
+const int         cv_distanceSq   = 26;
+const int         cv_manhattan    = 6;
+const char*       cv_output       = "( 1, 2 )";
+
+const float       cv_valuesF[2]   { 1.0f, 2.0f };
+const char*       cv_outputF      = "( 1.00000, 2.00000 )";
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Point2_constructorFill )
     Point2i o( 1 );
@@ -269,7 +289,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point2_output_int )
     Point2i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -278,7 +298,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point2_output_float )
     Point2f o( cv_valuesF );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_outputF;
@@ -352,4 +372,4 @@ UT_TEST_END()
 
 
 
-}
+} //namespace UnitTest

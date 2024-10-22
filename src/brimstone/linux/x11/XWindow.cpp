@@ -24,515 +24,542 @@ Description:
 
 
 //Includes
-#include "XWindow.hpp"                          //Class header
-#include "XException.hpp"                       //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd
-#include "XShared.hpp"                          //Brimstone::Private::XShared
+#include "XWindow.hpp"               //Header
+#include "XException.hpp"            //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd
+#include "XShared.hpp"               //Brimstone::Private::XShared
 
-#include <brimstone/util/Range.hpp>             //Brimstone::clampedValue
-#include <brimstone/Exception.hpp>              //Brimstone::NullPointerException
-#include <brimstone/Logger.hpp>                 //Brimstone::logError
+#include <brimstone/util/Range.hpp>  //Brimstone::clampedValue
+#include <brimstone/Exception.hpp>   //Brimstone::NullPointerException
+#include <brimstone/Logger.hpp>      //Brimstone::logError
 
-#include <X11/XF86keysym.h>                     //X11; XF86XK_*
-#include <X11/Xatom.h>                          //X11; XA_ATOM
+#include <X11/XF86keysym.h>          //X11; XF86XK_*
+#include <X11/Xatom.h>               //X11; XA_ATOM
 
-#include <boost/format.hpp>                     //boost::format
+#include <boost/format.hpp>          //boost::format
+
+
+
+
+namespace {
+
+
+
+
+constexpr long WINDOW_ATTRIBUTES_VALUEMASK = (
+    CWBorderPixel | CWColormap | CWEventMask
+);
+
+constexpr long WINDOW_ATTRIBUTES_EVENT_MASK = (
+    ButtonPressMask     | ButtonReleaseMask   |
+    PointerMotionMask   |
+    EnterWindowMask     | LeaveWindowMask     |
+    KeyPressMask        | KeyReleaseMask      |
+    FocusChangeMask     |
+    KeymapStateMask     |
+    StructureNotifyMask | /*ExposureMask |*/
+    PropertyChangeMask
+);
+
+constexpr long XGRABPOINTER_EVENT_MASK = (
+    ButtonPressMask   | ButtonReleaseMask |
+    PointerMotionMask |
+    EnterWindowMask   | LeaveWindowMask
+);
+
+constexpr long XSENDEVENT_EVENT_MASK = (
+    SubstructureNotifyMask | SubstructureRedirectMask
+);
+
+constexpr long XSIZEHINTS_FLAGS_BOUNDS     = (
+    PPosition | PSize
+);
+constexpr long XSIZEHINTS_FLAGS_MINMAXSIZE = (
+    PMinSize | PMaxSize
+);
+
+constexpr long _NET_WM_STATE_REMOVE = 0L;
+constexpr long _NET_WM_STATE_ADD    = 1L;
+
+//Structure used to set the _MOTIF_WM_HINTS property, copied from "lib/Xm/MwmUtil.h" of the OpenMotif project (just called Motif on SourceForge).
+struct PropMotifWmHints {
+    unsigned long flags;
+    unsigned long functions;
+    unsigned long decorations;
+             long inputMode;
+    unsigned long status;
+};
+
+//Bit definitions for PropMotifWmHints.flags that we use, also taken from "lib/Xm/MwmUtil.h":
+constexpr unsigned long MWM_HINTS_DECORATIONS = 2UL; //1L << 1
+constexpr unsigned long MWM_DECOR_ALL         = 1UL; //1L << 0
+
+
+
+
+} //namespace
 
 
 
 
 namespace {
-    constexpr long WINDOW_ATTRIBUTES_VALUEMASK = (
-        CWBorderPixel | CWColormap | CWEventMask
-    );
 
-    constexpr long WINDOW_ATTRIBUTES_EVENT_MASK = (
-        ButtonPressMask     | ButtonReleaseMask   |
-        PointerMotionMask   |
-        EnterWindowMask     | LeaveWindowMask     |
-        KeyPressMask        | KeyReleaseMask      |
-        FocusChangeMask     |
-        KeymapStateMask     |
-        StructureNotifyMask | /*ExposureMask |*/
-        PropertyChangeMask
-    );
 
-    constexpr long XGRABPOINTER_EVENT_MASK = (
-        ButtonPressMask   | ButtonReleaseMask |
-        PointerMotionMask |
-        EnterWindowMask   | LeaveWindowMask
-    );
 
-    constexpr long XSENDEVENT_EVENT_MASK = (
-        SubstructureNotifyMask | SubstructureRedirectMask
-    );
 
-    constexpr long XSIZEHINTS_FLAGS_BOUNDS     = (
-        PPosition | PSize
-    );
-    constexpr long XSIZEHINTS_FLAGS_MINMAXSIZE = (
-        PMinSize | PMaxSize
-    );
+using namespace Brimstone;
+using namespace Brimstone::Private;
 
-    constexpr long _NET_WM_STATE_REMOVE = 0L;
-    constexpr long _NET_WM_STATE_ADD    = 1L;
 
-    //Structure used to set the _MOTIF_WM_HINTS property, copied from "lib/Xm/MwmUtil.h" of the OpenMotif project (just called Motif on SourceForge).
-    struct PropMotifWmHints {
-        unsigned long flags;
-        unsigned long functions;
-        unsigned long decorations;
-                 long inputMode;
-        unsigned long status;
-    };
 
-    //Bit definitions for PropMotifWmHints.flags that we use, also taken from "lib/Xm/MwmUtil.h":
-    constexpr unsigned long MWM_HINTS_DECORATIONS = 2UL; //1L << 1
-    constexpr unsigned long MWM_DECOR_ALL         = 1UL; //1L << 0
+
+/*
+getCursorPosFromXEvent{1}
+-------------------------
+
+Description:
+    Returns the position the cursor was at during an X11 mouse up / mouse down / mousewheel scroll event (XButtonEvent).
+
+Arguments:
+    xbutton:  An XButtonEvent.
+
+Returns:
+    Point2i:  The cursor position.
+*/
+Point2i getCursorPosFromXEvent( const XButtonEvent& xbutton ) {
+    return Point2i( xbutton.x, xbutton.y );
 }
 
-namespace {
-    using namespace Brimstone;
-    using namespace Brimstone::Private;
+/*
+getCursorPosFromXEvent{2}
+-------------------------
 
-    /*
-    getCursorPosFromXEvent{1}
-    -------------------------
+Description:
+    Returns the position the cursor was at during an X11 mouse movement event (XMotionEvent).
 
-    Description:
-        Returns the position the cursor was at during an X11 mouse up / mouse down / mousewheel scroll event (XButtonEvent).
+Arguments:
+    xmotion:  An XMotionEvent.
 
-    Arguments:
-        xbutton:  An XButtonEvent.
+Returns:
+    Point2i:  The cursor position.
+*/
+Point2i getCursorPosFromXEvent( const XMotionEvent& xmotion ) {
+    return Point2i( xmotion.x, xmotion.y );
+}
 
-    Returns:
-        Point2i:  The cursor position.
-    */
-    Point2i getCursorPosFromXEvent( const XButtonEvent& xbutton ) {
-        return Point2i( xbutton.x, xbutton.y );
-    }
+/*
+getCursorPosFromXEvent{3}
+-------------------------
 
-    /*
-    getCursorPosFromXEvent{2}
-    -------------------------
+Description:
+    Returns the position the cursor was at during an X11 mouse crossing event (XCrossingEvent).
 
-    Description:
-        Returns the position the cursor was at during an X11 mouse movement event (XMotionEvent).
+Arguments:
+    xcrossing:  An XCrossingEvent.
 
-    Arguments:
-        xmotion:  An XMotionEvent.
+Returns:
+    Point2i:  The cursor position.
+*/
+Point2i getCursorPosFromXEvent( const XCrossingEvent& xcrossing ) {
+    return Point2i( xcrossing.x, xcrossing.y );
+}
 
-    Returns:
-        Point2i:  The cursor position.
-    */
-    Point2i getCursorPosFromXEvent( const XMotionEvent& xmotion ) {
-        return Point2i( xmotion.x, xmotion.y );
-    }
+/*
+xButtonToMouseButton
+--------------------
 
-    /*
-    getCursorPosFromXEvent{3}
-    -------------------------
+Description:
+    Translates the given X11 mouse button ID to a Brimstone MouseButton enum.
 
-    Description:
-        Returns the position the cursor was at during an X11 mouse crossing event (XCrossingEvent).
+Arguments:
+    button:  The X11 mouse button ID.
 
-    Arguments:
-        xcrossing:  An XCrossingEvent.
+Returns:
+    MouseButton:  A Brimstone MouseButton enum.
+*/
+MouseButton xButtonToMouseButton( const int button ) {
+    switch( button ) {
+    case Button1:
+        return MouseButton::LEFT;
+    case Button2:
+        return MouseButton::MIDDLE;
+    case Button3:
+        return MouseButton::RIGHT;
 
-    Returns:
-        Point2i:  The cursor position.
-    */
-    Point2i getCursorPosFromXEvent( const XCrossingEvent& xcrossing ) {
-        return Point2i( xcrossing.x, xcrossing.y );
-    }
+    //No X11 constants are defined for the X1 / X2 buttons
+    case 8:
+        return MouseButton::X1;
+    case 9:
+        return MouseButton::X2;
 
-    /*
-    xButtonToMouseButton
-    --------------------
-
-    Description:
-        Translates the given X11 mouse button ID to a Brimstone MouseButton enum.
-
-    Arguments:
-        button:  The X11 mouse button ID.
-
-    Returns:
-        MouseButton:  A Brimstone MouseButton enum.
-    */
-    MouseButton xButtonToMouseButton( const int button ) {
-        switch( button ) {
-        case Button1:
-            return MouseButton::LEFT;
-        case Button2:
-            return MouseButton::MIDDLE;
-        case Button3:
-            return MouseButton::RIGHT;
-
-        //No X11 constants are defined for the X1 / X2 buttons
-        case 8:
-            return MouseButton::X1;
-        case 9:
-            return MouseButton::X2;
-
-        //The invalid button is returned if an unrecognized button is provided.
-        default:
-            logError( ( boost::format( "Unrecognized button: 0x%|04X|" ) % button ).str() );
-            return MouseButton::INVALID;
-        }
-    }
-
-    /*
-    xKeySymToKey
-    ------------
-
-    Description:
-        Translates the given X11 KeySym to a Brimstone Key enum.
-
-    Arguments:
-        keySym:  The X11 KeySym.
-
-    Returns:
-        Key:     A Brimstone Key enum.
-    */
-    Key xKeySymToKey( const KeySym& keySym ) {
-        KeySym lower, upper;
-        XConvertCase( keySym, &lower, &upper );
-
-        switch( lower ) {
-        case XK_Escape:                return Key::ESCAPE;             //0x0000FF1B
-        case XK_F1:                    return Key::F1;                 //0x0000FFBE
-        case XK_F2:                    return Key::F2;                 //0x0000FFBF
-        case XK_F3:                    return Key::F3;                 //0x0000FFC0
-        case XK_F4:                    return Key::F4;                 //0x0000FFC1
-        case XK_F5:                    return Key::F5;                 //0x0000FFC2
-        case XK_F6:                    return Key::F6;                 //0x0000FFC3
-        case XK_F7:                    return Key::F7;                 //0x0000FFC4
-        case XK_F8:                    return Key::F8;                 //0x0000FFC5
-        case XK_F9:                    return Key::F9;                 //0x0000FFC6
-        case XK_F10:                   return Key::F10;                //0x0000FFC7
-        case XK_F11:                   return Key::F11;                //0x0000FFC8
-        case XK_F12:                   return Key::F12;                //0x0000FFC9
-        case XK_grave:                 return Key::TILDE;              //0x00000060
-        case XK_asciitilde:            return Key::TILDE;              //0x0000007E
-        case XK_0:                     return Key::DIGIT_0;            //0x00000030
-        case XK_parenright:            return Key::DIGIT_0;            //0x00000029
-        case XK_1:                     return Key::DIGIT_1;            //0x00000031
-        case XK_exclam:                return Key::DIGIT_1;            //0x00000021
-        case XK_2:                     return Key::DIGIT_2;            //0x00000032
-        case XK_at:                    return Key::DIGIT_2;            //0x00000040
-        case XK_3:                     return Key::DIGIT_3;            //0x00000033
-        case XK_numbersign:            return Key::DIGIT_3;            //0x00000023
-        case XK_4:                     return Key::DIGIT_4;            //0x00000034
-        case XK_dollar:                return Key::DIGIT_4;            //0x00000024
-        case XK_5:                     return Key::DIGIT_5;            //0x00000035
-        case XK_percent:               return Key::DIGIT_5;            //0x00000025
-        case XK_6:                     return Key::DIGIT_6;            //0x00000036
-        case XK_asciicircum:           return Key::DIGIT_6;            //0x0000005E
-        case XK_7:                     return Key::DIGIT_7;            //0x00000037
-        case XK_ampersand:             return Key::DIGIT_7;            //0x00000026
-        case XK_8:                     return Key::DIGIT_8;            //0x00000038
-        case XK_asterisk:              return Key::DIGIT_8;            //0x0000002A
-        case XK_9:                     return Key::DIGIT_9;            //0x00000039
-        case XK_parenleft:             return Key::DIGIT_9;            //0x00000028
-        case XK_minus:                 return Key::MINUS;              //0x0000002D
-        case XK_underscore:            return Key::MINUS;              //0x0000005F
-        case XK_equal:                 return Key::EQUALS;             //0x0000003D
-        case XK_plus:                  return Key::EQUALS;             //0x0000002B
-        case XK_a:                     return Key::A;                  //0x00000041
-        case XK_b:                     return Key::B;                  //0x00000042
-        case XK_c:                     return Key::C;                  //0x00000043
-        case XK_d:                     return Key::D;                  //0x00000044
-        case XK_e:                     return Key::E;                  //0x00000045
-        case XK_f:                     return Key::F;                  //0x00000046
-        case XK_g:                     return Key::G;                  //0x00000047
-        case XK_h:                     return Key::H;                  //0x00000048
-        case XK_i:                     return Key::I;                  //0x00000049
-        case XK_j:                     return Key::J;                  //0x0000004A
-        case XK_k:                     return Key::K;                  //0x0000004B
-        case XK_l:                     return Key::L;                  //0x0000004C
-        case XK_m:                     return Key::M;                  //0x0000004D
-        case XK_n:                     return Key::N;                  //0x0000004E
-        case XK_o:                     return Key::O;                  //0x0000004F
-        case XK_p:                     return Key::P;                  //0x00000050
-        case XK_q:                     return Key::Q;                  //0x00000051
-        case XK_r:                     return Key::R;                  //0x00000052
-        case XK_s:                     return Key::S;                  //0x00000053
-        case XK_t:                     return Key::T;                  //0x00000054
-        case XK_u:                     return Key::U;                  //0x00000055
-        case XK_v:                     return Key::V;                  //0x00000056
-        case XK_w:                     return Key::W;                  //0x00000057
-        case XK_x:                     return Key::X;                  //0x00000058
-        case XK_y:                     return Key::Y;                  //0x00000059
-        case XK_z:                     return Key::Z;                  //0x0000005A
-        case XK_space:                 return Key::SPACE;              //0x00000020
-        case XK_Return:                return Key::RETURN;             //0x0000FF0D
-        case XK_Tab:                   return Key::TAB;                //0x0000FF09
-        case XK_BackSpace:             return Key::BACKSPACE;          //0x0000FF08
-        case XK_Caps_Lock:             return Key::CAPS_LOCK;          //0x0000FFE5
-        case XK_comma:                 return Key::COMMA;              //0x0000002C
-        case XK_less:                  return Key::COMMA;              //0x0000003C
-        case XK_period:                return Key::PERIOD;             //0x0000002E
-        case XK_greater:               return Key::PERIOD;             //0x0000003E
-        case XK_apostrophe:            return Key::QUOTE;              //0x00000027
-        case XK_quotedbl:              return Key::QUOTE;              //0x00000022
-        case XK_semicolon:             return Key::SEMICOLON;          //0x0000003B
-        case XK_colon:                 return Key::SEMICOLON;          //0x0000003A
-        case XK_slash:                 return Key::SLASH;              //0x0000002F
-        case XK_question:              return Key::SLASH;              //0x0000003F
-        case XK_backslash:             return Key::BACKSLASH;          //0x0000005C
-        case XK_bar:                   return Key::BACKSLASH;          //0x0000007C
-        case XK_bracketleft:           return Key::LBRACKET;           //0x0000005B
-        case XK_braceleft:             return Key::LBRACKET;           //0x0000007B
-        case XK_bracketright:          return Key::RBRACKET;           //0x0000005D
-        case XK_braceright:            return Key::RBRACKET;           //0x0000007D
-        case XK_Shift_L:               return Key::LSHIFT;             //0x0000FFE1
-        case XK_Shift_R:               return Key::RSHIFT;             //0x0000FFE2
-        case XK_Control_L:             return Key::LCTRL;              //0x0000FFE3
-        case XK_Control_R:             return Key::RCTRL;              //0x0000FFE4
-        case XK_Alt_L:                 return Key::LALT;               //0x0000FFE9
-        case XK_Meta_L:                return Key::LALT;               //0x0000FFE7
-        case XK_Alt_R:                 return Key::RALT;               //0x0000FFEA
-        case XK_Meta_R:                return Key::RALT;               //0x0000FFE8
-        case XK_Super_L:               return Key::LSYSTEM;            //0x0000FFEB
-        case XK_Super_R:               return Key::RSYSTEM;            //0x0000FFEC
-        case XK_Menu:                  return Key::MENU;               //0x0000FF67
-        case XK_Sys_Req:               return Key::PRINT_SCREEN;       //0x0000FF15
-        case XK_Print:                 return Key::PRINT_SCREEN;       //0x0000FF61
-        case XK_Scroll_Lock:           return Key::SCROLL_LOCK;        //0x0000FF14
-        case XK_Pause:                 return Key::PAUSE_BREAK;        //0x0000FF13
-        case XK_Break:                 return Key::PAUSE_BREAK;        //0x0000FF6B
-        case XK_Insert:                return Key::INSERT;             //0x0000FF63
-        case XK_Delete:                return Key::DEL;                //0x0000FFFF
-        case XK_Home:                  return Key::HOME;               //0x0000FF50
-        case XK_End:                   return Key::END;                //0x0000FF57
-        case XK_Page_Up:               return Key::PAGE_UP;            //0x0000FF55
-        case XK_Page_Down:             return Key::PAGE_DOWN;          //0x0000FF56
-        case XK_Up:                    return Key::UP;                 //0x0000FF52
-        case XK_Down:                  return Key::DOWN;               //0x0000FF54
-        case XK_Left:                  return Key::LEFT;               //0x0000FF51
-        case XK_Right:                 return Key::RIGHT;              //0x0000FF53
-        case XK_KP_0:                  return Key::NUMPAD_0;           //0x0000FFB0
-        case XK_KP_1:                  return Key::NUMPAD_1;           //0x0000FFB1
-        case XK_KP_2:                  return Key::NUMPAD_2;           //0x0000FFB2
-        case XK_KP_3:                  return Key::NUMPAD_3;           //0x0000FFB3
-        case XK_KP_4:                  return Key::NUMPAD_4;           //0x0000FFB4
-        case XK_KP_5:                  return Key::NUMPAD_5;           //0x0000FFB5
-        case XK_KP_6:                  return Key::NUMPAD_6;           //0x0000FFB6
-        case XK_KP_7:                  return Key::NUMPAD_7;           //0x0000FFB7
-        case XK_KP_8:                  return Key::NUMPAD_8;           //0x0000FFB8
-        case XK_KP_9:                  return Key::NUMPAD_9;           //0x0000FFB9
-        case XK_KP_Add:                return Key::ADD;                //0x0000FFAB
-        case XK_KP_Subtract:           return Key::SUBTRACT;           //0x0000FFAD
-        case XK_KP_Multiply:           return Key::MULTIPLY;           //0x0000FFAA
-        case XK_KP_Divide:             return Key::DIVIDE;             //0x0000FFAE
-        case XK_KP_Decimal:            return Key::DECIMAL;            //0x0000FFAE
-        case XK_Num_Lock:              return Key::NUMLOCK;            //0x0000FF7F
-        case XK_KP_Insert:             return Key::NUMPAD_INSERT;      //0x0000FF9E
-        case XK_KP_Delete:             return Key::NUMPAD_DEL;         //0x0000FF9F
-        case XK_KP_Home:               return Key::NUMPAD_HOME;        //0x0000FF95
-        case XK_KP_End:                return Key::NUMPAD_END;         //0x0000FF9C
-        case XK_KP_Page_Up:            return Key::NUMPAD_PAGE_UP;     //0x0000FF9A
-        case XK_KP_Page_Down:          return Key::NUMPAD_PAGE_DOWN;   //0x0000FF9B
-        case XK_KP_Up:                 return Key::NUMPAD_UP;          //0x0000FF97
-        case XK_KP_Down:               return Key::NUMPAD_DOWN;        //0x0000FF99
-        case XK_KP_Left:               return Key::NUMPAD_LEFT;        //0x0000FF96
-        case XK_KP_Right:              return Key::NUMPAD_RIGHT;       //0x0000FF98
-        case XK_KP_Enter:              return Key::ENTER;              //0x0000FF8D
-        case XK_KP_Begin:              return Key::CLEAR;              //0x0000FF9D
-        case XF86XK_AudioPlay:         return Key::MEDIA_PLAY_PAUSE;   //0x1008FF14
-        case XF86XK_AudioStop:         return Key::MEDIA_STOP;         //0x1008FF15
-        case XF86XK_AudioPrev:         return Key::MEDIA_PREVIOUS;     //0x1008FF16
-        case XF86XK_AudioNext:         return Key::MEDIA_NEXT;         //0x1008FF17
-        case XF86XK_AudioRaiseVolume:  return Key::VOLUME_UP;          //0x1008FF13
-        case XF86XK_AudioLowerVolume:  return Key::VOLUME_DOWN;        //0x1008FF11
-        case XF86XK_AudioMute:         return Key::MUTE;               //0x1008FF12
-
-        //The invalid key is returned if an unrecognized keycode is provided.
-        default:
-            logError( ( boost::format( "Unrecognized keycode: 0x%|08X|" ) % lower ).str() );
-            return Key::INVALID;
-        }
-    }
-
-    //TEMP
-    /*
-    void logKeyEvent( const XKeyEvent& xKeyEvent ) {
-        logDetail(
-            (
-                boost::format(
-                    "XKeyEvent {\n"
-                    "    int type = %d;\n"
-                    "    unsigned long serial = %d;\n"
-                    "    Bool send_event = %d;\n"
-                    "    Display *display = 0x%016X;\n"
-                    "    Window window = %d;\n"
-                    "    Window root = %d;\n"
-                    "    Window subwindow = %d;\n"
-                    "    Time time = %d;\n"
-                    "    int x = %d, y = %d;\n"
-                    "    int x_root = %d, y_root = %d;\n"
-                    "    unsigned int state = %d;\n"
-                    "    unsigned int keycode = %d;\n"
-                    "    Bool same_screen = %d;\n"
-                    "}"
-                )
-                % xKeyEvent.type
-                % xKeyEvent.serial
-                % xKeyEvent.send_event
-                % reinterpret_cast<uintptr_t>( xKeyEvent.display )
-                % xKeyEvent.window
-                % xKeyEvent.root
-                % xKeyEvent.subwindow
-                % xKeyEvent.time
-                % xKeyEvent.x
-                % xKeyEvent.y
-                % xKeyEvent.x_root
-                % xKeyEvent.y_root
-                % xKeyEvent.state
-                % xKeyEvent.keycode
-                % xKeyEvent.same_screen
-            ).str()
-        );
-    }
-    */
-
-    //TEMP
-    /*
-    void logConfigureEvent( const XConfigureEvent& xConfigureEvent ) {
-        logDetail(
-            (
-                boost::format(
-                    "XConfigureEvent {\n"
-                    "    int type = %d;\n"
-                    "    unsigned long serial = %d;\n"
-                    "    Bool send_event = %d;\n"
-                    "    Display *display = 0x%016X;\n"
-                    "    Window event = %d;\n"
-                    "    Window window = %d;\n"
-                    "    int x = %d, y = %d;\n"
-                    "    int width = %d, height = %d;\n"
-                    "    int border_width = %d;\n"
-                    "    Window above = %d;\n"
-                    "    Bool override_redirect = %d;\n"
-                    "}"
-                )
-                % xConfigureEvent.type
-                % xConfigureEvent.serial
-                % xConfigureEvent.send_event
-                % reinterpret_cast<uintptr_t>( xConfigureEvent.display )
-                % xConfigureEvent.event
-                % xConfigureEvent.window
-                % xConfigureEvent.x
-                % xConfigureEvent.y
-                % xConfigureEvent.width
-                % xConfigureEvent.height
-                % xConfigureEvent.border_width
-                % xConfigureEvent.above
-                % xConfigureEvent.override_redirect
-            ).str()
-        );
-    }
-    */
-
-    /*
-    getWindowBounds
-    ---------------
-
-    Description:
-        Returns the bounds of the given X11 window, relative to its parent window.
-
-    Arguments:
-        display:     Pointer to the X11 Display.
-        window:      The X11 window to get the bounds of.
-
-    Returns:
-        Bounds2i:    The X11 window's bounds.
-
-    Throws:
-        Exception:   If a call to an Xlib function fails.
-        XException:  If a call to an Xlib function fails.
-    */
-    Bounds2i getWindowBounds( Display* display, ::Window window ) {
-        //Bounds returned by this function.
-        Bounds2i bounds;
-
-        //Variables storing return values for XGetGeometry:
-        unsigned int width_return, height_return;
-
-        //Same as above, but we don't make use of these:
-        ::Window root_return;
-        unsigned int border_width_return, depth_return;
-
-        xerrBegin();
-        Status status = XGetGeometry(
-            display,
-            window,
-            &root_return,
-            &bounds.minX,
-            &bounds.minY,
-            &width_return,
-            &height_return,
-            &border_width_return,
-            &depth_return
-        );
-        xerrEnd();
-        if( xerrExists() )
-            throw xerrGet();
-
-        //XGetGeometry failed.
-        if( status == 0 )
-            throw Exception( "XGetGeometry() failed." );
-
-        bounds.setSize( static_cast<int>( width_return ), static_cast<int>( height_return ) );
-        return bounds;
-    }
-
-    /*
-    translateWindowCoords
-    ---------------------
-
-    Description:
-        Translates the given coordinates, srcCoords, which are relative to the top-left corner of one X11 window, src, and returns new coordinates which are relative to the top-left corner of
-        another X11 window, dst.
-
-        If src is the root window and dst is the inner window, this function translates from screen coordinates to window coordinates.
-        If src is the inner window and dst is the root window, this function translates from window coordinates to screen coordinates.
-
-    Arguments:
-        src:          The window that srcCoords are relative to.
-        dst:          The window that the returned coordinates should be relative to.
-        srcCoords:    The coordinates to translate, relative to the top-left corner of src.
-
-    Returns:
-        Point2i:      The translated coordinates, relative to the top-left corner of dst.
-
-    Throws:
-        Exception:   If a call to an Xlib function fails.
-        XException:  If a call to an Xlib function fails.
-    */
-    Point2i translateWindowCoords( Display* display, ::Window src, ::Window dst, Point2i srcCoords ) {
-        ::Window childReturn;  //Unused.
-        xerrBegin();
-        Bool rv = XTranslateCoordinates(
-            display,
-            src,
-            dst,
-            srcCoords.x,
-            srcCoords.y,
-            &srcCoords.x,
-            &srcCoords.y,
-            &childReturn
-        );
-        xerrEnd();
-        if( xerrExists() )
-            throw xerrGet();
-
-        if( rv == True ) { return srcCoords;       } //The window is on this screen.
-        else             { return Point2i( 0, 0 ); } //The window is not on this screen.
+    //The invalid button is returned if an unrecognized button is provided.
+    default:
+        logError( ( boost::format( "Unrecognized button: 0x%|04X|" ) % button ).str() );
+        return MouseButton::INVALID;
     }
 }
 
-namespace Brimstone {
-namespace Private {
+/*
+xKeySymToKey
+------------
+
+Description:
+    Translates the given X11 KeySym to a Brimstone Key enum.
+
+Arguments:
+    keySym:  The X11 KeySym.
+
+Returns:
+    Key:     A Brimstone Key enum.
+*/
+Key xKeySymToKey( const KeySym& keySym ) {
+    KeySym lower, upper;
+    XConvertCase( keySym, &lower, &upper );
+
+    switch( lower ) {
+    case XK_Escape:                return Key::ESCAPE;             //0x0000FF1B
+    case XK_F1:                    return Key::F1;                 //0x0000FFBE
+    case XK_F2:                    return Key::F2;                 //0x0000FFBF
+    case XK_F3:                    return Key::F3;                 //0x0000FFC0
+    case XK_F4:                    return Key::F4;                 //0x0000FFC1
+    case XK_F5:                    return Key::F5;                 //0x0000FFC2
+    case XK_F6:                    return Key::F6;                 //0x0000FFC3
+    case XK_F7:                    return Key::F7;                 //0x0000FFC4
+    case XK_F8:                    return Key::F8;                 //0x0000FFC5
+    case XK_F9:                    return Key::F9;                 //0x0000FFC6
+    case XK_F10:                   return Key::F10;                //0x0000FFC7
+    case XK_F11:                   return Key::F11;                //0x0000FFC8
+    case XK_F12:                   return Key::F12;                //0x0000FFC9
+    case XK_grave:                 return Key::TILDE;              //0x00000060
+    case XK_asciitilde:            return Key::TILDE;              //0x0000007E
+    case XK_0:                     return Key::DIGIT_0;            //0x00000030
+    case XK_parenright:            return Key::DIGIT_0;            //0x00000029
+    case XK_1:                     return Key::DIGIT_1;            //0x00000031
+    case XK_exclam:                return Key::DIGIT_1;            //0x00000021
+    case XK_2:                     return Key::DIGIT_2;            //0x00000032
+    case XK_at:                    return Key::DIGIT_2;            //0x00000040
+    case XK_3:                     return Key::DIGIT_3;            //0x00000033
+    case XK_numbersign:            return Key::DIGIT_3;            //0x00000023
+    case XK_4:                     return Key::DIGIT_4;            //0x00000034
+    case XK_dollar:                return Key::DIGIT_4;            //0x00000024
+    case XK_5:                     return Key::DIGIT_5;            //0x00000035
+    case XK_percent:               return Key::DIGIT_5;            //0x00000025
+    case XK_6:                     return Key::DIGIT_6;            //0x00000036
+    case XK_asciicircum:           return Key::DIGIT_6;            //0x0000005E
+    case XK_7:                     return Key::DIGIT_7;            //0x00000037
+    case XK_ampersand:             return Key::DIGIT_7;            //0x00000026
+    case XK_8:                     return Key::DIGIT_8;            //0x00000038
+    case XK_asterisk:              return Key::DIGIT_8;            //0x0000002A
+    case XK_9:                     return Key::DIGIT_9;            //0x00000039
+    case XK_parenleft:             return Key::DIGIT_9;            //0x00000028
+    case XK_minus:                 return Key::MINUS;              //0x0000002D
+    case XK_underscore:            return Key::MINUS;              //0x0000005F
+    case XK_equal:                 return Key::EQUALS;             //0x0000003D
+    case XK_plus:                  return Key::EQUALS;             //0x0000002B
+    case XK_a:                     return Key::A;                  //0x00000041
+    case XK_b:                     return Key::B;                  //0x00000042
+    case XK_c:                     return Key::C;                  //0x00000043
+    case XK_d:                     return Key::D;                  //0x00000044
+    case XK_e:                     return Key::E;                  //0x00000045
+    case XK_f:                     return Key::F;                  //0x00000046
+    case XK_g:                     return Key::G;                  //0x00000047
+    case XK_h:                     return Key::H;                  //0x00000048
+    case XK_i:                     return Key::I;                  //0x00000049
+    case XK_j:                     return Key::J;                  //0x0000004A
+    case XK_k:                     return Key::K;                  //0x0000004B
+    case XK_l:                     return Key::L;                  //0x0000004C
+    case XK_m:                     return Key::M;                  //0x0000004D
+    case XK_n:                     return Key::N;                  //0x0000004E
+    case XK_o:                     return Key::O;                  //0x0000004F
+    case XK_p:                     return Key::P;                  //0x00000050
+    case XK_q:                     return Key::Q;                  //0x00000051
+    case XK_r:                     return Key::R;                  //0x00000052
+    case XK_s:                     return Key::S;                  //0x00000053
+    case XK_t:                     return Key::T;                  //0x00000054
+    case XK_u:                     return Key::U;                  //0x00000055
+    case XK_v:                     return Key::V;                  //0x00000056
+    case XK_w:                     return Key::W;                  //0x00000057
+    case XK_x:                     return Key::X;                  //0x00000058
+    case XK_y:                     return Key::Y;                  //0x00000059
+    case XK_z:                     return Key::Z;                  //0x0000005A
+    case XK_space:                 return Key::SPACE;              //0x00000020
+    case XK_Return:                return Key::RETURN;             //0x0000FF0D
+    case XK_Tab:                   return Key::TAB;                //0x0000FF09
+    case XK_BackSpace:             return Key::BACKSPACE;          //0x0000FF08
+    case XK_Caps_Lock:             return Key::CAPS_LOCK;          //0x0000FFE5
+    case XK_comma:                 return Key::COMMA;              //0x0000002C
+    case XK_less:                  return Key::COMMA;              //0x0000003C
+    case XK_period:                return Key::PERIOD;             //0x0000002E
+    case XK_greater:               return Key::PERIOD;             //0x0000003E
+    case XK_apostrophe:            return Key::QUOTE;              //0x00000027
+    case XK_quotedbl:              return Key::QUOTE;              //0x00000022
+    case XK_semicolon:             return Key::SEMICOLON;          //0x0000003B
+    case XK_colon:                 return Key::SEMICOLON;          //0x0000003A
+    case XK_slash:                 return Key::SLASH;              //0x0000002F
+    case XK_question:              return Key::SLASH;              //0x0000003F
+    case XK_backslash:             return Key::BACKSLASH;          //0x0000005C
+    case XK_bar:                   return Key::BACKSLASH;          //0x0000007C
+    case XK_bracketleft:           return Key::LBRACKET;           //0x0000005B
+    case XK_braceleft:             return Key::LBRACKET;           //0x0000007B
+    case XK_bracketright:          return Key::RBRACKET;           //0x0000005D
+    case XK_braceright:            return Key::RBRACKET;           //0x0000007D
+    case XK_Shift_L:               return Key::LSHIFT;             //0x0000FFE1
+    case XK_Shift_R:               return Key::RSHIFT;             //0x0000FFE2
+    case XK_Control_L:             return Key::LCTRL;              //0x0000FFE3
+    case XK_Control_R:             return Key::RCTRL;              //0x0000FFE4
+    case XK_Alt_L:                 return Key::LALT;               //0x0000FFE9
+    case XK_Meta_L:                return Key::LALT;               //0x0000FFE7
+    case XK_Alt_R:                 return Key::RALT;               //0x0000FFEA
+    case XK_Meta_R:                return Key::RALT;               //0x0000FFE8
+    case XK_Super_L:               return Key::LSYSTEM;            //0x0000FFEB
+    case XK_Super_R:               return Key::RSYSTEM;            //0x0000FFEC
+    case XK_Menu:                  return Key::MENU;               //0x0000FF67
+    case XK_Sys_Req:               return Key::PRINT_SCREEN;       //0x0000FF15
+    case XK_Print:                 return Key::PRINT_SCREEN;       //0x0000FF61
+    case XK_Scroll_Lock:           return Key::SCROLL_LOCK;        //0x0000FF14
+    case XK_Pause:                 return Key::PAUSE_BREAK;        //0x0000FF13
+    case XK_Break:                 return Key::PAUSE_BREAK;        //0x0000FF6B
+    case XK_Insert:                return Key::INSERT;             //0x0000FF63
+    case XK_Delete:                return Key::DEL;                //0x0000FFFF
+    case XK_Home:                  return Key::HOME;               //0x0000FF50
+    case XK_End:                   return Key::END;                //0x0000FF57
+    case XK_Page_Up:               return Key::PAGE_UP;            //0x0000FF55
+    case XK_Page_Down:             return Key::PAGE_DOWN;          //0x0000FF56
+    case XK_Up:                    return Key::UP;                 //0x0000FF52
+    case XK_Down:                  return Key::DOWN;               //0x0000FF54
+    case XK_Left:                  return Key::LEFT;               //0x0000FF51
+    case XK_Right:                 return Key::RIGHT;              //0x0000FF53
+    case XK_KP_0:                  return Key::NUMPAD_0;           //0x0000FFB0
+    case XK_KP_1:                  return Key::NUMPAD_1;           //0x0000FFB1
+    case XK_KP_2:                  return Key::NUMPAD_2;           //0x0000FFB2
+    case XK_KP_3:                  return Key::NUMPAD_3;           //0x0000FFB3
+    case XK_KP_4:                  return Key::NUMPAD_4;           //0x0000FFB4
+    case XK_KP_5:                  return Key::NUMPAD_5;           //0x0000FFB5
+    case XK_KP_6:                  return Key::NUMPAD_6;           //0x0000FFB6
+    case XK_KP_7:                  return Key::NUMPAD_7;           //0x0000FFB7
+    case XK_KP_8:                  return Key::NUMPAD_8;           //0x0000FFB8
+    case XK_KP_9:                  return Key::NUMPAD_9;           //0x0000FFB9
+    case XK_KP_Add:                return Key::ADD;                //0x0000FFAB
+    case XK_KP_Subtract:           return Key::SUBTRACT;           //0x0000FFAD
+    case XK_KP_Multiply:           return Key::MULTIPLY;           //0x0000FFAA
+    case XK_KP_Divide:             return Key::DIVIDE;             //0x0000FFAE
+    case XK_KP_Decimal:            return Key::DECIMAL;            //0x0000FFAE
+    case XK_Num_Lock:              return Key::NUMLOCK;            //0x0000FF7F
+    case XK_KP_Insert:             return Key::NUMPAD_INSERT;      //0x0000FF9E
+    case XK_KP_Delete:             return Key::NUMPAD_DEL;         //0x0000FF9F
+    case XK_KP_Home:               return Key::NUMPAD_HOME;        //0x0000FF95
+    case XK_KP_End:                return Key::NUMPAD_END;         //0x0000FF9C
+    case XK_KP_Page_Up:            return Key::NUMPAD_PAGE_UP;     //0x0000FF9A
+    case XK_KP_Page_Down:          return Key::NUMPAD_PAGE_DOWN;   //0x0000FF9B
+    case XK_KP_Up:                 return Key::NUMPAD_UP;          //0x0000FF97
+    case XK_KP_Down:               return Key::NUMPAD_DOWN;        //0x0000FF99
+    case XK_KP_Left:               return Key::NUMPAD_LEFT;        //0x0000FF96
+    case XK_KP_Right:              return Key::NUMPAD_RIGHT;       //0x0000FF98
+    case XK_KP_Enter:              return Key::ENTER;              //0x0000FF8D
+    case XK_KP_Begin:              return Key::CLEAR;              //0x0000FF9D
+    case XF86XK_AudioPlay:         return Key::MEDIA_PLAY_PAUSE;   //0x1008FF14
+    case XF86XK_AudioStop:         return Key::MEDIA_STOP;         //0x1008FF15
+    case XF86XK_AudioPrev:         return Key::MEDIA_PREVIOUS;     //0x1008FF16
+    case XF86XK_AudioNext:         return Key::MEDIA_NEXT;         //0x1008FF17
+    case XF86XK_AudioRaiseVolume:  return Key::VOLUME_UP;          //0x1008FF13
+    case XF86XK_AudioLowerVolume:  return Key::VOLUME_DOWN;        //0x1008FF11
+    case XF86XK_AudioMute:         return Key::MUTE;               //0x1008FF12
+
+    //The invalid key is returned if an unrecognized keycode is provided.
+    default:
+        logError( ( boost::format( "Unrecognized keycode: 0x%|08X|" ) % lower ).str() );
+        return Key::INVALID;
+    }
+}
+
+//TEMP
+/*
+void logKeyEvent( const XKeyEvent& xKeyEvent ) {
+    logDetail(
+        (
+            boost::format(
+                "XKeyEvent {\n"
+                "    int type = %d;\n"
+                "    unsigned long serial = %d;\n"
+                "    Bool send_event = %d;\n"
+                "    Display *display = 0x%016X;\n"
+                "    Window window = %d;\n"
+                "    Window root = %d;\n"
+                "    Window subwindow = %d;\n"
+                "    Time time = %d;\n"
+                "    int x = %d, y = %d;\n"
+                "    int x_root = %d, y_root = %d;\n"
+                "    unsigned int state = %d;\n"
+                "    unsigned int keycode = %d;\n"
+                "    Bool same_screen = %d;\n"
+                "}"
+            )
+            % xKeyEvent.type
+            % xKeyEvent.serial
+            % xKeyEvent.send_event
+            % reinterpret_cast<uintptr_t>( xKeyEvent.display )
+            % xKeyEvent.window
+            % xKeyEvent.root
+            % xKeyEvent.subwindow
+            % xKeyEvent.time
+            % xKeyEvent.x
+            % xKeyEvent.y
+            % xKeyEvent.x_root
+            % xKeyEvent.y_root
+            % xKeyEvent.state
+            % xKeyEvent.keycode
+            % xKeyEvent.same_screen
+        ).str()
+    );
+}
+*/
+
+//TEMP
+/*
+void logConfigureEvent( const XConfigureEvent& xConfigureEvent ) {
+    logDetail(
+        (
+            boost::format(
+                "XConfigureEvent {\n"
+                "    int type = %d;\n"
+                "    unsigned long serial = %d;\n"
+                "    Bool send_event = %d;\n"
+                "    Display *display = 0x%016X;\n"
+                "    Window event = %d;\n"
+                "    Window window = %d;\n"
+                "    int x = %d, y = %d;\n"
+                "    int width = %d, height = %d;\n"
+                "    int border_width = %d;\n"
+                "    Window above = %d;\n"
+                "    Bool override_redirect = %d;\n"
+                "}"
+            )
+            % xConfigureEvent.type
+            % xConfigureEvent.serial
+            % xConfigureEvent.send_event
+            % reinterpret_cast<uintptr_t>( xConfigureEvent.display )
+            % xConfigureEvent.event
+            % xConfigureEvent.window
+            % xConfigureEvent.x
+            % xConfigureEvent.y
+            % xConfigureEvent.width
+            % xConfigureEvent.height
+            % xConfigureEvent.border_width
+            % xConfigureEvent.above
+            % xConfigureEvent.override_redirect
+        ).str()
+    );
+}
+*/
+
+/*
+getWindowBounds
+---------------
+
+Description:
+    Returns the bounds of the given X11 window, relative to its parent window.
+
+Arguments:
+    display:     Pointer to the X11 Display.
+    window:      The X11 window to get the bounds of.
+
+Returns:
+    Bounds2i:    The X11 window's bounds.
+
+Throws:
+    Exception:   If a call to an Xlib function fails.
+    XException:  If a call to an Xlib function fails.
+*/
+Bounds2i getWindowBounds( Display* display, ::Window window ) {
+    //Bounds returned by this function.
+    Bounds2i bounds;
+
+    //Variables storing return values for XGetGeometry:
+    unsigned int width_return, height_return;
+
+    //Same as above, but we don't make use of these:
+    ::Window root_return;
+    unsigned int border_width_return, depth_return;
+
+    xerrBegin();
+    Status status = XGetGeometry(
+        display,
+        window,
+        &root_return,
+        &bounds.minX,
+        &bounds.minY,
+        &width_return,
+        &height_return,
+        &border_width_return,
+        &depth_return
+    );
+    xerrEnd();
+    if( xerrExists() )
+        throw xerrGet();
+
+    //XGetGeometry failed.
+    if( status == 0 )
+        throw Exception( "XGetGeometry() failed." );
+
+    bounds.setSize( static_cast<int>( width_return ), static_cast<int>( height_return ) );
+    return bounds;
+}
+
+/*
+translateWindowCoords
+---------------------
+
+Description:
+    Translates the given coordinates, srcCoords, which are relative to the top-left corner of one X11 window, src, and returns new coordinates which are relative to the top-left corner of
+    another X11 window, dst.
+
+    If src is the root window and dst is the inner window, this function translates from screen coordinates to window coordinates.
+    If src is the inner window and dst is the root window, this function translates from window coordinates to screen coordinates.
+
+Arguments:
+    src:          The window that srcCoords are relative to.
+    dst:          The window that the returned coordinates should be relative to.
+    srcCoords:    The coordinates to translate, relative to the top-left corner of src.
+
+Returns:
+    Point2i:      The translated coordinates, relative to the top-left corner of dst.
+
+Throws:
+    Exception:   If a call to an Xlib function fails.
+    XException:  If a call to an Xlib function fails.
+*/
+Point2i translateWindowCoords( Display* display, ::Window src, ::Window dst, Point2i srcCoords ) {
+    ::Window childReturn;  //Unused.
+    xerrBegin();
+    Bool rv = XTranslateCoordinates(
+        display,
+        src,
+        dst,
+        srcCoords.x,
+        srcCoords.y,
+        &srcCoords.x,
+        &srcCoords.y,
+        &childReturn
+    );
+    xerrEnd();
+    if( xerrExists() )
+        throw xerrGet();
+
+    if( rv == True ) { return srcCoords;       } //The window is on this screen.
+    else             { return Point2i( 0, 0 ); } //The window is not on this screen.
+}
+
+
+
+
+} //namespace
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 std::mutex               XWindow::m_windowsMutex;
 XWindow::XWinToWindowMap XWindow::m_windowMap;
@@ -2905,5 +2932,4 @@ void XWindow::updateWindowHierarchy() {
 
 
 
-}
-}
+} //namespace Brimstone::Private

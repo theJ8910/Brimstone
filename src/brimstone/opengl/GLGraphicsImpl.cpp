@@ -11,26 +11,63 @@ Description:
 
 
 //Includes
-#include "GLGraphicsImpl.hpp"   //Header file
-#include "GLShader.hpp"         //Brimstone::GLShader
-#include "GLProgram.hpp"        //Brimstone::GLProgram
-#include "GLVertexBuffer.hpp"   //Brimstone::GLVertexBuffer
-#include "GLTexture.hpp"        //Brimstone::GLTexture
-#include "GLSampler.hpp"        //Brimstone::GLSampler
+#include "GLGraphicsImpl.hpp"    //Header
+#include "GLShader.hpp"          //Brimstone::GLShader
+#include "GLProgram.hpp"         //Brimstone::GLProgram
+#include "GLVertexBuffer.hpp"    //Brimstone::GLVertexBuffer
+#include "GLTexture.hpp"         //Brimstone::GLTexture
+#include "GLSampler.hpp"         //Brimstone::GLSampler
 
-#include <brimstone/Logger.hpp> //Brimstone::logInfo
+#include <brimstone/Logger.hpp>  //Brimstone::logInfo
 
-#include <boost/format.hpp>     //boost::format
+#include <boost/format.hpp>      //boost::format
 
-#include <gll/loader.hpp>       //gll::Load
-#include <gll/gl_4_6_comp.hpp>  //gll::* (GL 4.6 and below + compatibility)
+#include <gll/loader.hpp>        //gll::Load
+#include <gll/gl_4_6_comp.hpp>   //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace {
+
+
+
+
+using enum Brimstone::AlphaFunc;
+
+//Constants
+constexpr int AlphaFuncToGLAlphaFunc[] {
+    GL_NEVER,     //NEVER
+    GL_LESS,      //LESS_THAN
+    GL_EQUAL,     //EQUAL
+    GL_LEQUAL,    //LESS_THAN_OR_EQUAL
+    GL_GREATER,   //GREATER_THAN
+    GL_NOTEQUAL,  //NOT_EQUAL
+    GL_GEQUAL,    //GREATER_THAN_OR_EQUAL
+    GL_ALWAYS,    //ALWAYS
+};
+
+constexpr Brimstone::AlphaFunc GLAlphaFuncToAlphaFunc[] {
+    NEVER,                  //GL_NEVER
+    LESS_THAN,              //GL_LESS
+    EQUAL,                  //GL_EQUAL
+    LESS_THAN_OR_EQUAL,     //GL_LEQUAL
+    GREATER_THAN,           //GL_GREATER
+    NOT_EQUAL,              //GL_NOTEQUAL
+    GREATER_THAN_OR_EQUAL,  //GL_GEQUAL
+    ALWAYS,                 //GL_ALWAYS
+};
+
+
+
+
+} //namespace
+
+
+
+
+namespace Brimstone::Private {
 
 
 
@@ -236,35 +273,12 @@ bool GLGraphicsImpl::getAlphaTest() const {
 }
 
 void GLGraphicsImpl::setAlphaFunc( const AlphaFunc func, const float ref ) {
-    static constexpr int AlphaFuncToGLAlphaFunc[] {
-        GL_NEVER,     //NEVER
-        GL_LESS,      //LESS_THAN
-        GL_EQUAL,     //EQUAL
-        GL_LEQUAL,    //LESS_THAN_OR_EQUAL
-        GL_GREATER,   //GREATER_THAN
-        GL_NOTEQUAL,  //NOT_EQUAL
-        GL_GEQUAL,    //GREATER_THAN_OR_EQUAL
-        GL_ALWAYS,    //ALWAYS
-    };
-
     glAlphaFunc( AlphaFuncToGLAlphaFunc[ (int)func ], ref );
     if( glGetError() != GL_NO_ERROR )
         throw GraphicsException( "glAlphaFunc() failed." );
 }
 
 AlphaFunc GLGraphicsImpl::getAlphaFunc() const {
-    using enum AlphaFunc;
-    static constexpr AlphaFunc GLAlphaFuncToAlphaFunc[] {
-        NEVER,                  //GL_NEVER
-        LESS_THAN,              //GL_LESS
-        EQUAL,                  //GL_EQUAL
-        LESS_THAN_OR_EQUAL,     //GL_LEQUAL
-        GREATER_THAN,           //GL_GREATER
-        NOT_EQUAL,              //GL_NOTEQUAL
-        GREATER_THAN_OR_EQUAL,  //GL_GEQUAL
-        ALWAYS,                 //GL_ALWAYS
-    };
-
     GLint func;
     glGetIntegerv( GL_ALPHA_TEST_FUNC, &func );
     if( glGetError() != GL_NO_ERROR )
@@ -444,5 +458,7 @@ void GLGraphicsImpl::initOpenGL( GLContext& context ) {
     context.end();
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

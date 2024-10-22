@@ -12,20 +12,23 @@ Description:
 
 
 //Includes
-#include <brimstone/windows/WindowsHeader.hpp>      //MultiByteToWideChar, WideCharToMultiByte
+#include <brimstone/windows/WindowsUtil.hpp>       //Header
+#include <brimstone/windows/WindowsException.hpp>  //Brimstone::Private::throwWindowsException
 
-#include <brimstone/windows/WindowsUtil.hpp>        //Header file
-#include <brimstone/windows/WindowsException.hpp>   //throwWindowsException
-
-
+#include <brimstone/windows/WindowsHeader.hpp>     //MultiByteToWideChar, WideCharToMultiByte
 
 
-namespace Brimstone {
-namespace Private {
+
+
+namespace Brimstone::Private {
+
+
+
 
 /*
 utf8to16{1}
------------------------
+-----------
+
 Description:
     Converts from char-based UTF-8 encoding ("MultiByte") to Windows' wchar_t-based
     little-endian UTF-16 encoding ("Unicode").
@@ -58,7 +61,8 @@ wstring utf8to16( const ustring& utf8Bytes ) {
 
 /*
 utf8to16{2}
------------------------
+-----------
+
 Description:
     Converts from char-based UTF-8 encoding ("MultiByte") to Windows' wchar_t-based
     little-endian UTF-16 encoding ("Unicode").
@@ -69,10 +73,10 @@ Description:
         If the given string is not null terminated, the output will not be null terminated either.
 
 Arguments:
-    utf8Bytes:          UTF-8 encoded string (using std::string) to convert.
+    utf8Bytes:  UTF-8 encoded string (using std::string) to convert.
 
 Returns:
-    wstring:            UTF-16 encoded string (using std::wstring) converted from the given string.
+    wstring:  UTF-16 encoded string (using std::wstring) converted from the given string.
 */
 wstring utf8to16( const uchar* const utf8Bytes, const int32 utf8ByteCount ) {
     //Determine how many characters (wchar_t) we'll need to encode this string as UTF-16
@@ -92,7 +96,8 @@ wstring utf8to16( const uchar* const utf8Bytes, const int32 utf8ByteCount ) {
 
 /*
 utf8to16{3}
------------------------
+-----------
+
 Description:
     Converts from char-based UTF-8 encoding ("MultiByte") to Windows' wchar_t-based
     little-endian UTF-16 encoding ("Unicode").
@@ -101,10 +106,10 @@ Description:
     and outputs the UTF-16 encoded characters to a fixed size buffer.
 
 Arguments:
-    utf8Bytes:          UTF-8 encoded string (using std::string) to convert.
+    utf8Bytes:  UTF-8 encoded string (using std::string) to convert.
 
 Returns:
-    wstring:            UTF-16 encoded string (using std::wstring) converted from the given string.
+    wstring:  UTF-16 encoded string (using std::wstring) converted from the given string.
 */
 int32 utf8to16( const uchar* const utf8Bytes, const int32 utf8ByteCount, wchar* const& utf16CharsOut, const int32 utf16CharCount ) {
     int32 charCount;
@@ -116,7 +121,8 @@ int32 utf8to16( const uchar* const utf8Bytes, const int32 utf8ByteCount, wchar* 
 
 /*
 utf16to8{1}
------------------------
+-----------
+
 Description:
     Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
     to char-based UTF-8 encoding ("MultiByte").
@@ -126,10 +132,10 @@ Description:
     and handle the task of allocating / deleting appropriately sized buffers automatically.
 
 Arguments:
-    utf16Chars:         UTF-16 encoded string (using std::wstring) to convert.
+    utf16Chars:  UTF-16 encoded string (using std::wstring) to convert.
 
 Returns:
-    ustring:            UTF-8 encoded string (using std::string) converted from the given string.
+    ustring:  UTF-8 encoded string (using std::string) converted from the given string.
 */
 ustring utf16to8( const wstring& utf16Chars ) {
     //Determine how many bytes we'll need to encode this string as UTF-8
@@ -149,7 +155,8 @@ ustring utf16to8( const wstring& utf16Chars ) {
 
 /*
 utf16to8{2}
------------------------
+-----------
+
 Description:
     Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
     to char-based UTF-8 encoding ("MultiByte").
@@ -160,13 +167,13 @@ Description:
         If the given string is not null terminated, the output will not be null terminated either.
 
 Arguments:
-    utf16Chars:         Pointer to a buffer of wide characters (wchar_t) holding the UTF-16 encoded characters to convert.
-    utf16CharCount:     The number of CHARACTERS (not bytes) to convert from utf16Chars.
-                            Can be -1 if utf16Chars is a null terminated string.
-    utf8BytesOut:       Pointer to a buffer of bytes (char) that will hold the UTF-8 encoded characters.
+    utf16Chars:     Pointer to a buffer of wide characters (wchar_t) holding the UTF-16 encoded characters to convert.
+    utf16CharCount  The number of CHARACTERS (not bytes) to convert from utf16Chars.
+                        Can be -1 if utf16Chars is a null terminated string.
+    utf8BytesOut:   Pointer to a buffer of bytes (char) that will hold the UTF-8 encoded characters.
 
 Returns:
-    ustring:            UTF-8 encoded string converted from the given string.
+    ustring:  UTF-8 encoded string converted from the given string.
 */
 ustring utf16to8( const wchar* const utf16Chars, const int32 utf16CharCount ) {
     //Determine how many bytes we'll need to encode these characters as UTF-8
@@ -186,7 +193,8 @@ ustring utf16to8( const wchar* const utf16Chars, const int32 utf16CharCount ) {
 
 /*
 utf16to8{3}
------------------------
+-----------
+
 Description:
     Converts from Windows' wchar_t-based little-endian UTF-16 encoding ("Unicode")
     to char-based UTF-8 encoding ("MultiByte").
@@ -218,5 +226,7 @@ int32 utf16to8( const wchar* const utf16Chars, const int32 utf16CharCount, uchar
     return byteCount;
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

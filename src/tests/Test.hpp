@@ -13,21 +13,23 @@ Description:
 
 
 //Includes
-#include <string>       //std::string
-#include <set>          //std::set
-#include <functional>   //std::functional
+#include <string>  //std::string
+#include <set>     //std::set
 
 
 
 
-#define UT_TEST_BEGIN( name )                                        \
+//Macros
+#define UT_TEST_BEGIN( name )                               \
     ::UnitTest::UnitTest test_##name( #name, []() -> bool {
 
-#define UT_TEST_END()                                                \
+#define UT_TEST_END()                                       \
     } );
 
-#define UT_TEST( name, fn, spec )                                    \
+#define UT_TEST( name, fn, spec )                           \
     ::UnitTest::UnitTest test_##name( #name, fn spec );
+
+
 
 
 namespace UnitTest {
@@ -69,7 +71,7 @@ private:
 //Meant for use with UT_TEST_BEGIN( name ) and UT_TEST_END()
 class UnitTest : public AbstractUnitTest {
 private:
-    typedef bool(*RunTestPtr)();
+    using RunTestPtr = bool(*)();
 public:
     UnitTest( const std::string& name, RunTestPtr fn );
     virtual bool run();
@@ -80,7 +82,7 @@ private:
 
 
 
-}
+} //namespace UnitTest
 
 
 

@@ -11,13 +11,16 @@ Description:
 
 
 //Includes
-#include <brimstone/Window.hpp>         //Class header
+#include <brimstone/Window.hpp>         //Header
 #include "window/WindowImpl.hpp"        //Brimstone::Private::WindowImpl
 
 
 
 
 namespace Brimstone {
+
+
+
 
 Window::Window() :
     m_impl( nullptr ) {
@@ -225,4 +228,7 @@ WindowHandle Window::getHandle() const {
     return m_impl->getHandle();
 }
 
-}
+
+
+
+} //namespace Brimstone

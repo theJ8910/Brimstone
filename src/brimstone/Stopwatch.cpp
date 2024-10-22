@@ -11,12 +11,15 @@ Description:
 
 
 //Includes
-#include <brimstone/Stopwatch.hpp>  //Header file
+#include <brimstone/Stopwatch.hpp>  //Header
 
 
 
 
 namespace Brimstone {
+
+
+
 
 Stopwatch::Stopwatch() {
     reset();
@@ -41,4 +44,6 @@ std::uint64_t Stopwatch::getNanoseconds() {
 //Returns the number of milliseconds that have passed between calls to .start() and .stop()
 
 
-}
+
+
+} //namespace Brimstone

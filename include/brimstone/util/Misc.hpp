@@ -34,6 +34,9 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 //Returns how many elements are in a C++ range
 template< typename T >
 inline std::size_t rangeSize( const T& cppRange ) {
@@ -52,19 +55,19 @@ inline std::size_t rangeSize( const T (&/* cppRange */)[N] ) {
 //Non-tuples have a size of "1".
 template< typename T >
 struct TupleSize {
-    typedef std::integral_constant< int32, 1 > size;
+    using size = std::integral_constant< int32, 1 >;
 };
 
 //void has a size of 0
 template<>
 struct TupleSize< void > {
-    typedef std::integral_constant< int32, 0 > size;
+    using size = std::integral_constant< int32, 0 >;
 };
 
 //tuples have a size dependent upon the number of types provided
 template< typename... Types >
 struct TupleSize< std::tuple< Types... > > {
-    typedef std::integral_constant< int32, sizeof...( Types ) > size;
+    using size = std::integral_constant< int32, sizeof...( Types ) >;
 };
 
 //Gets the underlying type of the given enum class, T,
@@ -74,16 +77,19 @@ struct TupleSize< std::tuple< Types... > > {
 //http://stackoverflow.com/questions/18837857/cant-use-enum-class-as-unordered-map-key
 template< typename T >
 struct EnumHasher {
-    typedef T                                               Enum;
-    typedef typename std::underlying_type< Enum >::type     Underlying;
-    typedef typename std::hash< Underlying >::result_type   Result;
+    using Enum       = T;
+    using Underlying = typename std::underlying_type< Enum >::type;
+    using Result     = typename std::hash< Underlying >::result_type;
 
     Result operator()( const Enum& enumr ) const {
         return std::hash< Underlying >()( static_cast< Underlying >( enumr ) );
     }
 };
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

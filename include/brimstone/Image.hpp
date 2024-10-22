@@ -48,6 +48,10 @@ private:
 
 
 
-}
+
+} //namespace Brimstone
+
+
+
 
 #endif //BRIMSTONE_IMAGE_HPP

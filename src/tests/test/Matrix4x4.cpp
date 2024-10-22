@@ -4,187 +4,209 @@ test/Matrix4x4.cpp
 Copyright (c) 2024, theJ89
 
 Description:
-    Unit tests for Matrix<T,4,4> specialization
+    Unit tests for Matrix< T, 4, 4 > specialization
 */
 
 
 
 
 //Includes
-#include "../Test.hpp"
-#include "../utils.hpp"         //allEqual, allEqualTo
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo
 
-#include <cstddef>              //std::size_t
+#include <brimstone/Matrix.hpp>     //Brimstone::Matrix4x4i, Brimstone::Matrix4x4f
+#include <brimstone/Vector.hpp>     //Brimstone::Vector4i
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException
 
-#include <brimstone/Matrix.hpp>
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    using ::Brimstone::Matrix4x4i;
-    using ::Brimstone::Matrix4x4f;
-    using ::Brimstone::Vector4i;
-    using ::Brimstone::BoundsException;
 
-    const std::size_t cv_rows = 4;
-    const std::size_t cv_cols = 4;
-    const std::size_t cv_size = cv_rows * cv_cols;
-    const int    cv_zero[16] {
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0
-    };
-    const int    cv_identity[16] {
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    };
-    const int    cv_values[16] {
-          1,    2,     3,    4,
-          5,    6,     7,    8,
-          9,   10,    11,   12,
-         13,   14,    15,   16,
-    };
-    const int    cv_valuesAlt[16] {
-         17,   18,    19,   20,
-         21,   22,    23,   24,
-         25,   26,    27,   28,
-         29,   30,    31,   32
-    };
-    const int    cv_valuesDiagonal[16] {
-         17,    2,     3,    4,
-          5,   22,     7,    8,
-          9,   10,    27,   12,
-         13,   14,    15,   32
-    };
-    const int   cv_diagonal[4] { 17, 22, 27, 32 };
-    const int   cv_trace               = 34;
-    const int   cv_valuesVector[4]     = {   17,   18,   19,   20 };
-    const int   cv_mulVectorResult1[4] = {  538,  612,  686,  760 };
-    const int   cv_mulVectorResult2[4] = {  190,  486,  782, 1078 };
-    const int   cv_lowerTriangular[16] {
-          1,    0,     0,    0,
-          5,    6,     0,    0,
-          9,   10,    11,    0,
-         13,   14,    15,   16
-    };
-    const int    cv_upperTriangular[16] {
-          1,    2,     3,    4,
-          0,    6,     7,    8,
-          0,    0,    11,   12,
-          0,    0,     0,   16
-    };
-    const int    cv_arithmetic1[16] {
-          2,    8,    16,   32,
-          9,   13,    21,   25,
-        -15,  -10,     0,   10,
-         14,   52,   100,   50
-    };
-    const int    cv_arithmetic2[16] {
-          1,    2,    -2,    4,
-          9,  -13,     7,    5,
-         -5,    3,   100,  -10,
-          7,   16,    50,   10
-    };
-    const int    cv_addResult[16] {
-          3,   10,    14,   36,
-         18,    0,    28,   30,
-        -20,   -7,   100,    0,
-         21,   68,   150,   60
-    };
-    const int    cv_subResult[16] {
-          1,    6,    18,   28,
-          0,   26,    14,   20,
-        -10,  -13,  -100,   20,
-          7,   36,    50,   40
-    };
-    const int    cv_mulResult[16] {
-         218,  460,  3252,  208,
-         196,  312,  3423,  141,
-         -35,  260,   460,  -10,
-         332,  452, 12836, -184
-    };
-    const int    cv_scalar = 2;
-    const int    cv_addScalarResult[16] {
-          4,   10,    18,   34,
-         11,   15,    23,   27,
-        -13,   -8,     2,   12,
-         16,   54,   102,   52
-    };
-    const int    cv_subScalarResult[16] {
-          0,    6,    14,   30,
-          7,   11,    19,   23,
-        -17,  -12,    -2,    8,
-         12,   50,    98,   48
-    };
-    const int    cv_mulScalarResult[16] {
-          4,   16,    32,   64,
-         18,   26,    42,   50,
-        -30,  -20,     0,   20,
-         28,  104,   200,  100
-    };
-    const int    cv_divScalarResult[16] {
-          1,    4,     8,   16,
-          4,    6,    10,   12,
-         -7,   -5,     0,    5,
-          7,   26,    50,   25,
-    };
-    const int    cv_negateResult[16] {
-         -2,   -8,   -16,  -32,
-         -9,  -13,   -21,  -25,
-         15,   10,     0,  -10,
-        -14,  -52,  -100,  -50
-    };
-    const int    cv_transpose[16] {
-          1,    5,     9,   13,
-          2,    6,    10,   14,
-          3,    7,    11,   15,
-          4,    8,    12,   16
-    };
 
-    const char*  cv_output =
-        " 1  2  3  4\n"
-        " 5  6  7  8\n"
-        " 9 10 11 12\n"
-        "13 14 15 16\n";
 
-    const float  cv_valuesF[16] {
-         1.0f,  2.0f,  3.0f,  4.0f,
-         5.0f,  6.0f,  7.0f,  8.0f,
-         9.0f, 10.0f, 11.0f, 12.0f,
-        13.0f, 14.0f, 15.0f, 16.0f
-    };
-    const float  cv_valuesAltF[16] {
-        17.0f, 18.0f, 19.0f, 20.0f,
-        21.0f, 22.0f, 23.0f, 24.0f,
-        25.0f, 26.0f, 27.0f, 28.0f,
-        29.0f, 30.0f, 31.0f, 32.0f
-    };
-    const float  cv_invertF[16] {
-         -1.0f,   2.0f,  13.0f,  -4.0f,
-         -6.0f,  17.0f,   8.0f,  -9.0f,
-         11.0f, -22.0f,  -3.0f, -14.0f,
-         16.0f,  -7.0f, -18.0f,  19.0f
-    };
-    const float  cv_inverseF[16] {
-          450.0f / 7260.0f,   459.0f / 7260.0f,   240.0f / 7260.0f,  489.0f / 7260.0f,
-          -26.0f / 7260.0f,   472.0f / 7260.0f,   -30.0f / 7260.0f,  196.0f / 7260.0f,
-          674.0f / 7260.0f,  -145.0f / 7260.0f,   -60.0f / 7260.0f,   29.0f / 7260.0f,
-          250.0f / 7260.0f,  -350.0f / 7260.0f,  -270.0f / 7260.0f,   70.0f / 7260.0f,
-    };
 
-    const float  cv_determinantF = -72600.0f;
-    const char*  cv_outputF =
-        " 1.00000  2.00000  3.00000  4.00000\n"
-        " 5.00000  6.00000  7.00000  8.00000\n"
-        " 9.00000 10.00000 11.00000 12.00000\n"
-        "13.00000 14.00000 15.00000 16.00000\n";
-}
+//Types
+using ::Brimstone::Matrix4x4i;
+using ::Brimstone::Matrix4x4f;
+using ::Brimstone::Vector4i;
+using ::Brimstone::BoundsException;
+
+
+
+
+//Constants
+const std::size_t cv_rows = 4;
+const std::size_t cv_cols = 4;
+const std::size_t cv_size = cv_rows * cv_cols;
+const int         cv_zero[16] {
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+};
+const int         cv_identity[16] {
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+};
+const int         cv_values[16] {
+      1,    2,     3,    4,
+      5,    6,     7,    8,
+      9,   10,    11,   12,
+     13,   14,    15,   16,
+};
+const int         cv_valuesAlt[16] {
+     17,   18,    19,   20,
+     21,   22,    23,   24,
+     25,   26,    27,   28,
+     29,   30,    31,   32
+};
+const int         cv_valuesDiagonal[16] {
+     17,    2,     3,    4,
+      5,   22,     7,    8,
+      9,   10,    27,   12,
+     13,   14,    15,   32
+};
+const int         cv_diagonal[4] { 17, 22, 27, 32 };
+const int         cv_trace               = 34;
+const int         cv_valuesVector[4]     = {   17,   18,   19,   20 };
+const int         cv_mulVectorResult1[4] = {  538,  612,  686,  760 };
+const int         cv_mulVectorResult2[4] = {  190,  486,  782, 1078 };
+const int         cv_lowerTriangular[16] {
+      1,    0,     0,    0,
+      5,    6,     0,    0,
+      9,   10,    11,    0,
+     13,   14,    15,   16
+};
+const int         cv_upperTriangular[16] {
+      1,    2,     3,    4,
+      0,    6,     7,    8,
+      0,    0,    11,   12,
+      0,    0,     0,   16
+};
+const int         cv_arithmetic1[16] {
+      2,    8,    16,   32,
+      9,   13,    21,   25,
+    -15,  -10,     0,   10,
+     14,   52,   100,   50
+};
+const int         cv_arithmetic2[16] {
+      1,    2,    -2,    4,
+      9,  -13,     7,    5,
+     -5,    3,   100,  -10,
+      7,   16,    50,   10
+};
+const int         cv_addResult[16] {
+      3,   10,    14,   36,
+     18,    0,    28,   30,
+    -20,   -7,   100,    0,
+     21,   68,   150,   60
+};
+const int         cv_subResult[16] {
+      1,    6,    18,   28,
+      0,   26,    14,   20,
+    -10,  -13,  -100,   20,
+      7,   36,    50,   40
+};
+const int         cv_mulResult[16] {
+     218,  460,  3252,  208,
+     196,  312,  3423,  141,
+     -35,  260,   460,  -10,
+     332,  452, 12836, -184
+};
+const int         cv_scalar = 2;
+const int         cv_addScalarResult[16] {
+      4,   10,    18,   34,
+     11,   15,    23,   27,
+    -13,   -8,     2,   12,
+     16,   54,   102,   52
+};
+const int         cv_subScalarResult[16] {
+      0,    6,    14,   30,
+      7,   11,    19,   23,
+    -17,  -12,    -2,    8,
+     12,   50,    98,   48
+};
+const int         cv_mulScalarResult[16] {
+      4,   16,    32,   64,
+     18,   26,    42,   50,
+    -30,  -20,     0,   20,
+     28,  104,   200,  100
+};
+const int         cv_divScalarResult[16] {
+      1,    4,     8,   16,
+      4,    6,    10,   12,
+     -7,   -5,     0,    5,
+      7,   26,    50,   25,
+};
+const int         cv_negateResult[16] {
+     -2,   -8,   -16,  -32,
+     -9,  -13,   -21,  -25,
+     15,   10,     0,  -10,
+    -14,  -52,  -100,  -50
+};
+const int         cv_transpose[16] {
+      1,    5,     9,   13,
+      2,    6,    10,   14,
+      3,    7,    11,   15,
+      4,    8,    12,   16
+};
+
+const char*       cv_output =
+    " 1  2  3  4\n"
+    " 5  6  7  8\n"
+    " 9 10 11 12\n"
+    "13 14 15 16\n";
+
+const float       cv_valuesF[16] {
+     1.0f,  2.0f,  3.0f,  4.0f,
+     5.0f,  6.0f,  7.0f,  8.0f,
+     9.0f, 10.0f, 11.0f, 12.0f,
+    13.0f, 14.0f, 15.0f, 16.0f
+};
+const float       cv_valuesAltF[16] {
+    17.0f, 18.0f, 19.0f, 20.0f,
+    21.0f, 22.0f, 23.0f, 24.0f,
+    25.0f, 26.0f, 27.0f, 28.0f,
+    29.0f, 30.0f, 31.0f, 32.0f
+};
+const float       cv_invertF[16] {
+     -1.0f,   2.0f,  13.0f,  -4.0f,
+     -6.0f,  17.0f,   8.0f,  -9.0f,
+     11.0f, -22.0f,  -3.0f, -14.0f,
+     16.0f,  -7.0f, -18.0f,  19.0f
+};
+const float       cv_inverseF[16] {
+      450.0f / 7260.0f,   459.0f / 7260.0f,   240.0f / 7260.0f,  489.0f / 7260.0f,
+      -26.0f / 7260.0f,   472.0f / 7260.0f,   -30.0f / 7260.0f,  196.0f / 7260.0f,
+      674.0f / 7260.0f,  -145.0f / 7260.0f,   -60.0f / 7260.0f,   29.0f / 7260.0f,
+      250.0f / 7260.0f,  -350.0f / 7260.0f,  -270.0f / 7260.0f,   70.0f / 7260.0f,
+};
+
+const float       cv_determinantF = -72600.0f;
+const char*       cv_outputF =
+    " 1.00000  2.00000  3.00000  4.00000\n"
+    " 5.00000  6.00000  7.00000  8.00000\n"
+    " 9.00000 10.00000 11.00000 12.00000\n"
+    "13.00000 14.00000 15.00000 16.00000\n";
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Matrix4x4_constructorFill )
     Matrix4x4i o( 1 );
@@ -579,7 +601,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix4x4_output_int )
     Matrix4x4i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -588,7 +610,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Matrix4x4_output_float )
     Matrix4x4f o( cv_valuesF );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_outputF;
@@ -989,4 +1011,7 @@ UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
-}
+
+
+
+} //namespace UnitTest

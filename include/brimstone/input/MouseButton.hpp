@@ -16,6 +16,9 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 enum class MouseButton {
     //Invalid buttons are mapped to this button
     INVALID,
@@ -33,9 +36,16 @@ enum class MouseButton {
     COUNT
 };
 
+
+
+
+//Forward declarations
 const char* mouseButtonToString( const MouseButton button );
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

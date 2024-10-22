@@ -11,25 +11,45 @@ Description:
 
 
 //Includes
-#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"             //allEqual, allEqualTo, copyAll
+#include "../Test.hpp"               //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"              //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll
 
-#include <cstddef>                  //std::size_t
+#include <brimstone/util/Array.hpp>  //Brimstone::Array
 
-#include <brimstone/util/Array.hpp>
+#include <cstddef>                   //std::size_t
+#include <sstream>                   //std::ostringstream
 
 
 
 
 namespace {
-    typedef ::Brimstone::Array< int, 5 > Array5i;
 
-    const std::size_t cv_size         = 5;
-    const int         cv_values[5]    { 1, 2, 3, 4,  5 };
-    const int         cv_valuesAlt[5] { 6, 7, 8, 9, 10 };
-}
+
+
+
+//Types
+using Array5i = ::Brimstone::Array< int, 5 >;
+
+
+
+
+//Constants
+const std::size_t cv_size         = 5;
+const int         cv_values[5]    { 1, 2, 3, 4,  5 };
+const int         cv_valuesAlt[5] { 6, 7, 8, 9, 10 };
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Array_constructorFill )
     Array5i o( 1 );
@@ -160,4 +180,7 @@ UT_TEST_BEGIN( Array_indexConst )
     return allEqual( data, cv_values );
 UT_TEST_END()
 
-}
+
+
+
+} //namespace UnitTest

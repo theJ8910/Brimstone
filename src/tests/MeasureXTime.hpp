@@ -32,20 +32,23 @@ Description:
 
 
 //Includes
-#include <iostream>     //std::cout
-#include <string>       //std::string
-#include <chrono>       //std::chrono::high_resolution_clock
+#include <iostream>  //std::cout
+#include <string>    //std::string
+#include <chrono>    //std::chrono::high_resolution_clock
 
 
 
 
 namespace UnitTest {
 
+
+
+
 //Run a single test
 template< typename SingleTest >
 void measure() {
     using namespace std::chrono;
-    typedef high_resolution_clock clock;
+    using clock = high_resolution_clock;
 
     SingleTest test;
     int count = test.getCount();
@@ -80,6 +83,9 @@ public:
     void run() {}
     void end() {}
 };
+
+
+
 
 }
 

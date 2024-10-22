@@ -6,15 +6,22 @@ Copyright (c) 2024, theJ89
 Description:
     See Graphics.hpp for more information.
 */
-//Includes
-#include <brimstone/Graphics.hpp>       //Header file
 
-#include "graphics/GraphicsImpl.hpp"    //Brimstone::Private::GraphicsImpl, etc
+
+
+
+//Includes
+#include <brimstone/Graphics.hpp>     //Header
+
+#include "graphics/GraphicsImpl.hpp"  //Brimstone::Private::GraphicsImpl, etc
 
 
 
 
 namespace Brimstone {
+
+
+
 
 Graphics::Graphics() :
     m_impl( nullptr ) {
@@ -516,5 +523,8 @@ void Sampler::bind() {
 void Sampler::unbind() {
     m_impl->unbind();
 }
+
+
+
 
 }

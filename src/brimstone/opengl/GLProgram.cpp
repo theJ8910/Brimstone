@@ -11,17 +11,23 @@ Description:
 
 
 //Includes
-#include <brimstone/Exception.hpp>  //GraphicsException
-#include "GLProgram.hpp"            //Class header
-#include "GLShader.hpp"             //GLShader
+#include "GLProgram.hpp"            //Header
+#include "GLShader.hpp"             //Brimstone::Private::GLShader
+
+#include <brimstone/Exception.hpp>  //Brimstone::GraphicsException
 
 #include <memory>                   //std::unique_ptr
+
 #include <gll/gl_4_6_comp.hpp>      //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
 
 
-namespace Brimstone {
-namespace Private {
+
+
+namespace Brimstone::Private {
+
+
+
 
 GLProgram::GLProgram() :
     m_name( 0 ) {
@@ -114,5 +120,7 @@ void GLProgram::setUniform( const GLchar* const name, const GLfloat x, const GLf
     glUniform4f( loc, x, y, z, w );
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

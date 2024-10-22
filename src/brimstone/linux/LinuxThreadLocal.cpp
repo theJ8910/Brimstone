@@ -17,8 +17,10 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 LinuxThreadLocal::LinuxThreadLocal() {
     if( pthread_key_create( &m_key, nullptr ) )
@@ -42,5 +44,7 @@ void* LinuxThreadLocal::get() const {
     return pthread_getspecific( m_key );
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

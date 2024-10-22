@@ -4,74 +4,94 @@ test/Vector2.cpp
 Copyright (c) 2024, theJ89
 
 Description:
-    Unit tests for Vector<T,2> specialization
+    Unit tests for Vector< T, 2 > specialization
 */
 
 
 
 
 //Includes
-#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, allWithin, FAST_SQRT_ERR
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll, UnitTest::isWithin, UnitTest::allWithin, UnitTest::FAST_SQRT_ERR
 
-#include <cstddef>              //std::size_t
-#include <sstream>              //std::ostringstream
+#include <brimstone/Vector.hpp>     //Brimstone::Vector2i
+#include <brimstone/Point.hpp>      //Brimstone::Point2i
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException, Brimstone::DivideByZeroException
 
-#include <brimstone/Vector.hpp>
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    using ::Brimstone::Vector2i;
-    using ::Brimstone::Point2i;
-    using ::Brimstone::Vector2f;
-    using ::Brimstone::BoundsException;
-    using ::Brimstone::DivideByZeroException;
 
-    const std::size_t cv_size               = 2;
-    const int         cv_zero[2]            {  0,  0 };
-    const int         cv_values[2]          {  1,  2 };
-    const int         cv_valuesAlt[2]       {  5,  6 };
 
-    const int         cv_unit[2]            {  0,  1 };
-    const int         cv_left[2]            { -2,  1 };
-    const int         cv_right[2]           {  2, -1 };
-    const int         cv_lengthSq           = 61;
-    const int         cv_length             = 7;  //Rounded down from 7.81024968f
-    const int         cv_dot                = 17;
 
-    const int         cv_arithmetic1[2]     {   6, 10 };
-    const int         cv_arithmetic2[2]     {   3,  5 };
-    const int         cv_addResult[2]       {   9, 15 };
-    const int         cv_subResult[2]       {   3,  5 };
-    const int         cv_mulResult[2]       {  18, 50 };
-    const int         cv_divResult[2]       {   2,  2 };
-    const int         cv_scalar             = 2;
-    const int         cv_addScalarResult[2] {  8,  12 };
-    const int         cv_subScalarResult[2] {  4,   8 };
-    const int         cv_mulScalarResult[2] { 12,  20 };
-    const int         cv_divScalarResult[2] {  3,   5 };
-    const int         cv_negateResult[2]    { -6, -10 };
-    const char*       cv_output             = "< 1, 2 >";
 
-    const float       cv_zeroF[2]           { 0.0f, 0.0f };
-    const float       cv_valuesF[2]         { 1.0f, 2.0f };
-    const float       cv_valuesAltF[2]      { 5.0f, 6.0f };
-    const float       cv_lengthF            = 7.81024968f;
-    const float       cv_unitF[2] {
-         5.0f / cv_lengthF,
-         6.0f / cv_lengthF
-    };
-    const float       cv_inverseF[2] {
-         1.0f / 1.0f,
-         1.0f / 2.0f
-    };
-    const char*       cv_outputF = "< 1.00000, 2.00000 >";
-}
+//Types
+using ::Brimstone::Vector2i;
+using ::Brimstone::Point2i;
+using ::Brimstone::Vector2f;
+using ::Brimstone::BoundsException;
+using ::Brimstone::DivideByZeroException;
+
+
+
+
+//Constants
+const std::size_t cv_size               = 2;
+const int         cv_zero[2]            {  0,  0 };
+const int         cv_values[2]          {  1,  2 };
+const int         cv_valuesAlt[2]       {  5,  6 };
+
+const int         cv_unit[2]            {  0,  1 };
+const int         cv_left[2]            { -2,  1 };
+const int         cv_right[2]           {  2, -1 };
+const int         cv_lengthSq           = 61;
+const int         cv_length             = 7;  //Rounded down from 7.81024968f
+const int         cv_dot                = 17;
+
+const int         cv_arithmetic1[2]     {   6, 10 };
+const int         cv_arithmetic2[2]     {   3,  5 };
+const int         cv_addResult[2]       {   9, 15 };
+const int         cv_subResult[2]       {   3,  5 };
+const int         cv_mulResult[2]       {  18, 50 };
+const int         cv_divResult[2]       {   2,  2 };
+const int         cv_scalar             = 2;
+const int         cv_addScalarResult[2] {  8,  12 };
+const int         cv_subScalarResult[2] {  4,   8 };
+const int         cv_mulScalarResult[2] { 12,  20 };
+const int         cv_divScalarResult[2] {  3,   5 };
+const int         cv_negateResult[2]    { -6, -10 };
+const char*       cv_output             = "< 1, 2 >";
+
+const float       cv_zeroF[2]           { 0.0f, 0.0f };
+const float       cv_valuesF[2]         { 1.0f, 2.0f };
+const float       cv_valuesAltF[2]      { 5.0f, 6.0f };
+const float       cv_lengthF            = 7.81024968f;
+const float       cv_unitF[2] {
+     5.0f / cv_lengthF,
+     6.0f / cv_lengthF
+};
+const float       cv_inverseF[2] {
+     1.0f / 1.0f,
+     1.0f / 2.0f
+};
+const char*       cv_outputF            = "< 1.00000, 2.00000 >";
+
+
+
+
+} //namespace
+
+
 
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Vector2_constructorFill )
     Vector2i o( 1 );
@@ -391,7 +411,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector2_output_int )
     Vector2i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -400,7 +420,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Vector2_output_float )
     Vector2f o( cv_valuesF );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_outputF;
@@ -821,4 +841,7 @@ UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
 
-}
+
+
+
+} //namespace UnitTest

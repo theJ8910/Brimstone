@@ -14,10 +14,10 @@ Description:
 
 
 //Includes
-#include <cstddef>                          //std::size_t
-#include <utility>                          //std::swap
+#include <cstddef>                         //std::size_t
+#include <utility>                         //std::swap
 
-#include <brimstone/matrix/MatrixRxC.hpp>
+#include <brimstone/matrix/MatrixRxC.hpp>  //Brimstone::Matrix
 
 
 
@@ -52,6 +52,9 @@ Description:
     bool Matrix spec::isDiagonal() const {                                  \
         return isLowerTriangular() && isUpperTriangular();                  \
     }
+
+
+
 
 namespace Brimstone {
 
@@ -419,7 +422,7 @@ Matrix< T, N, N > invert( const Matrix< T, N, N >& matrix ) {
 
 
 
-}
+} //namespace Brimstone
 
 
 

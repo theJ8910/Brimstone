@@ -11,13 +11,16 @@ Description:
 
 
 //Includes
-#include <brimstone/ui/Events.hpp>  //Class header
+#include <brimstone/ui/Events.hpp>  //Header
 #include <brimstone/ui/IPanel.hpp>  //Brimstone::IPanel
 
 
 
 
 namespace Brimstone {
+
+
+
 
 AbstractEvent::AbstractEvent( IPanel& source ) :
     m_source( &source ) {
@@ -255,5 +258,8 @@ void AbstractEventHandler::handle( const MoveEvent&         ) {}
 void AbstractEventHandler::handle( const ResizeEvent&       ) {}
 void AbstractEventHandler::handle( const CloseEvent&        ) {}
 void AbstractEventHandler::handle( const ClickEvent&        ) {}
+
+
+
 
 }

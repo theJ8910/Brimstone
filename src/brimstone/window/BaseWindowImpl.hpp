@@ -13,18 +13,20 @@ Description:
 
 
 //Includes
-#include <brimstone/window/WindowEvent.hpp>     //Brimstone::WindowEvent
-#include <brimstone/Point.hpp>                  //Brimstone::Point2i
-#include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
-#include <brimstone/types.hpp>                  //Brimstone::ustring
+#include <brimstone/window/WindowEvent.hpp>  //Brimstone::WindowEvent
+#include <brimstone/Point.hpp>               //Brimstone::Point2i
+#include <brimstone/Bounds.hpp>              //Brimstone::Bounds2i
+#include <brimstone/types.hpp>               //Brimstone::ustring
 
-#include <queue>                                //std::queue
-
-
+#include <queue>                             //std::queue
 
 
-namespace Brimstone {
-namespace Private {
+
+
+namespace Brimstone::Private {
+
+
+
 
 class BaseWindowImpl {
 public:
@@ -102,7 +104,12 @@ protected:
     std::queue< WindowEvent >   m_eventQueue;
 };
 
+
+
+
 }
-}
+
+
+
 
 #endif //BS_WINDOW_BASEWINDOWIMPL_HPP

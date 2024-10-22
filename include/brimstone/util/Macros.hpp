@@ -17,7 +17,7 @@ Description:
 
 
 //Includes
-#include <brimstone/Exception.hpp>
+#include <brimstone/Exception.hpp>  //Brimstone::NullPointerException, Brimstone::SizeException, Brimstone::BoundsException, Brimstone::DivideByZeroException, Brimstone::DomainException
 
 
 

@@ -18,8 +18,7 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -52,7 +51,9 @@ private:
 
 
 
-}
-}
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_LINUX_X11_XPIXMAP_HPP

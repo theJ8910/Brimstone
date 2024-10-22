@@ -11,10 +11,11 @@ Description:
 
 
 //Includes
-#include <brimstone/Exception.hpp>
-#include <brimstone/signals/Delegate.hpp>
-#include <brimstone/Logger.hpp>
-#include <boost/format.hpp>
+#include <brimstone/Exception.hpp>          //Header
+#include <brimstone/signals/Delegate.hpp>   //Brimstone::Delegate
+#include <brimstone/Logger.hpp>             //Brimstone::logError
+
+#include <boost/format.hpp>                 //boost::format
 
 
 
@@ -45,7 +46,13 @@ getDescription() is called.
     exceptionName::exceptionName( const ustring& description ) : Exception( description ) { \
     }
 
+
+
+
 namespace Brimstone {
+
+
+
 
 Exception::Exception() {
 }
@@ -95,6 +102,9 @@ void setUncaughtExceptionHandler( UncaughtExceptionHandler handler ) {
 UncaughtExceptionHandler getUncaughtExceptionHandler() {
     return Private::uncaughtExceptionHandler;
 }
+
+
+
 
 }
 

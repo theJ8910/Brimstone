@@ -23,8 +23,10 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 class XException : public IException {
 public:
@@ -42,7 +44,12 @@ void       xerrEnd();
 bool       xerrExists();
 XException xerrGet();
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_LINUX_X11_XEXCEPTION_HPP

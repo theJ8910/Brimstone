@@ -21,14 +21,18 @@ Description:
 
 
 //Includes
-#include <cstddef>                      //std::size_t
-#include <brimstone/util/Macros.hpp>    //BS_ASSERT_INDEX
+#include <cstddef>                    //std::size_t
+#include <brimstone/util/Macros.hpp>  //BS_ASSERT_INDEX
 
-#include <vector>                       //std::vector
+#include <vector>                     //std::vector
+
 
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class MatrixStack {
@@ -107,6 +111,12 @@ const T& MatrixStack<T>::operator []( const std::size_t index ) const {
     return m_stack[index];
 }
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_MATRIX_MATRXISTACK_HPP

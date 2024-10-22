@@ -11,14 +11,13 @@ Description:
 
 
 //Includes
-#include "XInputContext.hpp"  //Class header
+#include "XInputContext.hpp"  //Header
 #include "XShared.hpp"        //Brimstone::Private::XShared
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -177,5 +176,4 @@ XInputContext& XInputContext::operator =( XInputContext&& toMove ) {
 
 
 
-}
-}
+} //namespace Brimstone::Private

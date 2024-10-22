@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Vector for 2D vectors.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Vector2< T >: Vector<T,2>
         Vector2i:     Vector<int32,2>
         Vector2f:     Vector<float,2>
@@ -18,14 +18,15 @@ Description:
 
 
 //Includes
-#include <brimstone/vector/VectorN.hpp>
+#include <brimstone/vector/VectorN.hpp>  //Brimstone::Vector
 
 
 
 
-namespace Brimstone {
+namespace Brimstone::Private {
 
-namespace Private {
+
+
 
 template< typename T >
 void intNormalize( Vector< T, 2 >& vecInOut );
@@ -33,7 +34,18 @@ void intNormalize( Vector< T, 2 >& vecInOut );
 template< typename T >
 void floatNormalize( Vector< T, 2 >& vecInOut );
 
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
 
 template< typename T >
 class Vector< T, 2 > {
@@ -364,7 +376,18 @@ T dot( const Vector< T, 2 >& left, const Vector< T, 2 >& right ) {
            left.y * right.y;
 }
 
-namespace Private {
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 template< typename T >
 void intNormalize( Vector< T, 2 >& vecInOut ) {
@@ -392,16 +415,27 @@ void floatNormalize( Vector< T, 2 >& vecInOut ) {
     vecInOut.y *= invLen;
 }
 
-}
+} //namespace Brimstone::Private
 
-//Typedefs
+
+
+
+namespace Brimstone {
+
+
+
+
+//Types
 template< typename T >
-using Vector2 = Vector< T, 2 >;
-typedef Vector2< int32  > Vector2i;
-typedef Vector2< float  > Vector2f;
-typedef Vector2< double > Vector2d;
+using Vector2  = Vector< T, 2 >;
+using Vector2i = Vector2< int32  >;
+using Vector2f = Vector2< float  >;
+using Vector2d = Vector2< double >;
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

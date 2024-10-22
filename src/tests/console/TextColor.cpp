@@ -11,16 +11,19 @@ Description:
 
 
 //Includes
-#include "TextColor.hpp"
+#include "TextColor.hpp"    //Header
 
 #ifdef UT_BUILD_LINUX
-#include <stdio.h>
+#include <cstdio>           //std::printf
 #endif //UT_BUILD_LINUX
 
 
 
 
 namespace UnitTest {
+
+
+
 
 //Globals
 #ifdef UT_BUILD_WINDOWS
@@ -67,15 +70,15 @@ Description:
     Call this with no arguments to reset the text color back to normal.
 
 Arguments:
-    textColor:          The color of the text itself.
-                        Valid values are defined in the TextColors enum in TextColor.h.
-                        Defaults to TextColors::DEFAULT_FOREGROUND.
-    backgroundColor:    The color of the text's background.
-                        The same values that work for textColor will work for the background.
-                        Defaults to TextColors::DEFAULT_BACKGROUND.
+    textColor:        The color of the text itself.
+                      Valid values are defined in the TextColors enum in TextColor.h.
+                      Defaults to TextColors::DEFAULT_FOREGROUND.
+    backgroundColor:  The color of the text's background.
+                      The same values that work for textColor will work for the background.
+                      Defaults to TextColors::DEFAULT_BACKGROUND.
 
 Returns:
-    void:               N/A
+    void:             N/A
 */
 void setTextColor( const TextColors textColor, const TextColors backgroundColor ) {
 
@@ -88,7 +91,7 @@ void setTextColor( const TextColors textColor, const TextColors backgroundColor 
 
 #ifdef UT_BUILD_LINUX
 
-    printf( "\x1B[38;5;%um\x1B[48;5;%um", (unsigned int)textColor, (unsigned int)backgroundColor );
+    std::printf( "\x1B[38;5;%um\x1B[48;5;%um", (unsigned int)textColor, (unsigned int)backgroundColor );
 
 #endif //UT_BUILD_LINUX
 }
@@ -106,17 +109,17 @@ Description:
     Does nothing on Windows.
 
 Arguments:
-    xtermIndex:     An xterm256 color index.
+    xtermIndex:  An xterm256 color index.
 
 Returns:
-    void:           N/A
+    N/A
 */
 void setTextColorXT( const unsigned char xtermIndex ) {
     //NOTE: \x1B is short for "character with hexidecimal value 1B". 1B in hex is 16+11 = 27.
     //In the ASCII table, character 27 is the "escape" control character.
     //38 indicates we want to use xterm256 colors to set the foreground color
     //5 needs to be given after that as well (I'm guessing this is related to the 6 degrees each color has, 0-5?)
-    printf( "\x1B[38;5;%um", xtermIndex );
+    std::printf( "\x1B[38;5;%um", xtermIndex );
 }
 
 /*
@@ -128,12 +131,12 @@ Description:
     takes RGB values and tries to match them as closely to a color index as possible.
 
 Arguments:
-    red:            The red component of the color, between 0 and 255.
-    green:          The green component of the color, between 0 and 255.
-    blue:           The blue component of the color, between 0 and 255.
+    red:    The red component of the color, between 0 and 255.
+    green:  The green component of the color, between 0 and 255.
+    blue:   The blue component of the color, between 0 and 255.
 
 Returns:
-    void:           N/A
+    N/A
 */
 void setTextColorXT( const unsigned char red, const unsigned char green, const unsigned char blue ) {
     setTextColorXT( getXTIndex( red, green, blue ) );
@@ -153,7 +156,7 @@ Arguments:
     xtermIndex:     An xterm256 color index.
 
 Returns:
-    void:           N/A
+    N/A
 */
 void setBackgroundColorXT( const unsigned char xtermIndex ) {
     printf( "\x1B[48;5;%um", xtermIndex );
@@ -170,12 +173,12 @@ Description:
     Does nothing on Windows.
 
 Arguments:
-    red:            The red component of the color, between 0 and 255.
-    green:          The green component of the color, between 0 and 255.
-    blue:           The blue component of the color, between 0 and 255.
+    red:    The red component of the color, between 0 and 255.
+    green:  The green component of the color, between 0 and 255.
+    blue:   The blue component of the color, between 0 and 255.
 
 Returns:
-    void:           N/A
+    N/A
 */
 void setBackgroundColorXT( const unsigned char red, const unsigned char green, const unsigned char blue ) {
     //Same as setting foreground color, except 48 indicates we want to use xterm256 colors to set the background color
@@ -190,9 +193,9 @@ Description:
     Returns an xterm256 color index close to the given RGB values.
 
 Arguments:
-    red:            The red component of the color, between 0 and 255.
-    green:          The green component of the color, between 0 and 255.
-    blue:           The blue component of the color, between 0 and 255.
+    red:    The red component of the color, between 0 and 255.
+    green:  The green component of the color, between 0 and 255.
+    blue:   The blue component of the color, between 0 and 255.
 
 Returns:
     unsigned char:  The xterm256 color index.
@@ -245,4 +248,7 @@ void setBackgroundColorXT( const unsigned char, const unsigned char, const unsig
 
 #endif //UT_BUILD_LINUX
 
-}
+
+
+
+} //namespace UnitTest

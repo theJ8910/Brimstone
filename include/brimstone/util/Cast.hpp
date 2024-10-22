@@ -10,15 +10,16 @@ Description:
 
     Contains notes on standard C++ casts.
 */
-
 #ifndef BS_UTIL_CAST_HPP
 #define BS_UTIL_CAST_HPP
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 template< typename From, typename To >
 union UniversalUnion{
@@ -26,7 +27,18 @@ union UniversalUnion{
     To    to;
 };
 
-}
+
+
+
+}  //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
 
 /*
 Casts "from" from From to To if it is possible to do so implicitly.
@@ -195,7 +207,10 @@ C-style cast:
         In general, avoid C-style casts and use the other types of casts when possible.
 */
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

@@ -11,12 +11,15 @@ Description:
 
 
 //Includes
-#include "Exception.hpp"    //Header file
+#include "Exception.hpp"  //Header
 
 
 
 
 namespace UnitTest {
+
+
+
 
 /*
 Exception::Exception{1}
@@ -85,4 +88,7 @@ const std::string Exception::getDescription() const {
     return m_description;
 }
 
-}
+
+
+
+} //namespace UnitTest

@@ -23,8 +23,7 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -88,8 +87,7 @@ public:
 
 
 
-}
-}
+} //namespace Brimstone::Private
 
 
 

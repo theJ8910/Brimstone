@@ -33,12 +33,15 @@ Description:
 #include <mutex>                //std::mutex
 #include <memory>               //std::unique_ptr
 
-#include <brimstone/types.hpp>  //uchar
+#include <brimstone/types.hpp>  //Brimstone::uchar
 
 
 
 
 namespace Brimstone {
+
+
+
 
 enum class LogMessageType {
     DETAIL, INFO, WARNING, ERR      //Has to be ERR because Windows has a macro for ERROR, ugh
@@ -75,7 +78,7 @@ private:
 
 class Loggers {
 private:
-    typedef std::pair< std::unique_ptr< ILogger >, std::size_t > LoggerPair;
+    using LoggerPair = std::pair< std::unique_ptr< ILogger >, std::size_t >;
 public:
     static void        write( const ustring& str, LogMessageType type = LogMessageType::INFO );
     static std::size_t add( std::unique_ptr< ILogger >&& logger );
@@ -103,7 +106,10 @@ inline void logError( const ustring& str ) {
     Loggers::write( str, LogMessageType::ERR );
 }
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

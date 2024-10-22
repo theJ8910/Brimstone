@@ -13,12 +13,30 @@ Description:
 
 
 //Include
-#include "GLHeader.hpp"                     //HWND, HDC, HGLRC
+#include "GLHeader.hpp"  //HWND, HDC, HGLRC
+
+
 
 
 namespace Brimstone {
+
+
+
+
 class Window;
-namespace Private {
+
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 class WindowsGLContext {
 public:
@@ -51,8 +69,10 @@ private:
     HGLRC      m_context;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
 
 
 

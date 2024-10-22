@@ -20,6 +20,9 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 /*
 leadingZeroCount's implementation is platform dependent.
 On some platforms it may not be available.
@@ -35,6 +38,12 @@ uint32 closestUpperPowerOfTwo( const uint32 i );
 float fastSqrt( const float value );
 float fastInvSqrt( float value );
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_UTIL_MATH_HPP

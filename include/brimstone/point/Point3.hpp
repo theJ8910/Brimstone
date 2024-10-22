@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Point for 3D points.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Point3< T >: Point<T,3>
         Point3i:     Point<int32,3>
         Point3f:     Point<float,3>
@@ -18,12 +18,13 @@ Description:
 
 
 //Includes
-#include <brimstone/point/PointN.hpp>   //Point
+#include <brimstone/point/PointN.hpp>  //Brimstone::Point
 
 
 
 
 //Macros
+//Inherited methods from Point3 specializaton, Point, and Array
 #define BS_BASEPOINT3_DECLARE_METHODS( className )                                          \
     className( const T x, const T y, const T z );                                           \
     void set( const T x, const T y, const T z );                                            \
@@ -126,6 +127,9 @@ Description:
         return (*this);                                                                     \
     }
 
+
+
+
 namespace Brimstone {
 
 
@@ -223,14 +227,17 @@ T manhattan( const Point< T, 3 >& left, const Point< T, 3 >& right ) {
 
 
 
-//Typedefs
+//Types
 template< typename T >
-using Point3 = Point< T, 3 >;
-typedef Point3< int32  > Point3i;
-typedef Point3< float  > Point3f;
-typedef Point3< double > Point3d;
+using Point3  = Point< T, 3 >;
+using Point3i = Point3< int32  >;
+using Point3f = Point3< float  >;
+using Point3d = Point3< double >;
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

@@ -7,7 +7,7 @@ Description:
     Utility for template classes that allows them to automatically determine
     whether something should be passed by value or passed by reference.
 
-    RefType<T> consists of two typedefs:  RefType<T>::ref, and  RefType<T>::const_ref.
+    RefType<T> consists of two aliases:  RefType<T>::ref, and  RefType<T>::const_ref.
     If T is an object:
         ref is:       T&
         const_ref is: const T&
@@ -21,8 +21,8 @@ Description:
     template< typename T >
     class SomeClass {
     private:
-        typedef typename RefType<T>::ref       TRef;
-        typedef typename RefType<T>::const_ref TConstRef;
+        using TRef      = typename RefType<T>::ref;
+        using TConstRef = typename RefType<T>::const_ref;
     public:
         void SomeMethod( TConstRef param ) {
         };
@@ -35,28 +35,50 @@ Description:
 
 
 //Includes
-#include <cstdint>      //std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t
+#include <cstdint>  //std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t
+
+
+
+
+//Macros
+//Macro for defining a specialization for a primitive type
+#define MAKE_PRIMITIVE_REFTYPE_SPEC( type ) \
+    template<>                              \
+    class RefType< type > {                 \
+    public:                                 \
+        using ref       = type;             \
+        using const_ref = const type;       \
+    };
 
 
 
 
 namespace Brimstone {
 
+
+
+
 template< typename T >
 class RefType {
 public:
-    typedef       T  ref;
-    typedef const T& const_ref;
+    using ref       = T&;
+    using const_ref = const T& const_ref;
 };
 
-//Macro for defining a specialization for a primitive type
-#define MAKE_PRIMITIVE_REFTYPE_SPEC( type ) \
-    template<>\
-    class RefType< type > {\
-    public:\
-        typedef       type ref;\
-        typedef const type const_ref;\
-    };
+//Specialization for pointer types
+template< typename T >
+class RefType< T* > {
+public:
+    using ref       = T*;
+    using const_ref = T* const;
+};
+
+template< typename T >
+class RefType< const T* > {
+public:
+    using ref       = const T*;
+    using const_ref = const T* const;
+};
 
 //Specializations for primitive types
 MAKE_PRIMITIVE_REFTYPE_SPEC( bool          );
@@ -74,22 +96,10 @@ MAKE_PRIMITIVE_REFTYPE_SPEC( double        );
 //This macro is no longer necessary after this point
 #undef MAKE_PRIMITIVE_REFTYPE_SPEC
 
-//Specialization for pointer types
-template< typename T >
-class RefType< T* > {
-public:
-    typedef T*       ref;
-    typedef T* const const_ref;
-};
 
-template< typename T >
-class RefType< const T* > {
-public:
-    typedef const T*       ref;
-    typedef const T* const const_ref;
-};
 
-}
+
+} //namespace Brimstone
 
 
 

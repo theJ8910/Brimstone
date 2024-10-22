@@ -38,7 +38,13 @@ Description:
     void zero();                                        \
     bool isZero() const;
 
+
+
+
 namespace Brimstone {
+
+
+
 
 template< typename T, std::size_t N >
 class Size {
@@ -132,6 +138,12 @@ std::ostream& operator <<( std::ostream& left, const Size< T, N >& right ) {
     return left;
 }
 
-}
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_SIZE_SIZEN_HPP

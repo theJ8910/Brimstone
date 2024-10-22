@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Bounds for 2D bounds (rectangles).
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         * Bounds2< T >: Bounds<T,2>
         * Bounds2i:     Bounds<int32,2>
         * Bounds2f:     Bounds<float,2>
@@ -18,12 +18,15 @@ Description:
 
 
 //Includes
-#include <brimstone/bounds/BoundsN.hpp>
+#include <brimstone/bounds/BoundsN.hpp>  //Brimstone::Bounds
 
 
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class Bounds< T, 2 > {
@@ -451,14 +454,20 @@ Bounds< T, 2 > intersect( const Bounds< T, 2 >& a, const Bounds< T, 2 >& b ) {
     );
 }
 
-//Typedefs
-template< typename T >
-using Bounds2 = Bounds< T, 2 >;
-typedef Bounds2< int32 >    Bounds2i;
-typedef Bounds2< float >    Bounds2f;
-typedef Bounds2< double >   Bounds2d;
 
-}
+
+
+//Types
+template< typename T >
+using Bounds2  = Bounds< T, 2 >;
+using Bounds2i = Bounds2< int32 >;
+using Bounds2f = Bounds2< float >;
+using Bounds2d = Bounds2< double >;
+
+
+
+
+} //namespace Brimstone
 
 
 

@@ -10,15 +10,20 @@ Description:
 #ifndef BS_OPENGL_GLTEXTURE_HPP
 #define BS_OPENGL_GLTEXTURE_HPP
 
+
+
+
 //Includes
-#include <cstddef>               //std::size_t
-#include <gll/gl_types.hpp>      //gll::GLsizei
+#include <cstddef>           //std::size_t
+#include <gll/gl_types.hpp>  //gll::GLsizei
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 class GLTexture {
 public:
@@ -42,7 +47,12 @@ private:
     gll::GLsizei m_height;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_OPENGL_GLTEXTURE_HPP

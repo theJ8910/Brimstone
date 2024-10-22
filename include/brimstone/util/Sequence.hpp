@@ -41,6 +41,9 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 template< int... >
 struct Sequence {};
 
@@ -49,7 +52,7 @@ struct MakeSequence : public MakeSequence< N - 1, N - 1, UpperIntegers... > {};
 
 template< int... UpperIntegers >
 struct MakeSequence< 0, UpperIntegers... > {
-    typedef Sequence< UpperIntegers... > type;
+    using type = Sequence< UpperIntegers... >;
 };
 
 template< int N, int... UpperIntegers >
@@ -57,10 +60,13 @@ struct MakeReverseSequence : public MakeReverseSequence< N - 1, UpperIntegers...
 
 template< int... UpperIntegers >
 struct MakeReverseSequence< 0, UpperIntegers... > {
-    typedef Sequence< UpperIntegers... > type;
+    using type = Sequence< UpperIntegers... >;
 };
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

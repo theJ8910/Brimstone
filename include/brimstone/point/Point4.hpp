@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Point for 4D points.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Point4< T >: Point<T,4>
         Point4i:     Point<int32,4>
         Point4f:     Point<float,4>
@@ -18,12 +18,13 @@ Description:
 
 
 //Includes
-#include <brimstone/point/PointN.hpp>   //Point
+#include <brimstone/point/PointN.hpp>   //Brimstone::Point
 
 
 
 
 //Macros
+//Inherited methods from Point4 specializaton, Point, and Array
 #define BS_BASEPOINT4_DECLARE_METHODS( className )                                          \
     className( const T x, const T y, const T z, const T w );                                \
     void set( const T x, const T y, const T z, const T w );                                 \
@@ -139,6 +140,9 @@ Description:
         return (*this);                                                                     \
     }
 
+
+
+
 namespace Brimstone {
 
 
@@ -242,14 +246,17 @@ T manhattan( const Point< T, 4 >& left, const Point< T, 4 >& right ) {
 
 
 
-//Typedefs
+//Types
 template< typename T >
-using Point4 = Point< T, 4 >;
-typedef Point4< int32  > Point4i;
-typedef Point4< float  > Point4f;
-typedef Point4< double > Point4d;
+using Point4  = Point< T, 4 >;
+using Point4i = Point4< int32  >;
+using Point4f = Point4< float  >;
+using Point4d = Point4< double >;
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

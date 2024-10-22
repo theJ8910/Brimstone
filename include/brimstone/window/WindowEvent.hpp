@@ -9,7 +9,6 @@ Description:
     This includes the type of event that occured (a WindowEventType),
     and data related to the event (e.g. the button / key pressed, mouse move location, etc)..
 */
-
 #ifndef BS_WINDOW_WINDOWEVENT_HPP
 #define BS_WINDOW_WINDOWEVENT_HPP
 
@@ -27,8 +26,12 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 //Forward declarations
 class Window;
+
 
 
 
@@ -127,6 +130,10 @@ struct WindowEvent {
 
 
 
-}
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_WINDOWEVENTS_HPP

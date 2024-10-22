@@ -11,22 +11,25 @@ Description:
 
 
 //Includes
-#include "LinuxGLContext.hpp"           //Header file
-#include "../x11/XException.hpp"        //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd, Brimstone::Private::xerrExists, Brimstone::Private::xerrGet
+#include "LinuxGLContext.hpp"     //Header
+#include "../x11/XException.hpp"  //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd, Brimstone::Private::xerrExists, Brimstone::Private::xerrGet
 
-#include <brimstone/Window.hpp>         //Brimstone::Window
+#include <brimstone/Window.hpp>   //Brimstone::Window
 
-#include <GL/glx.h>                     //GLX*, glX*
+#include <GL/glx.h>               //GLX*, glX*
 
 
 
 
 namespace {
 
-typedef GLXContext (*GLXCREATECONTEXTATTRIBSARBPROC)( Display*, GLXFBConfig, GLXContext, Bool, const int* );
+
+
+
+using GLXCREATECONTEXTATTRIBSARBPROC = GLXContext (*)( Display*, GLXFBConfig, GLXContext, Bool, const int* );
 GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = nullptr;
 
-typedef void (*GLXSWAPINTERVALEXTPROC)( Display*, GLXDrawable, int );
+using GLXSWAPINTERVALEXTPROC = void (*)( Display*, GLXDrawable, int );
 GLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = nullptr;
 
 //TEMP
@@ -89,10 +92,15 @@ bool isExtensionSupported( const char* extensions, const char* extension ) {
     }
 }
 
-}
 
-namespace Brimstone {
-namespace Private {
+
+
+} //namespace
+
+
+
+
+namespace Brimstone::Private {
 
 
 
@@ -473,5 +481,4 @@ void LinuxGLContext::swapBuffers() {
     glXSwapBuffers( m_display, m_window );
 }
 
-}
-}
+} //namespace Brimstone::Private

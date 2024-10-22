@@ -28,26 +28,36 @@ Description:
 
 
 //Includes
-#include <type_traits>
+#include <type_traits>  //std::integral_constant
+
+
+
+
+namespace Brimstone::Private {
+
+
+
+
+#if defined( BS_BUILD_WINDOWS )
+using ThreadLocalImpl = class WindowsThreadLocal;
+#elif defined( BS_BUILD_LINUX )
+using ThreadLocalImpl = class LinuxThreadLocal;
+#endif
+
+template< typename T >
+struct SameSizeAsVoidPtr {
+    using value = std::integral_constant< bool, sizeof(T) == sizeof(void*) >;
+};
+
+
+
+
+} //namespace Brimstone
 
 
 
 
 namespace Brimstone {
-namespace Private {
-
-#if defined( BS_BUILD_WINDOWS )
-typedef class WindowsThreadLocal ThreadLocalImpl;
-#elif defined( BS_BUILD_LINUX )
-typedef class LinuxThreadLocal   ThreadLocalImpl;
-#endif
-
-template< typename T >
-struct SameSizeAsVoidPtr {
-    typedef std::integral_constant< bool, sizeof(T) == sizeof(void*) > value;
-};
-
-}
 
 
 
@@ -100,7 +110,10 @@ ThreadLocal<T>::operator T() const {
     return get();
 }
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

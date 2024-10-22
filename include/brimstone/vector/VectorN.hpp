@@ -15,13 +15,13 @@ Description:
 
 
 //Includes
-#include <cstddef>                      //std::size_t
-#include <cstdlib>                      //std::abs
-#include <initializer_list>             //std::initializer_list
+#include <cstddef>                    //std::size_t
+#include <cstdlib>                    //std::abs
+#include <initializer_list>           //std::initializer_list
 
-#include <brimstone/Point.hpp>          //BasePoint
-#include <brimstone/util/Math.hpp>      //fastSqrt, fastInvSqrt
-#include <brimstone/util/MinMax.hpp>    //electMax
+#include <brimstone/Point.hpp>        //Brimstone::BasePoint
+#include <brimstone/util/Math.hpp>    //Brimstone::fastSqrt, Brimstone::fastInvSqrt
+#include <brimstone/util/MinMax.hpp>  //Brimstone::electMax
 
 
 
@@ -111,13 +111,32 @@ We can calculate the minimum, ideal, and maximum bounds for the length and squar
         return reinterpret_cast< const Point< T, N >& >( *this );                   \
     }
 
+
+
+
 namespace Brimstone {
 
+
+
+
+//Forward declarations
 template< typename T, std::size_t N >
 class Vector;
 
-namespace Private {
 
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
+
+//Forward declarations
 template< typename T, std::size_t N >
 void normalize( Vector< T, N >& vecInOut );
 
@@ -196,7 +215,18 @@ bool intIsUnitVec( const Vector< T, N >& vec );
 template< typename T, std::size_t N >
 bool floatIsUnitVec( const Vector< T, N >& vec );
 
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
 
 template< typename T, std::size_t N >
 class Vector {
@@ -575,7 +605,18 @@ T dot( const Vector< T, N >& left, const Vector< T, N >& right ) {
     return dp;
 }
 
-namespace Private {
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 template< typename T, std::size_t N >
 void normalize( const Vector< T, N >& vec ) {
@@ -685,9 +726,10 @@ bool floatIsUnitVec( const Vector< T, N >& vec ) {
     return BS_VECTOR_UNIT_MIN < lengthSq && lengthSq < BS_VECTOR_UNIT_MAX;
 }
 
-}
 
-}
+
+
+} //namespace Brimstone::Private
 
 
 

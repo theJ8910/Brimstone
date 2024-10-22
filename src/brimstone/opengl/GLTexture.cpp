@@ -11,16 +11,18 @@ Description:
 
 
 //Includes
-#include "GLTexture.hpp"    //Header file
+#include "GLTexture.hpp"        //Header
 
-#include <gll/gl_4_6_comp.hpp>      //gll::* (GL 4.6 and below + compatibility)
+#include <gll/gl_4_6_comp.hpp>  //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 GLTexture::GLTexture() :
     m_name( 0 ) {
@@ -73,5 +75,7 @@ std::size_t GLTexture::getHeight() const {
     return m_height;
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

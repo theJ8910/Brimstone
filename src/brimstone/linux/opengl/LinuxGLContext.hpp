@@ -13,25 +13,42 @@ Description:
 
 
 //Includes
-#include "../x11/XVisualInfo.hpp"       //Brimstone::Private::XVisualInfo
+#include "../x11/XVisualInfo.hpp"  //Brimstone::Private::XVisualInfo
 
-#include <X11/Xlib.h>                   //X11
-#include <X11/Xutil.h>                  //X11
-#include <X11/Xos.h>                    //X11
+#include <X11/Xlib.h>              //X11
+#include <X11/Xutil.h>             //X11
+#include <X11/Xos.h>               //X11
 
 
 
 
 //TEMP: gll doesn't have a glx_types header yet
-typedef struct __GLXcontextRec  *GLXContext;
-typedef struct __GLXFBConfigRec *GLXFBConfig;
+using GLXContext  = struct __GLXcontextRec*;
+using GLXFBConfig = struct __GLXFBConfigRec*;
 
 
 
 
 namespace Brimstone {
+
+
+
+
+//Forward declarations
 class Window;
-namespace Private {
+
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 class LinuxGLContext {
 public:
@@ -71,8 +88,10 @@ private:
     static int         m_contextCount;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
 
 
 

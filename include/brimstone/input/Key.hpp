@@ -16,6 +16,9 @@ Description:
 
 namespace Brimstone {
 
+
+
+
 enum class Key {
     //Invalid key codes are mapped to this key
     INVALID,
@@ -72,9 +75,16 @@ enum class Key {
     COUNT
 };
 
+
+
+
+//Forward declarations
 const char* keyToString( const Key key );
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

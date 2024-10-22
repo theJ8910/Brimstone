@@ -11,34 +11,47 @@ Description:
 
 
 //Includes
-#include "XException.hpp"   //Header file
+#include "XException.hpp"  //Header
 
 
 
 
 namespace {
-    //Maximum number of characters we can retrieve from a call to XGetErrorText()
-    constexpr int XGETERRORTEXT_BUFFER_SIZE = 1024;
 
-    //X Error Handler prototype
-    typedef int (*XErrorHandler)( ::Display*, ::XErrorEvent* );
 
-    //An X11 error handler that sets a global code to something other than 0 if an error occurs.
-    //This handler is used temporarily between calls to xerrBegin() and xerrEnd() X11-related functions we want to detect errors in.
-    //HACK: Not threadsafe. This is a functional approach suggested by the OpenGL X11 tutorial.
-    //There is likely a better solution, but this will do for now.
-    XErrorHandler xerrOldHandler  = nullptr;
-    ::Display*    xerrDisplay     = nullptr;
-    int           xerrCode        = 0;
-    int xerrHandler( ::Display* /*display*/, ::XErrorEvent* event ) {
-        xerrDisplay = event->display;
-        xerrCode    = event->error_code;
-        return 0;
-    }
+
+
+//Maximum number of characters we can retrieve from a call to XGetErrorText()
+constexpr int XGETERRORTEXT_BUFFER_SIZE = 1024;
+
+//X Error Handler prototype
+using XErrorHandler = int (*)( ::Display*, ::XErrorEvent* );
+
+//An X11 error handler that sets a global code to something other than 0 if an error occurs.
+//This handler is used temporarily between calls to xerrBegin() and xerrEnd() X11-related functions we want to detect errors in.
+//HACK: Not threadsafe. This is a functional approach suggested by the OpenGL X11 tutorial.
+//There is likely a better solution, but this will do for now.
+XErrorHandler xerrOldHandler  = nullptr;
+::Display*    xerrDisplay     = nullptr;
+int           xerrCode        = 0;
+int xerrHandler( ::Display* /*display*/, ::XErrorEvent* event ) {
+    xerrDisplay = event->display;
+    xerrCode    = event->error_code;
+    return 0;
 }
 
-namespace Brimstone {
-namespace Private {
+
+
+
+} //namespace
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
 /*
 XException::XException
@@ -259,5 +272,7 @@ XException xerrGet() {
     return XException( xerrDisplay, xerrCode );
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

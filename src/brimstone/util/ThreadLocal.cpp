@@ -11,7 +11,10 @@ Description:
 
 
 //Includes
-#include <brimstone/util/ThreadLocal.hpp>       //Class header
+#include <brimstone/util/ThreadLocal.hpp>  //Header
+
+
+
 
 //Brimstone::Private::ThreadLocalImpl
 #if defined( BS_BUILD_WINDOWS )
@@ -24,6 +27,9 @@ Description:
 
 
 namespace Brimstone {
+
+
+
 
 UntypedThreadLocal::UntypedThreadLocal() : m_impl( nullptr ) {
     m_impl = new Private::ThreadLocalImpl();
@@ -51,4 +57,7 @@ UntypedThreadLocal::operator void*() const {
     return get();
 }
 
-}
+
+
+
+} //namespace Brimstone

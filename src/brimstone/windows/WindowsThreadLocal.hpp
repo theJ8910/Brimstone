@@ -18,8 +18,10 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 class WindowsThreadLocal {
 public:
@@ -31,7 +33,12 @@ private:
     DWORD m_index;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_WINDOWS_WINDOWSTHREADLOCAL_HPP

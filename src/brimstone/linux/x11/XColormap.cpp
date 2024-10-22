@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include "XColormap.hpp"            //Class header
+#include "XColormap.hpp"            //Header
 #include "XShared.hpp"              //Brimstone::Private::XShared
 #include "XException.hpp"           //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd, Brimstone::Private::xerrExists, Brimstone::Private::xerrGet
 
@@ -20,8 +20,7 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -95,5 +94,5 @@ void XColormap::createInternal( const ::Window w, ::Visual* const visual, const 
 
 
 
-}
-}
+
+} //namespace Brimstone::Private

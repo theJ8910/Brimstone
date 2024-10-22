@@ -13,28 +13,30 @@ Description:
 
 
 //Includes
-#include <brimstone/types.hpp>                  //Brimstone::ustring
-#include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
-#include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle
-#include <brimstone/window/WindowDisplay.hpp>   //Brimstone::WindowDisplay
+#include <unordered_map>                       //std::unordered_map
+#include <mutex>                               //std::mutex
 
-#include <unordered_map>                        //std::unordered_map
-#include <mutex>                                //std::mutex
+#include <X11/Xlib.h>                          //X11
 
-#include <X11/Xlib.h>                           //X11
+#include <brimstone/types.hpp>                 //Brimstone::ustring
+#include <brimstone/Bounds.hpp>                //Brimstone::Bounds2i
+#include <brimstone/window/WindowHandle.hpp>   //Brimstone::WindowHandle
+#include <brimstone/window/WindowDisplay.hpp>  //Brimstone::WindowDisplay
 
-#include "../../window/BaseWindowImpl.hpp"      //Brimstone::Private::BaseWindowImpl
-#include "XInputContext.hpp"                    //Brimstone::Private::XInputContext
-
-
+#include "../../window/BaseWindowImpl.hpp"     //Brimstone::Private::BaseWindowImpl
+#include "XInputContext.hpp"                   //Brimstone::Private::XInputContext
 
 
-namespace Brimstone {
-namespace Private {
+
+
+namespace Brimstone::Private {
+
+
+
 
 class XWindow : public BaseWindowImpl {
 private:
-    typedef std::unordered_map< ::Window, XWindow& > XWinToWindowMap;
+    using XWinToWindowMap = std::unordered_map< ::Window, XWindow& >;
 public:
     XWindow();
     XWindow( XWindow& toCopy ) = delete;
@@ -125,7 +127,12 @@ private:
     static XWinToWindowMap  m_windowMap;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_LINUX_X11_XWINDOW_HPP

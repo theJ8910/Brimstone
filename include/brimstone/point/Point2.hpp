@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Point for 2D points.
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         Point2< T >: Point<T,2>
         Point2i:     Point<int32,2>
         Point2f:     Point<float,2>
@@ -18,7 +18,7 @@ Description:
 
 
 //Includes
-#include <brimstone/point/PointN.hpp>   //Point
+#include <brimstone/point/PointN.hpp>   //Brimstone::Point
 
 
 
@@ -114,6 +114,9 @@ Description:
         yOut = y;                                                                           \
     }
 
+
+
+
 namespace Brimstone {
 
 
@@ -205,14 +208,17 @@ T manhattan( const Point< T, 2 >& left, const Point< T, 2 >& right ) {
 
 
 
-//Typedefs
+//Types
 template< typename T >
-using Point2 = Point< T, 2 >;
-typedef Point2< int32  > Point2i;
-typedef Point2< float  > Point2f;
-typedef Point2< double > Point2d;
+using Point2  = Point< T, 2 >;
+using Point2i = Point2< int32  >;
+using Point2f = Point2< float  >;
+using Point2d = Point2< double >;
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

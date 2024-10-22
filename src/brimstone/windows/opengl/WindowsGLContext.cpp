@@ -11,18 +11,20 @@ Description:
 
 
 //Includes
-#include "WindowsGLContext.hpp"                     //Header file
+#include "WindowsGLContext.hpp"                     //Header
 #include "GLHeader.hpp"                             //OpenGL
 #include "GLLoad.hpp"                               //wglSwapIntervalEXT
 
-#include <brimstone/Window.hpp>                     //Window
-#include <brimstone/windows/WindowsException.hpp>   //throwWindowsException
+#include <brimstone/Window.hpp>                     //Brimstone::Window
+#include <brimstone/windows/WindowsException.hpp>   //Brimstone::Private::throwWindowsException
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 WindowsGLContext::WindowsGLContext() :
     m_hiddenWindow( false ),
@@ -179,5 +181,4 @@ void WindowsGLContext::swapBuffers() {
 
 
 
-}
-}
+} //namespace Brimstone::Private

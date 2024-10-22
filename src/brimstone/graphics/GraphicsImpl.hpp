@@ -16,6 +16,9 @@ Description:
 //Includes
 #include <brimstone/graphics/DGraphicsImpl.hpp>  //Brimstone::Private::DGraphicsImpl, etc
 
+
+
+
 #if defined( BS_BUILD_DIRECT3D )
 #include "../direct3d/D3DGraphicsImpl.hpp"
 #include "../direct3d/D3DShader.hpp"

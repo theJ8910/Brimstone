@@ -4,48 +4,68 @@ test/PointN.cpp
 Copyright (c) 2024, theJ89
 
 Description:
-    Unit tests for PointN
+    Unit tests for Point< T, N > (generic case)
 */
 
 
 
 
 //Includes
-#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"         //allEqual, allEqualTo, copyAll, isWithin, FAST_SQRT_ERR
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll, UnitTest::isWithin, UnitTest::FAST_SQRT_ERR
 
-#include <cstddef>              //std::size_t
-#include <sstream>              //std::ostringstream
+#include <brimstone/Point.hpp>      //Brimstone::Point5i, Brimstone::Point5f
+#include <brimstone/Vector.hpp>     //Brimstone::Vector5i
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException
 
-#include <brimstone/Point.hpp>
-#include <brimstone/Vector.hpp> //Vector
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    typedef ::Brimstone::Point< int, 5 >   Point5i;
-    typedef ::Brimstone::Point< float, 5 > Point5f;
-    typedef ::Brimstone::Vector< int, 5 >  Vector5i;
-    using   ::Brimstone::BoundsException;
 
-    const std::size_t cv_size    = 5;
-    const int    cv_zero[5]      {   0, 0, 0,  0,  0 };
-    const int    cv_values[5]    {   1, 2, 3,  4,  5 };
-    const int    cv_valuesAlt[5] {   6, 7, 8,  9, 10 };
-    const int    cv_distant[5]   { -10, 9, 8,  7,  6 };
-    const int    cv_distance     = 14;   //14.3178211 -> 14
-    const int    cv_distanceSq   = 205;
-    const int    cv_manhattan    = 27;
-    const char*  cv_output       = "( 1, 2, 3, 4, 5 )";
 
-    const float cv_valuesF[5]   {   1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
-    const float cv_distantF[5]  { -10.0f, 9.0f, 8.0f, 7.0f, 6.0f };
-    const float cv_distanceF    = 14.3178211f;
-    const char* cv_outputF      = "( 1.00000, 2.00000, 3.00000, 4.00000, 5.00000 )";
-}
+
+
+//Types
+using Point5i  = ::Brimstone::Point< int, 5 >;
+using Point5f  = ::Brimstone::Point< float, 5 >;
+using Vector5i = ::Brimstone::Vector< int, 5 >;
+using            ::Brimstone::BoundsException;
+
+
+
+
+//Constants
+const std::size_t cv_size    = 5;
+const int    cv_zero[5]      {   0, 0, 0,  0,  0 };
+const int    cv_values[5]    {   1, 2, 3,  4,  5 };
+const int    cv_valuesAlt[5] {   6, 7, 8,  9, 10 };
+const int    cv_distant[5]   { -10, 9, 8,  7,  6 };
+const int    cv_distance     = 14;   //14.3178211 -> 14
+const int    cv_distanceSq   = 205;
+const int    cv_manhattan    = 27;
+const char*  cv_output       = "( 1, 2, 3, 4, 5 )";
+
+const float cv_valuesF[5]   {   1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
+const float cv_distantF[5]  { -10.0f, 9.0f, 8.0f, 7.0f, 6.0f };
+const float cv_distanceF    = 14.3178211f;
+const char* cv_outputF      = "( 1.00000, 2.00000, 3.00000, 4.00000, 5.00000 )";
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( PointN_constructorFill )
     Point5i o( 1 );
@@ -248,7 +268,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( PointN_output_int )
     Point5i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -257,7 +277,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( PointN_output_float )
     Point5f o( cv_valuesF );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_outputF;
@@ -341,5 +361,8 @@ UT_TEST_BEGIN( PointN_constIndex_OOB )
 UT_TEST_END()
 
 #endif //BS_CHECK_INDEX
+
+
+
 
 }

@@ -6,7 +6,6 @@ Copyright (c) 2024, theJ89
 Description:
     LinuxThreadLocal is defined here.
 */
-
 #ifndef BS_LINUX_LINUXTHREADLOCAL_HPP
 #define BS_LINUX_LINUXTHREADLOCAL_HPP
 
@@ -14,13 +13,15 @@ Description:
 
 
 //Includes
-#include <pthread.h>    //pthread_key_t
+#include <pthread.h>  //pthread_key_t
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
+
+
+
 
 class LinuxThreadLocal {
 public:
@@ -32,7 +33,12 @@ private:
     pthread_key_t m_key;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
+
+
+
 
 #endif //BS_LINUX_LINUXTHREADLOCAL_HPP

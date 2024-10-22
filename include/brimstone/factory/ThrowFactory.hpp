@@ -19,12 +19,28 @@ Description:
 
 
 //Includes
-#include <brimstone/factory/IFactory.hpp>   //IFactory
+#include <brimstone/factory/IFactory.hpp>  //Brimstone::IFactory
+
+
+
+
+//Macros
+//Make a ThrowFactory (with the given concrete type) that adds itself
+//to the given manager under the given key when it has constructed itself.
+#define BS_MAKE_THROW_FACTORY( concreteClassName, manager, key ) \
+    class concreteClassName##_Factory : public ThrowFactory< void > { \
+    public:\
+        concreteClassName##_Factory() { manager.add( key, *this ); }\
+    \
+    } concreteClassName##_FactoryInst{ manager, key };
 
 
 
 
 namespace Brimstone {
+
+
+
 
 //Basic implementation of IFactory, whose .create() method throws concreteClassName with its default constructor.
 template< typename Concrete >
@@ -38,17 +54,10 @@ virtual void ThrowFactory< Concrete >::create() const {
     throw Concrete();
 }
 
-//Make a ThrowFactory (with the given concrete type) that adds itself
-//to the given manager under the given key when it has constructed itself.
-#define BS_MAKE_THROW_FACTORY( concreteClassName, manager, key ) \
-    class concreteClassName##_Factory : public ThrowFactory< void > { \
-    public:\
-        concreteClassName##_Factory() { manager.add( key, *this ); }\
-    \
-    } concreteClassName##_FactoryInst{ manager, key };
 
-}
 
+
+} //namespace Brimstone
 
 
 

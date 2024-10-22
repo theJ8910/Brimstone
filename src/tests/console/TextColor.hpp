@@ -29,6 +29,9 @@ Description:
 
 namespace UnitTest {
 
+
+
+
 //On windows we need to track a handle to the console window (windows.h is needed for this),
 //and use combinations of Windows color enums.
 #ifdef UT_BUILD_WINDOWS
@@ -101,6 +104,9 @@ enum class TextColors {
 
 #endif //UT_BUILD_LINUX
 
+
+
+
 //Forward declarations
 void initTextColor();
 void setTextColor( const TextColors textColor = TextColors::DEFAULT_FOREGROUND, const TextColors backgroundColor = TextColors::DEFAULT_BACKGROUND );
@@ -111,7 +117,10 @@ void setTextColorXT( const unsigned char red, const unsigned char green, const u
 void setBackgroundColorXT( const unsigned char xtermIndex );
 void setBackgroundColorXT( const unsigned char red, const unsigned char green, const unsigned char blue );
 
-}
+
+
+
+} //namespace UnitTest
 
 
 

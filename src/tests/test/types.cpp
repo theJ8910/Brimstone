@@ -11,37 +11,54 @@ Description:
 
 
 //Includes
-#include <type_traits>
+#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
 
-#include "../Test.hpp"
+#include <brimstone/types.hpp>  //::Brimstone::ushort, ::Brimstone::uint,  ::Brimstone::ulong,  ::Brimstone::ulonglong, ::Brimstone::int8,   ::Brimstone::uint8, ::Brimstone::int16,
+                                //::Brimstone::uint16, ::Brimstone::int32, ::Brimstone::uint32, ::Brimstone::int64,     ::Brimstone::uint64, ::Brimstone::intN,  ::Brimstone::uintN,
+                                //::Brimstone::byte,   ::Brimstone::ubyte, ::Brimstone::uchar,  ::Brimstone::ustring
 
-#include <brimstone/types.hpp>
+#include <type_traits>          //std::is_same
 
 
 
 
 namespace {
-    using ::Brimstone::ushort;
-    using ::Brimstone::uint;
-    using ::Brimstone::ulong;
-    using ::Brimstone::ulonglong;
-    using ::Brimstone::int8;
-    using ::Brimstone::uint8;
-    using ::Brimstone::int16;
-    using ::Brimstone::uint16;
-    using ::Brimstone::int32;
-    using ::Brimstone::uint32;
-    using ::Brimstone::int64;
-    using ::Brimstone::uint64;
-    using ::Brimstone::intN;
-    using ::Brimstone::uintN;
-    using ::Brimstone::byte;
-    using ::Brimstone::ubyte;
-    using ::Brimstone::uchar;
-    using ::Brimstone::ustring;
-}
+
+
+
+
+//Types
+using ::Brimstone::ushort;
+using ::Brimstone::uint;
+using ::Brimstone::ulong;
+using ::Brimstone::ulonglong;
+using ::Brimstone::int8;
+using ::Brimstone::uint8;
+using ::Brimstone::int16;
+using ::Brimstone::uint16;
+using ::Brimstone::int32;
+using ::Brimstone::uint32;
+using ::Brimstone::int64;
+using ::Brimstone::uint64;
+using ::Brimstone::intN;
+using ::Brimstone::uintN;
+using ::Brimstone::byte;
+using ::Brimstone::ubyte;
+using ::Brimstone::uchar;
+using ::Brimstone::ustring;
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( ushort_type )
     return ( std::is_same< ushort, unsigned short >::value );
@@ -135,4 +152,7 @@ UT_TEST_BEGIN( ustring_type )
     return ( std::is_same< uchar, ustring::value_type >::value );
 UT_TEST_END()
 
-}
+
+
+
+} //namespace UnitTest

@@ -8,13 +8,12 @@ Description:
 */
 
 //Includes
-#include "BaseWindowImpl.hpp"   //Header file
+#include "BaseWindowImpl.hpp"  //Header
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -177,5 +176,4 @@ bool BaseWindowImpl::getKeepCursorCentered() const {
 
 
 
-}
-}
+} //namespace Brimstone::Private

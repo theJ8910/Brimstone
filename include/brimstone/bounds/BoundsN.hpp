@@ -47,18 +47,18 @@ Description:
 
 
 //Includes
-#include <cstddef>                      //std::size_t
-#include <iostream>                     //std::ostream
-#include <initializer_list>             //std::initializer_list
-#include <iterator>                     //std::begin, std::end
-#include <algorithm>                    //std::fill
+#include <cstddef>                    //std::size_t
+#include <iostream>                   //std::ostream
+#include <initializer_list>           //std::initializer_list
+#include <iterator>                   //std::begin, std::end
+#include <algorithm>                  //std::fill
 
-#include <brimstone/types.hpp>          //int32
-#include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc
-#include <brimstone/util/Clamp.hpp>     //clamp
-#include <brimstone/util/MinMax.hpp>    //min
-#include <brimstone/Point.hpp>          //Point
-#include <brimstone/Size.hpp>           //Size
+#include <brimstone/types.hpp>        //Brimstone::int32
+#include <brimstone/util/Macros.hpp>  //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc.
+#include <brimstone/util/Clamp.hpp>   //Brimstone::clamp
+#include <brimstone/util/MinMax.hpp>  //Brimstone::min
+#include <brimstone/Point.hpp>        //Brimstone::Point
+#include <brimstone/Size.hpp>         //Brimstone::Size
 
 
 
@@ -135,7 +135,12 @@ Description:
     }
 
 
+
+
 namespace Brimstone {
+
+
+
 
 template< typename T, std::size_t N >
 class Bounds {
@@ -244,7 +249,7 @@ bool Bounds< T, N >::isZero() const {
 
 /*
 Bounds::normalize
------------------------
+-----------------
 
 Description:
     Makes this Bounds normal.
@@ -266,7 +271,7 @@ void Bounds< T, N >::normalize() {
 
 /*
 Bounds::isNormal
------------------------
+----------------
 
 Description:
     Checks if the bounds is normal.
@@ -290,7 +295,7 @@ bool Bounds< T, N >::isNormal() const {
 
 /*
 Bounds::contains
------------------------
+----------------
 
 Description:
     Checks if the given point is contained within this Bounds.
@@ -318,7 +323,7 @@ bool Bounds< T, N >::contains( const Point< T, N >& point ) const {
 
 /*
 Bounds::contains_mIME
------------------------
+---------------------
 
 Description:
     Checks if the given point is contained within this Bounds.
@@ -347,7 +352,7 @@ bool Bounds< T, N >::contains_mIME( const Point< T, N >& point ) const {
 
 /*
 Bounds::include
------------------------
+---------------
 
 Description:
     Expands this Bounds to include the given point if it doesn't already.
@@ -369,7 +374,7 @@ void Bounds< T, N >::include( const Point< T, N >& point ) {
 
 /*
 Bounds::intersects
------------------------
+------------------
 
 Description:
     Checks whether or not this Bounds and the given Bounds are intersecting.
@@ -392,7 +397,7 @@ bool Bounds< T, N >::intersects( const Bounds< T, N >& bounds ) const {
 
 /*
 Bounds::intersects_EE
------------------------
+---------------------
 
 Description:
     Checks whether or not this Bounds and the given Bounds are intersecting.
@@ -466,7 +471,7 @@ Point< T, N > clampedPoint( const Point< T, N >& point, const Bounds< T, N >& bo
 
 /*
 intersect
------------------------
+---------
 
 Description:
     Returns the intersecting Bounds between the two given Bounds.
@@ -503,7 +508,10 @@ Bounds< T, N > intersect( const Bounds< T, N >& a, const Bounds< T, N >& b ) {
     return intersect;
 }
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

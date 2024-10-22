@@ -5,7 +5,7 @@ Copyright (c) 2024, theJ89
 
 Description:
     Specialization of Bounds for 4D bounds (tesseracts).
-    Adds the following typedefs for convenience:
+    Adds the following aliases for convenience:
         * Bounds4< T >: Bounds<T,4>
         * Bounds4i:     Bounds<int32,4>
         * Bounds4f:     Bounds<float,4>
@@ -18,12 +18,15 @@ Description:
 
 
 //Includes
-#include <brimstone/bounds/BoundsN.hpp>
+#include <brimstone/bounds/BoundsN.hpp>  //Brimstone::Bounds
 
 
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T >
 class Bounds< T, 4 > {
@@ -603,14 +606,20 @@ Bounds< T, 4 > intersect( const Bounds< T, 4 >& a, const Bounds< T, 4 >& b ) {
     );
 }
 
-//Typedefs
-template< typename T >
-using Bounds4 = Bounds< T, 4 >;
-typedef Bounds4< int32 >    Bounds4i;
-typedef Bounds4< float >    Bounds4f;
-typedef Bounds4< double >   Bounds4d;
 
-}
+
+
+//Types
+template< typename T >
+using Bounds4  = Bounds< T, 4 >;
+using Bounds4i = Bounds4< int32 >;
+using Bounds4f = Bounds4< float >;
+using Bounds4d = Bounds4< double >;
+
+
+
+
+} //namespace Brimstone
 
 
 

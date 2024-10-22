@@ -14,15 +14,21 @@ Description:
 
 
 //Includes
-#include <gll/gl_types.hpp>     //gll:GLchar
+#include <gll/gl_types.hpp>  //gll:GLchar
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
+
+
+
+//Forward declarations
 class GLShader;
+
+
+
 
 class GLProgram {
 public:
@@ -42,18 +48,20 @@ public:
     void stopUsing();
 
     void setUniform( const char* const name, const int value );
-    void setUniform( const char* const name, const uint value );
+    void setUniform( const char* const name, const unsigned int value );
     void setUniform( const char* const name, const float value );
     void setUniform( const char* const name, const int x, const int y );
     void setUniform( const char* const name, const float x, const float y );
     void setUniform( const char* const name, const int x, const int y, const int z, const int w );
     void setUniform( const char* const name, const float x, const float y, const float z, const float w );
 private:
-    gll::GLuint     m_name;
+    gll::GLuint m_name;
 };
 
-}
-}
+
+
+
+} //namespace Brimstone::Private
 
 
 

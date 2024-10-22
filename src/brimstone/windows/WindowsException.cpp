@@ -11,16 +11,18 @@ Description:
 
 
 //Includes
-#include <brimstone/windows/WindowsException.hpp>   //Header
-#include <brimstone/windows/WindowsUtil.hpp>        //Brimstone::Private::utf16to8
+#include <brimstone/windows/WindowsException.hpp>  //Header
+#include <brimstone/windows/WindowsUtil.hpp>       //Brimstone::Private::utf16to8
 
-#include <memory>                                   //std::unique_ptr
-
-
+#include <memory>                                  //std::unique_ptr
 
 
-namespace Brimstone {
-namespace Private {
+
+
+namespace Brimstone::Private {
+
+
+
 
 const ustring WindowsException::m_errorMessage = "Error retrieving Windows exception description.";
 
@@ -84,5 +86,7 @@ void throwWindowsException() {
     throwWindowsException( GetLastError() );
 }
 
-}
-}
+
+
+
+} //namespace Brimstone::Private

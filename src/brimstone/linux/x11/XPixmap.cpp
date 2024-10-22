@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include "XPixmap.hpp"              //Class header
+#include "XPixmap.hpp"              //Header
 #include "XShared.hpp"              //Brimstone::Private::XShared
 #include "XException.hpp"           //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd, Brimstone::Private::xerrExists, Brimstone::Private::xerrGet
 
@@ -20,8 +20,7 @@ Description:
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -96,5 +95,4 @@ void XPixmap::createInternal( const ::Drawable d, char* const data, const unsign
 
 
 
-}
-}
+} //namespace Brimstone::Private

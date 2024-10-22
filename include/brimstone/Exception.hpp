@@ -22,7 +22,6 @@ Description:
         * GraphicsException
         * LuaException
 */
-
 #ifndef BS_EXCEPTION_HPP
 #define BS_EXCEPTION_HPP
 
@@ -34,8 +33,40 @@ Description:
 
 
 
+//Macros
+/*
+BS_DECLARE_BASIC_EXCEPTION
+
+Macro to automatically declare a basic exception type, without a message
+*/
+#define BS_DECLARE_BASIC_EXCEPTION( exceptionName ) \
+    class exceptionName : public IException { \
+    public: \
+        virtual ustring getDescription() const; \
+    }
+
+/*
+BS_DECLARE_MESSAGE_EXCEPTION
+
+Macro to automatically declare an exception type deriving from Exception.
+Any exceptions using this macro take a message, which is returned when
+getDescription() is called.
+*/
+#define BS_DECLARE_MESSAGE_EXCEPTION( exceptionName ) \
+    class exceptionName : public Exception { \
+    public: \
+        exceptionName(); \
+        exceptionName( const uchar* description ); \
+        exceptionName( const ustring& description ); \
+    }
+
+
+
 
 namespace Brimstone {
+
+
+
 
 /*
 IException
@@ -63,32 +94,6 @@ public:
 private:
     ustring m_description;
 };
-
-/*
-BS_DECLARE_BASIC_EXCEPTION
-
-Macro to automatically declare a basic exception type, without a message
-*/
-#define BS_DECLARE_BASIC_EXCEPTION( exceptionName ) \
-    class exceptionName : public IException { \
-    public: \
-        virtual ustring getDescription() const; \
-    }
-
-/*
-BS_DECLARE_MESSAGE_EXCEPTION
-
-Macro to automatically declare an exception type deriving from Exception.
-Any exceptions using this macro take a message, which is returned when
-getDescription() is called.
-*/
-#define BS_DECLARE_MESSAGE_EXCEPTION( exceptionName ) \
-    class exceptionName : public Exception { \
-    public: \
-        exceptionName(); \
-        exceptionName( const uchar* description ); \
-        exceptionName( const ustring& description ); \
-    }
 
 /*
 DivideByZeroException
@@ -191,10 +196,12 @@ Thrown when an error related to Lua occurs (e.g. loading a script or calling a f
 */
 BS_DECLARE_MESSAGE_EXCEPTION( LuaException );
 
+//Forward declarations
 template< typename Signature >
 class Delegate;
 
-typedef Delegate<void( const IException& )> UncaughtExceptionHandler;
+//Types
+using UncaughtExceptionHandler = Delegate<void( const IException& )>;
 
 /*
 uncaughtException
@@ -223,7 +230,10 @@ void uncaughtException( const IException& exception );
 void setUncaughtExceptionHandler( UncaughtExceptionHandler handler );
 UncaughtExceptionHandler getUncaughtExceptionHandler();
 
-}
+
+
+
+} //namespace Brimstone
 
 
 

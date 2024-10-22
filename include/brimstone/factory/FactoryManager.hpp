@@ -18,16 +18,17 @@ Description:
 
 
 //Includes
-#include <unordered_map>                    //std::unordered_map
+#include <unordered_map>                   //std::unordered_map
 
-#include <brimstone/factory/IFactory.hpp>   //IFactory
-#include <brimstone/Exception.hpp>          //NoSuchElementException
-#include <brimstone/util/RefType.hpp>       //RefType
+#include <brimstone/factory/IFactory.hpp>  //Brimstone::IFactory
+#include <brimstone/Exception.hpp>         //Brimstone::NoSuchElementException
+#include <brimstone/util/RefType.hpp>      //Brimstone::RefType
 
 
 
 
 namespace Brimstone {
+
 
 
 
@@ -37,10 +38,10 @@ namespace Brimstone {
 template< typename Key, typename Abstract >
 class FactoryManager {
 private:
-    typedef typename RefType< Key >::ref                                KeyRef;
-    typedef typename RefType< Key >::const_ref                          KeyConstRef;
-    typedef std::unordered_map< Key, const IFactory< Abstract >& >      Map;
-    typedef typename Map::value_type                                    MapPair;
+    using KeyRef      = typename RefType< Key >::ref;
+    using KeyConstRef = typename RefType< Key >::const_ref;
+    using Map         = std::unordered_map< Key, const IFactory< Abstract >& >;
+    using MapPair     = typename Map::value_type;
 
 private:
     Map m_map;
@@ -50,6 +51,9 @@ public:
 
     Abstract create( KeyConstRef key ) const;
 };
+
+
+
 
 template< typename Key, typename Abstract >
 void FactoryManager< Key, Abstract >::add( KeyConstRef key, const IFactory< Abstract >& factory ) {
@@ -73,7 +77,7 @@ Abstract FactoryManager< Key, Abstract >::create( KeyConstRef key ) const {
 
 
 
-}
+} //namespace Brimstone
 
 
 

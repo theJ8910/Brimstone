@@ -4,45 +4,65 @@ test/Point4.cpp
 Copyright (c) 2024, theJ89
 
 Description:
-    Unit tests for PointN<T,4> specialization
+    Unit tests for Point< T, 4 > specialization
 */
 
 
 
 
 //Includes
-#include "../Test.hpp"          //UT_TEST_BEGIN, UT_TEST_END
-#include "../utils.hpp"         //allEqual, allEqualTo, copyAll
+#include "../Test.hpp"              //UT_TEST_BEGIN, UT_TEST_END
+#include "../utils.hpp"             //UnitTest::allEqual, UnitTest::allEqualTo, UnitTest::copyAll
 
-#include <cstddef>              //std::size_t
-#include <sstream>              //std::ostringstream
+#include <brimstone/Point.hpp>      //Brimstone::Point4i, Brimstone::Point4f
+#include <brimstone/Vector.hpp>     //Brimstone::Vector4f
+#include <brimstone/Exception.hpp>  //Brimstone::BoundsException
 
-#include <brimstone/Point.hpp>
-#include <brimstone/Vector.hpp> //Vector
+#include <cstddef>                  //std::size_t
+#include <sstream>                  //std::ostringstream
 
 
 
 
 namespace {
-    using ::Brimstone::Point4i;
-    using ::Brimstone::Point4f;
-    using ::Brimstone::Vector4i;
-    using ::Brimstone::BoundsException;
 
-    const std::size_t cv_size         = 4;
-    const int         cv_zero[4]      {  0,  0,  0,  0 };
-    const int         cv_values[4]    {  1,  2,  3,  4 };
-    const int         cv_valuesAlt[4] {  5,  6,  7,  8 };
-    const int         cv_distant[4]   { -8,  7, -6,  5 };
-    const int         cv_distanceSq   = 188;
-    const int         cv_manhattan    = 24;
-    const char*       cv_output       = "( 1, 2, 3, 4 )";
 
-    const float       cv_valuesF[4]   { 1.0f, 2.0f, 3.0f, 4.0f };
-    const char*       cv_outputF      = "( 1.00000, 2.00000, 3.00000, 4.00000 )";
-}
+
+
+//Types
+using ::Brimstone::Point4i;
+using ::Brimstone::Point4f;
+using ::Brimstone::Vector4i;
+using ::Brimstone::BoundsException;
+
+
+
+
+//Constants
+const std::size_t cv_size         = 4;
+const int         cv_zero[4]      {  0,  0,  0,  0 };
+const int         cv_values[4]    {  1,  2,  3,  4 };
+const int         cv_valuesAlt[4] {  5,  6,  7,  8 };
+const int         cv_distant[4]   { -8,  7, -6,  5 };
+const int         cv_distanceSq   = 188;
+const int         cv_manhattan    = 24;
+const char*       cv_output       = "( 1, 2, 3, 4 )";
+
+const float       cv_valuesF[4]   { 1.0f, 2.0f, 3.0f, 4.0f };
+const char*       cv_outputF      = "( 1.00000, 2.00000, 3.00000, 4.00000 )";
+
+
+
+
+} //namespace
+
+
+
 
 namespace UnitTest {
+
+
+
 
 UT_TEST_BEGIN( Point4_constructorFill )
     Point4i o( 1 );
@@ -271,7 +291,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point4_output_int )
     Point4i o( cv_values );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_output;
@@ -280,7 +300,7 @@ UT_TEST_END()
 UT_TEST_BEGIN( Point4_output_float )
     Point4f o( cv_valuesF );
 
-    std::stringstream sout;
+    std::ostringstream sout;
     sout << o;
 
     return sout.str() == cv_outputF;
@@ -354,4 +374,4 @@ UT_TEST_END()
 
 
 
-}
+} //namespace UnitTest

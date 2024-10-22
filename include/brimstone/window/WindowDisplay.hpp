@@ -9,17 +9,34 @@ Description:
 #ifndef BS_WINDOW_WINDOWDISPLAY_HPP
 #define BS_WINDOW_WINDOWDISPLAY_HPP
 
+
+
+
 //Forward declarations
 #if defined( BS_BUILD_LINUX )
-typedef struct _XDisplay Display;
+using Display = struct _XDisplay;
 #endif //BS_BUILD_LINUX
 
+
+
+
 namespace Brimstone {
+
+
+
+
 #if defined( BS_BUILD_WINDOWS )
-typedef nullptr_t     WindowDisplay;
+using WindowDisplay = nullptr_t;
 #elif defined( BS_BUILD_LINUX )
-typedef Display* WindowDisplay;
+using WindowDisplay = Display*;
 #endif
-}
+
+
+
+
+} //namespace Brimstone
+
+
+
 
 #endif //BS_WINDOW_WINDOWDISPLAY_HPP

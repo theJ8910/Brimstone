@@ -11,13 +11,12 @@ Description:
 
 
 //Includes
-#include "XVisualInfo.hpp"  //Class header
+#include "XVisualInfo.hpp"  //Header
 
 
 
 
-namespace Brimstone {
-namespace Private {
+namespace Brimstone::Private {
 
 
 
@@ -68,5 +67,4 @@ XVisualInfo& XVisualInfo::operator =( XVisualInfo&& toMove ) {
 
 
 
-}
-}
+} //namespace Brimstone::Private

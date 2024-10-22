@@ -11,7 +11,7 @@ Description:
 
 
 //Includes
-#include <brimstone/Image.hpp>  //Header file
+#include <brimstone/Image.hpp>  //Header
 #include <png.h>                //png_*
 
 
@@ -28,7 +28,7 @@ constexpr int IMAGE_PNG_SIG_SIZE = 8;
 
 
 
-}
+} //namespace
 
 
 
@@ -236,4 +236,4 @@ Size2i Image::getSize() const {
 
 
 
-}
+} //namespace Brimstone
