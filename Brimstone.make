@@ -94,6 +94,7 @@ GENERATED += $(OBJDIR)/GLVertexBuffer.o
 GENERATED += $(OBJDIR)/Graphics.o
 GENERATED += $(OBJDIR)/Image.o
 GENERATED += $(OBJDIR)/Key.o
+GENERATED += $(OBJDIR)/LinuxException.o
 GENERATED += $(OBJDIR)/LinuxGLContext.o
 GENERATED += $(OBJDIR)/LinuxThreadLocal.o
 GENERATED += $(OBJDIR)/Logger.o
@@ -130,6 +131,7 @@ OBJECTS += $(OBJDIR)/GLVertexBuffer.o
 OBJECTS += $(OBJDIR)/Graphics.o
 OBJECTS += $(OBJDIR)/Image.o
 OBJECTS += $(OBJDIR)/Key.o
+OBJECTS += $(OBJDIR)/LinuxException.o
 OBJECTS += $(OBJDIR)/LinuxGLContext.o
 OBJECTS += $(OBJDIR)/LinuxThreadLocal.o
 OBJECTS += $(OBJDIR)/Logger.o
@@ -247,6 +249,9 @@ $(OBJDIR)/Key.o: src/brimstone/input/Key.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/MouseButton.o: src/brimstone/input/MouseButton.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/LinuxException.o: src/brimstone/linux/LinuxException.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/LinuxThreadLocal.o: src/brimstone/linux/LinuxThreadLocal.cpp

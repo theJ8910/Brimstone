@@ -61,8 +61,8 @@ Description:
     XException constructor.
 
 Arguments:
-    display:                The X11 display the error occurred on
-    code:                   The error code.
+    display:  The X11 display the error occurred on
+    code:     The error code.
 
 Returns:
     N/A
@@ -121,7 +121,7 @@ Arguments:
     N/A
 
 Returns:
-    int:    The code.
+    int:  The code.
 */
 int XException::getCode() const {
     return m_code;
@@ -138,14 +138,14 @@ Arguments:
     N/A
 
 Returns:
-    ustring:    The message.
+    ustring:  The message.
 */
 ustring XException::getDescription() const {
     ustring msg( XGETERRORTEXT_BUFFER_SIZE, '\0' );
 
     //Grab a textual description of the error that occurred from X11.
     //HACK: Using string's internal buffer directly...
-    XGetErrorText( m_display, m_code, &msg[0], XGETERRORTEXT_BUFFER_SIZE );
+    XGetErrorText( m_display, m_code, msg.data(), XGETERRORTEXT_BUFFER_SIZE );
 
     //NOTE: the string's internal buffer is (at least) BUFFER_SIZE+1 characters long.
     //The final character is a null character, so we don't have to worry about null terminating the string.
@@ -175,7 +175,7 @@ Arguments:
     N/A
 
 Returns:
-    void:       N/A
+    void:  N/A
 
 Throws:
     Exception:  If xerrBegin() is called between calls to xerrBegin() and xerrEnd().
@@ -208,7 +208,7 @@ Arguments:
     N/A
 
 Returns:
-    void:       N/A
+    void:  N/A
 
 Throws:
     Exception:  If a matching call to xerrBegin() was not made.

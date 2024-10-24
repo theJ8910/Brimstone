@@ -19,9 +19,14 @@ Description:
 
 
 //Includes
-#include <brimstone/windows/WindowsHeader.hpp>  //FormatMessage
+#include <brimstone/Exception.hpp>  //Brimstone::IException
 
-#include <brimstone/Exception.hpp>              //Brimstone::IException
+
+
+
+//Types
+//NOTE: We're declaring this here to avoid having to include the Windows header.
+using DWORD = unsigned long;
 
 
 
@@ -39,15 +44,11 @@ void throwWindowsException( const DWORD errorCode );
 
 
 class WindowsException : public IException {
-private:
-    static const std::string m_errorMessage;
 public:
-    WindowsException( DWORD errorCode );
+    WindowsException( const DWORD errorCode );
 
-            DWORD       getErrorCode() const;
-    virtual ustring     getDescription() const;
-private:
-    WindowsException&   operator =( const WindowsException& );
+            DWORD     getErrorCode() const;
+    virtual ustring   getDescription() const;
 private:
     const DWORD m_errorCode;
 };

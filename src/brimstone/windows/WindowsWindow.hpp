@@ -15,8 +15,8 @@ Description:
 
 //Includes
 #include "../window/BaseWindowImpl.hpp"         //Brimstone::Private::BaseWindowImpl
+#include "WindowsHeader.hpp"                    //HWND, HINSTANCE, ATOM, LRESULT, CALLBACK, WPARAM, LPARAM, etc.
 
-#include <brimstone/windows/WindowsHeader.hpp>  //HWND, HINSTANCE, ATOM, LRESULT, CALLBACK, WPARAM, LPARAM, etc.
 #include <brimstone/types.hpp>                  //Brimstone::ustring
 #include <brimstone/Bounds.hpp>                 //Brimstone::Bounds2i
 #include <brimstone/window/WindowHandle.hpp>    //Brimstone::WindowHandle

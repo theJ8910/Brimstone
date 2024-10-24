@@ -1481,9 +1481,9 @@ void XWindow::setTitle( const ustring& title ) {
     int status;
     ::Display* const display = XShared::getDisplay();
 
-    //HACK: Using string's internal buffer directly...
-    //NOTE: The const_cast from const char* to char* is necessary here because XmbTextListToTextProperty() and Xutf8TextListToTextProperty() expect a char**, not a const char**,
-    //despite the fact that neither of the functions modify the strings in the given list.
+    //NOTE:
+    //    The const_cast from const char* to char* is necessary here because XmbTextListToTextProperty() and Xutf8TextListToTextProperty() expect a char**, not a const char**, despite the fact
+    //    that neither of the functions modify the strings in the given list.
     char* pszTitle = const_cast<char*>( title.c_str() );
 
     //Set the WM_NAME property:

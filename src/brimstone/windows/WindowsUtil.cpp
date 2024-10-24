@@ -12,10 +12,11 @@ Description:
 
 
 //Includes
-#include <brimstone/windows/WindowsUtil.hpp>       //Header
+#include "WindowsUtil.hpp"                         //Header
+#include "WindowsHeader.hpp"                       //MultiByteToWideChar, WideCharToMultiByte
+
 #include <brimstone/windows/WindowsException.hpp>  //Brimstone::Private::throwWindowsException
 
-#include <brimstone/windows/WindowsHeader.hpp>     //MultiByteToWideChar, WideCharToMultiByte
 
 
 
@@ -53,7 +54,7 @@ wstring utf8to16( const ustring& utf8Bytes ) {
 
     //HACK: You're really not supposed to muck about with the internal buffer of the string...
     //we can probably get away with this, though. If this causes problems, change.
-    if( MultiByteToWideChar( CP_UTF8, 0, utf8Bytes.c_str(), -1, &utf16Chars[0], charCount ) == 0 )
+    if( MultiByteToWideChar( CP_UTF8, 0, utf8Bytes.c_str(), -1, utf16Chars.data(), charCount ) == 0 )
         throwWindowsException();
 
     return utf16Chars;
@@ -88,7 +89,7 @@ wstring utf8to16( const uchar* const utf8Bytes, const int32 utf8ByteCount ) {
 
     //HACK: You're really not supposed to muck about with the internal buffer of the string...
     //we can probably get away with this, though. If this causes problems, change.
-    if( MultiByteToWideChar( CP_UTF8, 0, utf8Bytes, utf8ByteCount, &utf16Chars[0], charCount ) == 0 )
+    if( MultiByteToWideChar( CP_UTF8, 0, utf8Bytes, utf8ByteCount, utf16Chars.data(), charCount ) == 0 )
         throwWindowsException();
 
     return utf16Chars;
@@ -147,7 +148,7 @@ ustring utf16to8( const wstring& utf16Chars ) {
 
     //HACK: You're really not supposed to muck about with the internal buffer of the string...
     //we can probably get away with this, though. If this causes problems, change.
-    if( WideCharToMultiByte( CP_UTF8, 0, utf16Chars.c_str(), -1, &utf8Bytes[0], byteCount, nullptr, nullptr ) == 0 )
+    if( WideCharToMultiByte( CP_UTF8, 0, utf16Chars.c_str(), -1, utf8Bytes.data(), byteCount, nullptr, nullptr ) == 0 )
         throwWindowsException();
 
     return utf8Bytes;
@@ -185,7 +186,7 @@ ustring utf16to8( const wchar* const utf16Chars, const int32 utf16CharCount ) {
 
     //HACK: You're really not supposed to muck about with the internal buffer of the string...
     //we can probably get away with this, though. If this causes problems, change.
-    if( ( byteCount = WideCharToMultiByte( CP_UTF8, 0, utf16Chars, utf16CharCount, &utf8Buffer[0], byteCount, nullptr, nullptr ) ) == 0 )
+    if( ( byteCount = WideCharToMultiByte( CP_UTF8, 0, utf16Chars, utf16CharCount, utf8Buffer.data(), byteCount, nullptr, nullptr ) ) == 0 )
         throwWindowsException();
 
     return utf8Buffer;

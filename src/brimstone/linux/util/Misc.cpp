@@ -11,16 +11,17 @@ Description:
 
 
 //Includes
-#include "Misc.hpp"                 //Header
+#include "Misc.hpp"                            //Header
 
-#include <brimstone/Exception.hpp>  //Brimstone::Exception
+#include <brimstone/Exception.hpp>             //Brimstone::Exception
+#include <brimstone/linux/LinuxException.hpp>  //Brimstone::throwLinuxException
 
-#include <cstddef>                  //std::size_t
+#include <cstddef>                             //std::size_t
 
-#include <limits.h>                 //PATH_MAX
-#include <unistd.h>                 //readlink
-#include <sys/stat.h>               //lstat, stat
-#include <sys/types.h>              //ssize_t, off_t
+#include <limits.h>                            //PATH_MAX
+#include <unistd.h>                            //readlink
+#include <sys/stat.h>                          //lstat, stat
+#include <sys/types.h>                         //ssize_t, off_t
 
 
 
@@ -31,21 +32,42 @@ namespace {
 
 
 using namespace Brimstone;
+using namespace Brimstone::Private;
+
+
+
 
 //Forward declarations
-ustring getLinkPath( const char* path, const off_t bufsiz );
+//ustring getLinkTarget( const char* path );
+ustring getLinkTarget( const char* path, const off_t bufsiz );
 
 
 
+/*
+getLinkTarget{1}
+----------------
+
+Description:
+    Returns the target of the symbolic link at the given path.
+    This override calls lstat() to automatically determine how large of a buffer should be allocated for reading the link target.
+
+Arguments:
+    path:  The path to the symbolic link.
+
+Returns:
+    ustring:  The target of the symbolic link at the given path.
+
+Throws:
+    LinuxException:  If lstat() or readlink() fails.
+    Exception:       If the buffer wasn't large enough to contain the symbolic link's target.
+*/
 /*
 ustring getLinkPath( const char* path ) {
     //Determine how many bytes the buffer we allocate for readlink() needs to be.
     //We'll try to lstat() the link and get the st_size from the resulting stat struct, which should tell us how many bytes long the link's pathname is (no terminating null byte).
     struct stat statbuf;
-    if( lstat( path, &statbuf ) != 0 ) {
-        //TODO: better errno handling
-        throw Exception( "lstat() failed." );
-    }
+    if( lstat( path, &statbuf ) != 0 )
+        throwLinuxException();
 
     //st_size may be 0 in some cases (e.g. for magic symlinks like those found beneath /proc/), in which case we'll allocate a buffer of size PATH_MAX instead.
     //NOTE:
@@ -60,22 +82,43 @@ ustring getLinkPath( const char* path ) {
 }
 */
 
-ustring getLinkPath( const char* path, const off_t bufsiz ) {
+/*
+getLinkTarget{2}
+----------------
+
+Description:
+    Returns the target of the symbolic link at the given path.
+    This override takes the size of the buffer to allocate as an argument, avoiding the overhead of the call to lstat() performed by getLinkTarget{1}.
+    However, by doing so you will almost always allocate more (or worse, less) space in the buffer than you need.
+
+Arguments:
+    path:    The path to the symbolic link.
+    bufsiz:  The size of the buffer to allocate for reading the symbolic link's target.
+             If in doubt, specify PATH_MAX.
+
+Returns:
+    ustring:  The target of the symbolic link at the given path.
+
+Throws:
+    LinuxException: If readlink() fails.
+    Exception:      If the buffer wasn't large enough to contain the symbolic link's target.
+*/
+ustring getLinkTarget( const char* path, const off_t bufsiz ) {
     //Allocate the buffer:
     ustring target( bufsiz, '\0' );
 
     //Get the link's path:
     ssize_t rv = readlink( path, target.data(), bufsiz );
     if( rv == -1 ) {
-        //TODO: better errno handling
-        throw Exception( "readlink() failed." );
+        throwLinuxException();
     } else if( rv == bufsiz ) {
-        throw Exception( "readlink() failed: returned path was possibly truncated." );
+        throw Exception( "readlink() failed: Not enough space in buffer to contain returned path." );
     }
 
     //Shrink size of string to fit returned contents if necessary:
     target.resize( rv );
 
+    //Return path:
     return target;
 }
 
@@ -92,11 +135,28 @@ namespace Brimstone::Private {
 
 
 
+/*
+getExecutablePath
+-----------------
+
+Description:
+    Returns the path of this process's executable.
+
+    This is the Linux implementation of getExecutablePath().
+    It works by reading the target of "/proc/self/exe", which is a special symbolic link created by the procfs filesystem whose target is the path to the executable whose process is reading
+    its target.
+
+Arguments:
+    N/A
+
+Returns:
+    ustring:  The path to this process's executable.
+*/
 ustring getExecutablePath() {
     //NOTE:
-    //    Calling the override of getLinkPath() that takes maxPathSize because lstat() of "/proc/self/exe" always returns 0 for stat.st_size.
-    //    lstat() is a wasted call, so circumvent it:
-    return getLinkPath( "/proc/self/exe", PATH_MAX );
+    //    We're calling getLinkTarget{2} here because lstat() of "/proc/self/exe" always returns 0 for stat.st_size.
+    //    lstat() is a wasted call, so circumvent it by directly specifying a buffer size of PATH_MAX:
+    return getLinkTarget( "/proc/self/exe", PATH_MAX );
 }
 
 

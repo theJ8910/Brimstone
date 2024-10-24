@@ -18,9 +18,9 @@ Description:
 
 //Brimstone::Private::ThreadLocalImpl
 #if defined( BS_BUILD_WINDOWS )
-#include "../windows/WindowsThreadLocal.hpp"
+#include "../windows/WindowsThreadLocal.hpp"  //Brimstone::Private::WindowsThreadLocal
 #elif defined( BS_BUILD_LINUX )
-#include "../linux/LinuxThreadLocal.hpp"
+#include "../linux/LinuxThreadLocal.hpp"      //Brimstone::Private::LinuxThreadLocal
 #endif
 
 

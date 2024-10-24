@@ -12,9 +12,28 @@ Description:
 
 //Includes
 #include <brimstone/windows/WindowsException.hpp>  //Header
-#include <brimstone/windows/WindowsUtil.hpp>       //Brimstone::Private::utf16to8
+
+#include "WindowsHeader.hpp"                       //LPWSTR, DWORD, FormatMessageW
+#include "WindowsUtil.hpp"                         //Brimstone::Private::utf16to8
 
 #include <memory>                                  //std::unique_ptr
+
+
+
+
+namespace {
+
+
+
+
+//NOTE:
+//    Not actually used at the moment.
+//const ustring ERROR_MESSAGE = "Error retrieving Windows exception description.";
+
+
+
+
+} //namespace
 
 
 
@@ -24,16 +43,53 @@ namespace Brimstone::Private {
 
 
 
-const ustring WindowsException::m_errorMessage = "Error retrieving Windows exception description.";
+/*
+WindowsException::WindowsException
+----------------------------------
 
-WindowsException::WindowsException( DWORD errorCode ) :
+Description:
+    Constructor. Initializes the WindowsException with the given error code.
+
+Arguments:
+    errorCode:  The error code.
+
+Returns:
+    N/A
+*/
+WindowsException::WindowsException( const DWORD errorCode ) :
     m_errorCode( errorCode ) {
 }
 
+/*
+WindowsException::getErrorCode
+------------------------------
+
+Description:
+    Returns the error code for this exception.
+
+Arguments:
+    N/A
+
+Returns:
+    DWORD:  The error code.
+*/
 DWORD WindowsException::getErrorCode() const {
     return m_errorCode;
 }
 
+/*
+WindowsException::getDescription
+--------------------------------
+
+Description:
+    Returns a string describing the error code for this exception.
+
+Arguments:
+    N/A
+
+Returns:
+    ustring:  A description of the error code.
+*/
 ustring WindowsException::getDescription() const {
     LPWSTR message = nullptr;
 
@@ -51,36 +107,49 @@ ustring WindowsException::getDescription() const {
     if( messageSize == 0 )
         throwWindowsException();
 
-    //We use a unique_ptr here to let RAII handle cleanup
-    //it uses the Windows function LocalFree() to clean up the message,
-    //since we requested that FormatMessage() allocate the buffer for us.
-    //If message is nullptr, LocalFree() is never called
+    //We use a unique_ptr here to let RAII handle cleanup.
+    //It uses the Windows function LocalFree() to clean up the message, since we requested that FormatMessage() allocate the buffer for us.
+    //If message is nullptr, LocalFree() is never called.
     std::unique_ptr< WCHAR, HLOCAL (__stdcall*)( HLOCAL ) > uptr( message, &LocalFree );
 
     return utf16to8( message, messageSize + 1 );
 }
 
-//Do-nothing private assignment operater
-WindowsException& WindowsException::operator =( const WindowsException& ) {
-    return *this;
-}
-
 /*
-Throws the windows exception corresponding to the given code
+throwWindowsException{1}
+------------------------
+
+Description:
+    Throws a WindowsException initialized with the given error code.
+
+Arguments:
+    N/A
+
+Returns:
+    N/A
+
+Throws:
+    WindowsException:  A WindowsException initialized with the given error code.
 */
 void throwWindowsException( const DWORD errorCode ) {
-    //ERROR_SUCCESS codes shouldn't be ignored
-    //if this function is being called its because something went wrong
-    /*
-    if( code == ERROR_SUCCESS )
-        return;
-    */
-
     throw WindowsException( errorCode );
 }
 
 /*
-Throws a windows exception determined by the error code returned GetLastError()
+throwWindowsException{2}
+------------------------
+
+Description:
+    Throws a WindowsException initialized with the given error returned by GetLastError().
+
+Arguments:
+    N/A
+
+Returns:
+    N/A
+
+Throws:
+    WindowsException:  A WindowsException initialized with the error code returned by GetLastError().
 */
 void throwWindowsException() {
     throwWindowsException( GetLastError() );
