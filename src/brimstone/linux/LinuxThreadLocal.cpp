@@ -11,8 +11,8 @@ Description:
 
 
 //Includes
-#include "LinuxThreadLocal.hpp"     //Class header
-#include <brimstone/Exception.hpp>  //Brimstone::Exception
+#include "LinuxThreadLocal.hpp"     //Header
+#include <brimstone/Exception.hpp>  //Brimstone::Exception, Brimstone::uncaughtException
 
 
 
@@ -24,17 +24,17 @@ namespace Brimstone::Private {
 
 LinuxThreadLocal::LinuxThreadLocal() {
     if( pthread_key_create( &m_key, nullptr ) )
-        throw Exception( "pthread_key_create" );
+        throw Exception( "pthread_key_create() failed." );
 }
 
 LinuxThreadLocal::~LinuxThreadLocal() {
     if( pthread_key_delete( m_key ) )
-        throw Exception( "pthread_key_delete" );
+        uncaughtException( Exception( "pthread_key_delete() failed." ) );
 }
 
 void  LinuxThreadLocal::set( void* const value ) {
     if( pthread_setspecific( m_key, value ) )
-        throw Exception( "pthread_set_specific" );
+        throw Exception( "pthread_set_specific() failed." );
 }
 
 void* LinuxThreadLocal::get() const {

@@ -6,8 +6,8 @@ Copyright (c) 2024, theJ89
 Description:
     Simple class for storing a raw image.
 */
-#ifndef BRIMSTONE_IMAGE_HPP
-#define BRIMSTONE_IMAGE_HPP
+#ifndef BS_IMAGE_HPP
+#define BS_IMAGE_HPP
 
 
 
@@ -54,4 +54,4 @@ private:
 
 
 
-#endif //BRIMSTONE_IMAGE_HPP
+#endif //BS_IMAGE_HPP

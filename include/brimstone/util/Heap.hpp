@@ -687,7 +687,7 @@ void Heap< HeapType, Node, NodeKey >::siftDown( std::size_t index ) {
         } else {
             //If the current node's left child should come before the last node, then move it to the current index:
             if( compare( getKey( m_array[ leftIndex ] ), key ) ) {
-                m_array[index] = std::move( m_array[ leftIndex ] );
+                m_array[ index ] = std::move( m_array[ leftIndex ] );
                 index = leftIndex;
             //Otherwise, we're done - exit the loop:
             } else {
@@ -696,7 +696,7 @@ void Heap< HeapType, Node, NodeKey >::siftDown( std::size_t index ) {
         }
     }
     //Move the last node into the empty spot we opened up:
-    m_array[index] = std::move( m_array[ m_size ] );
+    m_array[ index ] = std::move( m_array[ m_size ] );
 }
 
 /*

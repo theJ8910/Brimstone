@@ -1,12 +1,12 @@
 /*
-point/PointN.hpp
+point/SizeN.hpp
 ----------------
 Copyright (c) 2024, theJ89
 
 Description:
-    Adds a generic point class, Point.
-    You can specify what type of data the point uses (int, float, etc) as well as the dimension of the point.
-    2D, 3D and 4D specializations of Point are provided in Point2.hpp, Point3.hpp, and Point4.hpp, respectively.
+    Adds a generic class for keeping track of sizes in multiple dimensions, Size.
+    You can specify what type of data the size uses (int, float, etc) as well as the dimension of the size.
+    2D, 3D and 4D specializations of Size are provided in Size2.hpp, Size3.hpp, and Size4.hpp, respectively.
 */
 #ifndef BS_SIZE_SIZEN_HPP
 #define BS_SIZE_SIZEN_HPP

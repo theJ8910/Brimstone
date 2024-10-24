@@ -17,7 +17,7 @@ Description:
 #include <tuple>                //std::tuple
 #include <type_traits>          //std::integral_constant, std::underlying_type
 
-#include <brimstone/types.hpp>  //Brimstone::int32
+#include <brimstone/types.hpp>  //Brimstone::int32, Brimstone::ustring
 
 
 
@@ -33,6 +33,12 @@ Description:
 
 
 namespace Brimstone {
+
+
+
+
+//Forward declarations
+ustring getExecutablePath();
 
 
 

@@ -415,6 +415,9 @@ void floatNormalize( Vector< T, 2 >& vecInOut ) {
     vecInOut.y *= invLen;
 }
 
+
+
+
 } //namespace Brimstone::Private
 
 

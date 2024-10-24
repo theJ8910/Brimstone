@@ -14,7 +14,7 @@ Description:
 
 
 //Includes
-#include <brimstone/graphics/DGraphicsImpl.hpp>  //Brimstone::Private::DGraphicsImpl, etc
+#include <brimstone/graphics/DGraphicsImpl.hpp>  //Brimstone::Private::GraphicsImpl, etc.
 
 
 

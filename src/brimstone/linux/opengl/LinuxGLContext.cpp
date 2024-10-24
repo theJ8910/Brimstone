@@ -481,4 +481,7 @@ void LinuxGLContext::swapBuffers() {
     glXSwapBuffers( m_display, m_window );
 }
 
+
+
+
 } //namespace Brimstone::Private

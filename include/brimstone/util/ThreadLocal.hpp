@@ -52,7 +52,7 @@ struct SameSizeAsVoidPtr {
 
 
 
-} //namespace Brimstone
+} //namespace Brimstone::Private
 
 
 

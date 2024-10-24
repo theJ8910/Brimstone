@@ -62,7 +62,7 @@ template< typename T >
 class RefType {
 public:
     using ref       = T&;
-    using const_ref = const T& const_ref;
+    using const_ref = const T&;
 };
 
 //Specialization for pointer types

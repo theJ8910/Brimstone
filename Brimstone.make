@@ -99,6 +99,8 @@ GENERATED += $(OBJDIR)/LinuxThreadLocal.o
 GENERATED += $(OBJDIR)/Logger.o
 GENERATED += $(OBJDIR)/LuaInstance.o
 GENERATED += $(OBJDIR)/Math.o
+GENERATED += $(OBJDIR)/Misc.o
+GENERATED += $(OBJDIR)/Misc1.o
 GENERATED += $(OBJDIR)/MouseButton.o
 GENERATED += $(OBJDIR)/Stopwatch.o
 GENERATED += $(OBJDIR)/ThreadLocal.o
@@ -133,6 +135,8 @@ OBJECTS += $(OBJDIR)/LinuxThreadLocal.o
 OBJECTS += $(OBJDIR)/Logger.o
 OBJECTS += $(OBJDIR)/LuaInstance.o
 OBJECTS += $(OBJDIR)/Math.o
+OBJECTS += $(OBJDIR)/Misc.o
+OBJECTS += $(OBJDIR)/Misc1.o
 OBJECTS += $(OBJDIR)/MouseButton.o
 OBJECTS += $(OBJDIR)/Stopwatch.o
 OBJECTS += $(OBJDIR)/ThreadLocal.o
@@ -251,6 +255,9 @@ $(OBJDIR)/LinuxThreadLocal.o: src/brimstone/linux/LinuxThreadLocal.cpp
 $(OBJDIR)/LinuxGLContext.o: src/brimstone/linux/opengl/LinuxGLContext.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Misc.o: src/brimstone/linux/util/Misc.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/XColormap.o: src/brimstone/linux/x11/XColormap.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -303,6 +310,9 @@ $(OBJDIR)/Events.o: src/brimstone/ui/Events.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Math.o: src/brimstone/util/Math.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Misc1.o: src/brimstone/util/Misc.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/ThreadLocal.o: src/brimstone/util/ThreadLocal.cpp
