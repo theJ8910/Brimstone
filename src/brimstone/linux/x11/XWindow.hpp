@@ -93,6 +93,7 @@ public:
 
 private:
     void            windowProc( XEvent& xEvent, const bool repeated );
+    void            setBorderlessInternal( const bool borderless );
     void            setFullscreenInternal( const bool fullscreen );
     void            setMaximizedInternal( const bool maximized );
     void            setMinimizedInternal( const bool minimized );
@@ -119,6 +120,7 @@ private:
     bool                    m_pendingResize;
     Bounds2i                m_pendingResizeBounds;
     bool                    m_pendingFocus;
+    bool                    m_pendingPointerGrab;
 private:
     static void             mainProc( XEvent& xEvent, const bool repeated );
 

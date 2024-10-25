@@ -591,7 +591,8 @@ XWindow::XWindow() :
     m_normalBounds( m_bounds ),
     m_pendingResize( false ),
     m_pendingResizeBounds( 0, 0, 0, 0 ),
-    m_pendingFocus( false ) {
+    m_pendingFocus( false ),
+    m_pendingPointerGrab( false ) {
 }
 
 /*
@@ -770,14 +771,28 @@ void XWindow::open() {
         m_windowMap.emplace( m_window, *this );
     }
 
-    //Display the window to the user
-    xerrBegin();
-    XMapWindow( display, m_window );
-    xerrEnd();
-    if( xerrExists() )
-        throw xerrGet();
+    //Display the window to the user if it should be visible:
+    if( m_visible ) {
+        xerrBegin();
+        XMapWindow( display, m_window );
+        xerrEnd();
+        if( xerrExists() )
+            throw xerrGet();
+    }
 
-    //TODO: Apply window states set on the Window prior to the call to open() like fullscreen, maximize, minimize, shaded, borderless, and visible here.
+    //Apply window states set on the Window prior to the call to open(), like fullscreen, maximize, minimize, shaded, borderless, and visible:
+    if( m_borderless )
+        setBorderlessInternal( true );
+    if( m_maximized )
+        setMaximizedInternal( true );
+    if( m_minimized )
+        setMinimizedInternal( true );
+    if( m_shaded )
+        setShadedInternal( true );
+    if( m_fullscreen )
+        setFullscreenInternal( true );
+    if( m_mouseCapture || m_cursorTrapped )
+        updatePointerGrab();
 }
 
 /*
@@ -1436,6 +1451,8 @@ void XWindow::windowProc( XEvent& xEvent, const bool repeated ) {
             m_mapped = true;
             if( m_pendingFocus )
                 focus();
+            if( m_pendingPointerGrab )
+                updatePointerGrab();
         } break;
         case UnmapNotify: {
             m_mapped = false;
@@ -1555,57 +1572,7 @@ void XWindow::setBorderless( const bool borderless ) {
         return;
     }
 
-    //Create a PropMotifWmHints objects (which defines the value of the _MOTIF_WM_HINTS property) and set its members appropriately depending on whether we want a borderless window or not.
-    //NOTE:
-    //    This property is super old at this point (originating from the Motif Window Manager) and not that well documented, but apparently a lot of window managers still honor it and setting
-    //    it works better than any other alternative methods I could find at achieving our goal here.
-    PropMotifWmHints hints = {
-        MWM_HINTS_DECORATIONS,            //flags:       Specify that the decorations field of the hints structure is set.
-        0UL,                              //functions:   unused
-        borderless ? 0UL : MWM_DECOR_ALL, //decorations: Specify no decorations (0) if borderless, or all decorations (MWM_DECOR_ALL) if not borderless.
-        0L,                               //inputMode:   unused
-        0UL                               //status:      unused
-    };
-
-    //Update the property:
-    xerrBegin();
-    XChangeProperty(
-        XShared::getDisplay(),                      //::Display* display
-        m_window,                                   //::Window   w
-        XShared::m_atomMotifWmHints,                //::Atom     property
-        XShared::m_atomMotifWmHints,                //::Atom     type
-        32,                                         //int        format
-        PropModeReplace,                            //int        mode
-        reinterpret_cast<unsigned char*>( &hints ), //unsigned char *data
-        sizeof( hints ) / sizeof( long )
-    );
-    xerrEnd();
-    if( xerrExists() )
-        throw xerrGet();
-
-    //Adding or removing decorations moves the client area of the window to a different location on-screen, so we need to counteract that by readjusting the window's bounds.
-    //In the case that we're transitioning to borderless, we can set the bounds immediately because we know the new extents will be 0, 0, 0, 0:
-    if( borderless ) {
-        Bounds2i adjusted(
-            Point2i(
-                m_bounds.minX + m_extents.minX,
-                m_bounds.minY + m_extents.minY
-            ),
-            m_bounds.getSize()
-        );
-
-        setBounds( adjusted );
-    //When we're transitioning from borderless to bordered, however, we need to wait for the window to remind us what its extents are again, since they get updated to (0, 0, 0, 0) after the
-    //window transitions to borderless.
-    //TODO:
-    //    The current method I'm using has a drawback - there is a brief but noticeable flicker due to the window's position changing twice - once when it transitions to bordered, and a second
-    //    time after the window's new extents are received a short time later and the pending resize triggers.
-    //    This flickering can can be probably be avoided by storing the old extents before going into borderless, then after going back into bordered, repositioning the window immediately
-    //    using the old extents, but also setting up a pending resize just in case the new extents are different from the old ones for some reason.
-    } else {
-        m_pendingResize = true;
-        m_pendingResizeBounds = m_bounds;
-    }
+    setBorderlessInternal( borderless );
 
     //Update tracking of borderless state:
     BaseWindowImpl::setBorderless( borderless );
@@ -1847,6 +1814,76 @@ void XWindow::setFullscreen( const bool fullscreen ) {
 }
 
 /*
+XWindow::setBorderlessInternal
+------------------------------
+
+Description:
+    Internal method that does the actual work of making the window borderless / bordered.
+
+Arguments:
+    bordered:  true if the window should be borderless, false otherwise.
+
+Returns:
+    N/A
+
+Throws:
+    XException:  If a call to an Xlib function fails.
+*/
+void XWindow::setBorderlessInternal( const bool borderless ) {
+    //Create a PropMotifWmHints objects (which defines the value of the _MOTIF_WM_HINTS property) and set its members appropriately depending on whether we want a borderless window or not.
+    //NOTE:
+    //    This property is super old at this point (originating from the Motif Window Manager) and not that well documented, but apparently a lot of window managers still honor it and setting
+    //    it works better than any other alternative methods I could find at achieving our goal here.
+    PropMotifWmHints hints = {
+        MWM_HINTS_DECORATIONS,            //flags:       Specify that the decorations field of the hints structure is set.
+        0UL,                              //functions:   unused
+        borderless ? 0UL : MWM_DECOR_ALL, //decorations: Specify no decorations (0) if borderless, or all decorations (MWM_DECOR_ALL) if not borderless.
+        0L,                               //inputMode:   unused
+        0UL                               //status:      unused
+    };
+
+    //Update the property:
+    xerrBegin();
+    XChangeProperty(
+        XShared::getDisplay(),                      //::Display* display
+        m_window,                                   //::Window   w
+        XShared::m_atomMotifWmHints,                //::Atom     property
+        XShared::m_atomMotifWmHints,                //::Atom     type
+        32,                                         //int        format
+        PropModeReplace,                            //int        mode
+        reinterpret_cast<unsigned char*>( &hints ), //unsigned char *data
+        sizeof( hints ) / sizeof( long )
+    );
+    xerrEnd();
+    if( xerrExists() )
+        throw xerrGet();
+
+    //Adding or removing decorations moves the client area of the window to a different location on-screen, so we need to counteract that by readjusting the window's bounds.
+    //In the case that we're transitioning to borderless, we can set the bounds immediately because we know the new extents will be 0, 0, 0, 0:
+    if( borderless ) {
+        Bounds2i adjusted(
+            Point2i(
+                m_bounds.minX + m_extents.minX,
+                m_bounds.minY + m_extents.minY
+            ),
+            m_bounds.getSize()
+        );
+
+        setBounds( adjusted );
+    //When we're transitioning from borderless to bordered, however, we need to wait for the window to remind us what its extents are again, since they get updated to (0, 0, 0, 0) after the
+    //window transitions to borderless.
+    //TODO:
+    //    The current method I'm using has a drawback - there is a brief but noticeable flicker due to the window's position changing twice - once when it transitions to bordered, and a second
+    //    time after the window's new extents are received a short time later and the pending resize triggers.
+    //    This flickering can can be probably be avoided by storing the old extents before going into borderless, then after going back into bordered, repositioning the window immediately
+    //    using the old extents, but also setting up a pending resize just in case the new extents are different from the old ones for some reason.
+    } else {
+        m_pendingResize = true;
+        m_pendingResizeBounds = m_bounds;
+    }
+}
+
+/*
 XWindow::setFullscreenInternal
 ------------------------------
 
@@ -2060,7 +2097,7 @@ void XWindow::setShaded( const bool shaded ) {
 
     //If the window isn't open yet, just set whether or not the window should be shaded:
     if( m_window == None ) {
-        BaseWindowImpl::setShaded( shaded );
+        m_shaded = shaded;
         return;
     }
 
@@ -2469,30 +2506,41 @@ void XWindow::updatePointerGrab() {
     //NOTE:
     //    If the X11 client is already grabbing the pointer (e.g. if you started a mouse capture, then started trapping the cursor) it doesn't seem like it's necessary to cancel the existing
     //    pointer grab with XUngrabPointer() before starting a new pointer grab with XGrabPointer() - the new pointer grab will take the place of the old one.
-    if( m_mouseCapture || m_cursorTrapped ) {
-        xerrBegin();
-        int rv = XGrabPointer(
-            XShared::getDisplay(),
-            m_window,
-            False,
-            XGRABPOINTER_EVENT_MASK,
-            GrabModeAsync,
-            GrabModeAsync,
-            m_cursorTrapped ? m_window : None,
-            None,
-            CurrentTime
-        );
-        xerrEnd();
-        if( xerrExists() )
-            throw xerrGet();
-        if( rv != GrabSuccess )
-            throw Exception( "XGrabPointer() failed." );
+    //If the window is mapped, actually update the pointer grab state:
+    if( m_mapped ) {
+        //If this was a pending pointer grab state update, it's no longer pending:
+        m_pendingPointerGrab = false;
+
+        //Try to grab the pointer:
+        if( m_mouseCapture || m_cursorTrapped ) {
+            xerrBegin();
+            int rv = XGrabPointer(
+                XShared::getDisplay(),
+                m_window,
+                False,
+                XGRABPOINTER_EVENT_MASK,
+                GrabModeAsync,
+                GrabModeAsync,
+                m_cursorTrapped ? m_window : None,
+                None,
+                CurrentTime
+            );
+            xerrEnd();
+            if( xerrExists() )
+                throw xerrGet();
+            if( rv != GrabSuccess )
+                throw Exception( "XGrabPointer() failed." );
+        //Try to ungrab the pointer:
+        } else {
+            xerrBegin();
+            XUngrabPointer( XShared::getDisplay(), CurrentTime );
+            xerrEnd();
+            if( xerrExists() )
+                throw xerrGet();
+        }
+    //Otherwise, update the pointer grab state as soon as possible:
     } else {
-        xerrBegin();
-        XUngrabPointer( XShared::getDisplay(), CurrentTime );
-        xerrEnd();
-        if( xerrExists() )
-            throw xerrGet();
+        m_pendingPointerGrab = true;
     }
 }
 
