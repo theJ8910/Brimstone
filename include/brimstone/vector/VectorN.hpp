@@ -15,13 +15,15 @@ Description:
 
 
 //Includes
+#include <brimstone/Point.hpp>        //Brimstone::Point, BS_BASEPOINT_DECLARE_METHODS, BS_BASEPOINTN_DEFINE_METHODS
+#include <brimstone/util/Math.hpp>    //Brimstone::fastSqrt, Brimstone::fastInvSqrt
+#include <brimstone/util/MinMax.hpp>  //Brimstone::electMax
+
 #include <cstddef>                    //std::size_t
 #include <cstdlib>                    //std::abs
 #include <initializer_list>           //std::initializer_list
 
-#include <brimstone/Point.hpp>        //Brimstone::BasePoint
-#include <brimstone/util/Math.hpp>    //Brimstone::fastSqrt, Brimstone::fastInvSqrt
-#include <brimstone/util/MinMax.hpp>  //Brimstone::electMax
+#include <boost/format.hpp>           //boost::format
 
 
 

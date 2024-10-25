@@ -15,16 +15,16 @@ Description:
 
 
 //Includes
+#include <brimstone/util/Array.hpp>   //BS_ARRAY_DECLARE_METHODS, BS_ARRAY_DEFINE_METHODS
+#include <brimstone/util/Macros.hpp>  //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc.
+#include <brimstone/util/Math.hpp>    //Brimstone::fastSqrt
+
 #include <cstddef>                    //std::size_t
 #include <iostream>                   //std::ostream
 #include <initializer_list>           //std::initializer_list
 #include <algorithm>                  //std::fill
 
 #include <boost/format.hpp>           //boost::format
-
-#include <brimstone/util/Array.hpp>   //BS_ARRAY_DECLARE_METHODS, BS_ARRAY_DEFINE_METHODS
-#include <brimstone/util/Macros.hpp>  //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc.
-#include <brimstone/util/Math.hpp>    //Brimstone::fastSqrt
 
 
 

@@ -14,14 +14,14 @@ Description:
 
 
 //Includes
+#include <brimstone/Time.hpp>              //Brimstone::getRealTime
+#include <brimstone/util/Heap.hpp>         //Brimstone::MinHeap
+#include <brimstone/signals/Delegate.hpp>  //Brimstone::Delegate
+
 #include <cstddef>                         //std::size_t
 #include <cstdint>                         //std::uint64_t
 #include <limits>                          //std::numeric_limits
 #include <functional>                      //std::function
-
-#include <brimstone/Time.hpp>              //Brimstone::getRealTime
-#include <brimstone/util/Heap.hpp>         //Brimstone::MinHeap
-#include <brimstone/signals/Delegate.hpp>  //Brimstone::Delegate
 
 
 

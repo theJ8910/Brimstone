@@ -21,9 +21,9 @@ Description:
 
 
 //Includes
-#include <cstddef>                    //std::size_t
 #include <brimstone/util/Macros.hpp>  //BS_ASSERT_INDEX
 
+#include <cstddef>                    //std::size_t
 #include <vector>                     //std::vector
 
 

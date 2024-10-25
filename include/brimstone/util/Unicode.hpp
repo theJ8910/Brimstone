@@ -13,9 +13,9 @@ Description:
 
 
 //Includes
-#include <cstddef>              //std::size_t
-
 #include <brimstone/types.hpp>  //Brimstone::uchar, Brimstone::ustring
+
+#include <cstddef>              //std::size_t
 
 
 

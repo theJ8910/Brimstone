@@ -18,11 +18,11 @@ Description:
 
 
 //Includes
-#include <unordered_map>                   //std::unordered_map
-
 #include <brimstone/factory/IFactory.hpp>  //Brimstone::IFactory
 #include <brimstone/Exception.hpp>         //Brimstone::NoSuchElementException
 #include <brimstone/util/RefType.hpp>      //Brimstone::RefType
+
+#include <unordered_map>                   //std::unordered_map
 
 
 

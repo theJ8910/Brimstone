@@ -13,6 +13,7 @@ Description:
 //Includes
 #include <brimstone/Logger.hpp>     //Header
 #include <brimstone/Exception.hpp>  //Brimstone::NoSuchElementException
+
 #include <iostream>                 //std::cout, std::cerr
 
 

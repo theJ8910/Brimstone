@@ -18,7 +18,7 @@ Description:
 
 
 //Includes
-#include <brimstone/point/PointN.hpp>   //Brimstone::Point
+#include <brimstone/point/PointN.hpp>  //Brimstone::Point
 
 
 

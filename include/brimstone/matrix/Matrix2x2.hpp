@@ -18,10 +18,10 @@ Description:
 
 
 //Includes
+#include <brimstone/matrix/MatrixNxN.hpp>  //Brimstone::Matrix, BS_MATRIX_SQUARE_DECLARE_METHODS
+
 #include <cstddef>                         //std::size_t
 #include <utility>                         //std::swap
-
-#include <brimstone/matrix/MatrixNxN.hpp>  //Brimstone::Matrix, BS_MATRIX_SQUARE_DECLARE_METHODS
 
 
 

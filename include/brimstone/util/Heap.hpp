@@ -20,9 +20,9 @@ Description:
 
 
 //Includes
-#include <cstddef>                  //std::size_t
-
 #include <brimstone/Exception.hpp>  //Brimstone::NoSuchElementException
+
+#include <cstddef>                  //std::size_t
 
 
 

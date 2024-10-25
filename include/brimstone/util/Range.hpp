@@ -27,13 +27,13 @@ Description:
 
 
 //Includes
+#include <brimstone/util/Macros.hpp>  //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE
+#include <brimstone/util/Misc.hpp>    //Brimstone::rangeSize
+
 #include <cstddef>                    //std::size_t
 #include <initializer_list>           //std::initializer_list
 #include <algorithm>                  //std::fill, std::copy
 #include <type_traits>                //std::remove_reference
-
-#include <brimstone/util/Macros.hpp>  //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE
-#include <brimstone/util/Misc.hpp>    //Brimstone::rangeSize
 
 
 

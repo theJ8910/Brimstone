@@ -11,8 +11,9 @@ Description:
 
 
 //Includes
-#include <brimstone/Window.hpp>         //Header
-#include "window/WindowImpl.hpp"        //Brimstone::Private::WindowImpl
+#include <brimstone/Window.hpp>   //Header
+
+#include "window/WindowImpl.hpp"  //Brimstone::Private::WindowImpl
 
 
 

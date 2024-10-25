@@ -14,10 +14,11 @@ Description:
 
 
 //Includes
-#include <X11/Xlib.h>               //X11; XIC, XIM, XCreateIC, XDestroyIC
 #include "XException.hpp"           //Brimstone::Private::xerrBegin, Brimstone::Private::xerrEnd, Brimstone::Private::xerrExists, Brimstone::Private::xerrGet
 
 #include <brimstone/Exception.hpp>  //Brimstone::Exception
+
+#include <X11/Xlib.h>               //X11; XIC, XIM, XCreateIC, XDestroyIC
 
 
 

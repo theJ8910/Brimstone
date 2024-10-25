@@ -15,10 +15,11 @@ Description:
 
 
 //Includes
+#include <brimstone/util/Array.hpp>  //BS_ARRAY_DECLARE_METHODS(), BS_ARRAY_DEFINE_METHODS()
+
 #include <cstddef>                   //std::size_t
 #include <iostream>                  //std::ostream
 #include <algorithm>                 //std::fill
-#include <brimstone/util/Array.hpp>  //BS_ARRAY_DECLARE_METHODS(), BS_ARRAY_DEFINE_METHODS()
 
 #include <boost/format.hpp>          //boost::format
 

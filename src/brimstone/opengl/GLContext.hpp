@@ -17,9 +17,9 @@ Description:
 
 //Includes
 #if defined( BS_BUILD_WINDOWS )
-#include "../windows/opengl/WindowsGLContext.hpp"
+#include "../windows/opengl/WindowsGLContext.hpp"  //Brimstone::Private::WindowsGLContext
 #elif defined( BS_BUILD_LINUX )
-#include "../linux/opengl/LinuxGLContext.hpp"
+#include "../linux/opengl/LinuxGLContext.hpp"      //Brimstone::Private::LinuxGLContext
 #endif
 
 

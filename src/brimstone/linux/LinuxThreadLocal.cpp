@@ -12,6 +12,7 @@ Description:
 
 //Includes
 #include "LinuxThreadLocal.hpp"     //Header
+
 #include <brimstone/Exception.hpp>  //Brimstone::Exception, Brimstone::uncaughtException
 
 

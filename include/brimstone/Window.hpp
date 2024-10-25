@@ -15,9 +15,9 @@ Description:
 
 
 //Includes
-#include <brimstone/window/DWindowImpl.hpp>    //Brimstone::Private::WindowImpl
-#include <brimstone/Bounds.hpp>                //Brimstone::Bounds2i
 #include <brimstone/types.hpp>                 //Brimstone::ustring
+#include <brimstone/Bounds.hpp>                //Brimstone::Bounds2i
+#include <brimstone/window/DWindowImpl.hpp>    //Brimstone::Private::WindowImpl
 #include <brimstone/window/WindowEvent.hpp>    //Brimstone::WindowEvent
 #include <brimstone/window/WindowDisplay.hpp>  //Brimstone::WindowDisplay
 #include <brimstone/window/WindowHandle.hpp>   //Brimstone::WindowHandle

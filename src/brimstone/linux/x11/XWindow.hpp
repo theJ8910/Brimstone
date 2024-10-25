@@ -13,11 +13,6 @@ Description:
 
 
 //Includes
-#include <unordered_map>                       //std::unordered_map
-#include <mutex>                               //std::mutex
-
-#include <X11/Xlib.h>                          //X11
-
 #include <brimstone/types.hpp>                 //Brimstone::ustring
 #include <brimstone/Bounds.hpp>                //Brimstone::Bounds2i
 #include <brimstone/window/WindowHandle.hpp>   //Brimstone::WindowHandle
@@ -25,6 +20,11 @@ Description:
 
 #include "../../window/BaseWindowImpl.hpp"     //Brimstone::Private::BaseWindowImpl
 #include "XInputContext.hpp"                   //Brimstone::Private::XInputContext
+
+#include <unordered_map>                       //std::unordered_map
+#include <mutex>                               //std::mutex
+
+#include <X11/Xlib.h>                          //X11
 
 
 

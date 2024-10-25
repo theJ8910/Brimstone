@@ -11,11 +11,11 @@ Description:
 
 
 //Includes
-#include <brimstone/Exception.hpp>          //Header
-#include <brimstone/signals/Delegate.hpp>   //Brimstone::Delegate
-#include <brimstone/Logger.hpp>             //Brimstone::logError
+#include <brimstone/Exception.hpp>         //Header
+#include <brimstone/signals/Delegate.hpp>  //Brimstone::Delegate
+#include <brimstone/Logger.hpp>            //Brimstone::logError
 
-#include <boost/format.hpp>                 //boost::format
+#include <boost/format.hpp>                //boost::format
 
 
 

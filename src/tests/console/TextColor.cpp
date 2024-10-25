@@ -11,10 +11,10 @@ Description:
 
 
 //Includes
-#include "TextColor.hpp"    //Header
+#include "TextColor.hpp"  //Header
 
 #ifdef UT_BUILD_LINUX
-#include <cstdio>           //std::printf
+#include <cstdio>         //std::printf
 #endif //UT_BUILD_LINUX
 
 

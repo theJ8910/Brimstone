@@ -12,6 +12,7 @@ Description:
 
 //Includes
 #include <brimstone/Image.hpp>  //Header
+
 #include <png.h>                //png_*
 
 

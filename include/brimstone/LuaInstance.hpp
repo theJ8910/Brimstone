@@ -16,6 +16,7 @@ Description:
 #include <brimstone/types.hpp>          //Brimstone::uchar, Brimstone::int32
 #include <brimstone/util/Sequence.hpp>  //Brimstone::Sequence
 #include <brimstone/util/Misc.hpp>      //Brimstone::TupleSize
+
 #include <tuple>                        //std::tuple
 
 

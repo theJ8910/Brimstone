@@ -11,12 +11,12 @@ Description:
 
 
 //Includes
-#include <brimstone/LuaInstance.hpp>    //Header
-#include <brimstone/Exception.hpp>      //Brimstone::LuaException
+#include <brimstone/LuaInstance.hpp>  //Header
+#include <brimstone/Exception.hpp>    //Brimstone::LuaException
 
-#include <luajit/lua.hpp>               //lua_State, etc.
+#include <luajit/lua.hpp>             //lua_State, etc.
 
-#include <boost/format.hpp>             //boost::format
+#include <boost/format.hpp>           //boost::format
 
 
 

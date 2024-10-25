@@ -13,13 +13,13 @@ Description:
 
 
 //Includes
+#include <brimstone/util/Macros.hpp>  //BS_ASSERT_SIZE, BS_ASSERT_INDEX, BS_TMPL_2, BS_SPEC_2
+#include <brimstone/util/Misc.hpp>    //Brimstone::rangeSize
+
 #include <cstddef>                    //std::size_t
 #include <algorithm>                  //std::copy, std::fill
 #include <iterator>                   //std::begin, std::end
 #include <initializer_list>           //std::initializer_list
-
-#include <brimstone/util/Macros.hpp>  //BS_ASSERT_SIZE, BS_ASSERT_INDEX, BS_TMPL_2, BS_SPEC_2
-#include <brimstone/util/Misc.hpp>    //Brimstone::rangeSize
 
 
 

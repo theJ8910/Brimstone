@@ -14,10 +14,10 @@ Description:
 
 
 //Includes
+#include <brimstone/matrix/MatrixRxC.hpp>  //Brimstone::Matrix
+
 #include <cstddef>                         //std::size_t
 #include <utility>                         //std::swap
-
-#include <brimstone/matrix/MatrixRxC.hpp>  //Brimstone::Matrix
 
 
 

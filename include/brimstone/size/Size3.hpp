@@ -18,7 +18,7 @@ Description:
 
 
 //Includes
-#include <brimstone/size/SizeN.hpp>     //Brimstone::Size
+#include <brimstone/size/SizeN.hpp>  //Brimstone::Size
 
 
 

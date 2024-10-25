@@ -14,11 +14,11 @@ Description:
 
 
 //Includes
-#include <utility>                      //std::swap
-
 #include <brimstone/Exception.hpp>      //Brimstone::NullPointerException, Brimstone::SizeException
 #include <brimstone/types.hpp>          //Brimstone::uint32
 #include <brimstone/util/Macros.hpp>    //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc.
+
+#include <utility>                      //std::swap
 
 
 

@@ -11,10 +11,7 @@ Description:
 
 
 //Includes
-#include <brimstone/util/ThreadLocal.hpp>  //Header
-
-
-
+#include <brimstone/util/ThreadLocal.hpp>     //Header
 
 //Brimstone::Private::ThreadLocalImpl
 #if defined( BS_BUILD_WINDOWS )

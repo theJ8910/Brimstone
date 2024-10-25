@@ -20,7 +20,7 @@ Description:
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #define STRICT
-#include <windows.h>
+#include <windows.h>  //FOREGROUND_RED, FOREGROUND_GREEN, FOREGROUND_BLUE, FOREGROUND_INTENSITY, HANDLE, GetStdHandle, SetConsoleTextAttribute
 
 #endif
 

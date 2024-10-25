@@ -43,6 +43,7 @@ ustring getLinkTarget( const char* path, const off_t bufsiz );
 
 
 
+
 /*
 getLinkTarget{1}
 ----------------
@@ -162,4 +163,4 @@ ustring getExecutablePath() {
 
 
 
-} // namespace Brimstone::Private
+} //namespace Brimstone::Private

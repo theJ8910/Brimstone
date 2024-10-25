@@ -47,18 +47,18 @@ Description:
 
 
 //Includes
-#include <cstddef>                    //std::size_t
-#include <iostream>                   //std::ostream
-#include <initializer_list>           //std::initializer_list
-#include <iterator>                   //std::begin, std::end
-#include <algorithm>                  //std::fill
-
 #include <brimstone/types.hpp>        //Brimstone::int32
 #include <brimstone/util/Macros.hpp>  //BS_ASSERT_NON_NULLPTR, BS_ASSERT_SIZE, etc.
 #include <brimstone/util/Clamp.hpp>   //Brimstone::clamp
 #include <brimstone/util/MinMax.hpp>  //Brimstone::min
 #include <brimstone/Point.hpp>        //Brimstone::Point
 #include <brimstone/Size.hpp>         //Brimstone::Size
+
+#include <cstddef>                    //std::size_t
+#include <iostream>                   //std::ostream
+#include <initializer_list>           //std::initializer_list
+#include <iterator>                   //std::begin, std::end
+#include <algorithm>                  //std::fill
 
 
 

@@ -13,7 +13,7 @@ Description:
 
 
 //Includes
-#include "WindowsHeader.hpp"  //DWORD, TlsAlloc, TlsFree, TlsSetValue, TlsGetValue
+#include "WindowsHeader.hpp"  //DWORD
 
 
 

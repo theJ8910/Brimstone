@@ -16,15 +16,15 @@ Description:
 
 
 //Includes
+#include <brimstone/util/Array.hpp>   //BS_ARRAY_DECLARE_METHODS, BS_ARRAY_DEFINE_METHODS, etc.
+#include <brimstone/Vector.hpp>       //Brimstone::Vector
+#include <brimstone/util/MinMax.hpp>  //Brimstone::electMax
+
 #include <cstddef>                    //std::size_t
 #include <iostream>                   //std::ostream
 #include <iomanip>                    //std::setw, std::setprecision
 
 #include <boost/format.hpp>           //boost::format
-
-#include <brimstone/util/Array.hpp>   //BS_ARRAY_DECLARE_METHODS, BS_ARRAY_DEFINE_METHODS, etc.
-#include <brimstone/Vector.hpp>       //Brimstone::Vector
-#include <brimstone/util/MinMax.hpp>  //Brimstone::electMax
 
 
 
@@ -97,6 +97,9 @@ Description:
 
 
 namespace Brimstone {
+
+
+
 
 template< typename T, std::size_t R, std::size_t C >
 class Matrix {
@@ -256,7 +259,18 @@ Matrix< T, R, C >& Matrix< T, R, C >::operator -=( const Matrix& right ) {
     return ( *this );
 }
 
-namespace Private {
+
+
+
+} //namespace Brimstone
+
+
+
+
+namespace Brimstone::Private {
+
+
+
 
     //Note: You can only multiply an IxJ matrix with an JxK matrix.
     //      The result is an IxK matrix.
@@ -291,7 +305,19 @@ namespace Private {
             }
         }
     }
-}
+
+
+
+
+} //namespace Brimstone::Private
+
+
+
+
+namespace Brimstone {
+
+
+
 
 template< typename T, std::size_t R, std::size_t C >
 Matrix< T, R, C >& Matrix< T, R, C >::operator *=( const Matrix< T, C, C >& right ) {

@@ -13,11 +13,11 @@ Description:
 
 
 //Includes
+#include <brimstone/types.hpp>  //Brimstone::int32, Brimstone::ustring
+
 #include <cstddef>              //std::size_t
 #include <tuple>                //std::tuple
 #include <type_traits>          //std::integral_constant, std::underlying_type
-
-#include <brimstone/types.hpp>  //Brimstone::int32, Brimstone::ustring
 
 
 

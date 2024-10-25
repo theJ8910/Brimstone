@@ -26,14 +26,14 @@ Description:
 
 
 //Include
+#include <brimstone/types.hpp>  //Brimstone::uchar
+
 #include <cstddef>              //std::size_t
 #include <fstream>              //std::ofstream
 #include <vector>               //std::vector
 #include <initializer_list>     //std::initializer_list
 #include <mutex>                //std::mutex
 #include <memory>               //std::unique_ptr
-
-#include <brimstone/types.hpp>  //Brimstone::uchar
 
 
 

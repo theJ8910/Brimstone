@@ -17,11 +17,11 @@ Description:
 //Includes
 #include "WindowsWindow.hpp"                       //Header
 
-#include <brimstone/windows/WindowsUtil.hpp>       //Brimstone::Private::utf8to16
-#include <brimstone/windows/WindowsException.hpp>  //Brimstone::Private::throwWindowsException
-#include <brimstone/util/Clamp.hpp>                //Brimstone::clampedValue
 #include <brimstone/Logger.hpp>                    //Brimstone::logError
 #include <brimstone/Exception.hpp>                 //TEMP: Brimstone::NotImplementedException
+#include <brimstone/util/Clamp.hpp>                //Brimstone::clampedValue
+#include <brimstone/windows/WindowsUtil.hpp>       //Brimstone::Private::utf8to16
+#include <brimstone/windows/WindowsException.hpp>  //Brimstone::Private::throwWindowsException
 
 #include <windowsx.h>                              //GET_X_LPARAM, GET_Y_LPARAM
 

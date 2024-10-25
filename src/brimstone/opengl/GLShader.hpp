@@ -15,6 +15,7 @@ Description:
 
 //Includes
 #include <brimstone/types.hpp>  //Brimstone::ustring
+
 #include <gll/gl_types.hpp>     //gll::GLuint
 
 
