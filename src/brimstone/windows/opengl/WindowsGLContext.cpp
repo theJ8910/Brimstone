@@ -11,13 +11,19 @@ Description:
 
 
 //Includes
-#include "WindowsGLContext.hpp"                     //Header
-#include "GLHeader.hpp"                             //OpenGL
-#include "GLLoad.hpp"                               //wglSwapIntervalEXT
+#include "WindowsGLContext.hpp"                    //Header
+#include "../WindowsHeader.hpp"                    //HWND, HDC
 
-#include <brimstone/Window.hpp>                     //Brimstone::Window
-#include <brimstone/windows/WindowsException.hpp>   //Brimstone::Private::throwWindowsException
+#include <brimstone/Window.hpp>                    //Brimstone::Window
+#include <brimstone/windows/WindowsException.hpp>  //Brimstone::Private::throwWindowsException
 
+#include <gl/GL.h>                                 //HGLRC
+
+//TODO:
+//    These headers no longer exist.
+//    As soon as I have access to a Windows build environment I'll need to test to make sure the new OpenGL imports are working as intended.
+//#include "GLHeader.hpp"                            //OpenGL
+//#include "GLLoad.hpp"                              //wglSwapIntervalEXT
 
 
 
@@ -82,7 +88,7 @@ void WindowsGLContext::init( const Window& window ) {
     init( window.getHandle() );
 }
 
-void WindowsGLContext::init( HWND hwnd ) {
+void WindowsGLContext::init( const HWND hwnd ) {
     m_hwnd = hwnd;
     m_hdc  = GetDC( m_hwnd );
     if( m_hdc == nullptr )

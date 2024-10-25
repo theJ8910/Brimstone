@@ -14,8 +14,11 @@ Description:
 
 
 //Includes
-#include <cstddef>           //std::size_t
-#include <gll/gl_types.hpp>  //gll::GLsizei
+#include <brimstone/Image.hpp>  //Brimstone::Image
+
+#include <cstddef>              //std::size_t
+
+#include <gll/gl_types.hpp>     //gll::GLsizei
 
 
 
@@ -33,6 +36,7 @@ public:
     void create();
     void destroy();
 
+    void set( const Image& image );
     void set( const std::size_t width, const std::size_t height, const void* data );
 
     void bind();

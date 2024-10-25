@@ -12,6 +12,7 @@ Description:
 
 //Includes
 #include <brimstone/Graphics.hpp>     //Header
+#include <brimstone/Image.hpp>        //Brimstone::Image
 
 #include "graphics/GraphicsImpl.hpp"  //Brimstone::Private::GraphicsImpl, etc
 
@@ -444,6 +445,10 @@ void Texture::create() {
 
 void Texture::destroy() {
     m_impl->destroy();
+}
+
+void Texture::set( const Image& image ) {
+    m_impl->set( image );
 }
 
 void Texture::set( const std::size_t width, const std::size_t height, const void* data ) {

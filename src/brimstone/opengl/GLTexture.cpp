@@ -13,6 +13,9 @@ Description:
 //Includes
 #include "GLTexture.hpp"        //Header
 
+#include <brimstone/Image.hpp>  //Brimstone::Image
+#include <brimstone/Size.hpp>   //Brimstone::Size2i
+
 #include <gll/gl_4_6_comp.hpp>  //gll::* (GL 4.6 and below + compatibility)
 using namespace gll;
 
@@ -48,6 +51,11 @@ void GLTexture::destroy() {
         glDeleteTextures( 1, &m_name );
         m_name = 0;
     }
+}
+
+void GLTexture::set( const Image& image ) {
+    Size2i size = image.getSize();
+    set( size.width, size.height, image.getData() );
 }
 
 void GLTexture::set( const std::size_t width, const std::size_t height, const void* data ) {

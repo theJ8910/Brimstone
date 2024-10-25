@@ -12,8 +12,15 @@ Description:
 
 
 
-//Include
-#include "GLHeader.hpp"  //HWND, HDC, HGLRC
+//Includes
+#include "../WindowsHeader.hpp"                    //HWND, HDC
+
+#include <gl/GL.h>                                 //HGLRC
+
+//TODO:
+//    This header no longer exists.
+//    As soon as I have access to a Windows build environment I'll need to test to make sure the new OpenGL imports are working as intended.
+//#include "GLHeader.hpp"  //HWND, HDC, HGLRC
 
 
 
@@ -58,7 +65,7 @@ public:
     
     void swapBuffers();
 private:
-    void init( HWND hwnd );
+    void init( const HWND hwnd );
     void destroyContext();
     void destroyDC();
     void destroyWindow();

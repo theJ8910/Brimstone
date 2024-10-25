@@ -16,11 +16,12 @@ Description:
 
 
 //Includes
-#include <cstddef>                               //std::size_t
-
 #include <brimstone/types.hpp>                   //Brimstone::ustring, Brimstone::uint
+#include <brimstone/Image.hpp>                   //Brimstone::Image
 #include <brimstone/graphics/DGraphicsImpl.hpp>  //Brimstone::Private::DGraphicsImpl, etc.
 #include <brimstone/graphics/Enums.hpp>          //Brimstone::AlphaFunc, Brimstone::ShaderType, Brimstone::FilterType, Brimstone::WrapType
+
+#include <cstddef>                               //std::size_t
 
 
 
@@ -207,6 +208,7 @@ public:
     void create();
     void destroy();
 
+    void set( const Image& image );
     void set( const std::size_t width, const std::size_t height, const void* data );
 
     void bind();
