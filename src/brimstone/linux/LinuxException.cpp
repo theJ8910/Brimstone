@@ -89,7 +89,7 @@ Returns:
     ustring:  A description of the error code.
 */
 ustring LinuxException::getDescription() const {
-    ustring msg( 1024, '\0' );
+    ustring msg( STRERROR_BUFFER_SIZE, '\0' );
     //Use POSIX-compliant strerror_r:
 #if _POSIX_C_SOURCE >= 200112L && ! _GNU_SOURCE
     int rv = strerror_r( m_errorCode, msg.data(), STRERROR_BUFFER_SIZE );
@@ -130,7 +130,7 @@ Returns:
 Throws:
     LinuxException:  A LinuxException initialized with the given errorCode.
 */
-void throwLinuxException( const int errorCode ) {
+[[noreturn]] void throwLinuxException( const int errorCode ) {
     throw LinuxException( errorCode );
 }
 
@@ -150,8 +150,8 @@ Returns:
 Throws:
     LinuxException:  A LinuxException initialized with errno.
 */
-void throwLinuxException() {
-    throwLinuxException( errno );
+[[noreturn]] void throwLinuxException() {
+    throw LinuxException( errno );
 }
 
 

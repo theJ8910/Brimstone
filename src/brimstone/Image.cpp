@@ -226,7 +226,11 @@ void Image::destroy() {
         delete m_data;
 }
 
-ubyte* Image::getData() const {
+ubyte* Image::getData() {
+    return m_data;
+}
+
+const ubyte* Image::getData() const {
     return m_data;
 }
 

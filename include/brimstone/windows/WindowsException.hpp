@@ -37,8 +37,8 @@ namespace Brimstone::Private {
 
 
 //Forward declarations
-void throwWindowsException();
-void throwWindowsException( const DWORD errorCode );
+[[noreturn]] void throwWindowsException();
+[[noreturn]] void throwWindowsException( const DWORD errorCode );
 
 
 

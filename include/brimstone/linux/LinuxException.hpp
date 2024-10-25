@@ -30,8 +30,8 @@ namespace Brimstone::Private {
 
 
 //Forward declarations
-void throwLinuxException( const int errorCode );
-void throwLinuxException();
+[[noreturn]] void throwLinuxException( const int errorCode );
+[[noreturn]] void throwLinuxException();
 
 
 

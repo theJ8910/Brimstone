@@ -131,7 +131,7 @@ Returns:
 Throws:
     WindowsException:  A WindowsException initialized with the given error code.
 */
-void throwWindowsException( const DWORD errorCode ) {
+[[noreturn]] void throwWindowsException( const DWORD errorCode ) {
     throw WindowsException( errorCode );
 }
 
@@ -151,8 +151,8 @@ Returns:
 Throws:
     WindowsException:  A WindowsException initialized with the error code returned by GetLastError().
 */
-void throwWindowsException() {
-    throwWindowsException( GetLastError() );
+[[noreturn]] void throwWindowsException() {
+    throw WindowsException( GetLastError() );
 }
 
 

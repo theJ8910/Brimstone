@@ -34,13 +34,14 @@ public:
     Image& operator =( Image&& toMove );
     ~Image();
 
-    void   set( ubyte* const data, const Size2i size );
-    bool   loadPNG( const ustring& filename );
-    void   destroy();
+    void         set( ubyte* const data, const Size2i size );
+    bool         loadPNG( const ustring& filename );
+    void         destroy();
 
-    bool   isValid() const;
-    ubyte* getData() const;
-    Size2i getSize() const;
+    bool         isValid() const;
+    ubyte*       getData();
+    const ubyte* getData() const;
+    Size2i       getSize() const;
 private:
     ubyte* m_data;
     Size2i m_size;
